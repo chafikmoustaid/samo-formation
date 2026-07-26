@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 7 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>TECHNIQUE SUPPORT INFORMATIQUE</h2><p>Séance 7 : Comptes, Profils, Permissions et Diagnostic avancé</p><p>Manuel de Formation Maître  —  Durée : 4 Heures  —  Niveau N1→N2  —  Formation distance individuelle Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>📋  SOMMAIRE DE LA SÉANCE 7</h2><p>P1</p><p>Architecture interne d&#x27;un compte Windows — SID, groupes, droits</p><p>P2</p><p>Les profils utilisateurs — structure, NTUSER.DAT, corruption</p><p>P3</p><p>Groupes, droits locaux et Access Token</p><p>P4</p><p>Permissions NTFS en profondeur — ACL, ACE, héritage</p><p>P5</p><p>Diagnostic professionnel complet — méthode par couches</p><p>Cas pratiques N2 et checklist de fin de séance</p><p>SID = identité système  |  Profil = environnement  |  NTFS = contrôle d&#x27;accès fichiers  |  Access Token = clé d&#x27;accès totale</p><p>Les illustrations du Word original sont reproduites une par slide pour un maximum de clarté.</p><p>P6</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>🔑  PARTIE 1 — ARCHITECTURE INTERNE D&#x27;UN COMPTE WINDOWS</h2><p>1 — Nom visible (Username)</p><p>Le nom visible est l&#x27;étiquette affichée dans l&#x27;écran de connexion, C:\Users, gestion des comptes.
+⚠️  Le nom visible n&#x27;est PAS l&#x27;identité réelle du compte.
+Windows travaille avec le SID.
+Si tu renommes un utilisateur :
+• Le nom change
+• Le dossier peut rester avec l&#x27;ancien nom
+• Le SID NE CHANGE PAS  ✅
+
+→ Le nom visible = couche superficielle.</p><p>2 — SID (Security Identifier)</p><p>Identifiant unique attribué par Windows à chaque compte.
+Structure : S-1-5-21-XXXXX-XXXXX-XXXXX-1001
+Windows associe au SID :
+• Permissions NTFS (fichiers/dossiers)
+• Droits dans le registre Windows
+• Accès réseau
+• Propriété des fichiers
+Cas terrain : ancien user supprimé → nouveau même nom → accès refusé. Pourquoi ? SID différent.</p><p>Schéma global : Nom visible → SID → Groupe → Droits locaux → Profil → Permissions NTFS
+Chaque couche dépend du SID — le SID est l&#x27;identité RÉELLE.</p><p>3 — Groupe d&#x27;appartenance</p><p>Un groupe est un conteneur de droits.
+Exemples : Administrateurs · Utilisateurs · Invités · Remote Desktop Users
+Permissions effectives = Somme des autorisations − Refus explicites
+🔥  Refus prioritaire &gt; Autorisation. Toujours.
+Cas : Jean ∈ Utilisateurs ∩ Administrateurs. Dossier refusé explicitement à Jean → Accès refusé malgré Admin.</p><p>6 — Droits locaux vs NTFS</p><p>Droit local = autorisation système (action Windows)
+Exemples : se connecter · arrêter · installer pilote · RDP
+→ définis dans secpol.msc
+Permission NTFS = accès aux fichiers/dossiers uniquement
+Les deux utilisent le SID mais fonctionnent à des niveaux différents.
+⚠️  Un administrateur peut toujours être bloqué par un refus NTFS explicite.</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>🖼  Schéma conceptuel — Nom visible ≠ Identité (SID)</h2><p>Illustration : l&#x27;écran de connexion affiche le Nom visible — Windows utilise le SID en interne</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>🖼  Structure d&#x27;un SID (Security Identifier)</h2><p>S-1-5-21-[Identifier Authority]-[Sub Authority x3]-[Relative ID] — Chaque partie identifie le domaine et l&#x27;utilisateur unique</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>🖼  Schéma héritage groupe — arbre d&#x27;appartenance</h2><p>Un utilisateur hérite des droits de chaque groupe auquel il appartient — les droits s&#x27;accumulent, les refus prévalent</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>🔐  6 — DROITS LOCAUX — AUTORISATION SYSTÈME (≠ NTFS)</h2><p>Qu&#x27;est-ce qu&#x27;un droit local ?</p><p>Un droit local est une autorisation système, pas une permission sur un fichier.
+Il donne le droit d&#x27;effectuer une action au niveau du système d&#x27;exploitation.
+
+Exemples de droits locaux :
+• Se connecter localement
+• Se connecter via Bureau à distance (RDP)
+• Arrêter le système
+• Installer / charger des pilotes de périphériques
+• Modifier l&#x27;heure système
+• Sauvegarder / restaurer des fichiers
+
+Où les trouver ?
+secpol.msc → Stratégies locales → Attribution des droits utilisateur
+
+Cas : Utilisateur a Contrôle total NTFS mais ne peut pas se connecter en RDP.
+→ Ce n&#x27;est pas un problème NTFS — c&#x27;est un droit local manquant.</p><p>Piège fréquent — Admin ≠ tout permis</p><p>&#x27;Un administrateur peut tout faire.&#x27;
+FAUX.
+
+Un administrateur peut avoir tous les droits locaux,
+mais peut toujours être bloqué par un refus NTFS explicite.
+
+Exemple terrain :
+• Est administrateur
+• A contrôle total sur un dossier
+• MAIS ne peut pas modifier l&#x27;heure système
+Pourquoi ? Le droit local &#x27;Modifier l&#x27;heure système&#x27; n&#x27;est pas attribué à son groupe.
+
+Résumé :
+Permissions NTFS → fichiers
+Droits locaux → actions système
+Les deux utilisent le SID — niveaux différents.</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>🖼  secpol.msc — Stratégies locales / Attribution des droits utilisateur</h2><p>Local Security Policy — chaque droit système est listé avec les groupes autorisés. Ici : &#x27;Allow log on locally&#x27;, &#x27;Log on through Remote Desktop Services&#x27;, etc.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>📁  PARTIE 2 — LES PROFILS UTILISATEURS</h2><p>Profil ≠ Compte  |  Le profil est l&#x27;ENVIRONNEMENT du compte.
+Un compte peut exister sans profil. Un profil sans compte = dossier orphelin.</p><p>Structure du profil</p><p>C:\Users\NomUtilisateur
+├── Desktop
+├── Documents
+├── Downloads
+├── AppData
+│   ├── Local
+│   ├── Roaming
+│   └── LocalLow
+└── NTUSER.DAT  ⚠️
+
+NTUSER.DAT = ruche registre utilisateur.
+Chargé dans HKEY_CURRENT_USER à chaque connexion.
+Si corrompu → profil ne charge pas.</p><p>Processus de chargement</p><p>1  Windows authentifie le compte
+2  Récupère le SID
+3  Cherche SID dans ProfileList (registre)
+4  Lit ProfileImagePath
+5  Charge NTUSER.DAT
+6  Monte l&#x27;environnement
+
+Si étape échoue → PROFIL TEMPORAIRE
+
+Registre :
+HKLM\...\ProfileList\SID
+→ ProfileImagePath = C:\Users\Nom</p><p>Profil temporaire — causes</p><p>Message : &#x27;Vous avez été connecté avec un profil temporaire.&#x27;
+
+Causes :
+• NTUSER.DAT corrompu
+• Mauvaise fermeture de session
+• Antivirus bloquant le chargement
+• Clé ProfileList corrompue
+• SID en double avec extension .bak
+
+Diagnostic :
+1  Vérifier C:\Users\Nom existe
+2  Ouvrir regedit → ProfileList
+3  Chercher SID + SID.bak
+4  Supprimer SID vide, renommer .bak → SID
+
+⚠️  Les données sont souvent encore présentes !
+Ne jamais supprimer le profil précipitamment.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>🖼  NTUSER.DAT — Structure interne de la ruche registre utilisateur</h2><p>HxD : structure binaire de NTUSER.DAT avec séquences primaire et secondaire — interruption lors de l&#x27;écriture = corruption du profil</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>🖼  C:\Users — Structure complète avec AppData visible</h2><p>Explorateur Windows avec &#x27;Éléments masqués&#x27; activé — AppData visible, NTUSER.DAT présent. Les données sont souvent intactes même lors d&#x27;un profil temporaire.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>🖼  Registre — ProfileList et ProfileImagePath</h2><p>HKLM\Software\Microsoft\Windows NT\CurrentVersion\ProfileList\SID — ProfileImagePath pointe vers C:\Users\Tom</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>🖼  Registre — Vue complète de la clé ProfileList</h2><p>Registre éditeur : chaque SID correspond à un profil utilisateur — si on voit SID et SID.bak = profil temporaire déclenché</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>💡  PROFIL — CAS TERRAIN ET ERREURS FRÉQUENTES</h2><p>Coupure courant — pourquoi ça corrompt</p><p>Quand l&#x27;utilisateur est connecté, NTUSER.DAT est ouvert et Windows y écrit en permanence.
+Si l&#x27;électricité coupe :
+• Windows n&#x27;a pas le temps de fermer proprement la ruche
+• L&#x27;écriture est interrompue
+• Fichier laissé dans un état incohérent
+• Au redémarrage : Windows tente de charger NTUSER.DAT → structure invalide → profil temporaire
+Même cause pour un antivirus :
+Si l&#x27;AV analyse/bloque NTUSER.DAT au moment du chargement → Windows ne peut pas ouvrir la ruche → profil temporaire.</p><p>Supprimer un compte ≠ Supprimer le dossier</p><p>Supprimer un compte :
+• Supprime l&#x27;entrée dans SAM
+• Supprime le SID du système
+Mais Windows ne supprime PAS C:\Users\Nom
+(pour éviter perte accidentelle de données)
+
+Conséquence : si on recrée un user même nom :
+• Nouveau SID → accès refusé aux anciens fichiers
+Supprimer un compte supprime l&#x27;identité, pas l&#x27;environnement.</p><p>Problème</p><p>Cause technique</p><p>Coupure courant → profil temporaire</p><p>NTUSER.DAT écriture interrompue</p><p>Antivirus → profil temporaire</p><p>Fichier verrouillé ou mis en quarantaine</p><p>Suppression compte → accès refusé</p><p>SID supprimé, dossier conservé — SID différent</p><p>Profil partiel</p><p>NTUSER.DAT partiellement corrompu ou AppData inaccessible</p><p>❌  Erreurs à ne JAMAIS faire : Supprimer profil immédiatement · Recréer sans sauvegarde · Réinstaller Windows</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>👥  PARTIE 3 — GROUPES, ACCESS TOKEN ET PERMISSIONS NTFS</h2><p>Access Token — créé à la connexion, utilisé pour TOUTES les actions</p><p>1 Authentification → 2 Récupère SID → 3 Récupère tous les groupes → 4 Crée l&#x27;Access Token (SID + groupes + droits locaux) → 5 Token utilisé pour chaque action</p><p>Groupe Windows</p><p>Droits typiques</p><p>Usage</p><p>Administrateurs</p><p>Contrôle total système (sous réserve NTFS)</p><p>Administration du PC</p><p>Utilisateurs</p><p>Droits standards — pas d&#x27;installation de logiciels</p><p>Comptes standards</p><p>Invités</p><p>Accès très restreint — profil temporaire</p><p>Accès ponctuel</p><p>Utilisateurs Bureau à distance</p><p>Droit RDP (droit local, pas NTFS)</p><p>Connexion à distance</p><p>Type</p><p>S&#x27;applique à</p><p>Outil Windows</p><p>Exemple</p><p>Droit local</p><p>Actions système OS</p><p>secpol.msc</p><p>Installer un pilote · Arrêter le PC · Se connecter en RDP</p><p>Permission NTFS</p><p>Fichiers et dossiers</p><p>Propriétés → Sécurité</p><p>Lire C:\Data · Modifier un dossier</p><p>🔥  RÈGLE ABSOLUE NTFS : Refus explicite &gt; Autorisation. Même pour un administrateur. Toujours sans exception.</p><p>Comment Windows calcule les permissions effectives :</p><p>1  Windows récupère l&#x27;Access Token (SID user + SID groupes)
+2  Compare tous les SID du token avec les ACE de l&#x27;ACL du fichier
+3  Additionne toutes les autorisations (cumul des groupes)
+4  Applique les refus explicites → ils écrasent toutes les autorisations</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>🖼  Access Token vs Security Descriptor — Comment Windows vérifie l&#x27;accès</h2><p>Sujet (User&#x27;s Access Token : SID user, Group SIDs, Privileges) → Object&#x27;s Security Descriptor (ACL avec SACL + DACL) → ACE → décision Allow/Deny</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>🔒  PARTIE 4 — PERMISSIONS NTFS EN PROFONDEUR</h2><p>NTFS = système de fichiers Windows — il gère stockage, journalisation, chiffrement, compression et surtout les PERMISSIONS.
+Chaque fichier/dossier possède : un propriétaire (SID) + une ACL (Access Control List)</p><p>Structure ACL / ACE</p><p>ACL (Access Control List) = liste d&#x27;entrées ACE
+
+Chaque ACE (Access Control Entry) contient :
+• Un SID (utilisateur ou groupe)
+• Un type : Autoriser ou Refuser (Deny)
+• Un niveau d&#x27;accès (Lecture, Écriture, Contrôle total...)
+
+🔥  Deny &gt; Allow. Toujours. Sans exception.</p><p>Permission</p><p>Ce qu&#x27;elle permet</p><p>Lecture</p><p>Voir et copier les fichiers</p><p>Écriture</p><p>Créer, modifier</p><p>Modification</p><p>Lecture + écriture + suppression</p><p>Contrôle total</p><p>Tout + modifier les permissions elles-mêmes</p><p>Permissions avancées</p><p>Traverser dossier · Lire attributs · Prendre possession...</p><p>Héritage des permissions</p><p>Par défaut : dossier parent → sous-dossiers/fichiers. Permission explicite prime sur héritée. On peut désactiver l&#x27;héritage (→ convertir en explicites).</p><p>Situation terrain</p><p>Cause</p><p>Solution</p><p>Admin — accès refusé</p><p>Deny NTFS explicite sur ce dossier</p><p>Prendre possession → réappliquer permissions</p><p>Lecture OK, modification KO</p><p>Permission héritée Lecture uniquement</p><p>Ajouter ACE Modification explicite</p><p>SID inconnu dans ACL</p><p>Compte supprimé, SID encore présent</p><p>Prendre possession → recréer compte</p><p>Suppression OK, écriture KO</p><p>Supprimer autorisé / Écriture refusée</p><p>Analyser l&#x27;ACL complète — nuance subtile</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>🖼  Héritage des permissions — Structure arborescente</h2><p>Chaque niveau hérite des permissions du parent — Application01 → App1-General → Shared document pool. Les groupes (Guests-App1, Internals-App1) déterminent l&#x27;accès à chaque branche.</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>🖼  Comment Windows évalue les permissions NTFS — Flowchart complet</h2><p>START → Deny explicite? → Oui : Accès REFUSÉ · Non → Propriétaire? → Permissions explicites? → Groupes? → Héritage? → Non : Accès REFUSÉ</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>🖼  DACL et ACE — Mécanisme de contrôle d&#x27;accès</h2><p>Thread A (Andrew, Group A, B, C) → Object DACL : ACE1 Deny Andrew · ACE2 Allow Group A Write · ACE3 Allow Everyone Read/Execute → Thread A refusé malgré Group A</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>🖼  Interface NTFS — Onglet Sécurité (Propriétés d&#x27;un dossier)</h2><p>Propriétés → Sécurité : liste des groupes (Administrateurs, CREATOR OWNER, Everyone, SYSTEM, Users) avec les cases Allow/Deny pour chaque permission</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>🖼  Advanced Security Settings — ACE avec héritage détaillé</h2><p>Advanced Security Settings for Data : Type / Nom / Permission / Inherited From / Apply To — &#x27;Inherit from parent...&#x27; définit la propagation aux sous-dossiers</p></div>
+<div class="slide"><div class="slide-number">Slide 23</div><h2>🔍  PARTIE 5 — DIAGNOSTIC PROFESSIONNEL PAR COUCHES</h2><p>Règle d&#x27;or : diagnostiquer par couche — ne jamais sauter d&#x27;étage — un technicien ne &#x27;tente pas&#x27;, il vérifie.</p><p>1  Identifier l&#x27;utilisateur exact
+Quel compte connecté ? Local ou Microsoft ? Est-ce le bon ? → whoami</p><p>2  Vérifier les groupes
+Est-il vraiment admin ? Membre RDP ? → whoami /groups</p><p>3  Vérifier les droits locaux
+Peut-il se connecter ? Installer ? → secpol.msc → Attribution droits</p><p>4  Vérifier le profil
+Bureau vide ? Profil temporaire ? Dossier présent ? ProfileList ? SID.bak ?</p><p>5  Vérifier NTFS
+ACL correcte ? Refus explicite ? Héritage activé ? Propriétaire correct ?</p><p>6  Vérifier le propriétaire
+SID inconnu ? Ancien disque ? Migration système ? → Prendre possession</p></div>
+<div class="slide"><div class="slide-number">Slide 24</div><h2>🧩  CAS GLOBAL NIVEAU N2 — ANALYSE COUCHE PAR COUCHE</h2><p>Situation</p><p>Utilisateur ne peut pas accéder à D:\Finance
+• Est administrateur ✅
+• A migré un ancien disque
+• Peut lire mais pas modifier
+• Bureau normal (pas de profil temporaire)</p><p>Analyse par couches</p><p>✅  Couche 1 — Compte : correct
+✅  Couche 2 — SID : OK
+✅  Couche 3 — Groupe Administrateurs : OK
+✅  Couche 4 — Droits locaux : OK
+✅  Couche 5 — Profil : OK
+⚠️  Couche 6 — NTFS : SUSPECT
+⚠️  Couche 7 — Propriétaire : SUSPECT</p><p>Conclusion et solution</p><p>Cause : ancien SID propriétaire des fichiers (disque migré) + permissions héritées incomplètes.
+Solution : 1) Prendre possession du dossier D:\Finance  2) Réappliquer les permissions pour le compte actuel  3) Vérifier héritage activé.</p><p>Erreur classique</p><p>Pourquoi c&#x27;est faux</p><p>❌  Réinstaller Windows</p><p>Le problème est dans l&#x27;ACL, pas dans l&#x27;OS</p><p>❌  Supprimer l&#x27;utilisateur</p><p>Changerait le SID — aggraverait le problème</p><p>❌  Désactiver UAC</p><p>Contourne la sécurité sans résoudre la cause</p><p>❌  Donner &#x27;Contrôle total&#x27; partout</p><p>Mauvaise pratique — crée des failles de sécurité</p><p>❌  Ignorer le refus explicite</p><p>Il écrase toutes les autorisations — doit être traité</p></div>
+<div class="slide"><div class="slide-number">Slide 25</div><h2>🧪  CAS PRATIQUES — CE QUE VOUS VERREZ SUR TEAMS</h2><p>🧪  Exercice 1 — Bureau vide</p><p>Mise en situation :
+Utilisateur se connecte, bureau complètement vide, documents disparus.
+
+Questions :
+• Premier réflexe ?
+• C:\Users\Nom existe encore ?
+• Clé registre ProfileList ?
+
+💡  Bureau vide = profil temporaire probable</p><p>🧪  Exercice 2 — Admin refusé NTFS</p><p>Mise en situation :
+Admin dit : &#x27;C:\Finance : Accès refusé même en tant qu&#x27;admin.&#x27;
+
+Questions :
+• Quelle couche vérifier ?
+• Deny NTFS explicite ?
+• Comment prendre possession ?
+
+💡  Admin ≠ tout permis → vérifier ACL</p><p>🧪  Exercice 3 — Pas de RDP</p><p>Mise en situation :
+Utilisateur a Contrôle total NTFS mais ne peut pas se connecter en RDP.
+
+Questions :
+• Quelle couche ?
+• Droit local ou NTFS ?
+• Quel groupe vérifier ?
+
+💡  RDP = droit local, pas NTFS</p><p>✅  CORRIGÉS</p><p>Bureau vide → vérifier profil temporaire → ProfileList registre → chercher SID.bak → renommer clé SID.bak → SID
+Admin refusé → vérifier ACL → chercher Deny explicite → prendre possession du dossier → réappliquer les droits
+Pas RDP → vérifier droit local &#x27;Autoriser la session via Bureau à distance&#x27; → ajouter au groupe &#x27;Utilisateurs du Bureau à distance&#x27;</p></div>
+<div class="slide"><div class="slide-number">Slide 26</div><h2>✅  CHECKLIST OBLIGATOIRE — FIN DE SÉANCE 7</h2><p>Validez chaque point avec votre formateur avant de déclarer la séance terminée.</p><p>Je comprends que le nom visible ≠ identité réelle — le SID est l&#x27;identité système Windows</p><p>Je sais ce qu&#x27;est un SID et pourquoi recréer un compte avec le même nom crée un nouveau SID</p><p>Je connais la structure d&#x27;un profil : C:\Users\Nom → NTUSER.DAT → HKEY_CURRENT_USER</p><p>Je diagnostique un profil temporaire : C:\Users → ProfileList → SID.bak → correction registre</p><p>Je distingue droits locaux (secpol.msc — actions système) et permissions NTFS (fichiers/dossiers)</p><p>Je comprends l&#x27;Access Token : SID + groupes + droits — calculé une fois à la connexion</p><p>Je connais la règle NTFS absolue : Deny &gt; Allow, même pour un administrateur</p><p>Je connais ACL / ACE : chaque fichier a une liste d&#x27;entrées (SID + type Autoriser/Refuser + niveau)</p><p>Je sais ce qu&#x27;est l&#x27;héritage NTFS et comment une permission explicite prime sur une permission héritée</p><p>J&#x27;applique la méthode à 6 couches : Compte → Groupes → Droits locaux → Profil → NTFS → Propriétaire</p><p>FIN DE LA SÉANCE 7 — SUPPORT VALIDÉ</p></div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 9 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Partage</h2><p>et Stockage</p><p>SMB · OneDrive · NAS · Imprimante réseau · 3-2-1</p><p>SÉANCE 9 / 15</p><p>PC → PC</p><p>Partage SMB réseau local</p><p>PC → NAS</p><p>Stockage dédié réseau</p><p>PC → Cloud</p><p>OneDrive / SharePoint</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Partager = travailler ensemble.</h2><p>Mal configuré = travailler seul.</p><p>Un dossier partagé mal configuré bloque toute une équipe.
+Cette séance vous donne les clés pour que le partage fonctionne du premier coup.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>01 — SMB et partage Windows</h2><p>Protocole · Créer un partage · Découverte réseau</p><p>02 — Permissions NTFS vs Partage</p><p>Différence · Comment les combiner · Bonnes pratiques</p><p>03 — Lecteur réseau monté</p><p>Mapper \\PC\Dossier comme disque Z: permanent</p><p>04 — OneDrive complet</p><p>Sync · Partage · Fichiers à la demande · Corbeille</p><p>05 — NAS et imprimante réseau</p><p>Synology · Qnap · Imprimante IP directe</p><p>06 — Règle 3-2-1 et dépannage</p><p>Sauvegarde · Accès refusé · Diagnostic partage</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>SMB — Protocole de partage Windows</h2><p>SMB = Server Message Block. Protocole natif Windows pour partager fichiers, imprimantes et ressources réseau.</p><p>Partager un dossier — Procédure complète :</p><p>1</p><p>Clic droit sur le dossier à partager</p><p>Propriétés → onglet Partage → Partager</p><p>2</p><p>Ajouter les utilisateurs</p><p>Taper le nom d&#x27;utilisateur → Ajouter · &#x27;Tout le monde&#x27; pour accès libre sur réseau de confiance</p><p>3</p><p>Définir les droits</p><p>Lecture = peut voir · Lecture/Écriture = peut modifier · Propriétaire = contrôle total</p><p>4</p><p>Valider le partage</p><p>Cliquer Partager → noter le chemin UNC : \\NomPC\NomDossier</p><p>5</p><p>Activer la découverte réseau</p><p>Paramètres → Réseau → Options de partage avancé → Découverte réseau : Activé</p><p>6</p><p>Tester depuis l&#x27;autre PC</p><p>Explorateur → \\NomPC → vérifier l&#x27;accès → saisir credentials si demandé</p><p>!</p><p>Découverte réseau désactivée = partage existe mais invisible — cause n°1 des &#x27;impossible de trouver le PC&#x27;.</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>NTFS vs Permissions de partage — La règle du plus restrictif</h2><p>Un utilisateur a 2 couches de permissions en accès réseau : partage ET NTFS. C&#x27;est la plus restrictive qui s&#x27;applique.</p><p>Configurées dans Propriétés → Partage → Partager</p><p>Contrôlent qui peut accéder via le réseau.
+3 niveaux : Lecture · Lecture/Écriture · Propriétaire</p><p>Exemple : Jean = Lecture/Écriture dans le partage</p><p>Configurées dans Propriétés → Sécurité</p><p>Contrôlent les droits sur les fichiers et dossiers réels.
+Plus granulaires : Lecture · Écriture · Exécuter · Contrôle total</p><p>Exemple : Jean = Lecture seulement dans la sécurité NTFS</p><p>La plus restrictive des 2 s&#x27;applique</p><p>Si partage = Lecture/Écriture mais NTFS = Lecture
+→ Résultat = Lecture seulement (NTFS gagne)</p><p>Exemple : Jean voit les fichiers mais ne peut pas modifier (NTFS gagne)</p><p>Bonne pratique : mettre le partage sur Tout le monde = Lecture/Écriture et gérer finement avec les permissions NTFS.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Lecteur réseau monté — Accéder au partage comme un disque</h2><p>Mapper un partage réseau comme un disque Z: = accès direct depuis l&#x27;Explorateur, comme un disque local.</p><p>Via l&#x27;Explorateur Windows</p><p>1</p><p>Ce PC (Ordinateur) → Connecter un lecteur réseau (dans le menu Ordinateur)</p><p>2</p><p>Choisir la lettre : Z: (ou autre disponible)</p><p>3</p><p>Dossier : \\NomPC\NomDossier (chemin UNC du partage)</p><p>4</p><p>Cocher &#x27;Se reconnecter à l&#x27;ouverture de session&#x27; = permanent</p><p>5</p><p>Cocher &#x27;Se connecter avec d&#x27;autres informations d&#x27;identification&#x27; si compte différent</p><p>Via CMD ou PowerShell</p><p>1</p><p>net use Z: \\NomPC\NomDossier</p><p>2</p><p>Avec credentials : net use Z: \\NomPC\Dossier /user:NomUser MotDePasse</p><p>3</p><p>Persistant : ajouter /persistent:yes à la fin</p><p>4</p><p>Lister les lecteurs montés : net use</p><p>5</p><p>Supprimer : net use Z: /delete</p><p>Dépannage lecteur réseau</p><p>1</p><p>Lecteur rouge X au démarrage : PC cible éteint ou nom changé</p><p>2</p><p>Réinitialiser : net use * /delete → puis remapper</p><p>3</p><p>Si erreur &#x27;Accès refusé&#x27; : vérifier permissions NTFS et partage</p><p>4</p><p>Si erreur &#x27;Introuvable&#x27; : vérifier découverte réseau · ping NomPC</p><p>5</p><p>Alternative URL : \\IP_du_PC\NomDossier (si le nom ne résout pas)</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>OneDrive — Configuration de la synchronisation</h2><p>OneDrive = stockage cloud Microsoft 365. Intégré à Windows 11. 5 GB gratuits. 1 TB avec Microsoft 365.</p><p>Configurer la sauvegarde automatique</p><p>Clic droit icône OneDrive → Paramètres → Sauvegarde → Gérer la sauvegarde
+Cocher : Bureau · Documents · Images
+Ces 3 dossiers sont synchronisés en permanence sur le cloud.</p><p>💡 Si PC volé ou HS → retrouver tous les fichiers sur onedrive.com depuis n&#x27;importe où</p><p>Fichiers à la demande</p><p>Paramètres OneDrive → Paramètres → Fichiers à la demande
+Fichiers &#x27;online only&#x27; = visible dans l&#x27;Explorateur mais non téléchargé (0 espace)
+Téléchargé à l&#x27;ouverture — Disponible hors ligne = copie locale conservée.</p><p>💡 Économiser l&#x27;espace disque sur laptop : 100 GB de fichiers = 0 MB utilisé si non ouverts</p><p>Synchronisation sélective</p><p>Clic droit icône OneDrive → Paramètres → Compte → Choisir des dossiers
+Cocher uniquement les dossiers à synchroniser sur CE PC
+Idéal si peu d&#x27;espace disque.</p><p>💡 Téléphone = sync Photos seulement · PC bureau = tout · Laptop = projets actifs</p><p>Corbeille OneDrive</p><p>Fichiers supprimés = dans la Corbeille OneDrive pendant 30 jours (93 jours M365)
+onedrive.com → Corbeille → Restaurer
+Fichiers versionnés : historique disponible sur 30 jours</p><p>💡 Même si supprimé du PC = encore récupérable depuis la corbeille cloud</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><div class="placeholder-box"><h3>📷 OneDrive — Partage et collaboration</h3><p>Insérer ici : screenshot onedrive.com avec menu partage ouvert (lien ou avec personnes)</p><p>Montrer : Partager → Paramètres du lien → Qui peut accéder → peut afficher vs modifier</p><p>Méthodes de partage :</p><p>Avec des personnes</p><p>Invitation email · Permissions individuelles · Notifié par email</p><p>Lien (tout le monde)</p><p>URL publique · N&#x27;importe qui avec le lien · À utiliser avec prudence</p><p>Lien (organisation)</p><p>Personnes de votre tenant M365 · Recommandé en PME</p><p>Lien (avec mot de passe)</p><p>URL protégée par MDP · Idéal pour partenaires externes</p><p>Clic droit sur fichier/dossier → OneDrive → Partager  ·  ou depuis onedrive.com</p></div></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>NAS — Stockage réseau dédié pour les PME</h2><p>NAS = Network Attached Storage. Serveur de fichiers simplifié, toujours allumé, accessible sur le réseau.</p><p>Qu&#x27;es</p><p>Qu&#x27;est-ce qu&#x27;un NAS ?</p><p>Boîtier dédié contenant 2-8 disques durs. Interface web simple. Pas besoin de PC Windows allumé pour accéder.
+Principaux fabricants : Synology · QNAP · Netgear · TerraMaster</p><p>Synology DS223j = 2 baies · ~250$ · Idéal PME 5-10 utilisateurs</p><p>Usage</p><p>Usages en PME</p><p>Partage de fichiers d&#x27;équipe · Sauvegarde automatique des PCs · Streaming multimédia interne · Surveillance caméras IP · Serveur TimeMachine Mac</p><p>Remplace avantageusement un PC &#x27;serveur de fichiers&#x27; toujours allumé</p><p>Confi</p><p>Configuration initiale</p><p>Insérer les disques · Brancher sur le réseau · Trouver l&#x27;IP (etcher.io ou Synology Assistant) · Interface web → configurer le RAID · créer utilisateurs et dossiers partagés</p><p>RAID 1 (2 disques miroir) = protection contre la panne d&#x27;un disque</p><p>Accès</p><p>Accès depuis Windows</p><p>Explorateur → \\IP_du_NAS · Ou : \\nom_nas
+Mapper comme lecteur réseau Z: pour accès permanent
+Synology Drive = synchronisation locale comme OneDrive</p><p>\\192.168.1.50\Documents → se connecte comme n&#x27;importe quel partage SMB</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>Imprimante réseau — La méthode fiable par IP directe</h2><p>!</p><p>NE JAMAIS partager une imprimante via un PC hôte Windows.</p><p>Si le PC hôte s&#x27;éteint → tout le bureau perd l&#x27;accès. Toujours ajouter l&#x27;imprimante via son IP réseau directe.</p><p>1</p><p>Trouver l&#x27;IP de l&#x27;imprimante</p><p>Imprimante → Imprimer une page de configuration réseau (menu sur l&#x27;écran LCD) OU : Dans le routeur → liste des appareils DHCP → identifier l&#x27;imprimante par son nom ou MAC</p><p>2</p><p>Ouvrir l&#x27;ajout d&#x27;imprimante</p><p>Paramètres → Bluetooth et appareils → Imprimantes et scanners → Ajouter un appareil → Attendre quelques secondes → cliquer &#x27;L&#x27;imprimante voulue n&#x27;est pas répertoriée&#x27;</p><p>3</p><p>Choisir la méthode TCP/IP</p><p>Sélectionner &#x27;Ajouter une imprimante avec une adresse TCP/IP ou un nom d&#x27;hôte&#x27; → Type d&#x27;appareil : Détection automatique · Adresse : saisir l&#x27;IP de l&#x27;imprimante</p><p>4</p><p>Installer le driver</p><p>Windows détecte automatiquement le modèle dans la plupart des cas Si non détecté : aller sur le site du fabricant · télécharger le driver exact du modèle</p><p>5</p><p>Imprimer une page de test</p><p>Clic droit sur l&#x27;imprimante ajoutée → Propriétés de l&#x27;imprimante → Imprimer une page de test Vérifier la mise en file d&#x27;attente et la qualité</p><p>6</p><p>Attribuer une IP fixe</p><p>Dans le routeur → réservation DHCP par adresse MAC de l&#x27;imprimante Assure que l&#x27;imprimante garde toujours la même IP → connexion stable</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Règle 3-2-1 — Le standard de sauvegarde industrie</h2><p>S&#x27;applique aux particuliers comme aux PME. Mémorisez cette règle — elle sauvera des données un jour.</p><p>3</p><p>3 copies de vos données</p><p>L&#x27;original sur votre PC + 2 sauvegardes séparées.
+Si 1 copie est corrompue ou chiffrée (ransomware),
+2 autres restent intact et disponibles.</p><p>Exemple concret :
+Fichier Word original + copie disque ext. + copie OneDrive</p><p>2</p><p>2 supports différents</p><p>Ne pas avoir 2 copies au même endroit sur le même type de média.
+Deux disques USB identiques de la même marque achetés ensemble peuvent tomber en même temps.</p><p>Exemple concret :
+SSD interne + disque externe USB · Pas 2 clés USB identiques</p><p>1</p><p>1 copie hors site</p><p>Cloud (OneDrive, Backblaze) OU disque chez un proche OU coffre.
+Protège contre incendie, vol, inondation, ransomware réseau.
+Si tout est au même endroit = 0 vraie protection.</p><p>Exemple concret :
+OneDrive 1 TB M365 · ou disque ext. stocké à l&#x27;extérieur du bureau</p><p>Une sauvegarde non testée n&#x27;est pas une sauvegarde. Tester = restaurer 1 fichier et vérifier son intégrité.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Dépannage — Partage réseau inaccessible</h2><p>Deux erreurs distinctes : &#x27;Accès refusé&#x27; (permissions) vs &#x27;Introuvable&#x27; (réseau). Méthode différente pour chacune.</p><p>Erreur : L&#x27;ordinateur distant est introuvable</p><p>Ping NomPC → répond ? · Ping IP → répond ? · Découverte réseau activée ? · Pare-feu Windows bloque SMB ?</p><p>net view \\NomPC · ou explorer.exe \\IP</p><p>Erreur : Accès refusé (0x80070005)</p><p>Vérifier permissions de partage (Propriétés → Partage → Partager)
+Vérifier permissions NTFS (onglet Sécurité)
+La plus restrictive des 2 s&#x27;applique</p><p>Ajouter l&#x27;utilisateur dans les 2 onglets :</p><p>Erreur : Ressource réseau absente</p><p>Partage supprimé · PC hôte éteint · Chemin UNC incorrect
+Vérifier que le PC hôte est allumé · Que le partage existe encore</p><p>net share → lister les partages actifs sur</p><p>Lecteur réseau déconnecté (X rouge)</p><p>PC hôte était éteint au démarrage · Le montage automatique a échoué
+Réinitialiser : Ouvrir l&#x27;explorateur → clic droit → Déconnecter → Remonter</p><p>net use Z: /delete puis net use Z: \\NomPC</p><p>Lenteur du partage réseau</p><p>Câble Gigabit ? · Switch Gigabit ? · Wi-Fi au lieu de câble ?
+Les transferts sur Wi-Fi peuvent être 5-10× plus lents qu&#x27;en câble</p><p>Task Manager → Réseau · Ou : Paramètres Et</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>Cas pratiques — Séance 9</h2><p>Cas 1 — Sophie, ex-ex-coiffeuse</p><p>Partage créé hier fonctionne sur son PC mais pas sur les 2 autres PC du bureau.</p><p>• Que vérifiez-vous en premier ?</p><p>• Si découverte réseau est désactivée sur les autres PC, que faire ?</p><p>• Comment tester l&#x27;accès directement par IP ?</p><p>Piste : Découverte réseau · \\IP\Dossier · Permissions</p><p>Cas 2 — Karim, ex-ex-plombier</p><p>Lecteur réseau Z: déconnecté chaque matin. Doit remapper manuellement.</p><p>• Pourquoi le lecteur se déconnecte-t-il ?</p><p>• Comment corriger définitivement ?</p><p>• Que faire si le PC cible n&#x27;est pas toujours allumé ?</p><p>Piste : Démarrage PC cible tardif · Task Scheduler · NAS</p><p>Cas 3 — Mario, ex-ex-maçon</p><p>OneDrive synchronise 80 GB alors que son laptop n&#x27;a que 64 GB de stockage.</p><p>• Comment résoudre sans supprimer des fichiers ?</p><p>• Qu&#x27;est-ce que &#x27;Fichiers à la demande&#x27; ?</p><p>• Comment libérer l&#x27;espace occupé par un fichier OneDrive ?</p><p>Piste : Fichiers à la demande · Libérer de l&#x27;espace · Quota</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>VOCABULAIRE PARTAGE ET STOCKAGE — 18 termes essentiels</h2><p>SMB</p><p>Server Message Block — protocole partage Windows</p><p>UNC</p><p>\\NomPC\Dossier — chemin universel réseau</p><p>Permissions NTFS</p><p>Droits sur fichiers — niveau disque</p><p>Permissions de partage</p><p>Droits accès réseau — niveau partage</p><p>Lecteur réseau</p><p>Partage monté comme disque (Z:)</p><p>NAS</p><p>Network Attached Storage — serveur fichiers</p><p>RAID 1</p><p>Miroir de 2 disques — redondance</p><p>OneDrive</p><p>Stockage cloud Microsoft — 5 GB gratuit</p><p>Fichiers à la demande</p><p>Fichiers cloud visibles sans téléchargement</p><p>Synology</p><p>Marque NAS populaire PME</p><p>Réservation DHCP</p><p>IP fixe attribuée par MAC dans le routeur</p><p>3-2-1</p><p>3 copies · 2 supports · 1 hors site</p><p>Spool impression</p><p>File d&#x27;attente d&#x27;impression Windows</p><p>Corbeille OneDrive</p><p>30 jours récupération fichiers supprimés</p><p>Découverte réseau</p><p>Rend le PC visible aux autres sur le LAN</p><p>Bail DHCP</p><p>Durée d&#x27;attribution adresse IP</p><p>AES-256</p><p>Chiffrement utilisé par OneDrive · BitLocker</p><p>SharePoint</p><p>Partage documentaire Microsoft 365 équipe</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>Commandes partage réseau — CMD et PowerShell</h2><p>Certaines nécessitent CMD admin (net share · net use avec /delete)</p><p>net share</p><p>Lister tous les partages actifs sur ce PC</p><p>net share NomPartage=C:\Chemin</p><p>Créer un partage en ligne de commande</p><p>net use</p><p>Lister tous les lecteurs réseau montés</p><p>net use Z: \\NomPC\Dossier</p><p>Monter un partage réseau en lecteur Z:</p><p>net use * /delete</p><p>Supprimer tous les lecteurs réseau montés</p><p>net view \\NomPC</p><p>Lister les partages disponibles sur un PC</p><p>Get-SmbShare</p><p>PowerShell : lister les partages SMB locaux</p><p>Get-SmbConnection</p><p>PowerShell : voir les connexions SMB actives</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 16</div><h2>À vous de jouer.</h2><p>Créez vos premiers partages et configurez OneDrive.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Créer un partage SMB</span><div class="step-note">Dossier Exercices → Partager → Tout le monde lecture/écriture → Tester depuis une autre session</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Monter un lecteur Z:</span><div class="step-note">Monter \\VotrePC\Exercices en Z: · Vérifier dans l&#x27;Explorateur · Tester lecture/écriture</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">OneDrive — Sauvegarde</span><div class="step-note">Activer sauvegarde Bureau+Documents+Images · Observer la synchronisation</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Fichiers à la demande</span><div class="step-note">Activer · Comprendre les icônes · Libérer l&#x27;espace d&#x27;un fichier synchronisé</div><div class="step-note">10 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 17</div><div class="placeholder-box"><h3>📷 OneDrive — Icônes de synchronisation à connaître</h3><p>Insérer ici : screenshot Explorateur avec dossier OneDrive et icônes visibles</p><p>Montrer les 5 icônes : nuage bleu (online) · cercle vert plein (sync local) · cercle vert vide (dispo hors ligne) · flèches (sync en cours) · X rouge (erreur)</p><p>Les 5 icônes OneDrive dans l&#x27;Explorateur :</p><p>☁ Bleu</p><p>En ligne seulement — pas sur ce PC · téléchargé à l&#x27;ouverture</p><p>✓ Vert plein</p><p>Synchronisé localement — copie sur ce PC disponible hors ligne</p><p>✓ Vert vide</p><p>Disponible hors ligne — marqué explicitement pour conservation locale</p><p>↻ Bleu</p><p>Synchronisation en cours — ne pas éteindre</p><p>✗ Rouge</p><p>Erreur de synchronisation — voir les détails en cliquant sur l&#x27;icône barre des tâches</p></div></div>
+<div class="slide table-slide"><div class="slide-number">Slide 18</div><h2>Comparatif — Quelle solution pour quel usage ?</h2><table class="samo-table"><thead><tr><th>Solution</th><th>Partage équipe</th><th>Accès distant</th><th>Coût mensuel</th><th>Usage recommandé</th></tr></thead><tbody><tr><td>Partage SMB local</td><td>Excellent</td><td>Non (sans VPN)</td><td>0$ (inclus Windows)</td><td>PME sans cloud · fichiers internes seulement</td></tr><tr><td>OneDrive Business</td><td>Très bon</td><td>Excellent</td><td>5$/user/mois</td><td>PME avec M365 · accès mobile essentiel</td></tr><tr><td>SharePoint Online</td><td>Excellent</td><td>Excellent</td><td>Inclus M365 Business</td><td>Collaboration documentaire · versioning</td></tr><tr><td>NAS local</td><td>Excellent</td><td>Nécessite VPN</td><td>Achat unique ~500$</td><td>Grosses données · vidéo · conformité locale</td></tr><tr><td>Google Drive Business</td><td>Très bon</td><td>Excellent</td><td>12$/user/mois</td><td>PME hors écosystème Microsoft</td></tr></tbody></table><p>Combinaison optimale PME : SharePoint/OneDrive pour les fichiers + NAS pour les archives volumineuses.</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><div class="placeholder-box"><h3>📷 Imprimante réseau — Page de configuration</h3><p>Insérer ici : screenshot de la page de configuration réseau de votre imprimante</p><p>Montrer : Adresse IP attribuée · Masque · Passerelle · Type connexion (filaire/Wi-Fi) · MAC address</p><p>Astuce : l&#x27;IP se trouve aussi dans le menu de l&#x27;imprimante (LCD) → Réseau → TCP/IP → Adresse IP</p></div></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Mémo — Tout le partage réseau en une page</h2><p>Partage SMB — Checklist</p><p>Découverte réseau : ON</p><p>Partage créé (Propriétés → Partage)</p><p>Permissions partage : OK</p><p>Permissions NTFS : OK</p><p>Pare-feu laisse passer SMB (port 445)</p><p>Tester \\IP\Dossier avant \\NomPC\Dossier</p><p>OneDrive — Checklist</p><p>Compte Microsoft connecté</p><p>Sauvegarde Bureau+Docs+Images activée</p><p>Fichiers à la demande : selon espace disque</p><p>Corbeille = 30 jours de récupération</p><p>Mobile : app OneDrive installée</p><p>M365 = 1 TB · Gratuit = 5 GB</p><p>NAS — Checklist</p><p>IP fixe attribuée (DHCP réservation)</p><p>RAID configuré (RAID 1 minimum)</p><p>Utilisateurs créés · permissions OK</p><p>Dossier partagé visible en SMB</p><p>Sauvegarde NAS vers cloud (3-2-1)</p><p>Accès extérieur via VPN uniquement</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>Corrigés — Cas pratiques Séance 9</h2><p>Corrigé — Sophie — Partage visible 1 PC sur 3</p><p>1</p><p>Vérifier découverte réseau sur les 2 PC qui ne voient pas le partage</p><p>2</p><p>Si désactivée : Paramètres → Réseau → Options de partage avancé → Activer</p><p>3</p><p>Tester \\IP_du_PC_hôte\NomDossier — si ça marche = problème nom/DNS local</p><p>4</p><p>Si toujours impossible : vérifier le pare-feu Windows sur le PC hôte (autoriser SMB/partage)</p><p>Corrigé — Karim — Lecteur réseau déconnecté chaque matin</p><p>1</p><p>Cause : le PC hôte démarre après Karim et le lecteur échoue à monter</p><p>2</p><p>Solution 1 : Script de remontage au démarrage différé (Task Scheduler → 5 min après logon)</p><p>3</p><p>Solution 2 : Passer à un NAS (toujours allumé = lecteur toujours disponible)</p><p>4</p><p>Solution 3 : Activer le démarrage rapide du PC hôte</p><p>Corrigé — Mario — OneDrive 80 GB sur 64 GB</p><p>1</p><p>Activer Fichiers à la demande : clic droit OneDrive → Paramètres → Fichiers à la demande</p><p>2</p><p>Clic droit sur des dossiers → Libérer de l&#x27;espace → passe en &#x27;en ligne seulement&#x27;</p><p>3</p><p>Seuls les fichiers récemment ouverts restent en local — les autres = 0 espace</p><p>4</p><p>Mario peut avoir 80 GB &#x27;visible&#x27; en utilisant seulement 5 GB localement</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences acquises — À valider avec votre formateur</h2><p>☐</p><p>Je crée un partage SMB avec les permissions correctes (partage ET NTFS).</p><p>☐</p><p>J&#x27;active la découverte réseau et j&#x27;accède à \\NomPC\Dossier depuis un autre PC.</p><p>☐</p><p>Je monte un partage réseau comme lecteur Z: de façon permanente.</p><p>☐</p><p>Je configure la sauvegarde automatique OneDrive (Bureau + Documents + Images).</p><p>☐</p><p>Je connais les icônes OneDrive : nuage = en ligne · cercle vert = local · X rouge = erreur.</p><p>☐</p><p>J&#x27;ajoute une imprimante réseau par IP directe (méthode TCP/IP).</p><p>☐</p><p>Je connais la règle 3-2-1 et je peux l&#x27;appliquer à un contexte PME.</p><p>☐</p><p>Je distingue &#x27;Accès refusé&#x27; (permissions) de &#x27;Introuvable&#x27; (réseau) pour choisir la bonne solution.</p><p>FIN SÉANCE 9 — Valider avec votre formateur</p></div>
+</body>
+</html>

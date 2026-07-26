@@ -1,0 +1,30 @@
+{
+  "file": "Seance_1_Introduction_Informatique.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE"
+    },
+    {
+      "slide": 6,
+      "type": "CARDS"
+    },
+    {
+      "slide": 12,
+      "type": "PLACEHOLDER"
+    },
+    {
+      "slide": 14,
+      "type": "TIMELINE"
+    },
+    {
+      "slide": 18,
+      "type": "CARDS"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE"
+    }
+  ]
+}

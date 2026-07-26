@@ -1,0 +1,27 @@
+{
+  "file": "Seance_2.pptx",
+  "slides": 27,
+  "issues": [
+    {
+      "slide": 9,
+      "type": "TABLE",
+      "title": "⚠️  SYMPTÔMES TYPIQUES DE PANNE CARTE MÈRE"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "⚙️  LE PROCESSEUR (CPU) — LE CERVEAU DE LA MACHINE"
+    },
+    {
+      "slide": 17,
+      "type": "TABLE",
+      "title": "💾  RÔLE EXACT DE LA RAM — POURQUOI ELLE TOMBE EN PANNE"
+    },
+    {
+      "slide": 20,
+      "type": "TABLE",
+      "title": "🔌  IDENTIFIER LA RAM PHYSIQUEMENT — DDR3 / DDR4 / DDR5"
+    }
+  ],
+  "integrity_score": 92
+}

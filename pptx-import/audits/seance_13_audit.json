@@ -1,0 +1,27 @@
+{
+  "file": "Seance_13.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 6,
+      "type": "PLACEHOLDER",
+      "title": "INTERFACE"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "RÉFÉRENCE"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "ANALYSE AUTOMATIQUE"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 80
+}

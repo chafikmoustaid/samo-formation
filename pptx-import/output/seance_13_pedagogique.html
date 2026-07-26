@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 13 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Observateur</h2><p>Journal système</p><p>BSOD</p><p>Codes d&#x27;arrêt</p><p>SFC / DISM</p><p>Réparation</p><p>MemTest86</p><p>Diagnostic RAM</p><p>WinRE</p><p>Récupération</p><p>Diagnostic Avancé</p><p>Windows</p><p>OBSERVATEUR · BSOD · SFC/DISM · MEMTEST86 · WHOCRASHED · WINRE</p><p>SÉANCE 13 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Chaque crash</h2><p>laisse une trace.</p><p>L&#x27;Observateur d&#x27;événements, les fichiers .dmp, SFC — tout est écrit quelque part par Windows.
+Le diagnostic avancé, c&#x27;est apprendre à lire ce que Windows a déjà consigné, plutôt que de deviner. Cette séance vous rend capable de remonter d&#x27;un symptôme flou à une cause précise.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Au programme — 4 heures, 6 blocs</h2><p>01 — Observateur d&#x27;événements</p><p>Journaux · Niveaux de gravité · Filtrage</p><p>02 — BSOD</p><p>Anatomie · Codes d&#x27;arrêt · WhoCrashed</p><p>03 — SFC &amp; DISM</p><p>Ordre de réparation · Interprétation</p><p>04 — RAM &amp; MemTest86</p><p>Diagnostic hors Windows · Interprétation</p><p>05 — Mode sans échec</p><p>Types · Cas d&#x27;usage</p><p>06 — WinRE avancé</p><p>bootrec · Fichiers dump · Options</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>PHILOSOPHIE</h2><p>Le diagnostic avancé — Lire les traces plutôt que deviner</p><p>Diagnostic de base (N1)</p><p>Redémarrer, vérifier les câbles
+Observer le symptôme visible
+Appliquer une solution connue</p><p>Suffit pour 80 % des cas courants</p><p>Diagnostic avancé (N2)</p><p>Consulter les journaux système
+Analyser un code d&#x27;erreur précis
+Isoler la cause avec un outil dédié</p><p>Nécessaire quand le symptôme ne suffit pas</p><p>Principe directeur</p><p>Windows documente presque tout ce qui plante
+Le fichier .dmp contient le nom du coupable
+Un technicien N2 sait où chercher la preuve</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>JOURNAL DE BORD</h2><p>Observateur d&#x27;événements — Naviguer et filtrer</p><p>Accès</p><p>1</p><p>Ouvrir l&#x27;outil</p><p>Win+X → Observateur d&#x27;événements → Journaux Windows → Système.</p><p>2</p><p>Filtrer par gravité</p><p>Filtrer par « Critique + Erreur » sur les dernières 24 heures.</p><p>3</p><p>Chercher l&#x27;heure exacte</p><p>Se positionner autour de l&#x27;heure signalée par l&#x27;utilisateur.</p><p>Niveaux de gravité</p><p>4</p><p>Critique</p><p>Arrêt brutal du système — toujours investiguer en premier.</p><p>5</p><p>Erreur / Avertissement</p><p>Erreur = composant planté. Avertissement = à surveiller, pas urgent.</p><p>6</p><p>Information</p><p>Événements normaux (démarrage, MàJ) — utile pour confirmer une chronologie.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><div class="placeholder-box"><h3>📷 INTERFACE</h3><p>Observateur d&#x27;événements — Repérer un incident</p><p>[ Capture d&#x27;écran ]</p><p>Insérer ici : capture de l&#x27;Observateur d&#x27;événements filtré sur Critique + Erreur</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre capture</p><p>Points clés à repérer</p><p>Colonne Niveau : identifier rapidement la gravité
+Colonne Date et heure : corréler avec le symptôme signalé
+Colonne Source : identifie le composant en cause
+Onglet Détails : ID d&#x27;événement pour rechercher en ligne</p><p>Rechercher l&#x27;ID d&#x27;événement exact (ex : Event ID 41) sur le site Microsoft pour une explication officielle.</p><p>eventvwr.msc pour un accès direct</p></div></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>ANATOMIE D&#x27;UN CRASH</h2><p>Comprendre un BSOD — Ce que l&#x27;écran bleu vous dit</p><p>Le code d&#x27;arrêt</p><p>Nom en majuscules type IRQL_NOT_LESS_OR_EQUAL
+Identifie une famille de cause précise
+Toujours noter le code exact avant de redémarrer</p><p>Le fichier concerné</p><p>Souvent un pilote (.sys) est nommé à l&#x27;écran
+Ce fichier pointe directement vers le coupable probable
+Rechercher ce pilote pour une mise à jour</p><p>Le QR code / adresse mémoire</p><p>Détails techniques pour analyse approfondie
+Peu utile sans outil d&#x27;analyse de dump
+WhoCrashed traduit cela automatiquement</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 8</div><h2>RÉFÉRENCE</h2><table class="samo-table"><thead><tr><th>Code d&#x27;arrêt</th><th>Cause probable</th><th>Premier test</th></tr></thead><tbody><tr><td>IRQL_NOT_LESS_OR_EQUAL</td><td>RAM ou driver</td><td>MemTest86 + mise à jour des pilotes</td></tr><tr><td>MEMORY_MANAGEMENT</td><td>RAM défectueuse</td><td>MemTest86 — 2 passes minimum</td></tr><tr><td>CRITICAL_PROCESS_DIED</td><td>Fichiers Windows corrompus</td><td>SFC /scannow + DISM</td></tr><tr><td>SYSTEM_SERVICE_EXCEPTION</td><td>Driver tiers planté</td><td>Mode sans échec + WhoCrashed</td></tr><tr><td>INACCESSIBLE_BOOT_DEVICE</td><td>Disque ou partition inaccessible</td><td>WinRE + réparation du démarrage</td></tr></tbody></table><p>BSOD — Décoder le code et identifier la cause</p><p>Fichiers dump : C:\Windows\Minidump\ · WhoCrashed gratuit sur resplendence.com</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><div class="placeholder-box"><h3>📷 ANALYSE AUTOMATIQUE</h3><p>WhoCrashed — Identifier le driver responsable</p><p>[ Capture d&#x27;écran ]</p><p>Insérer ici : capture WhoCrashed après analyse d&#x27;un fichier .dmp</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre capture</p><p>Points clés à repérer</p><p>Analyse automatique des fichiers dans Minidump
+Nomme directement le pilote suspecté
+Indique la probabilité de causalité
+Lien vers plus de détails techniques si besoin</p><p>Si WhoCrashed pointe un driver tiers (GPU, réseau, périphérique), mettre à jour ou réinstaller ce pilote en premier.</p><p>resplendence.com — version gratuite suffisante pour le diagnostic de base</p></div></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>ARSENAL DE RÉPARATION</h2><p>SFC · DISM · Mode sans échec — L&#x27;ordre à respecter</p><p>1</p><p>SFC — System File Checker</p><p>sfc /scannow — toujours en premier.</p><p>5-15 min</p><p>2</p><p>DISM — Deployment Imaging</p><p>dism /online /cleanup-image /restorehealth — si SFC signale des erreurs non réparées.</p><p>15-30 min</p><p>3</p><p>Shift + Redémarrer → F4 — si le BSOD vient d&#x27;un driver tiers.</p><p>Immédiat</p><p>4</p><p>MemTest86</p><p>Clé USB bootable depuis memtest86.com — si le BSOD est de type RAM.</p><p>30-90 min</p><p>CMD administrateur requis pour SFC et DISM · Toujours relancer SFC une dernière fois après DISM</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>RÉPARATION APPROFONDIE</h2><p>SFC et DISM — Interpréter les résultats</p><p>SFC — résultats possibles</p><p>Aucune violation trouvée → système sain
+Violations trouvées et réparées → redémarrer
+Violations trouvées, non réparées → passer à DISM</p><p>DISM — sources d&#x27;image</p><p>Par défaut, utilise Windows Update comme source
+Sans Internet : spécifier une source ISO locale
+/Source:WIM:D:\sources\install.wim:1</p><p>Après réparation</p><p>Relancer sfc /scannow une dernière fois
+Redémarrer et confirmer la disparition du symptôme
+Documenter les erreurs trouvées dans le rapport</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Pilotes et services minimaux uniquement
+Isoler si un driver tiers cause le problème
+Accès F4 depuis les options avancées WinRE</h2><p>Identique + pilotes réseau activés
+Utile pour télécharger un correctif ou un pilote
+Accès F5 depuis les options avancées</p><p>Uniquement CMD, pas d&#x27;interface graphique
+Utile pour des réparations en ligne de commande
+Accès F6 depuis les options avancées</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>TEST MATÉRIEL</h2><p>MemTest86 — Procédure complète de diagnostic RAM</p><p>1</p><p>Télécharger l&#x27;image</p><p>memtest86.com → télécharger la version bootable USB.</p><p>2</p><p>Créer la clé USB</p><p>Utiliser l&#x27;outil fourni pour rendre la clé USB bootable.</p><p>3</p><p>Démarrer dessus</p><p>Redémarrer le PC et sélectionner la clé USB dans le menu de boot.</p><p>4</p><p>Lancer 2 passes minimum</p><p>Laisser tourner au moins 2 passes complètes — plusieurs heures possibles.</p><p>5</p><p>Interpréter</p><p>0 erreur = RAM saine. Toute erreur rouge = barrette à remplacer.</p><p>Alternative rapide intégrée à Windows : mdsched.exe (Diagnostic de la mémoire Windows)</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>URGENCE SYSTÈME</h2><p>WinRE — Quand Windows ne démarre plus du tout</p><p>1</p><p>Réparation au démarrage</p><p>Windows tente une réparation automatique — toujours en premier.</p><p>5-10 min</p><p>2</p><p>Restauration système</p><p>Retour à un point de restauration, sans perdre les fichiers.</p><p>10 min</p><p>3</p><p>Invite de commandes</p><p>bootrec /fixmbr · bootrec /fixboot · bootrec /rebuildbcd</p><p>Variable</p><p>4</p><p>Réinitialiser ce PC</p><p>Option « Conserver mes fichiers » — réinstalle Windows proprement.</p><p>30-60 min</p><p>F8 pendant le démarrage OU Shift+Redémarrer → Options avancées → WinRE</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>FICHIERS DE CRASH</h2><p>Fichiers dump — Types et emplacement</p><p>Mini dump</p><p>Petit fichier (~256 Ko), créé par défaut
+C:\Windows\Minidump\
+Suffisant pour WhoCrashed</p><p>Kernel dump</p><p>Contient la mémoire utilisée par le noyau
+Plus volumineux, plus d&#x27;informations
+C:\Windows\MEMORY.DMP</p><p>Dump complet</p><p>Copie complète de la RAM au moment du crash
+Réservé aux cas très complexes / support Microsoft
+Nécessite beaucoup d&#x27;espace disque libre</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>BONNES PRATIQUES</h2><p>Erreurs fréquentes en diagnostic avancé — À éviter</p><p>Précipitation</p><p>Réinstaller Windows avant d&#x27;avoir consulté les journaux
+Changer plusieurs composants à la fois
+Ignorer le code d&#x27;arrêt exact du BSOD</p><p>Mauvais ordre</p><p>Lancer DISM avant SFC sans raison
+Tester la RAM avant de vérifier les logiciels/pilotes
+Réinitialiser le PC sans sauvegarder d&#x27;abord</p><p>Documentation</p><p>Ne pas noter le code d&#x27;erreur avant de redémarrer
+Oublier de documenter les outils utilisés
+Ne pas indiquer si le problème est réellement résolu</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>PROGRESSION</h2><p>Quand escalader un diagnostic N1 vers N2</p><p>Rester en N1</p><p>Symptôme résolu par redémarrage ou solution connue
+Cause identifiée en moins de 15 minutes
+Aucun BSOD, aucun fichier dump à analyser</p><p>Escalader vers N2</p><p>BSOD récurrent malgré une première tentative
+SFC/DISM ne résolvent pas le problème
+Cause probable = matériel (RAM, disque, carte mère)</p><p>Ce qu&#x27;il faut transmettre</p><p>Code d&#x27;arrêt exact et fréquence des crashs
+Actions déjà tentées et résultats obtenus
+Fichier .dmp le plus récent si disponible</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>MISE EN PRATIQUE</h2><p>Cas pratiques — Séance 13</p><p>Cas 1 — Hélène, ex-esthéticienne</p><p>BSOD répété avec le code MEMORY_MANAGEMENT depuis l&#x27;installation d&#x27;une nouvelle barrette RAM.</p><p>Quel outil utiliser en priorité ?
+Combien de passes minimum lancer ?
+Que faire si une erreur apparaît ?</p><p>Piste : MemTest86 → 2 passes → remplacer la barrette fautive</p><p>Cas 2 — Bruno, ex-chauffeur</p><p>Le PC freeze aléatoirement sans BSOD, aucun symptôme visible avant le gel complet.</p><p>Où chercher en premier ?
+Quels niveaux de gravité filtrer ?
+Quelle est la prochaine étape si rien n&#x27;est trouvé ?</p><p>Piste : Observateur d&#x27;événements → Critique+Erreur → corréler l&#x27;heure</p><p>Cas 3 — Karine, ex-hôtesse</p><p>DISM échoue avec une erreur de source lors d&#x27;une tentative de réparation, pas d&#x27;accès Internet.</p><p>Pourquoi DISM échoue-t-il probablement ?
+Quelle solution alternative existe ?
+Que faire si aucune image n&#x27;est disponible ?</p><p>Piste : Spécifier une source ISO locale avec /Source:WIM</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>VOCABULAIRE DIAGNOSTIC — 18 termes essentiels</h2><p>BSOD</p><p>Blue Screen of Death — écran bleu d&#x27;arrêt</p><p>Stop code</p><p>Code identifiant la famille de la panne</p><p>Observateur d&#x27;événements</p><p>Journal centralisé des événements Windows</p><p>Event ID</p><p>Identifiant numérique d&#x27;un événement précis</p><p>SFC</p><p>System File Checker — vérifie les fichiers système</p><p>DISM</p><p>Répare l&#x27;image système Windows</p><p>Mini dump</p><p>Petit fichier de crash pour analyse rapide</p><p>WhoCrashed</p><p>Outil d&#x27;analyse automatique des fichiers dump</p><p>MemTest86</p><p>Outil bootable de test de la RAM</p><p>Démarrage minimal pour isoler un driver</p><p>WinRE</p><p>Environnement de récupération Windows</p><p>bootrec</p><p>Commande de réparation du démarrage</p><p>Kernel dump</p><p>Fichier de crash incluant la mémoire noyau</p><p>NLA</p><p>Authentification réseau — sans lien direct ici, à vérifier RDP</p><p>Driver tiers</p><p>Pilote non fourni par Microsoft</p><p>Point de restauration</p><p>Sauvegarde de l&#x27;état système Windows</p><p>eventvwr.msc</p><p>Commande d&#x27;ouverture de l&#x27;Observateur</p><p>Verifier.exe</p><p>Outil de vérification approfondie des pilotes</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>BOÎTE À OUTILS</h2><p>Commandes et outils — Diagnostic avancé</p><p>CMD administrateur requis pour la plupart de ces commandes</p><p>sfc /scannow</p><p>Vérifier et réparer les fichiers système</p><p>DISM /Online /Cleanup-Image /RestoreHealth</p><p>Réparer l&#x27;image Windows via Windows Update</p><p>eventvwr.msc</p><p>Ouvrir l&#x27;Observateur d&#x27;événements</p><p>bootrec /fixmbr</p><p>Réparer le secteur de démarrage principal</p><p>bootrec /rebuildbcd</p><p>Reconstruire la configuration de démarrage</p><p>mdsched.exe</p><p>Lancer le Diagnostic de la mémoire Windows</p><p>verifier.exe</p><p>Vérificateur de pilotes avancé Windows</p><p>wmic recoveros get autoreboot</p><p>Vérifier le comportement en cas de crash</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 21</div><h2>À vous de jouer.</h2><p>Pratiquez le diagnostic avancé sur votre VM.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Explorer l&#x27;Observateur</span><div class="step-note">Ouvrir eventvwr.msc → filtrer Critique+Erreur → identifier 3 événements récents.</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Simuler SFC/DISM</span><div class="step-note">Lancer sfc /scannow puis DISM et interpréter les résultats obtenus.</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">Décoder un code BSOD</span><div class="step-note">À partir d&#x27;un code donné, identifier la cause probable et le premier test à effectuer.</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Démarrer en mode sans échec</span><div class="step-note">Accéder à WinRE → démarrer en mode sans échec → revenir normalement.</div><div class="step-note">10 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences Séance 13 — À valider avec votre formateur</h2><p>J&#x27;ouvre l&#x27;Observateur d&#x27;événements et filtre les niveaux Critique et Erreur.</p><p>Je lis un code BSOD et identifie sa famille (RAM, driver, fichiers Windows).</p><p>J&#x27;utilise WhoCrashed pour identifier le driver responsable d&#x27;un BSOD.</p><p>J&#x27;exécute SFC puis DISM dans le bon ordre avec une invite de commandes admin.</p><p>Je démarre en mode sans échec pour diagnostiquer un driver problématique.</p><p>J&#x27;accède à WinRE et connais les 4 options de récupération disponibles.</p><p>Je lance MemTest86 depuis une clé USB pour tester la RAM hors de Windows.</p><p>FIN DE LA SÉANCE 13 — Valider avec votre formateur</p></div>
+</body>
+</html>

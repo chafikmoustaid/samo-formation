@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 1 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>IT Support Technique</h2><p>Formation N1/N2 — SAMO Formation</p><p>SÉANCE 1 / 15</p><p>Formation individuelle · Distance · Teams</p><p>Durée : 4 heures · Niveau N1 · Juin 2026</p><p>Bienvenue.</p><p>Vous n&#x27;avez pas besoin d&#x27;être un expert.
+Juste de la curiosité et l&#x27;envie d&#x27;apprendre.</p><p>Pas de prérequis · Pas de panique</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>L&#x27;informatique, c&#x27;est logique.</h2><p>Pas magique.</p><p>Chaque panne a une cause. Chaque cause a une solution.
+Dans 4 heures, vous saurez poser les bonnes questions et trouver les bonnes réponses.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Au programme de cette séance — 4 heures, 6 blocs</h2><p>01 — Qu&#x27;est-ce qu&#x27;un PC ?</p><p>CPU · RAM · Disque · Carte mère · OS</p><p>02 — Les 4 familles</p><p>Desktop · Laptop · Serveur · Tablette</p><p>03 — La mémoire expliquée</p><p>RAM vs Stockage · L&#x27;analogie bureau/armoire</p><p>04 — Windows et l&#x27;OS</p><p>Pourquoi Windows 11 · Autres OS · Rôle de l&#x27;OS</p><p>05 — VirtualBox + CPU-Z</p><p>Créer sa VM · Lire les specs matérielles</p><p>06 — Métier et méthode</p><p>N1 vs N2 · 5 questions · Vocabulaire terrain</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>Un ordinateur — Entrées, traitement, sorties</h2><p>ENTRÉES
+(Input)</p><p>Clavier · Souris
+Micro · Webcam
+Souris · Manette</p><p>TRAITEMENT
+(CPU)</p><p>Le processeur calcule
+en quelques nanosecondes
+Milliards d&#x27;opérations/sec</p><p>MÉMOIRE
+(RAM)</p><p>Stockage temporaire
+des données en cours
+S&#x27;efface à l&#x27;extinction</p><p>SORTIES
+(Output)</p><p>Écran · Haut-parleurs
+Imprimante · USB
+Réseau</p><p>▶</p><p>▶</p><p>▶</p><p>Le disque dur (HDD/SSD) stocke TOUT de façon permanente. Il interagit avec le CPU via la RAM.</p><p>CPU = Central Processing Unit · RAM = Random Access Memory · I/O = Input/Output</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Les composants internes — Rôle de chacun</h2><p>Carte mère (Motherboard)</p><p>La plateforme centrale. Tous les composants s&#x27;y connectent.
+Format ATX / mATX / ITX. Détermine la compatibilité de tout le reste.</p><p>CPU (Processeur)</p><p>Cerveau du PC. Exécute les instructions. Intel (Core i3/i5/i7/i9) ou AMD (Ryzen).
+Fréquence en GHz + nombre de cœurs = performance.</p><p>RAM (Mémoire vive)</p><p>Mémoire de travail temporaire. DDR4 ou DDR5. En GB.
+Insuffisante → PC lent. S&#x27;efface à chaque extinction.</p><p>SSD / HDD (Stockage)</p><p>Stockage permanent. SSD = rapide (flash). HDD = lent (mécanique).
+Windows + programmes + vos fichiers vivent ici.</p><p>Alimentation (PSU)</p><p>Convertit le 220V AC en tensions DC utilisables (12V, 5V, 3.3V).
+Trop faible = instabilité. Toujours choisir une marque fiable.</p><p>Carte graphique (GPU)</p><p>Traite l&#x27;affichage vidéo. Intégrée (CPU) ou dédiée (NVIDIA/AMD).
+Essentielle pour jeux et montage vidéo.</p><p>Pour diagnostiquer un PC : identifier d&#x27;abord quel composant est en cause</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Les 4 familles de PC — Ce que vous croiserez en support</h2><p>PC de bureau
+(Desktop)</p><p>Tour ou compact.
+Composants accessibles et
+remplaçables facilement.
+Standard en PME.
+Le plus simple à réparer.</p><p>Points clés :</p><p>RAM facile à upgrader</p><p>Alimentation remplaçable</p><p>Nettoyage physique aisé</p><p>Port PCIe pour GPU dédié</p><p>PC portable
+(Laptop)</p><p>Tout-en-un compact.
+Composants souvent soudés.
+Ventilation limitée.
+Surchauffe fréquente.
+Batterie à surveiller.</p><p>Points clés :</p><p>RAM parfois soudée</p><p>Nettoyage + difficile</p><p>Chargeur = composant clé</p><p>Grilles d&#x27;aération critiques</p><p>Serveur</p><p>Fonctionne 24h/24.
+Ultra-puissant et fiable.
+Fournit des services réseau.
+Doubles alim. + RAM ECC.
+N1 ne touche pas.</p><p>Points clés :</p><p>Escalade N3 toujours</p><p>Format rack 1U/2U/4U</p><p>Redondance matérielle</p><p>Accès via console KVM</p><p>Tablette / 2-en-1</p><p>Écran tactile intégré.
+Stockage eMMC limité.
+Composants soudés.
+Support = logiciel.
+Peu de réparation HW.</p><p>Points clés :</p><p>Wi-Fi, compte, apps</p><p>No de repair physique</p><p>Android ou Windows</p><p>Surface Pro = 2-en-1</p><p>En N1-N2 : 80 % du temps sur Desktop et Laptop · Serveur = escalade N3</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>La RAM — Mémoire de travail temporaire</h2><p>Définition :</p><p>La RAM (Random Access Memory) est la mémoire où le CPU place temporairement
+les données qu&#x27;il utilise activement. C&#x27;est comme un bureau de travail :
+rapide, accessible immédiatement — mais qui se vide entièrement à chaque extinction.</p><p>Pourquoi c&#x27;est important :</p><p>RAM insuffisante</p><p>Le PC utilise le disque comme RAM (swap) → 50× plus lent</p><p>RAM saturée</p><p>Symptôme : PC lent, application qui freeze, erreur mémoire</p><p>Plus de RAM</p><p>Permet plus d&#x27;applications ouvertes simultanément</p><p>Type DDR</p><p>DDR4 (PC anciens) ou DDR5 (PC récents) — incompatibles entre eux</p><p>CHIFFRES CLÉS — RAM</p><p>4 GB</p><p>Minimum Windows 11 — souvent trop juste</p><p>8 GB</p><p>Standard bureautique — acceptable</p><p>16 GB</p><p>Recommandé 2024 — confortable</p><p>32 GB+</p><p>Montage vidéo / développement / jeu AAA</p><p>DDR4 3200</p><p>Standard des PC 2017-2022</p><p>DDR5 4800+</p><p>Standard des PC 2022+ (Intel 12e gen+)</p><p>Diagnostic rapide : Task Manager → onglet Performances → Mémoire → voir % utilisation</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 8</div><h2>Le stockage — Permanent, rapide ou lent ?</h2><table class="samo-table"><thead><tr><th>Critère</th><th>HDD (mécanique)</th><th>SSD SATA</th><th>SSD NVMe PCIe 4.0</th></tr></thead><tbody><tr><td>Vitesse lecture</td><td>~150 Mo/s</td><td>~550 Mo/s</td><td>~7 000 Mo/s</td></tr><tr><td>Vitesse écriture</td><td>~120 Mo/s</td><td>~500 Mo/s</td><td>~6 500 Mo/s</td></tr><tr><td>Temps démarrage</td><td>60-120 sec</td><td>10-20 sec</td><td>5-10 sec</td></tr><tr><td>Résistance choc</td><td>Fragile (pièces mobiles)</td><td>Résistant</td><td>Résistant</td></tr><tr><td>Bruit</td><td>Clic / bourdonnement</td><td>Silencieux</td><td>Silencieux</td></tr><tr><td>Prix/Go</td><td>Le moins cher</td><td>Intermédiaire</td><td>Le plus cher</td></tr></tbody></table><p>Recommandation terrain 2024 : SSD NVMe minimum pour tout nouveau PC · Migration HDD→SSD = upgrade le plus impactant.</p><p>CrystalDiskInfo (gratuit) → vérifier la santé S.M.A.R.T. de n&#x27;importe quel disque</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>RAM vs Stockage — L&#x27;analogie qui clarifie tout pour vos clients</h2><p>💼  LA RAM = Votre bureau de travail</p><p>Word en cours  │  Chrome × 12 onglets  │  Excel  │  Teams  │  Spotify  │  ...</p><p>Rapide</p><p>Temporaire</p><p>S&#x27;efface à extinction</p><p>Bureau TROP PETIT → vous ne pouvez pas ouvrir tous vos dossiers.
+
+RAM INSUFFISANTE → Windows utilise le disque comme mémoire de secours
+(le &#x27;fichier d&#x27;échange&#x27;) → 50 fois plus lent → PC qui rame.</p><p>🗄️  LE DISQUE = Votre armoire permanente</p><p>📁 Projets 2024</p><p>📁 Photos famille</p><p>💿 Windows 11</p><p>📦 Applications installées</p><p>📄 Mes Documents</p><p>Persiste après extinction · Vos fichiers = dans l&#x27;armoire</p><p>RAM = bureau de travail (temporaire) · Disque = armoire (permanent) · Les deux sont nécessaires</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>Le CPU — Comment lire les performances d&#x27;un processeur</h2><p>Savoir lire les specs CPU vous permet de donner une recommandation terrain rapide.</p><p>Fréquence</p><p>Fréquence (GHz)</p><p>Vitesse de chaque cœur. Plus c&#x27;est élevé, plus chaque tâche individuelle est rapide.
+Limite : la fréquence max est bridée thermiquement.</p><p>Ex : Intel i5-12400 : 2.5 GHz base / 4.4 GHz boost</p><p>Nombredecoeurs</p><p>Nombre de cœurs</p><p>Capacité à faire plusieurs choses en parallèle (multitâche).
+6 cœurs = peut traiter 6 tâches simultanées sans ralentissement.</p><p>Ex : i5-12400 : 6 cœurs / 12 threads (HyperThreading)</p><p>Cache</p><p>Cache (L1/L2/L3)</p><p>Mémoire ultra-rapide intégrée au CPU. Le CPU cherche ici avant d&#x27;aller en RAM.
+Grand cache = moins d&#x27;attente = performances meilleures.</p><p>Ex : i5-12400 : 18 MB de cache L3</p><p>TDP</p><p>TDP (Watts)</p><p>Consommation énergétique et chaleur produite. Important pour le choix du ventirad.
+PC portable : CPU basse conso (15-28W). Desktop : 65W à 125W.</p><p>Ex : i5-12400 : 65W TDP → ventirad stock suffisant</p><p>CPU-Z (gratuit cpuid.com) → onglet CPU → voir fréquence, cœurs, cache en temps réel</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>La carte mère — Tout s&#x27;y connecte</h2><p>Socket CPU</p><p>Accueille le processeur. Intel LGA 1700 ≠ AMD AM5 — incompatibles.</p><p>💡 Toujours vérifier la compatibilité socket avant d&#x27;acheter un CPU.</p><p>Slots RAM (DIMM)</p><p>2 à 4 emplacements pour les barrettes DDR4/DDR5. Couleurs : slots A et B.</p><p>💡 Insérer en A2 si 1 barrette · A2+B2 si 2 barrettes (Dual Channel).</p><p>Slots PCIe</p><p>Connecteurs pour GPU, cartes réseau, SSD M.2 en x16, x4, x1.</p><p>💡 PCIe 4.0 &gt; PCIe 3.0 — vérifier la génération pour NVMe rapide.</p><p>Ports SATA</p><p>Connectent les SSD 2.5&quot; et HDD. 4 à 6 ports par carte mère.</p><p>💡 Chaque port = 1 disque maximum. Câble SATA + alimentation.</p><p>Connecteurs panneau</p><p>Bouton power, reset, LEDs, USB frontal — câbles du boîtier.</p><p>💡 Référence : manuel de la carte mère pour le pinout exact.</p><p>BIOS/UEFI</p><p>Firmware qui démarre avant Windows. Configure boot, overclock, XMP.</p><p>💡 Accès : F2, Suppr ou F10 selon la marque au démarrage.</p><p>CPU-Z onglet Mainboard : fabricant, modèle, version du BIOS — infos essentielles pour le support</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><div class="placeholder-box"><h3>📷 CPU-Z — Votre première fenêtre sur le matériel</h3><p>[ Screenshot ] Interface CPU-Z — Onglets CPU · Memory · Mainboard · SPD</p><p>Insérer ici : screenshot CPU-Z ouvert sur vos propres specs</p><p>Montrer aux apprenants : CPU model · RAM total · DDR type · Mainboard maker</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>Exercice : ouvrir CPU-Z sur votre VM → noter CPU, RAM (type + MHz + dual channel ?), carte mère.</p><p>cpuid.com/softwares/cpu-z.html — Gratuit · Sans adware · 2.5 MB</p></div></div>
+<div class="slide table-slide"><div class="slide-number">Slide 13</div><h2>Le système d&#x27;exploitation — Le chef d&#x27;orchestre logiciel</h2><table class="samo-table"><thead><tr><th>OS</th><th>Part marché</th><th>Coût</th><th>Usage principal</th><th>En support N1</th></tr></thead><tbody><tr><td>Windows 11</td><td>~72 % desktop</td><td>Inclus PC / payant</td><td>PME, particuliers, entreprises</td><td>Oui — c&#x27;est notre focus</td></tr><tr><td>Windows 10</td><td>~20 % desktop</td><td>Inclus PC / payant</td><td>Parcs anciens PME</td><td>Oui — support jusqu&#x27;oct 2025</td></tr><tr><td>macOS</td><td>~15 % global</td><td>Matériel Apple inclus</td><td>Créatifs, design, devs</td><td>Rarement — support logiciel</td></tr><tr><td>Linux Ubuntu</td><td>~3 % desktop</td><td>Gratuit</td><td>Serveurs, devs, sysadmins</td><td>Connaître l&#x27;existence</td></tr><tr><td>Android/iOS</td><td>Mobiles</td><td>Gratuit (inclus)</td><td>Smartphones, tablettes</td><td>Wi-Fi, compte, apps seulement</td></tr></tbody></table><p>L&#x27;OS fait le lien entre le matériel (CPU, RAM, disque) et les logiciels (Word, Chrome...).</p><p>Cette formation se concentre sur Windows 10/11 — représente 90 %+ du support en PME québécoise</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 14</div><h2>VirtualBox — Créer votre environnement de travail</h2><p>Une VM (machine virtuelle) = un PC entier simulé dans votre PC. Tout casser dans la VM = aucun risque sur votre vrai PC.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Télécharger VirtualBox</span><div class="step-note">virtualbox.org → Download → Choisir Windows Hosts</div><div class="step-note">⚡ Gratuit, open source, ~105 MB</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Télécharger l&#x27;ISO Windows 11</span><div class="step-note">microsoft.com/software-download/windows11 → Télécharger l&#x27;image disque (ISO)</div><div class="step-note">⚡ Gratuit et légal — ~5.8 GB</div></div><div class="step"><span class="step-num">03</span><span class="step-label">Créer une nouvelle VM</span><div class="step-note">VirtualBox → Nouvelle → Nom : &#x27;Pratique S1&#x27;
+Type : Microsoft Windows → Version : Windows 11 (64-bit)</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Configurer la mémoire</span><div class="step-note">Mémoire vive : 4096 MB minimum (50 % de votre RAM)
+Processeurs : 2 minimum</div><div class="step-note">⚡ Ne jamais dépasser 60 % de votre RAM réelle</div></div><div class="step"><span class="step-num">05</span><span class="step-label">Créer le disque virtuel</span><div class="step-note">Créer un disque VDI → Dynamiquement alloué → 50 GB</div><div class="step-note">⚡ VDI = disque virtuel dans un fichier sur votre vrai disque</div></div><div class="step"><span class="step-num">06</span><span class="step-label">Démarrer et installer</span><div class="step-note">Démarrer la VM → Insérer l&#x27;ISO → Suivre l&#x27;installation</div><div class="step-note">⚡ Durée : 20-40 min selon votre PC</div><div class="step-note">Snapshot VirtualBox : Machine → Prendre un instantané → sauvegarder l&#x27;état → toujours revenir en arrière</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>VirtualBox — Interface et configuration à connaître</h2><p>La VM sera votre lab pour toutes les séances suivantes — snapshots avant chaque exercice risqué.</p><p>Extension Pack VirtualBox = USB 3.0 + audio + webcam — optionnel mais pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>VOCABULAIRE ESSENTIEL — 18 termes à maîtriser dès aujourd&#x27;hui</h2><p>CPU</p><p>Processeur — cerveau du PC</p><p>RAM</p><p>Mémoire temporaire de travail</p><p>SSD/HDD</p><p>Stockage permanent des données</p><p>DDR4/DDR5</p><p>Type de RAM — incompatibles entre eux</p><p>BIOS/UEFI</p><p>Logiciel qui démarre avant Windows</p><p>Driver</p><p>Pilote d&#x27;un composant matériel</p><p>BSOD</p><p>Écran bleu de mort — crash Windows</p><p>N1/N2</p><p>Niveaux de support informatique</p><p>Ticket</p><p>Rapport écrit d&#x27;une intervention</p><p>VM</p><p>Machine virtuelle — PC simulé</p><p>DNS</p><p>Annuaire Internet — traduit noms→IP</p><p>DHCP</p><p>Attribution automatique des adresses IP</p><p>Ping</p><p>Test de connectivité réseau</p><p>GPT/MBR</p><p>Schéma de partition d&#x27;un disque</p><p>TPM</p><p>Puce de sécurité requise par W11</p><p>S.M.A.R.T.</p><p>Indicateur de santé d&#x27;un disque</p><p>PCIe</p><p>Bus interne pour GPU, SSD M.2, cartes</p><p>Dual Channel</p><p>2 barrettes RAM en parallèle = +30 %</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>Les 5 questions — À poser AVANT de toucher à quoi que ce soit</h2><p>Ces questions s&#x27;appliquent à chaque panne, chaque appel client, de la S1 à la fin de votre carrière.</p><p>1</p><p>Qu&#x27;est-ce qui ne fonctionne pas ?</p><p>Écouter les mots EXACTS du client. Ne pas interpréter.
+Reformuler pour confirmer : &#x27;Si je comprends bien, le problème c&#x27;est...&#x27;</p><p>2</p><p>Depuis quand exactement ?</p><p>Récent (1-2 jours) = changement récent probable.
+Ancien (semaines/mois) = usure progressive ou évolution lente.</p><p>3</p><p>Vous avez changé quelque chose ?</p><p>Mise à jour Windows, nouvelle installation, déplacement du PC, chute.
+Les clients oublient souvent — relancer avec : &#x27;Même une petite chose ?&#x27;</p><p>4</p><p>Ce PC seulement ou d&#x27;autres aussi ?</p><p>Tous les PC du bureau = réseau ou serveur → escalade possible.
+Un seul PC = problème localisé sur ce PC spécifiquement.</p><p>5</p><p>Vous pouvez me montrer le problème en direct ?</p><p>Voir par soi-même est irremplaçable. Ne jamais diagnostiquer uniquement
+sur une description. Partage d&#x27;écran ou déplacement si nécessaire.</p><p>Le redémarrage résout 50 % des cas — mais le poser avant les 5 questions = perdre de l&#x27;information</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 18</div><h2>Technicien support — Comprendre les niveaux N1, N2, N3</h2><table class="samo-table"><thead><tr><th>Compétence / Tâche</th><th>N1 — Support utilisateur</th><th>N2 — Technicien confirmé</th><th>N3 — Expert infrastructure</th></tr></thead><tbody><tr><td>Périphériques (clavier, souris)</td><td>✓ Résout en autonomie</td><td>✓ Référence rapide</td><td>—</td></tr><tr><td>Windows — dépannage courant</td><td>✓ Résout en autonomie</td><td>✓ Résout + documente</td><td>—</td></tr><tr><td>Installation OS / drivers</td><td>✓ avec procédure</td><td>✓ en autonomie totale</td><td>—</td></tr><tr><td>Réseau de base (IP, Wi-Fi)</td><td>✓ diagnostic de base</td><td>✓ config complète</td><td>✓ architecture</td></tr><tr><td>Active Directory / GPO</td><td>— escalade N2</td><td>✓ Résout</td><td>✓ Conçoit</td></tr><tr><td>Serveurs Windows / Linux</td><td>— escalade N2/N3</td><td>partiel</td><td>✓ Résout</td></tr><tr><td>Azure / Cloud / VMware</td><td>— escalade</td><td>partiel</td><td>✓ Résout et conçoit</td></tr></tbody></table><p>Cette formation → N1 opérationnel. N2 en 6-12 mois terrain. N3 = plusieurs années de spécialisation.</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>Les 15 séances — Votre feuille de route complète</h2><p>S1</p><p>Introduction</p><p>Vous êtes ici</p><p>← Vous êtes ici</p><p>S2</p><p>Carte mère · CPU</p><p>Composants</p><p>Séance 2</p><p>S3</p><p>Mémoire · Stockage</p><p>DDR · SSD</p><p>Séance 3</p><p>S4</p><p>Périphériques</p><p>USB · HDMI</p><p>Séance 4</p><p>S5</p><p>Install. Windows 11</p><p>Rufus · TPM</p><p>Séance 5</p><p>S6</p><p>Config. Système</p><p>CMD · SFC</p><p>Séance 6</p><p>S7</p><p>Sécurité</p><p>Phishing · 2FA</p><p>Séance 7</p><p>S8</p><p>Réseau</p><p>TCP/IP · DNS</p><p>Séance 8</p><p>S9</p><p>Partage réseau</p><p>OneDrive · SMB</p><p>Séance 9</p><p>S10</p><p>Maintenance</p><p>HWMonitor</p><p>Séance 10</p><p>S11</p><p>Sauvegarde</p><p>3-2-1 · Recuva</p><p>Séance 11</p><p>S12</p><p>Support distance</p><p>AnyDesk · RDP</p><p>Séance 12</p><p>S13</p><p>Diag. avancé</p><p>BSOD · SFC</p><p>Séance 13</p><p>S14</p><p>10 pannes</p><p>Référence</p><p>Séance 14</p><p>S15</p><p>Synthèse</p><p>Simulation</p><p>Séance 15</p><p>60 heures · 15 séances · N1 opérationnel en fin de formation · SAMO Formation</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Outils à installer — Votre kit de technicien pour la formation</h2><p>VirtualBox</p><p>virtualbox.org</p><p>Créer la VM Windows 11 pour pratiquer</p><p>Gratuit · Open source · 105 MB</p><p>CPU-Z</p><p>cpuid.com</p><p>Lire CPU, RAM, carte mère, slots</p><p>Gratuit · 2 MB · Sans adware</p><p>CrystalDiskInfo</p><p>crystalmark.info</p><p>Santé S.M.A.R.T. des disques</p><p>Gratuit · 5 MB · Portable</p><p>HWMonitor</p><p>cpuid.com</p><p>Températures CPU/GPU/SSD en live</p><p>Gratuit · 2 MB · Léger</p><p>Malwarebytes Free</p><p>malwarebytes.com</p><p>Scan antimalware complémentaire</p><p>Gratuit · Essai 14j → version Free</p><p>WinDirStat</p><p>windirstat.net</p><p>Voir qui mange l&#x27;espace disque</p><p>Gratuit · 1 MB · Ultra léger</p><p>Tous gratuits · Télécharger depuis les sites officiels uniquement · Pas de versions &#x27;crackées&#x27;</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 21</div><h2>À vous de jouer.</h2><p>Installez VirtualBox et explorez votre PC avec CPU-Z.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Installer VirtualBox</span><div class="step-note">virtualbox.org → Download → Installer</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Télécharger l&#x27;ISO Windows 11</span><div class="step-note">microsoft.com/software-download/windows11</div><div class="step-note">25 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">Créer la VM Windows 11</span><div class="step-note">Nouvelle VM → 4 GB RAM → 50 GB VDI → démarrer</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Installer CPU-Z + l&#x27;explorer</span><div class="step-note">cpuid.com → noter CPU, RAM, carte mère</div><div class="step-note">10 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences Séance 1 — À valider avec votre formateur</h2><p>☐</p><p>J&#x27;explique la différence entre RAM et stockage avec l&#x27;analogie bureau/armoire.</p><p>☐</p><p>Je nomme les 6 composants internes principaux et j&#x27;explique le rôle de chacun.</p><p>☐</p><p>Je distingue les 4 familles de PC (Desktop, Laptop, Serveur, Tablette).</p><p>☐</p><p>Je connais et utilise les 5 questions de diagnostic avant toute intervention.</p><p>☐</p><p>J&#x27;ai installé VirtualBox et créé une VM Windows 11 fonctionnelle avec snapshot.</p><p>☐</p><p>J&#x27;ai utilisé CPU-Z pour identifier CPU, RAM (type + MHz + dual channel ?), carte mère.</p><p>☐</p><p>Je connais les 18 termes du vocabulaire essentiel de cette séance.</p><p>☐</p><p>Je distingue N1 et N2 et comprends mon positionnement actuel dans la formation.</p><p>FIN DE LA SÉANCE 1 — Cocher chaque point avec votre formateur avant de terminer</p></div>
+</body>
+</html>

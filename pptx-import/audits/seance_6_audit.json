@@ -1,0 +1,27 @@
+{
+  "file": "Seance_6.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "BLOC 2 — VOCABULAIRE DES MENACES"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "BLOC 2 — DIAGNOSTIC"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "BLOC 5 — OUTILS"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "BLOC 6 — ≈ 35 MINUTES"
+    }
+  ],
+  "integrity_score": 92
+}

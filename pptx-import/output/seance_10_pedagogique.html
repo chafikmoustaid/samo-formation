@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 10 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Températures</h2><p>Seuils critiques</p><p>Nettoyage</p><p>Physique + logiciel</p><p>Démarrage</p><p>Optimisation</p><p>SSD/HDD</p><p>TRIM · Défrag</p><p>Rapport</p><p>Documentation</p><p>Maintenance</p><p>Préventive</p><p>HWMONITOR · NETTOYAGE · TEMPÉRATURES · DÉMARRAGE · SSD/HDD</p><p>SÉANCE 10 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Un PC entretenu</h2><p>dure deux fois plus longtemps.</p><p>La poussière est la cause n°1 de surchauffe, qui est la cause n°1 de panne matérielle prématurée.
+Une bombe d&#x27;air comprimé vaut 8 $ et peut sauver un PC à 1000 $. Cette séance vous donne le calendrier et les procédures pour ne plus jamais dépanner en urgence ce qui aurait pu être évité.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Au programme — 4 heures, 6 blocs</h2><p>01 — Températures</p><p>Seuils CPU/GPU/SSD · HWMonitor · Stress test rapide</p><p>02 — Nettoyage physique</p><p>Bombe d&#x27;air · Sécurité antistatique · Fréquence</p><p>03 — Nettoyage logiciel</p><p>%temp% · Nettoyage de disque · Stockage</p><p>04 — Démarrage &amp; perf</p><p>Programmes au démarrage · Task Manager</p><p>05 — SSD vs HDD</p><p>TRIM · Défragmentation · S.M.A.R.T.</p><p>06 — Rapport &amp; calendrier</p><p>Planification · Documentation d&#x27;intervention</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>CONTEXTE</h2><p>Pourquoi la maintenance préventive change tout</p><p>En PME, 70 % des pannes matérielles évitables proviennent d&#x27;un manque d&#x27;entretien simple, pas d&#x27;une défaillance de fabrication.</p><p>Sans maintenance</p><p>Poussière s&#x27;accumule sur 12-24 mois
+Ventilateurs ralentissent, température monte
+Composants throttlent puis se dégradent
+Panne soudaine = urgence + coût élevé
+Disque plein = ralentissements progressifs</p><p>Coût moyen d&#x27;une panne évitable : 150-400 $</p><p>Avec maintenance</p><p>Nettoyage physique tous les 3-6 mois
+Températures surveillées mensuellement
+Disque et démarrage optimisés chaque semaine
+Durée de vie du matériel doublée
+Interventions planifiées, pas d&#x27;urgence</p><p>Coût de la maintenance : 8-15 $ + 30 min/trimestre</p><p>Votre rôle technicien</p><p>Établir un calendrier par client/parc
+Documenter chaque intervention
+Sensibiliser le client sans l&#x27;inquiéter
+Détecter les signes avant la panne
+Proposer un contrat de maintenance</p><p>La maintenance préventive fidélise la clientèle</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 5</div><h2>SURVEILLANCE THERMIQUE</h2><table class="samo-table"><thead><tr><th>Composant</th><th>Température</th><th>Statut</th><th>Action</th></tr></thead><tbody><tr><td>CPU au repos</td><td>&lt; 45°C</td><td>NORMAL</td><td>Aucune action</td></tr><tr><td>CPU sous charge</td><td>&lt; 75°C</td><td>NORMAL</td><td>Surveiller</td></tr><tr><td>CPU sous charge</td><td>75-90°C</td><td>ATTENTION</td><td>Nettoyer le ventilateur</td></tr><tr><td>CPU sous charge</td><td>&gt; 90°C</td><td>CRITIQUE</td><td>Nettoyage urgent + pâte thermique</td></tr><tr><td>GPU sous charge</td><td>&lt; 85°C</td><td>NORMAL</td><td>Aucune action</td></tr><tr><td>GPU sous charge</td><td>&gt; 95°C</td><td>CRITIQUE</td><td>Nettoyage urgent</td></tr><tr><td>SSD</td><td>&lt; 50°C</td><td>NORMAL</td><td>Ventilation suffisante</td></tr><tr><td>SSD</td><td>&gt; 60°C</td><td>ATTENTION</td><td>Vérifier ventilation du châssis</td></tr></tbody></table><p>Températures — Seuils à connaître pour chaque composant</p><p>HWMonitor gratuit sur cpuid.com · Colonne « Max » = pire surchauffe enregistrée depuis le démarrage</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>OUTIL DE RÉFÉRENCE</h2><p>HWMonitor — Surveiller les températures en temps réel</p><p>Points clés à repérer</p><p>Colonne Value = température actuelle
+Colonne Min = valeur la plus basse enregistrée
+Colonne Max = pire surchauffe — la plus utile en diagnostic
+Section distincte par composant (CPU, GPU, disques)
+Gratuit, portable, aucune installation requise</p><p>Stress test rapide : ouvrir 10 onglets Chrome HD + lancer une vidéo → surveiller la montée des températures pendant 5 minutes.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>OUTILS DE DIAGNOSTIC</h2><p>Outils de surveillance et de stress test</p><p>HWMonitor</p><p>Températures tous composants
+Tensions et vitesses ventilateurs
+Historique Min/Max de la session</p><p>Diagnostic quotidien de base</p><p>CrystalDiskInfo</p><p>Santé S.M.A.R.T. du disque
+Statut : Bon / Attention / Mauvais
+Heures de fonctionnement totales</p><p>Anticiper une panne de disque</p><p>Prime95 / MemTest86</p><p>Stress test CPU intensif (Prime95)
+Test RAM hors Windows (MemTest86)
+Utiliser seulement si soupçon de défaut</p><p>Réservé au diagnostic approfondi — voir Séance 13</p><p>Règle terrain : un stress test de 10-15 minutes suffit pour confirmer un problème thermique</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>PROCÉDURE TERRAIN</h2><p>Nettoyage physique — Sécurité et méthode</p><p>Avant de commencer</p><p>1</p><p>Éteindre et débrancher</p><p>PC hors tension, câble d&#x27;alimentation retiré, batterie retirée si portable amovible.</p><p>2</p><p>Bracelet antistatique</p><p>Se relier à la masse du boîtier avant de toucher un composant.</p><p>3</p><p>Espace de travail dégagé</p><p>Surface non conductrice, bonne luminosité, boîtes pour les vis.</p><p>Pendant le nettoyage</p><p>4</p><p>Bombe d&#x27;air par salves courtes</p><p>2-3 secondes maximum, incliner la bombe droite pour éviter le gaz liquide.</p><p>5</p><p>Ventilateurs, grilles, filtres</p><p>Nettoyer CPU, GPU, alimentation et tous les filtres à poussière du boîtier.</p><p>6</p><p>Ne jamais faire tourner à la main</p><p>Un ventilateur qui tourne librement peut générer du courant et endommager la carte mère.</p><p>Bombe d&#x27;air comprimé ≈ 8 $ en quincaillerie · Ne jamais souffler avec la bouche (humidité) · Fréquence : tous les 3-6 mois</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>PROCÉDURE TERRAIN</h2><p>Nettoyage logiciel — Routine hebdomadaire</p><p>Fichiers temporaires</p><p>1</p><p>%temp%</p><p>Win+R → %temp% → Ctrl+A → Suppr (ignorer les fichiers verrouillés).</p><p>2</p><p>Nettoyage de disque Windows</p><p>Rechercher « Nettoyage de disque » → cocher « Nettoyer les fichiers système ».</p><p>3</p><p>Stockage Windows</p><p>Paramètres → Stockage → Fichiers temporaires → Supprimer les fichiers.</p><p>Applications et navigateurs</p><p>4</p><p>Logiciels inutilisés</p><p>Désinstaller tout programme non utilisé depuis 6 mois (Panneau de config).</p><p>5</p><p>Cache navigateur</p><p>Chrome/Edge → Paramètres → Confidentialité → Effacer les données de navigation.</p><p>6</p><p>Storage Sense</p><p>Activer le nettoyage automatique récurrent dans Paramètres → Stockage.</p><p>Cette routine hebdomadaire prend moins de 10 minutes et évite l&#x27;accumulation qui ralentit le PC</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 10</div><h2>PERFORMANCE</h2><table class="samo-table"><thead><tr><th>Programme</th><th>Impact</th><th>Recommandation</th><th>Risque</th></tr></thead><tbody><tr><td>Spotify</td><td>Élevé</td><td>Désactiver — ouvrir manuellement</td><td>Sans risque</td></tr><tr><td>OneDrive</td><td>Moyen</td><td>Garder si utilisé quotidiennement</td><td>Au choix</td></tr><tr><td>Teams</td><td>Élevé</td><td>Désactiver si pas en permanence</td><td>Sans risque</td></tr><tr><td>Discord</td><td>Élevé</td><td>Désactiver — lancer manuellement</td><td>Sans risque</td></tr><tr><td>Antivirus</td><td>—</td><td>NE JAMAIS désactiver</td><td>Ne pas toucher</td></tr><tr><td>Windows Defender</td><td>—</td><td>NE JAMAIS désactiver</td><td>Ne pas toucher</td></tr></tbody></table><p>Démarrage Windows — Optimiser ce qui se lance</p><p>Chaque programme qui se lance au démarrage coûte 2 à 8 secondes. En désactiver 5 = 10 à 40 secondes gagnées.</p><p>Task Manager → onglet Démarrage → clic droit → Désactiver · Désactiver ≠ désinstaller</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><div class="placeholder-box"><h3>📷 OUTIL INTÉGRÉ</h3><p>Gestionnaire des tâches — Les 3 onglets essentiels</p><p>[ Capture d&#x27;écran ]</p><p>Insérer ici : capture du Gestionnaire des tâches, onglet Performance ou Démarrage</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre capture</p><p>Points clés à repérer</p><p>Performance : CPU, RAM, disque, réseau en temps réel
+Processus : trier par consommation pour trouver le coupable
+Démarrage : impact classé Faible/Moyen/Élevé par Windows
+Ctrl+Maj+Échap = raccourci direct sans passer par Ctrl+Alt+Suppr</p><p>Un processus à 90-100 % CPU en continu (hors jeu/rendu) est presque toujours le symptôme à investiguer en premier.</p><p>Task Manager est le premier réflexe avant tout outil tiers</p></div></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>STOCKAGE</h2><p>Maintenance SSD — Ce qui compte vraiment</p><p>TRIM</p><p>Commande qui informe le SSD des blocs libres
+Activé par défaut sur Windows 10/11
+Vérifier : fsutil behavior query DisableDeleteNotify
+Résultat 0 = TRIM actif (normal)</p><p>Espace libre</p><p>Garder minimum 10-15 % d&#x27;espace libre
+Un SSD trop plein ralentit fortement
+Éviter la défragmentation — inutile et usure inutile
+Storage Sense pour libérer automatiquement</p><p>Firmware et santé</p><p>Mettre à jour le firmware via l&#x27;outil du fabricant
+CrystalDiskInfo pour vérifier l&#x27;état S.M.A.R.T.
+Surveiller le compteur d&#x27;écritures totales (TBW)
+Remplacer si statut « Mauvais » dans CrystalDiskInfo</p><p>Ne JAMAIS défragmenter un SSD — cela use le disque sans aucun bénéfice de performance</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>STOCKAGE</h2><p>Maintenance HDD — Défragmentation et S.M.A.R.T.</p><p>Défragmentation</p><p>Nécessaire uniquement sur disques mécaniques (HDD)
+Réorganise les fichiers fragmentés pour un accès plus rapide
+Outil intégré : « Défragmenter et optimiser les lecteurs »
+Windows planifie automatiquement une fois par semaine</p><p>S.M.A.R.T.</p><p>Self-Monitoring, Analysis and Reporting Technology
+CrystalDiskInfo affiche le statut en un coup d&#x27;œil
+Secteurs défectueux réattribués = signal d&#x27;alerte
+Sauvegarder immédiatement si statut « Attention »</p><p>Signes de panne imminente</p><p>Bruits de clic répétés (« click of death »)
+Ralentissements soudains à la lecture/écriture
+Fichiers corrompus ou disparitions inexpliquées
+Toujours sauvegarder avant de diagnostiquer plus loin</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 14</div><h2>PLANIFICATION</h2><table class="samo-table"><thead><tr><th>Fréquence</th><th>Actions</th><th>Durée</th><th>Responsable</th></tr></thead><tbody><tr><td>Hebdomadaire</td><td>%temp% · Nettoyage de disque · Redémarrage complet</td><td>10 min</td><td>Client / auto</td></tr><tr><td>Mensuel</td><td>Windows Update · Scan antivirus complet · Vérif. espace disque</td><td>20 min</td><td>Client / technicien</td></tr><tr><td>Trimestriel</td><td>Nettoyage physique complet · HWMonitor · Démarrage</td><td>45 min</td><td>Technicien</td></tr><tr><td>Annuel</td><td>Pâte thermique · Vérif. RAM/SSD S.M.A.R.T. · Rapport complet</td><td>90 min</td><td>Technicien</td></tr></tbody></table><p>Calendrier de maintenance — Fréquences recommandées</p><p>Un contrat de maintenance trimestriel est un argument de vente solide pour la fidélisation client</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>INTERVENTION AVANCÉE</h2><p>Pâte thermique — Quand et comment la renouveler</p><p>Quand intervenir ?</p><p>1</p><p>CPU &gt; 90°C malgré nettoyage</p><p>Si le nettoyage physique ne fait pas baisser la température, la pâte est probablement sèche.</p><p>2</p><p>PC de plus de 3-4 ans</p><p>La pâte thermique d&#x27;origine se dégrade naturellement avec le temps et la chaleur.</p><p>3</p><p>Après un nettoyage sans effet</p><p>Si les températures restent hautes après un nettoyage complet des ventilateurs.</p><p>Procédure de remplacement</p><p>4</p><p>Retirer le dissipateur</p><p>Débrancher, retirer les vis en croix, soulever délicatement sans tordre la carte.</p><p>5</p><p>Nettoyer l&#x27;ancienne pâte</p><p>Alcool isopropylique 90%+ et chiffon non pelucheux, des deux surfaces.</p><p>6</p><p>Appliquer la nouvelle pâte</p><p>Un point de la taille d&#x27;un grain de riz au centre, remonter le dissipateur.</p><p>Pâte recommandée : Arctic MX-4 ou équivalent · Ne jamais trop en mettre — l&#x27;excès isole plutôt que conduit</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>MISE EN PRATIQUE</h2><p>Cas pratiques — Séance 10</p><p>Cas 1 — Denise, ex-comptable</p><p>Le PC redémarre seul depuis 2 semaines, surtout l&#x27;après-midi quand il fait chaud dans le bureau.</p><p>Quelle est la première hypothèse à tester ?
+Quel outil utiliser en premier ?
+Que faire si les températures sont critiques ?</p><p>Piste : HWMonitor → températures CPU → nettoyage physique</p><p>Cas 2 — Yannick, ex-électricien</p><p>Le PC met 3 minutes à devenir utilisable après l&#x27;ouverture de session depuis la dernière mise à jour.</p><p>Quel outil pour identifier la cause ?
+Quels programmes désactiver en premier ?
+Quelle action ne jamais faire ?</p><p>Piste : Task Manager → Démarrage → jamais désactiver l&#x27;antivirus</p><p>Cas 3 — Amélie, ex-styliste</p><p>CrystalDiskInfo affiche « Attention » sur le disque principal contenant tous les fichiers client.</p><p>Quelle est la priorité absolue ?
+Quel est le risque si on ignore l&#x27;alerte ?
+Quelle solution proposer au client ?</p><p>Piste : Sauvegarde immédiate → planifier le remplacement du disque</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>VOCABULAIRE MAINTENANCE — 18 termes essentiels</h2><p>HWMonitor</p><p>Logiciel de surveillance des températures et tensions</p><p>Throttling</p><p>Auto-réduction de performance pour éviter la surchauffe</p><p>TRIM</p><p>Commande qui optimise l&#x27;effacement sur SSD</p><p>S.M.A.R.T.</p><p>Système d&#x27;auto-diagnostic de santé du disque</p><p>TBW</p><p>Total Bytes Written — usure totale d&#x27;un SSD</p><p>Défragmentation</p><p>Réorganisation des fichiers — HDD uniquement</p><p>Storage Sense</p><p>Nettoyage automatique intégré à Windows</p><p>Pâte thermique</p><p>Interface conductrice CPU-dissipateur</p><p>Bracelet antistatique</p><p>Protection contre les décharges électrostatiques</p><p>Print Spooler</p><p>Service Windows gérant la file d&#x27;impression</p><p>%temp%</p><p>Raccourci vers le dossier de fichiers temporaires</p><p>Task Manager</p><p>Gestionnaire des tâches — CPU/RAM/démarrage</p><p>CrystalDiskInfo</p><p>Outil gratuit de lecture S.M.A.R.T.</p><p>Prime95</p><p>Outil de stress test CPU intensif</p><p>Cat6</p><p>Câble réseau supportant 10 Gb/s</p><p>Impact démarrage</p><p>Classement Windows Faible/Moyen/Élevé</p><p>Nettoyage de disque</p><p>Outil Windows de suppression fichiers système</p><p>Rapport de maintenance</p><p>Document tracant chaque intervention</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>BOÎTE À OUTILS</h2><p>Commandes et outils — Maintenance préventive</p><p>Toutes accessibles via Win+R ou Win+X → Terminal</p><p>cleanmgr</p><p>Ouvrir l&#x27;outil Nettoyage de disque Windows</p><p>dfrgui</p><p>Ouvrir l&#x27;outil de défragmentation (HDD uniquement)</p><p>fsutil behavior query DisableDeleteNotify</p><p>Vérifier que TRIM est actif (0 = actif)</p><p>%temp%</p><p>Accès direct au dossier des fichiers temporaires</p><p>powercfg /energy</p><p>Rapport d&#x27;énergie et diagnostics de performance</p><p>wmic diskdrive get model,status</p><p>Lister les disques et leur statut</p><p>Get-Process | Sort CPU -desc | select -First 10</p><p>PowerShell : top 10 processus consommateurs</p><p>taskmgr</p><p>Ouvrir directement le Gestionnaire des tâches</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 19</div><h2>À vous de jouer.</h2><p>Appliquez la routine de maintenance sur votre VM et votre PC réel.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Relever les températures</span><div class="step-note">Installer HWMonitor → noter CPU/GPU/SSD au repos → comparer aux seuils.</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Nettoyage logiciel complet</span><div class="step-note">%temp% → Nettoyage de disque → cache navigateur → Storage Sense.</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">Auditer le démarrage</span><div class="step-note">Task Manager → onglet Démarrage → identifier 3 candidats à désactiver.</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Vérifier la santé du disque</span><div class="step-note">Installer CrystalDiskInfo → lire le statut S.M.A.R.T. → interpréter.</div><div class="step-note">10 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>DOCUMENTATION</h2><p>Rapport de maintenance — Ce qu&#x27;il faut toujours documenter</p><p>Avant intervention</p><p>Date et client
+Températures relevées (CPU/GPU/SSD)
+Espace disque libre
+Nombre de programmes au démarrage</p><p>Actions réalisées</p><p>Nettoyage physique effectué ou non
+Nettoyage logiciel effectué
+Programmes désactivés au démarrage
+Pâte thermique renouvelée ou non</p><p>Après intervention</p><p>Nouvelles températures relevées
+Amélioration observée (temps de démarrage, etc.)
+Recommandations pour le client
+Date de la prochaine intervention prévue</p><p>Un rapport clair justifie la valeur du service et facilite le suivi d&#x27;un client sur plusieurs années</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>BONNES PRATIQUES</h2><p>Erreurs fréquentes en maintenance — À ne jamais faire</p><p>Erreurs physiques</p><p>Souffler avec la bouche (humidité + salive)
+Faire tourner un ventilateur à la main
+Nettoyer sans bracelet antistatique
+Utiliser un aspirateur directement sur les composants</p><p>Risque : décharge électrostatique, casse</p><p>Erreurs logicielles</p><p>Désactiver l&#x27;antivirus « pour aller plus vite »
+Défragmenter un SSD
+Supprimer des fichiers système sans vérifier
+Ignorer une alerte S.M.A.R.T. « Attention »</p><p>Risque : sécurité compromise, perte de données</p><p>Erreurs relationnelles</p><p>Ne pas expliquer au client ce qui a été fait
+Oublier de documenter l&#x27;intervention
+Ne pas proposer de suivi ou de contrat
+Minimiser un signal d&#x27;alerte pour rassurer</p><p>Risque : perte de confiance du client</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences Séance 10 — À valider avec votre formateur</h2><p>Je lis HWMonitor et connais les seuils de température CPU/GPU/SSD.</p><p>Je nettoie physiquement un PC avec une bombe d&#x27;air, en sécurité et sans toucher les ventilateurs à la main.</p><p>Je nettoie %temp% et utilise le Nettoyage de disque Windows en routine hebdomadaire.</p><p>Je sais quand renouveler la pâte thermique (CPU &gt; 90°C malgré nettoyage).</p><p>Je gère les programmes au démarrage via le Gestionnaire des tâches sans désactiver la sécurité.</p><p>Je distingue la maintenance SSD (TRIM, espace libre) de celle du HDD (défragmentation, S.M.A.R.T.).</p><p>Je rédige un rapport de maintenance complet après chaque intervention.</p><p>FIN DE LA SÉANCE 10 — Valider avec votre formateur</p></div>
+</body>
+</html>

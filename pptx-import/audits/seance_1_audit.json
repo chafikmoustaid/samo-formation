@@ -1,0 +1,37 @@
+{
+  "file": "Seance_1_Introduction_Informatique.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Le stockage — Permanent, rapide ou lent ?"
+    },
+    {
+      "slide": 12,
+      "type": "PLACEHOLDER",
+      "title": "CPU-Z — Votre première fenêtre sur le matériel"
+    },
+    {
+      "slide": 13,
+      "type": "TABLE",
+      "title": "Le système d'exploitation — Le chef d'orchestre logiciel"
+    },
+    {
+      "slide": 14,
+      "type": "TIMELINE",
+      "title": "VirtualBox — Créer votre environnement de travail"
+    },
+    {
+      "slide": 18,
+      "type": "TABLE",
+      "title": "Technicien support — Comprendre les niveaux N1, N2, N3"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 82
+}

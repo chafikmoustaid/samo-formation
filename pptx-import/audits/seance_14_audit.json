@@ -1,0 +1,22 @@
+{
+  "file": "Seance_14.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "VUE D'ENSEMBLE"
+    },
+    {
+      "slide": 16,
+      "type": "TABLE",
+      "title": "RÉFÉRENCE RAPIDE"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 94
+}

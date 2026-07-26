@@ -1,0 +1,27 @@
+{
+  "file": "Seance_8.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 7,
+      "type": "TABLE",
+      "title": null
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Wi-Fi — Fréquences, protocoles et diagnostic"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Architecture réseau typique PME — Schéma annoté"
+    },
+    {
+      "slide": 19,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 86
+}

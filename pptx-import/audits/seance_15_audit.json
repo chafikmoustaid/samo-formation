@@ -1,0 +1,22 @@
+{
+  "file": "Seance_15.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "BILAN DU PARCOURS"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "BILAN DU PARCOURS"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE",
+      "title": "À vous de jouer — pour de vrai."
+    }
+  ],
+  "integrity_score": 94
+}

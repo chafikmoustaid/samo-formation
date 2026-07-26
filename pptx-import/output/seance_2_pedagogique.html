@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 2 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>TECHNIQUE SUPPORT INFORMATIQUE</h2><p>Séance 2 : Carte mère, CPU et RAM — Diagnostic matériel approfondi</p><p>Manuel de Formation Maître  —  Durée : 4 Heures  —  Niveau 1–2  —  Formation distance individuelle Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>📋  SOMMAIRE DE LA SÉANCE 2</h2><p>BLOC 1</p><p>Rappel logique Séance 1</p><p>BLOC 2</p><p>Carte mère : rôle et diagnostic</p><p>BLOC 3</p><p>Processeur (CPU) : fonctionnement et pannes</p><p>BLOC 4</p><p>RAM : cause n°1 des pannes aléatoires</p><p>BLOC 5</p><p>Méthodologie ciblée</p><p>BLOC 6</p><p>Exercices pratiques de synthèse</p><p>Chaque bloc s&#x27;imbrique logiquement pour former la grille de diagnostic du technicien.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>BLOC 1</h2><p>Rappel logique de la Séance 1</p><p>≈ 10 minutes</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>🔁  UN PC NE TOMBE PAS EN PANNE « AU HASARD »</h2><p>Pour quelqu&#x27;un qui vient du bâtiment, de la mécanique ou du camionnage :</p><p>🔧  Analogie métier :</p><p>Mécanique : voiture qui ne démarre pas → vérifier la batterie AVANT le moteur.
+Bâtiment : prise HS → contrôler le disjoncteur AVANT de changer la prise.
+Informatique : même logique — on remonte toujours depuis la source d&#x27;énergie.</p><p>🎓  Objectif :</p><p>Identifier à quelle ÉTAPE exacte un PC s&#x27;est arrêté.
+Observer, puis tester méthodiquement. Jamais supposer.</p><p>Plus de 70 % des pannes surviennent AVANT le chargement de Windows.
+→ Pas besoin de connaître Windows pour les diagnostiquer !</p><p>Schéma pédagogique — SAMO Formation</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>BLOC 2</h2><p>Carte mère : rôle réel et diagnostic</p><p>≈ 1 heure</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>🖥️  RÔLE TECHNIQUE RÉEL DE LA CARTE MÈRE</h2><p>Imaginez la carte mère comme le coffret électrique principal d&#x27;un chantier : elle distribue le courant, relie tous les composants et coordonne le démarrage. Sans elle, rien ne fonctionne.</p><p>1</p><p>Distribution électrique</p><p>Achemine les tensions ATX (+12V, +5V, +3.3V) vers chaque composant via les VRM. Comme un tableau électrique qui distribue le courant sur un chantier.</p><p>2</p><p>Bus de communication</p><p>Fait transiter les données entre CPU, RAM, GPU et stockage. Comme les tuyaux hydrauliques d&#x27;un engin de chantier.</p><p>3</p><p>Initialisation matérielle</p><p>Lance le POST (auto-test) via le BIOS/UEFI au démarrage. Vérifie que tout est présent avant de passer la main à Windows.</p><p>4</p><p>Contrôleurs intégrés</p><p>Gère directement les ports USB, SATA, PCIe, audio et réseau. Tout ce qu&#x27;on branche passe obligatoirement par elle.</p><p>Si la carte mère est défaillante → le PC peut ne pas s&#x27;allumer, s&#x27;allumer partiellement ou démarrer aléatoirement. On la suspecte EN DERNIER (après PSU, RAM et CPU).</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>🔍  ANATOMIE D&#x27;UNE CARTE MÈRE — Vue complète (1/2)</h2><p>Carte mère ATX — Vue complète — Photo réelle</p><p>1   : Le connecteur d&#x27;alimentation du processeur.2   : L&#x27;emplacement du processeur.3   : Les modules de mémoire RAM.4   : Le connecteur d&#x27;alimentation de la carte mère.5   : Le connecteur pour les prises usb 3.0 en façade.6   : Les connecteurs SATA pour les périphériques tiers (disque dur, lecteur cd).7   : Les connecteurs du boîtier, bouton power, reset, led d&#x27;activité disque.8   : La pile bios.9   : Les port PCIE X8/X16.10 : Les ports PCIE X4.11 : Le port type</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>🔍  ANATOMIE D&#x27;UNE CARTE MÈRE — Zoom Slots RAM (2/2)</h2><p>Règles d&#x27;installation RAM :</p><p>Dual Channel :</p><p>Insérer 2 barrettes identiques dans les slots de MÊME couleur.
+Ex : A1 + B1, ou A2 + B2.
+Gain de performance : +15 à 30 % sur les calculs mémoire.
+Les couleurs sur la carte mère vous guident.</p><p>⚠️  Règle de départ :</p><p>Si vous avez UNE seule barrette pour tester →
+toujours commencer par le slot A2 (ou DIMM2).
+C&#x27;est le slot prioritaire indiqué dans le manuel.</p><p>À reconnaître :</p><p>Verrou blanc/noir en bas de chaque slot.
+Détrompeur → empêche la mauvaise insertion.
+Broches dorées visibles = contacts électriques.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 9</div><h2>⚠️  SYMPTÔMES TYPIQUES DE PANNE CARTE MÈRE</h2><table class="samo-table"><thead><tr><th>Ce que dit l&#x27;usager</th><th>Symptôme technique</th><th>Cible d&#x27;investigation</th></tr></thead><tbody><tr><td>« Ça ne s&#x27;allume plus du tout »</td><td>Aucun voyant, aucun mouvement</td><td>Carte mère ou PSU</td></tr><tr><td>« Ça s&#x27;allume mais rien ne s&#x27;affiche »</td><td>Voyants instables / clignotants</td><td>Problème électrique PCB</td></tr><tr><td>« Mes clés USB ne marchent plus »</td><td>Ports USB hors service</td><td>Contrôleur USB endommagé</td></tr><tr><td>« Messages bizarres au démarrage »</td><td>POST incohérent ou bips</td><td>Chipset ou BIOS corrompu</td></tr><tr><td>« Ça démarre une fois sur deux »</td><td>Démarrage aléatoire</td><td>Carte mère instable</td></tr></tbody></table><p>Ces symptômes correspondent à ce qu&#x27;un non-technicien dit au téléphone. Notre rôle : traduire en piste de diagnostic.</p><p>⚠️  Piège classique du débutant :</p><p>La carte mère est SOUVENT accusée à tort. Avant de conclure, vous devez avoir PROUVÉ que PSU, RAM et CPU sont sains.
+Un remplacement prématuré coûte cher et ne résout rien si le vrai coupable est une barrette RAM à 30 $.
+Règle absolue : la carte mère est toujours suspecte EN DERNIER.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>BLOC 3</h2><p>Processeur (CPU) : fonctionnement et pannes</p><p>≈ 45 minutes</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>⚙️  Le Processeur CPU</h2><p>Processeur — Vue dessus — Photo réelle cours SAMO Formation</p><p>Séance 2 — Teams</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 12</div><h2>⚙️  LE PROCESSEUR (CPU) — LE CERVEAU DE LA MACHINE</h2><table class="samo-table"><thead><tr><th>Notion</th><th>Explication simple</th></tr></thead><tbody><tr><td>Cœurs (cores)</td><td>Nombre d&#x27;ouvriers en parallèle. 6 cœurs = 6 tâches simultanées.</td></tr><tr><td>Threads</td><td>Chaque ouvrier peut faire 2 choses à la fois → optimisation.</td></tr><tr><td>Fréquence (GHz)</td><td>Vitesse réelle. 3,5 GHz = 3,5 milliards d&#x27;opérations/seconde.</td></tr><tr><td>Throttling</td><td>Auto-ralentissement si trop chaud — protection avant la coupure.</td></tr></tbody></table><p>Le CPU c&#x27;est comme le conducteur d&#x27;un camion : il reçoit les instructions, prend les décisions et coordonne tout.
+Sans lui, la machine est une carcasse vide. Mal refroidi, il ralentit ou s&#x27;éteint d&#x27;urgence sans prévenir.</p><p>Notions essentielles :</p><p>Ce qu&#x27;il faut savoir en terrain :</p><p>💡  À retenir :</p><p>Un CPU défectueux d&#x27;usine : rarissime (moins de 1 % des cas).
+Un CPU mal refroidi ou dont la pâte thermique est desséchée : très fréquent sur les vieux PC — c&#x27;est LA cause n°1 de lenteur inexpliquée.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>🌡️  PROTECTION THERMIQUE — PC portable ouvert</h2><p>PC portable ouvert — ventilateur CPU, dissipateur et câbles visibles — Photo réelle</p><p>Séance 2 — Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>🌡️  PROTECTION THERMIQUE DU CPU — CE QUI SE PASSE VRAIMENT</h2><p>Schéma pédagogique SAMO Formation — températures indicatives</p><p>Checklist de vérification CPU :</p><p>🔍  Les 4 vérifications obligatoires :</p><p>1. Le ventilateur CPU tourne-t-il normalement ?
+   (Vérifier visuellement en démarrant le PC)
+2. La pâte thermique est-elle présente et non craquelée ?
+   (Gris argenté entre CPU et dissipateur)
+3. Le dissipateur est-il bien fixé ?
+   (4 clips plastiques ou 4 vis — aucun jeu)
+4. Lire la température en direct avec HWMonitor (gratuit).
+   → Normal : &lt; 75°C en charge  |  &lt; 45°C au repos.</p><p>⛔  Thermal Shutdown :</p><p>Coupure nette à 100°C — le CPU se protège.
+L&#x27;usager dit : « Mon PC s&#x27;éteint tout seul sans raison ».
+→ Vérifier TOUJOURS le refroidissement en premier.</p><p>⚠️  Thermal Throttling :</p><p>Ralentissement automatique pour refroidir.
+L&#x27;usager dit : « Mon PC est devenu très lent ».
+→ Même cause : refroidissement insuffisant.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>BLOC 4</h2><p>RAM : cause n°1 des pannes aléatoires</p><p>≈ 1 heure</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>Les Générations de RAM — Évolution et identification</h2><p>Évolution des générations RAM : SIMM 30p → DIMM 168p → DDR → DDR2 → DDR3 → DDR4 — Photo réelle</p><p>Séance 2 — Teams</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 17</div><h2>💾  RÔLE EXACT DE LA RAM — POURQUOI ELLE TOMBE EN PANNE</h2><table class="samo-table"><thead><tr><th>Type</th><th>Contexte</th></tr></thead><tbody><tr><td>DDR3</td><td>PC avant 2015 — parcs reconditionnés</td></tr><tr><td>DDR4</td><td>Standard entreprises 2015–2024</td></tr><tr><td>DDR5</td><td>PC récents (Intel 12e gén+)</td></tr><tr><td>SO-DIMM</td><td>Format compact pour ordinateurs portables</td></tr></tbody></table><p>La RAM (mémoire vive) = la table de travail du CPU. Elle stocke TEMPORAIREMENT les données en cours d&#x27;utilisation. Au redémarrage, tout est effacé.
+Analogie bâtiment : la RAM c&#x27;est l&#x27;établi. Si l&#x27;établi est instable, tout ce qu&#x27;on pose dessus tombe. RAM instable = pannes aléatoires impossibles à prévoir.</p><p>Types de RAM et contexte terrain :</p><p>Symptômes RAM fréquents en terrain :</p><p>👉  Règle terrain absolue — testez la RAM EN PREMIER :</p><p>Une panne RAM peut imiter une panne carte mère, CPU ou même Windows. C&#x27;est LE premier test systématique à effectuer.</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>🔌  IDENTIFIER LA RAM — Barrettes SO-DIMM DDR2/DDR3/DDR4</h2><p>Barrettes RAM SO-DIMM — de haut en bas : DDR2 2 Go, DDR3L 4 Go, DDR4 4 Go — Photo réelle</p><p>Séance 2 — Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>🔌  IDENTIFIER LA RAM — Barrettes installées sur carte mère</h2><p>RAM G.Skill Trident Z installée dans les slots d&#x27;une carte mère — broches et verrous visibles — Photo réelle</p><p>Séance 2 — Teams</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 20</div><h2>🔌  IDENTIFIER LA RAM PHYSIQUEMENT — DDR3 / DDR4 / DDR5</h2><table class="samo-table"><thead><tr><th>Génération</th><th>Broches</th><th>Position du détrompeur</th><th>Tension</th><th>Fréquences typiques</th><th>Usage courant</th></tr></thead><tbody><tr><td>DDR3</td><td>240</td><td>Fortement excentré vers la gauche</td><td>1.50 V</td><td>1 066 – 1 600 MHz</td><td>PC avant 2015</td></tr><tr><td>DDR4</td><td>288</td><td>Légèrement décalé centre-gauche</td><td>1.20 V</td><td>2 133 – 3 200 MHz</td><td>Standard entreprises</td></tr><tr><td>DDR5</td><td>288 + PMIC</td><td>Au centre, encoche plus profonde</td><td>1.10 V</td><td>4 800 – 7 200 MHz</td><td>PC récents (2022+)</td></tr></tbody></table><p>Sur Teams, le formateur vous montre des barrettes réelles. Voici le comparatif pour identifier la génération en un coup d&#x27;œil.</p><p>⚠️  Incompatibilité physique absolue :</p><p>DDR3 / DDR4 / DDR5 sont INCOMPATIBLES entre elles — le détrompeur (encoche) empêche physiquement la mauvaise insertion.
+Si ça force lors de l&#x27;insertion → c&#x27;est le mauvais type. Ne JAMAIS forcer un composant électronique.</p><p>💡  Comment identifier sans regarder l&#x27;étiquette :</p><p>Comptez les broches dorées en bas : 240 = DDR3  |  288 = DDR4 ou DDR5
+Regardez la position de l&#x27;encoche (détrompeur) : à gauche = DDR3  |  centre-gauche = DDR4  |  centre = DDR5
+La tension d&#x27;alimentation est aussi marquée sur l&#x27;étiquette collée sur la barrette : 1.50V = DDR3 / 1.20V = DDR4 / 1.10V = DDR5</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>🚨  DIAGNOSTIC &amp; PANNES DE RAM — MÉTHODE PAS À PAS</h2><p>Une défaillance RAM bloque immédiatement le cycle de démarrage à l&#x27;étape 4 (POST mémoire). Le PC ne peut pas continuer vers Windows.</p><p>Signaux physiques d&#x27;alerte :</p><p>🔊  Bips répétés longs et stridents
+    La carte mère envoie un code sonore d&#x27;erreur RAM.
+    → Série de 3 bips longs = RAM non détectée.
+ 
+🔴  Q-LED DRAM allumée fixe (orange ou rouge)
+    Visible sur la carte mère à côté des slots RAM.
+    → Indique exactement l&#x27;étape bloquée.
+ 
+📺  Écran totalement noir au démarrage
+    Le POST n&#x27;atteint pas l&#x27;étape affichage vidéo.
+    → Ni logo, ni texte, ni bip unique de validation.</p><p>Méthode d&#x27;isolation — étape par étape :</p><p>1</p><p>Éteindre PC + procédure décharge résiduelle</p><p>2</p><p>Retirer TOUTES les barrettes RAM du PC</p><p>3</p><p>Souffler les slots à la bombe d&#x27;air sec</p><p>4</p><p>Insérer UNE SEULE barrette dans le slot A2</p><p>5</p><p>Démarrer → si OK, tester les autres une à une</p><p>6</p><p>Si toujours KO → tester dans un autre slot</p><p>🧰  Test approfondi : MemTest86 (gratuit — www.memtest86.com)</p><p>→ Créer une clé USB bootable avec Rufus (rufus.ie) — démarrer dessus, totalement SANS Windows.
+→ Lancer au moins 2 passes complètes (1 à 3 h selon quantité RAM).
+→ Un seul bloc rouge = barrette défectueuse → remplacement immédiat.</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>BLOC 5</h2><p>Méthodologie ciblée Carte mère / CPU / RAM</p><p>≈ 20 minutes</p></div>
+<div class="slide"><div class="slide-number">Slide 23</div><h2>✅  ORDRE STRICT DE TEST — LA MÉTHODE QUI NE TROMPE PAS</h2><p>RÈGLE ABSOLUE : Ne jamais changer plusieurs éléments à la fois.
+Si vous changez RAM + câble + BIOS en même temps → vous ne saurez jamais lequel a résolu le problème.
+→ UNE seule variable à la fois. Toujours noter chaque action dans le ticket support.</p><p>1</p><p>⚡  PSU — Alimentation</p><p>Vérifier les tensions ATX avec un multimètre. Câbles ATX 24 broches et EPS 8 broches bien branchés. Voyant arrière allumé ?</p><p>Pas de voyant → PSU mort ou prise HS</p><p>2</p><p>💾  RAM — Une seule barrette</p><p>Retirer toutes les barrettes → 1 seule dans slot A2. Souffler les slots à l&#x27;air sec. Tester une par une si plusieurs barrettes.</p><p>Cause n°1 — toujours commencer ICI</p><p>3</p><p>🔧  Reset BIOS / pile CMOS</p><p>Retirer pile CR2032 → attendre 30 s → remettre. Reconfigurer l&#x27;heure et l&#x27;ordre de boot. Résout 30 % des pannes de démarrage.</p><p>Résout les bugs de config BIOS</p><p>4</p><p>⚙️  CPU — Refroidissement</p><p>Vérifier pâte thermique, rotation ventilateur, fixation dissipateur (4 clips). Lire températures avec HWMonitor (logiciel gratuit).</p><p>Shutdown = CPU surchauffé</p><p>5</p><p>🖥️  Carte mère — EN DERNIER</p><p>Suspecter UNIQUEMENT après avoir prouvé que les 4 étapes précédentes sont saines. Remplacement coûteux et irréversible.</p><p>Coûteux — ne pas précipiter</p></div>
+<div class="slide"><div class="slide-number">Slide 24</div><h2>BLOC 6</h2><p>Exercices pratiques de synthèse</p><p>30 minutes</p></div>
+<div class="slide"><div class="slide-number">Slide 25</div><h2>🧪  CAS PRATIQUES — CE QUE VOUS VERREZ EN VRAI SUR TEAMS</h2><p>Le formateur joue le rôle de l&#x27;usager et partage son écran. Vous posez les questions et guidez le diagnostic.</p><p>🧪  Exercice 1 — Écran Noir Total</p><p>Mise en situation :</p><p>Gilles, ancien maçon, appuie sur Power. Les ventilateurs tournent à fond en continu. L&#x27;écran affiche « Pas de signal ». Aucun bip sonore.</p><p>Questions :</p><p>Quelle étape est bloquée dans la chaîne ?
+Quels composants sont suspects ?
+Quel est le premier test à réaliser ?</p><p>💡  Indice : ventilateurs = PSU OK</p><p>🧪  Exercice 2 — Redémarrages Aléatoires</p><p>Mise en situation :</p><p>Mohammed, ancien camionneur, dit que son PC redémarre tout seul, surtout quand il regarde des vidéos ou fait plusieurs choses à la fois.</p><p>Questions :</p><p>Causes les plus probables ?
+Quel test simple effectuer en premier ?</p><p>💡  Indice : chaleur ou RAM ?</p><p>🧪  Exercice 3 — Bips au Démarrage</p><p>Mise en situation :</p><p>Jean-Pierre, ancien électricien, entend 3 bips longs répétés à chaque démarrage. Écran noir. Ça a commencé après avoir nettoyé son PC.</p><p>Questions :</p><p>Quel composant est concerné ?
+Quelle action immédiate réaliser ?</p><p>💡  Indice : nettoyage + bips = ?</p></div>
+<div class="slide"><div class="slide-number">Slide 26</div><h2>✅  CORRIGÉS — RAISONNEMENT DU TECHNICIEN</h2><p>Le raisonnement compte autant que la réponse — expliquez POURQUOI à votre formateur sur Teams.</p><p>1</p><p>Écran noir + ventilateurs à fond</p><p>→</p><p>RAM / GPU / BIOS</p><p>1. Vérifier Q-LED.  2. Retirer RAM → 1 barrette slot A2.  3. Si KO → câble vidéo.  4. Reset BIOS.</p><p>🧠  Pourquoi ? — Ventilateurs = PSU OK (étape 1 passée). Pas d&#x27;image = bloqué étapes 2–4.</p><p>2</p><p>Redémarrages aléatoires en charge</p><p>→</p><p>RAM / CPU / PSU</p><p>1. Tester RAM une barrette.  2. Vérifier temp CPU avec HWMonitor.  3. Mesurer tensions PSU.</p><p>🧠  Pourquoi ? — Redémarrage = coupure de protection → thermique ou instabilité mémoire.</p><p>3</p><p>3 bips longs après nettoyage</p><p>→</p><p>RAM mal réinsérée</p><p>1. Éteindre + décharge.  2. Retirer barrettes → souffler slots.  3. Réinsérer 1 seule en A2 — appuyer FORT jusqu&#x27;au clic.</p><p>🧠  Pourquoi ? — Nettoyage = barrette déplacée. 3 bips longs = code POST « mémoire non détectée ».</p><p>Synthèse : Bips → RAM  |  Écran noir → tester depuis étape 2  |  Redémarrages → RAM puis CPU puis PSU. Toujours dans cet ordre.</p></div>
+<div class="slide"><div class="slide-number">Slide 27</div><h2>✅  CHECKLIST OBLIGATOIRE — FIN DE SÉANCE 2</h2><p>Validez mentalement chaque point avec votre formateur sur Teams avant de déclarer la séance terminée :</p><p>J&#x27;identifie visuellement les éléments clés d&#x27;une carte mère : socket, slots RAM, chipset, PCIe, SATA, M.2, pile CMOS, ATX 24 broches.</p><p>Je sais distinguer DDR3 / DDR4 / DDR5 par leur détrompeur physique — et je sais qu&#x27;ils sont incompatibles entre eux.</p><p>Je connais les symptômes d&#x27;une panne carte mère, CPU (thermal shutdown / throttling) et RAM (bips, BSOD, freeze).</p><p>J&#x27;applique l&#x27;ordre STRICT : PSU → RAM → BIOS/CMOS → CPU → Carte mère. Jamais l&#x27;inverse.</p><p>Je ne change jamais plusieurs composants en même temps — une seule variable à la fois.</p><p>Je sais interpréter les bips POST et les Q-LEDs de diagnostic (DRAM, CPU, VGA, BOOT).</p><p>Je connais MemTest86 (memtest86.com) comme outil de test RAM indépendant de tout système d&#x27;exploitation.</p><p>FIN DE LA SÉANCE 2 — SUPPORT VALIDÉ</p></div>
+</body>
+</html>

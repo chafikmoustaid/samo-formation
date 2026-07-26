@@ -1,0 +1,32 @@
+{
+  "file": "Seance_12.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "CHOIX DE L'OUTIL"
+    },
+    {
+      "slide": 8,
+      "type": "PLACEHOLDER",
+      "title": "PREMIÈRE CONNEXION"
+    },
+    {
+      "slide": 10,
+      "type": "PLACEHOLDER",
+      "title": "CONFIGURATION"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "COMPARATIF SÉCURITÉ"
+    },
+    {
+      "slide": 21,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 78
+}

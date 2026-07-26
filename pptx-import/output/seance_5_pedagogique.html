@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 5 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Déploiement pas à pas, contournement des restrictions matérielles et gestion avancée de la configuration système</h2><p>Type : Manuel de Formation Maître   |   Durée : 4 Heures   |   Niveau : 1–2   |   Format : Individuel Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>📋 SOMMAIRE DE LA SÉANCE 5</h2><p>1. Phase Pré-Installation</p><p>• Prérequis officiels et exigences Microsoft (TPM 2.0, Secure Boot).
+• Création de médias bootables avancés avec Rufus et Ventoy.
+• Sélection de la méthode : Clean Install vs Mise à niveau.
+• Maîtrise des schémas de démarrage et table de partitions (UEFI, GPT).</p><p>2. Phase Déploiement &amp; Configuration</p><p>• Processus pas à pas de l&#x27;installation et partitionnement GPT.
+• Configuration de l&#x27;expérience initiale (OOBE) sans compte Microsoft.
+• Post-installation : Pilotes, sécurité BitLocker et diagnostics.
+• Ateliers de cas réels et résolution des écrans bleus (BSOD).</p><p>Objectif : Maîtriser le déploiement de Windows 11 et résoudre 95% des blocages d&#x27;installation.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>💻 LES PRÉREQUIS OFFICIELS WINDOWS 11</h2><p>Spécifications Minimales</p><p>Processeur : 1 GHz ou plus, 2 cœurs ou plus, compatible 64 bits (Intel Gen 8+ / AMD Zen 2+).
+Mémoire Vive (RAM) : 4 Go minimum (8 Go fortement recommandés).
+Stockage : 64 Go ou plus (SSD obligatoire pour une bonne expérience).
+Firmware : UEFI, compatible Secure Boot.</p><p>Le Point Critique : La Sécurité</p><p>TPM (Trusted Platform Module) : Version 2.0 obligatoire. Puce physique ou firmware fTPM/Intel PTT.
+Carte Graphique : Compatible DirectX 12 avec pilote WDDM 2.0.
+Écran : Haute définition (720p) supérieure à 9&quot; diagonale.</p><p>Diagnostic Pro : Le processeur et le TPM 2.0 constituent 90% des causes d&#x27;incompatibilité signalées par l&#x27;assistant Microsoft.</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>🔒 DÉCODER TPM 2.0 ET SECURE BOOT</h2><p>TPM 2.0 : Qu&#x27;est-ce que c’est ?</p><p>Composant cryptographique sécurisé. Il génère et stocke les clés de chiffrement (ex: BitLocker, Windows Hello) à l&#x27;abri des attaques logicielles directes.</p><p>Secure Boot : Rôle</p><p>Protocole UEFI qui empêche l&#x27;exécution de chargeurs de démarrage ou de pilotes non signés (rootkits) lors de la mise sous tension du PC.</p><p>Pourquoi l&#x27;imposer</p><p>Établir une barrière de sécurité matérielle (Zero Trust). Réduit drastiquement l&#x27;efficacité des malwares au démarrage du système.</p><p>Conseil Tech : Si absent, vérifiez si l&#x27;option Intel PTT ou AMD fTPM est activée dans le BIOS/UEFI.</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>🛠️ RUFUS VS VENTOY : QUEL OUTIL CHOISIR ?</h2><p>Rufus : Le Standard Robuste</p><p>Le concept : Formate une clé USB spécifique pour un seul fichier ISO.
+
+Option Windows To Go : Permet de créer un système Windows exécutable directement depuis la clé USB.
+
+Contournement intégré : Possibilité de cocher des cases pour supprimer l&#x27;exigence de TPM, de Secure Boot et de compte Microsoft en un clic.</p><p>Ventoy : Le Multi-Boot Moderne</p><p>Le concept : Installe Ventoy sur la clé une seule fois, puis glissez-déposez simplement les fichiers ISO.
+
+Avantage majeur : Stocke plusieurs OS sur la même clé (Windows 10, 11, Linux, utilitaires de dépannage).
+
+Contournement : Nécessite l&#x27;injection d&#x27;un fichier de configuration XML (Ventoy.json) pour contourner le TPM.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 6</div><h2>💿 Nouvelle Installation Vs Mise à Niveau</h2><table class="samo-table"><thead><tr><th>Critère</th><th>Clean Install (Installation Propre)</th><th>Mise à niveau (Upgrade)</th></tr></thead><tbody><tr><td>Principe</td><td>Formatage complet du disque système. Remise à zéro totale.</td><td>Migration depuis Windows 10 vers Windows 11.</td></tr><tr><td>Fichiers &amp; Applis</td><td>Tout est effacé (sauvegarde préalable obligatoire).</td><td>Fichiers, paramètres et applications compatibles préservés.</td></tr><tr><td>Stabilité</td><td>Maximale. Élimine les résidus et fichiers corrompus d&#x27;anciens OS.</td><td>Risque de transfert de bugs, pilotes obsolètes ou lenteurs.</td></tr><tr><td>Recommandé</td><td>Nouveau PC sans OS, disque neuf, ou système très ralenti.</td><td>Transition rapide d&#x27;un poste utilisateur opérationnel.</td></tr></tbody></table></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>⚙️ UEFI VS LEGACY BIOS : POURQUOI C&#x27;EST VITAL</h2><p>Legacy BIOS (Hérité)</p><p>Ancien système de démarrage (années 80). Ne gère que les disques partitionnés en MBR (limité à 2 To). Non compatible avec les sécurités Windows 11.</p><p>UEFI (Moderne)</p><p>Interface moderne, rapide et graphique. Obligatoire pour Windows 11. Gère le partitionnement GPT, le démarrage sécurisé et les clés cryptographiques.</p><p>Le Piège au Démarrage</p><p>Si la clé d&#x27;installation est démarrée en mode Legacy alors que le disque est configuré en UEFI (ou vice-versa), l&#x27;installation refuse de continuer.</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>💾 PARTITIONNEMENT : MBR VS GPT</h2><p>128</p><p>PARTITIONS MAX EN GPT</p><p>Les limitations physiques du disque</p><p>MBR (Master Boot Record) : Limité à 4 partitions principales et un maximum de 2 To par disque. Obsolète.
+
+GPT (GUID Partition Table) : Supporte des disques de plus de 9 Zettaoctets (9 milliards de To) et permet jusqu&#x27;à 128 partitions sans recourir aux partitions étendues.</p><p>Rappel de cours : Windows 11 exige obligatoirement GPT pour son disque système afin de pouvoir amorcer en mode UEFI.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>🚀 PROCESSUS D&#x27;INSTALLATION STANDARD</h2><p>1. Boot USB</p><p>Accéder au Boot Menu (F12, F11, Esc) et démarrer sur le média d&#x27;installation.</p><p>2. Clé Produit</p><p>Saisir la clé de licence ou cliquer sur &#x27;Je n&#x27;ai pas  de clé produit&#x27;.</p><p>3. Personnalisé</p><p>Choisir l&#x27;option &#x27;Personnalisé : installer uniquement Windows (avancé)&#x27;.</p><p>4. Partitions</p><p>Supprimer les anciennes partitions pour obtenir un &#x27;Espace non alloué&#x27;.</p><p>5. Copie</p><p>Copie des fichiers sur le SSD suivie d&#x27;un redémarrage automatique du système.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>🌐 LA PHASE DE CONFIGURATION OOBE</h2><p>Choix de la région et du clavier : Sélectionner la disposition linguistique principale (ex: Français AZERTY) et ignorer la seconde disposition si non requise.</p><p>Connexion Réseau Obligatoire : Par défaut, Windows 11 Home/Pro exige une connexion Internet active pour poursuivre la configuration.</p><p>Création de Compte : Microsoft impose l&#x27;usage d&#x27;un compte en ligne (Outlook, Hotmail) pour finaliser l&#x27;initialisation du poste.</p><p>Paramètres de Confidentialité : Désactivez les options de localisation, données de diagnostic complets, identifiant publicitaire pour optimiser les performances.</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>💡 ASTUCE : CRÉER UN COMPTE LOCAL</h2><p>Bypass</p><p>OOBE \ BYPASSNRO</p><p>Contourner l&#x27;obligation de compte en ligne</p><p>Lors de l&#x27;étape de connexion réseau obligatoire, si vous préférez installer le système avec un compte local hors-ligne :
+
+1. Appuyez simultanément sur Shift + F10 pour ouvrir l&#x27;invite de commandes.
+2. Saisissez la commande : OOBE\BYPASSNRO et validez par Entrée.
+3. Le système redémarre. Cliquez sur &#x27;Je n&#x27;ai pas d&#x27;Internet&#x27; pour créer votre compte local d&#x27;administrateur.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>🗄️ GESTION DES PARTITIONS POST-INSTALL</h2><p>Initialisation de disques secondaires : Clic droit sur démarrer &gt; Gestion des disques. Initialiser les nouveaux disques physiques détectés en mode GPT.</p><p>Réduction de volume (Shrink) : Libérer de l&#x27;espace sur la partition C: pour créer une partition distincte dédiée aux données de l&#x27;utilisateur.</p><p>Extension de volume : Possible uniquement si de l&#x27;espace non alloué est situé *immédiatement à droite* de la partition à étendre.</p><p>Le Piège des disques Dynamiques : Ne convertissez pas un disque de base en disque dynamique sous peine de compliquer la récupération de données.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>🔌 GESTION DES PILOTES ET PÉRIPHÉRIQUES</h2><p>Identifier l&#x27;inconnu</p><p>Dans le Gestionnaire de périphériques, repérez les icônes jaunes. Clic droit &gt; Propriétés &gt; Détails &gt; Hardware ID pour identifier le composant exact sur le web.</p><p>Mise à jour Windows</p><p>90% des pilotes génériques et stables s&#x27;installent via Windows Update &gt; Options avancées &gt; Mises à jour facultatives.</p><p>Constructeur (OEM)</p><p>Privilégiez les utilitaires d&#x27;origine constructeur (Dell Command Update, Lenovo Vantage, HP Support Assistant) pour les composants critiques.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>🔄 STRATÉGIES WINDOWS UPDATE</h2><p>Heures d&#x27;activité : Configurez l&#x27;intervalle horaire d&#x27;usage pour interdire au PC de redémarrer automatiquement pendant que l&#x27;utilisateur travaille.</p><p>Interruption temporaire : Possibilité de suspendre les mises à jour jusqu&#x27;à 5 semaines en cas de déploiement critique en entreprise ou réseau limité.</p><p>Optimisation de livraison : Permet au PC de récupérer les packages de mises à jour directement auprès d&#x27;autres PC du réseau local (Peer-to-Peer).</p><p>Mises à jour de qualité vs de fonctionnalités : Les correctifs de sécurité (Qualité) sont mensuels. Les montées de version (Fonctionnalités) sont annuelles.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>OPTIMISATION ET BLOATWARE</h2><p>Éliminer le Superflu (Bloatware)</p><p>Le problème : Windows 11 pré-installe des applications promotionnelles qui encombrent inutilement l&#x27;espace disque.
+
+Méthode manuelle : Désinstaller via Paramètres &gt; Applications installées.
+
+Scripting (Avancé) : Utilisation d&#x27;outils éprouvés (ex: SophiApp, Win11Debloat) pour purger proprement la télémétrie et les packages inutiles.</p><p>Alléger le Démarrage</p><p>Gestionnaire des tâches : Onglet &#x27;Applications de démarrage&#x27;. Désactivez les processus secondaires (ex: Teams, Spotify, OneDrive, etc.).
+
+Effet : Réduit radicalement le temps d&#x27;allumage du PC et l&#x27;allocation de la RAM par défaut au repos.
+
+Rappel de sécurité : Ne désactivez jamais l&#x27;antivirus ni les services et pilotes système vitaux.</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>🛡️ SÉCURITÉ : BITLOCKER &amp; DEFENDER</h2><p>Chiffrement BitLocker</p><p>Protège le contenu du disque en cas de vol du PC. Nécessite une puce TPM fonctionnelle. Sauvegardez la clé de récupération (48 chiffres) hors du PC (Cloud ou USB).</p><p>Windows Defender</p><p>Antivirus natif puissant, léger et transparent. Se désactive automatiquement si un antivirus tiers certifié est installé.</p><p>Isolation du Noyau</p><p>Vérifiez que l&#x27;intégrité de la mémoire est activée (Paramètres &gt; Sécurité des appareils). Empêche l&#x27;injection de code malveillant dans les processus système critiques.</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>📦 SAUVEGARDE ET RESTAURATION</h2><p>Point de restauration : Sauvegarde l&#x27;état du registre et des fichiers système critiques avant l&#x27;installation d&#x27;un pilote ou d&#x27;une mise à jour logicielle.</p><p>Création manuelle : Saisir sysdm.cpl &gt; Protection du système &gt; Activer la protection pour le lecteur C: et cliquer sur Créer.</p><p>Image Système : Outil historique de sauvegarde dans le Panneau de configuration. Permet de cloner l&#x27;intégralité du disque système sur support externe.</p><p>Restauration d&#x27;usine (Reset) : Réinstallation de Windows intégrée à l&#x27;OS. Offre le choix entre conserver les fichiers personnels ou tout effacer.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 18</div><h2>🔍 DIAGNOSTIC DES PANNES D&#x27;INSTALLATION</h2><table class="samo-table"><thead><tr><th>Symptôme</th><th>Origine Probable</th><th>Résolution Technique</th></tr></thead><tbody><tr><td>Ce PC ne peut pas exécuter Win 11</td><td>TPM 2.0 ou Secure Boot désactivé.</td><td>Activer fTPM/PTT dans l&#x27;UEFI, ou reconstruire la clé avec Rufus bypass.</td></tr><tr><td>Aucun disque dur détecté</td><td>Pilote Intel RST (SATA/NVMe RAID) manquant.</td><td>Télécharger le pilote d&#x27;extraction SATA/NVMe OEM et le charger.</td></tr><tr><td>OOBE bloquée sur connexion Internet</td><td>Absence de pilote Wi-Fi/Ethernet natif.</td><td>Appuyer sur Shift+F10, exécuter OOBE\BYPASSNRO pour installer hors ligne.</td></tr><tr><td>Écran bleu (BSOD) au premier boot</td><td>Conflit de pilote ou RAM instable (XMP).</td><td>Désactiver XMP temporairement ou mettre à jour le firmware BIOS.</td></tr></tbody></table></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>CAS PRATIQUES : EXERCICES</h2><p>Cas 1 : PC sans TPM</p><p>Situation : L&#x27;usager veut upgrader son vieux PC i7 de 6e génération vers Win 11.
+
+Action : Comment configurez-vous Rufus pour lui permettre d&#x27;installer l&#x27;OS sans jeter son matériel toujours fonctionnel ?</p><p>Cas 2 : Pas de réseau</p><p>Situation : L&#x27;installateur arrive à l&#x27;étape du réseau en phase OOBE, mais la carte réseau Wi-Fi n&#x27;est pas reconnue par Windows.
+
+Action : Quelle commande d&#x27;invite exécutez-vous pour bypass cette restriction ?</p><p>Cas 3 : Chiffrement</p><p>Situation : L&#x27;utilisateur a formaté son système mais a oublié de désactiver BitLocker avant. Son lecteur de données D: est inaccessible.
+
+Action : Où recherchez-vous la clé de secours ?</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>✅ CHECKLIST DE VALIDATION SÉANCE 5</h2><p>Validation Matérielle : Je sais lister et vérifier les composants obligatoires nécessaires à Windows 11.</p><p>Préparation Média : Je maîtrise Rufus et Ventoy pour outrepasser les blocages si requis par la politique client.</p><p>Partitionnement : Je maîtrise la conversion de disques MBR en GPT et le processus d&#x27;installation propre.</p><p>Bypass Compte : Je sais configurer un compte local hors ligne à l&#x27;étape réseau de l&#x27;OOBE.</p><p>Gestion Système : Je sais déployer les pilotes, nettoyer les bloatwares et configurer la sécurité BitLocker.</p><p>FÉLICITATIONS ! VOUS AVEZ ACQUIS LES COMPÉTENCES TECHNIQUES DE DÉPLOIEMENT WINDOWS 11.</p></div>
+</body>
+</html>

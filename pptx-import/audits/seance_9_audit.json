@@ -1,0 +1,32 @@
+{
+  "file": "Seance_9.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 8,
+      "type": "PLACEHOLDER",
+      "title": "OneDrive — Partage et collaboration"
+    },
+    {
+      "slide": 16,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    },
+    {
+      "slide": 17,
+      "type": "PLACEHOLDER",
+      "title": "OneDrive — Icônes de synchronisation à connaître"
+    },
+    {
+      "slide": 18,
+      "type": "TABLE",
+      "title": "Comparatif — Quelle solution pour quel usage ?"
+    },
+    {
+      "slide": 19,
+      "type": "PLACEHOLDER",
+      "title": "Imprimante réseau — Page de configuration"
+    }
+  ],
+  "integrity_score": 72
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 4 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>⚡</h2><p>Chaîne de</p><p>démarrage</p><p>⚠</p><p>Messages</p><p>d&#x27;erreur</p><p>■</p><p>Écrans bleus</p><p>BSOD</p><p>⟳</p><p>Récupération</p><p>WinRE</p><p>⟲</p><p>Réinstaller</p><p>quand/comment</p><p>Windows</p><p>Démarrage, erreurs, BSOD</p><p>CHAÎNE DE DÉMARRAGE  ·  MESSAGES D&#x27;ERREUR  ·  BSOD  ·  WinRE  ·  RÉINSTALLATION</p><p>SÉANCE 4 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Si Windows affiche quelque chose,</h2><p>le matériel fonctionne déjà.</p><p>Chercher une cause matérielle une fois que Windows s&#x27;affiche = perte de temps. Le diagnostic change de terrain : OS, pilotes, fichiers système, profil.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>PLAN DE LA SÉANCE</h2><p>Au programme — 4 heures, 6 blocs</p><p>01 — Où commence Windows</p><p>Chaîne de démarrage, avant/après OS</p><p>20 min</p><p>02 — Phases &amp; messages d&#x27;erreur</p><p>Bootloader, Kernel, Session, erreurs types</p><p>60 min</p><p>03 — Écrans bleus (BSOD)</p><p>Stop codes, fichiers .sys, causes fréquentes</p><p>50 min</p><p>04 — Vocabulaire diagnostic</p><p>18 termes essentiels du dépannage Windows</p><p>15 min</p><p>05 — WinRE &amp; réinstallation</p><p>5 outils de récupération, quand réinstaller</p><p>60 min</p><p>06 — Cas pratiques &amp; validation</p><p>3 mises en situation + checklist finale</p><p>35 min</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>CONTEXTE</h2><p>Pourquoi ce sujet change tout pour un technicien</p><p>70 %+</p><p>des pannes surviennent AVANT que Windows n&#x27;apparaisse à l&#x27;écran</p><p>50 %</p><p>du diagnostic est déjà fait quand on lit le message d&#x27;erreur mot pour mot</p><p>3</p><p>méthodes différentes pour accéder à WinRE selon l&#x27;état du PC</p><p>Un technicien qui sait SITUER une panne dans la chaîne de démarrage gagne un temps précieux : il ne cherche jamais un problème matériel une fois Windows chargé, et ne perd jamais de temps à réinstaller avant d&#x27;avoir lu et compris le message exact.</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>BLOC 1 — ≈ 20 MINUTES</h2><p>La chaîne de démarrage complète</p><p>Alimentation  →  Carte mère  →  CPU  →  RAM  →  BIOS  →  Stockage  →  WINDOWS</p><p>👉  Si Windows affiche quelque chose → le matériel de base fonctionne déjà</p><p>AVANT Windows → matériel / BIOS</p><p>PC ne s&#x27;allume pas → PSU
+Aucune image → carte mère / RAM
+BIOS non accessible → matériel</p><p>⚠️  Chercher Windows ici = perte de temps</p><p>APRÈS Windows → OS / pilotes / disque</p><p>Logo Windows visible → OS charge
+Écran bleu → pilote ou corruption
+Écran noir après login → profil</p><p>✅  WinRE et Safe Mode = vos outils</p><p>Symptômes selon l&#x27;étape bloquée : Bootloader → « No boot device »/« Bootmgr missing » (BCD/disque)  ·  Kernel → redémarrage avant logo (fichiers corrompus)  ·  Pilotes → BSOD (pilote défectueux)  ·  Session → écran noir après login (profil/Explorer)</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 6</div><h2>BLOC 1 — APPROFONDISSEMENT</h2><table class="samo-table"><thead><tr><th>Étape</th><th>Symptôme typique</th><th>Lecture technicien</th></tr></thead><tbody><tr><td>Bootloader</td><td>« No boot device », « Bootmgr missing »</td><td>BCD / disque</td></tr><tr><td>Kernel</td><td>Redémarrage immédiat, avant logo</td><td>Fichiers système corrompus</td></tr><tr><td>Pilotes</td><td>Écran bleu (BSOD)</td><td>Pilote défectueux</td></tr><tr><td>Session</td><td>Écran noir après login</td><td>Profil utilisateur ou Explorer.exe</td></tr></tbody></table><p>Symptômes selon l&#x27;étape bloquée — table de référence</p><p>🎯  Méthode : identifier D&#x27;ABORD à quelle étape le PC est bloqué, ENSUITE seulement chercher la cause précise. Sauter cette étape mène à des hypothèses au hasard.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>BLOC 2 — ≈ 60 MINUTES</h2><p>Les 4 phases du démarrage Windows</p><p>1</p><p>POST / BIOS-UEFI</p><p>Auto-test matériel, avant tout logiciel OS</p><p>→</p><p>2</p><p>Bootloader (BCD)</p><p>Localise et charge le système d&#x27;exploitation</p><p>→</p><p>3</p><p>Kernel Windows</p><p>Charge le noyau et les pilotes essentiels</p><p>→</p><p>4</p><p>Session utilisateur</p><p>Charge le profil, le bureau, Explorer.exe</p><p>Pourquoi connaître ces 4 phases ?</p><p>Chaque message d&#x27;erreur ou symptôme appartient à UNE seule phase — cela élimine 75 % des hypothèses fausses avant même de commencer à tester quoi que ce soit.
+Un blocage en phase 1-2 (avant le logo) = jamais un problème de profil ou de pilote logiciel.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 8</div><h2>BLOC 2 — RÉFÉRENCE</h2><table class="samo-table"><thead><tr><th>Message affiché</th><th>Signification technique</th><th>Action immédiate</th></tr></thead><tbody><tr><td>Bootmgr is missing</td><td>Bootloader absent ou corrompu</td><td>Réparer BCD via WinRE + Startup Repair</td></tr><tr><td>Inaccessible boot device</td><td>Pilote disque non chargé</td><td>Vérifier câble SATA / mode AHCI / MBR</td></tr><tr><td>Preparing automatic repair</td><td>Windows a détecté un échec précédent</td><td>Laisser tourner ou utiliser WinRE</td></tr><tr><td>Diagnosing your PC</td><td>Windows en mode diagnostic</td><td>Attendre, puis WinRE si boucle</td></tr><tr><td>Your PC ran into a problem</td><td>Erreur critique (BSOD)</td><td>Lire le stop code pour identifier la cause</td></tr></tbody></table><p>Messages d&#x27;erreur Windows fréquents — lecture rapide</p><p>Lire le message = déjà 50 % du diagnostic.</p><p>❌  Erreurs classiques : réinstaller au premier message  ·  ignorer le message exact  ·  confondre erreur disque et erreur Windows</p><p>👉  Toujours noter le message mot pour mot avant d&#x27;agir.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>BLOC 2 — BONNES PRATIQUES</h2><p>Erreurs classiques à éviter face à un message</p><p>❌</p><p>Réinstaller au premier message</p><p>Un message n&#x27;est pas toujours ce qu&#x27;il semble être — 50 % se résolvent avec WinRE seul.</p><p>❌</p><p>Ignorer le message exact</p><p>Les stop codes et messages orientent précisément la cause — les paraphraser fait perdre l&#x27;information clé.</p><p>❌</p><p>Confondre erreur disque et erreur Windows</p><p>&#x27;Inaccessible boot device&#x27; peut venir d&#x27;un réglage BIOS, pas forcément d&#x27;un disque mort.</p><p>✅</p><p>Noter le message mot pour mot</p><p>Photo ou capture d&#x27;écran avant toute action — la formulation exacte guide tout le diagnostic.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>BLOC 3 — ≈ 50 MINUTES</h2><p>Écrans bleus (BSOD) : comprendre sans paniquer</p><p>Ce qu&#x27;est un BSOD</p><p>Windows a détecté une erreur critique et s&#x27;arrête volontairement pour PROTÉGER le système avant qu&#x27;un dommage plus grave ne survienne.</p><p>✅  Un BSOD n&#x27;est pas « la mort du PC ». C&#x27;est un mécanisme de sécurité.</p><p>Stop code</p><p>Type d&#x27;erreur — ex : MEMORY_MANAGEMENT</p><p>Fichier .sys</p><p>Pilote concerné — ex : nvlddmkm.sys</p><p>Moment d&#x27;apparition</p><p>Démarrage / usage intensif / aléatoire</p><p>🎯  On cherche la CAUSE, pas le code seul — le stop code oriente, ne conclut pas.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 11</div><h2>BLOC 3 — RÉFÉRENCE</h2><table class="samo-table"><thead><tr><th>Cause</th><th>Fréquence</th><th>Stop code typique</th></tr></thead><tbody><tr><td>Pilote défectueux</td><td>Très fréquent</td><td>PAGE_FAULT_IN_NONPAGED_AREA</td></tr><tr><td>RAM instable</td><td>Fréquent</td><td>MEMORY_MANAGEMENT</td></tr><tr><td>Mise à jour Windows</td><td>Fréquent</td><td>CRITICAL_PROCESS_DIED</td></tr><tr><td>Disque dégradé</td><td>Moyen</td><td>INACCESSIBLE_BOOT_DEVICE</td></tr><tr><td>Virus / malware</td><td>Rare</td><td>SYSTEM_SERVICE_EXCEPTION</td></tr></tbody></table><p>Causes fréquentes de BSOD — table de diagnostic</p><p>💡  Rappel méthode : MEMORY dans le stop code → suspecter la RAM (MemTest86) en premier, pas Windows lui-même.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>VOCABULAIRE</h2><p>Vocabulaire — Diagnostic Windows (18 termes essentiels)</p><p>BSOD</p><p>Écran bleu signalant une erreur critique Windows</p><p>Stop code</p><p>Identifiant du type d&#x27;erreur affiché sur un BSOD</p><p>BCD</p><p>Boot Configuration Data — données de démarrage</p><p>Bootloader</p><p>Programme qui localise et charge l&#x27;OS</p><p>Kernel</p><p>Noyau du système, cœur de Windows</p><p>WinRE</p><p>Windows Recovery Environment</p><p>Safe Mode</p><p>Démarrage avec pilotes Microsoft essentiels uniquement</p><p>SFC</p><p>System File Checker — vérifie les fichiers système</p><p>DISM</p><p>Outil de réparation de l&#x27;image Windows</p><p>CHKDSK</p><p>Vérifie et répare les erreurs disque</p><p>Bootrec</p><p>Outil de réparation du secteur de démarrage</p><p>Fichier .sys</p><p>Fichier pilote (driver) Windows</p><p>Kernel panic</p><p>Arrêt d&#x27;urgence du noyau (équivalent BSOD)</p><p>Point de restauration</p><p>Sauvegarde de l&#x27;état système à un instant T</p><p>Profil utilisateur</p><p>Paramètres et données propres à un compte</p><p>MBR / GPT</p><p>Schémas de partitionnement du disque</p><p>AHCI</p><p>Mode de fonctionnement du contrôleur disque</p><p>Reset this PC</p><p>Réinstallation Windows avec ou sans fichiers</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>BLOC 4 — ≈ 45 MINUTES</h2><p>WinRE — Accéder aux outils de récupération</p><p>1</p><p>3 redémarrages forcés consécutifs</p><p>Coupez l&#x27;alimentation 3 fois pendant le chargement Windows — méthode d&#x27;urgence quand rien d&#x27;autre ne répond.</p><p>2</p><p>Shift + Redémarrer</p><p>Depuis Windows démarré normalement : Menu Démarrer → maintenir Shift → cliquer Redémarrer.</p><p>3</p><p>Clé USB Windows bootable</p><p>Créée avec Rufus ou Media Creation Tool — nécessaire si le disque système est totalement inaccessible.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>BLOC 4 — BOÎTE À OUTILS</h2><p>Les 5 outils de récupération WinRE</p><p>1</p><p>Startup Repair</p><p>Corrige automatiquement les problèmes de démarrage</p><p>2</p><p>System Restore</p><p>Revenir à un état système antérieur stable</p><p>3</p><p>Safe Mode</p><p>Démarrer sans pilotes tiers pour isoler la cause</p><p>4</p><p>Command Prompt</p><p>Réparer manuellement (bcdedit, sfc, chkdsk)</p><p>5</p><p>Reset this PC</p><p>Réinstallation propre, avec ou sans conservation des fichiers</p><p>🛡️  Safe Mode — votre meilleur allié</p><p>Démarre Windows avec uniquement les pilotes Microsoft essentiels → désinstaller le pilote fautif → tester la stabilité → vérifier si la cause est matérielle ou logicielle.  ✅ Si le PC est stable en Safe Mode, le matériel est OK : le problème est logiciel ou pilote.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>BLOC 4 — PRATIQUE</h2><p>Commandes clés via l&#x27;invite de commandes WinRE</p><p>sfc /scannow</p><p>Scan et réparation des fichiers système Windows corrompus</p><p>bootrec /fixmbr</p><p>Répare le secteur de démarrage principal (MBR)</p><p>bootrec /fixboot</p><p>Répare le secteur de boot de la partition système</p><p>bootrec /rebuildbcd</p><p>Reconstruit entièrement le BCD (données de démarrage)</p><p>chkdsk C: /f /r</p><p>Vérifie et répare le disque (secteurs défectueux)</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>BLOC 5 — DÉCISION</h2><p>Réinstaller Windows — quand et comment</p><p>La réinstallation est une solution de dernier recours, pas un outil de diagnostic.</p><p>✅  Quand réinstaller ?</p><p>Corruption grave et irréparable du système
+Système instable après toutes les tentatives de réparation
+Malware sérieux impossible à éradiquer
+Demande explicite de l&#x27;utilisateur après sauvegarde</p><p>❌  Quand NE PAS réinstaller ?</p><p>Panne matérielle non résolue
+Problème BIOS ou stockage non diagnostiqué
+Disque défectueux non confirmé
+Simple message d&#x27;erreur sans test préalable</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>BLOC 5 — PROCÉDURE</h2><p>Procédure minimale avant toute réinstallation</p><p>1</p><p>Sauvegarder TOUTES les données</p><p>Documents, Bureau, images, licences — vérifier l&#x27;intégrité de la sauvegarde avant de continuer.</p><p>2</p><p>Lister logiciels et clés de licence</p><p>Noter tous les logiciels installés et leurs clés pour pouvoir tout réinstaller ensuite.</p><p>3</p><p>Confirmer la réactivation de la licence</p><p>Windows 10/11 est généralement lié au compte Microsoft — vérifier avant de formater.</p><p>4</p><p>Vérifier que le matériel est sain</p><p>AVANT de réinstaller : RAM, disque, alimentation testés et confirmés fonctionnels.</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>MISE EN PRATIQUE</h2><p>Cas pratiques — ce que vous verrez sur Teams</p><p>Le formateur joue le rôle de l&#x27;usager. Vous posez les questions et guidez le diagnostic.</p><p>Exercice 1 — BSOD au démarrage</p><p>Mise en situation :</p><p>Stop code MEMORY_MANAGEMENT affiché au démarrage.</p><p>Questions :</p><p>Cause probable ? Test prioritaire ? Safe Mode ou MemTest86 ?</p><p>Exercice 2 — Boucle réparation</p><p>Mise en situation :</p><p>« Preparing automatic repair » en boucle infinie.</p><p>Questions :</p><p>Disque ou Windows ? Première action WinRE ? Commandes utiles ?</p><p>Exercice 3 — Écran noir après login</p><p>Mise en situation :</p><p>Windows charge, l&#x27;utilisateur se connecte, puis écran noir.</p><p>Questions :</p><p>Étape concernée ? Safe Mode ici ? Hypothèses ?</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>MISE EN PRATIQUE — SUITE</h2><p>Corrigés — synthèse des 3 exercices</p><p>BSOD MEMORY_MANAGEMENT</p><p>→ Tester la RAM avec MemTest86 (2 passes min.) ou barrette par barrette dans le slot A2.</p><p>Boucle « automatic repair »</p><p>→ WinRE + sfc /scannow + chkdsk. Si toujours en échec : envisager Reset this PC après sauvegarde.</p><p>Écran noir après login</p><p>→ Safe Mode, désactiver le pilote vidéo suspect, ou réparer le profil utilisateur (NTUSER.DAT).</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>BOÎTE À OUTILS</h2><p>Commandes et outils — Diagnostic Windows</p><p>tpm.msc / msinfo32</p><p>Vérifier prérequis matériels (TPM, Secure Boot)</p><p>sfc /scannow</p><p>Vérifier et réparer les fichiers système</p><p>DISM /Online /Cleanup-Image /RestoreHealth</p><p>Réparer l&#x27;image système quand SFC échoue</p><p>bootrec /fixmbr /fixboot /rebuildbcd</p><p>Réparer le secteur et les données de démarrage</p><p>chkdsk C: /f /r</p><p>Vérifier et réparer les erreurs disque</p><p>MemTest86 (bootable)</p><p>Tester la RAM en profondeur, hors Windows</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>FIN DE SÉANCE</h2><p>Checklist obligatoire — fin de Séance 4</p><p>Validez mentalement chaque point avec votre formateur sur Teams avant de déclarer la séance terminée :</p><p>Je sais situer Windows dans la chaîne : alimentation → carte mère → CPU → RAM → BIOS → stockage → Windows</p><p>Je lis un message d&#x27;erreur correctement : noter le message exact avant toute action</p><p>Je connais les stop codes BSOD principaux : MEMORY_MANAGEMENT, INACCESSIBLE_BOOT_DEVICE, CRITICAL_PROCESS_DIED</p><p>J&#x27;accède à WinRE par 3 méthodes : redémarrages forcés, Shift+Redémarrer, clé USB</p><p>Je connais les 5 outils WinRE : Startup Repair, System Restore, Safe Mode, CMD, Reset</p><p>Je sais quand réinstaller et quand NE PAS réinstaller Windows</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>VALIDATION FORMATEUR</h2><p>Compétences Séance 4 — à valider avec votre formateur</p><p>Je situe correctement où le PC est bloqué dans la chaîne de démarrage</p><p>Je lis et interprète un message d&#x27;erreur avant d&#x27;agir</p><p>Je distingue un BSOD matériel (RAM) d&#x27;un BSOD logiciel (pilote/fichiers)</p><p>J&#x27;utilise WinRE et ses 5 outils avec assurance</p><p>J&#x27;exécute sfc, chkdsk et bootrec correctement</p><p>Je décide correctement quand réinstaller Windows — et quand ne pas le faire</p></div>
+<div class="slide"><div class="slide-number">Slide 23</div><h2>Fin de la Séance 4</h2><p>Prochaine séance : Séance 5 — Installation et configuration Windows 11</p><p>Validez la checklist et les compétences avec votre formateur avant de clore la session Teams.</p></div>
+</body>
+</html>

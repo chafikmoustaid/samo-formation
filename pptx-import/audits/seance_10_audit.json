@@ -1,0 +1,32 @@
+{
+  "file": "Seance_10.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "SURVEILLANCE THERMIQUE"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "PERFORMANCE"
+    },
+    {
+      "slide": 11,
+      "type": "PLACEHOLDER",
+      "title": "OUTIL INTÉGRÉ"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "PLANIFICATION"
+    },
+    {
+      "slide": 19,
+      "type": "TIMELINE",
+      "title": "À vous de jouer."
+    }
+  ],
+  "integrity_score": 84
+}

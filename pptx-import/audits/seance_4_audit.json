@@ -1,0 +1,22 @@
+{
+  "file": "Seance_4.pptx",
+  "slides": 23,
+  "issues": [
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "BLOC 1 — APPROFONDISSEMENT"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "BLOC 2 — RÉFÉRENCE"
+    },
+    {
+      "slide": 11,
+      "type": "TABLE",
+      "title": "BLOC 3 — RÉFÉRENCE"
+    }
+  ],
+  "integrity_score": 94
+}

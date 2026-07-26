@@ -1,0 +1,17 @@
+{
+  "file": "Seance_5.pptx",
+  "slides": 20,
+  "issues": [
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "💿 Nouvelle Installation Vs Mise à Niveau"
+    },
+    {
+      "slide": 18,
+      "type": "TABLE",
+      "title": "🔍 DIAGNOSTIC DES PANNES D'INSTALLATION"
+    }
+  ],
+  "integrity_score": 96
+}

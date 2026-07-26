@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 8 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Réseau</h2><p>et Internet</p><p>TCP/IP · DHCP · DNS · Ping · Wi-Fi · ipconfig · tracert</p><p>SÉANCE 8 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Internet = adresses.</h2><p>Tout le reste découle de là.</p><p>IP, DNS, DHCP, passerelle — 4 concepts qui expliquent 90 % des pannes réseau.
+Maîtrisez-les et vous diagnostiquez n&#x27;importe quelle panne en moins de 5 minutes.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Au programme — 4 heures, 6 blocs</h2><p>01 — TCP/IP — 4 concepts clés</p><p>IP · Masque · Passerelle · DNS · Comprendre la hiérarchie</p><p>02 — DHCP vs IP statique</p><p>Comment l&#x27;IP est attribuée · Bail · Quand fixer une IP</p><p>03 — La méthode des 3 pings</p><p>Localiser n&#x27;importe quelle panne réseau en 3 min</p><p>04 — ipconfig — lire et interpréter</p><p>Commandes complètes · Résultats à connaître · APIPA</p><p>05 — Wi-Fi — fréquences et sécurité</p><p>2.4 vs 5 GHz · WPA2/3 · Canal · Diagnostic Wi-Fi</p><p>06 — DNS et dépannage</p><p>Changer DNS · flushdns · Cas pratiques réseau</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>TCP/IP — Les 4 notions qui expliquent tout</h2><p>Adresse IP</p><p>Identifiant unique de chaque appareil sur le réseau.
+Comme l&#x27;adresse postale de votre PC.</p><p>192.168.1.50 (réseau local privé)
+8.8.8.8 (serveur DNS public Google)</p><p>⚡ Deux appareils ne peuvent pas avoir la même IP sur le même réseau</p><p>Masque de sous-réseau</p><p>Définit le périmètre du réseau local — qui est &#x27;dans&#x27; le même réseau.</p><p>255.255.255.0 = réseau /24 = jusqu&#x27;à 254 appareils
+255.255.0.0 = réseau /16 = jusqu&#x27;à 65534 appareils</p><p>⚡ Même masque sur tous les PC d&#x27;un réseau local</p><p>Passerelle par défaut</p><p>L&#x27;adresse du routeur — la porte de sortie vers Internet.</p><p>192.168.1.1 (routeur typique résidence/PME)
+Sans passerelle = réseau local OK mais Internet impossible</p><p>⚡ Si impossible de pinguer la passerelle → câble ou Wi-Fi KO</p><p>Serveur DNS</p><p>Traduit les noms (google.com) en adresses IP numériques.</p><p>8.8.8.8 = Google DNS · 1.1.1.1 = Cloudflare DNS
+Sans DNS = Internet &#x27;marche&#x27; (ping IP) mais sites inaccessibles</p><p>⚡ DNS défaillant : changer vers 8.8.8.8 résout 90 % des cas</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>DHCP vs IP statique — Quand utiliser chaque méthode</h2><p>DHCP = le routeur attribue une IP automatiquement. IP statique = vous la saisissez manuellement et elle ne change jamais.</p><p>DHCP (Automatique)</p><p>Le routeur (serveur DHCP) attribue IP, masque, passerelle, DNS.
+Bail DHCP = durée d&#x27;attribution (souvent 24h ou 7 jours).</p><p>Avantages :</p><p>Aucune configuration · Évite les conflits IP · Idéal postes de travail</p><p>Limites :</p><p>IP peut changer à chaque bail · Impossible à localiser par IP fixe</p><p>Usage : PCs utilisateurs · Smartphones · Tablettes</p><p>IP Statique (Fixe)</p><p>Saisir manuellement : IP · masque · passerelle · DNS.
+L&#x27;IP ne change jamais — l&#x27;appareil est toujours joignable à cette adresse.</p><p>Avantages :</p><p>IP constante · Partage et accès directs · Essentiel pour certains services</p><p>Limites :</p><p>Configuration manuelle · Risque de conflits si mal gérée</p><p>Usage : Imprimantes réseau · NAS · Serveurs · Caméras IP · Routeurs</p><p>Bonne pratique : réservation DHCP par adresse MAC dans le routeur = IP &#x27;quasi statique&#x27; sans config manuelle.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Méthode des 3 pings — Localiser une panne réseau en 3 min</h2><p>Toujours dans cet ordre. Chaque résultat localise précisément où ça bloque. Ne jamais sauter d&#x27;étape.</p><p>1</p><p>ping [adresse passerelle]</p><p>ex: ping 192.168.1.1 — votre routeur</p><p>✓ Reply from 192.168.1.1 → câble/Wi-Fi OK · routeur accessible</p><p>✗ Request timed out · Destination host unreachable</p><p>→ Vérifier câble Ethernet ou reconnecter au Wi-Fi</p><p>2</p><p>ping 8.8.8.8</p><p>Serveur DNS Google — test Internet sans résolution DNS</p><p>✓ Reply from 8.8.8.8 → Internet fonctionnel · DNS peut être KO</p><p>✗ Request timed out (passerelle OK mais 8.8.8.8 KO)</p><p>→ Appeler le fournisseur Internet · Redémarrer le routeur</p><p>3</p><p>ping google.com</p><p>Test avec résolution DNS — si marche = tout est OK</p><p>✓ Reply from 172.217.x.x → DNS OK · tout fonctionne</p><p>✗ Request timed out (8.8.8.8 OK mais google.com KO)</p><p>→ Problème DNS uniquement → changer DNS vers 8.8.8.8</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 7</div><h2>Slide 7</h2><table class="samo-table"><thead><tr><th>Champ ipconfig</th><th>Signification</th><th>Comment l&#x27;utiliser pour le diagnostic</th></tr></thead><tbody><tr><td>Nom de l&#x27;hôte</td><td>Nom du PC sur le réseau</td><td>Apparaît dans \\NomPC pour les partages</td></tr><tr><td>Adresse physique (MAC)</td><td>Identifiant matériel unique de la carte réseau</td><td>Utilisé pour les réservations DHCP et les filtres Wi-Fi</td></tr><tr><td>DHCP activé</td><td>Oui = IP obtenue automatiquement</td><td>Non = IP statique configurée manuellement</td></tr><tr><td>Adresse IPv4</td><td>Votre adresse IP sur le réseau</td><td>192.168.x.x = local · 169.254.x.x = APIPA (DHCP KO)</td></tr><tr><td>Masque de sous-réseau</td><td>Définit la plage réseau</td><td>255.255.255.0 = max 254 appareils dans le réseau</td></tr><tr><td>Passerelle par défaut</td><td>Adresse du routeur</td><td>Vide ou absente = impossible de sortir du réseau local</td></tr><tr><td>Serveurs DNS</td><td>Adresses des serveurs de résolution de noms</td><td>8.8.8.8 ou 1.1.1.1 = DNS publics · sinon = DNS du routeur</td></tr><tr><td>Bail obtenu / Bail expirant</td><td>Durée du bail DHCP</td><td>Si expiré sans renouvellement = IP perdue</td></tr></tbody></table><p>APIPA 169.254.x.x = aucun bail DHCP reçu → vérifier câble/Wi-Fi ou redémarrer le routeur</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Commande de copie : ipconfig /all &gt; C:\Temp\reseau.txt — envoyer le fichier par email pour analyse distante.</h2><p>Exercice : lancer ipconfig /all · noter les 7 champs clés · vérifier si DHCP ou statique</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>tracert et netstat — Outils de diagnostic avancé réseau</h2><p>tracert [destination]</p><p>Trace le chemin des paquets de votre PC jusqu&#x27;à la destination, saut par saut.</p><p>Chaque ligne = 1 saut (routeur intermédiaire). Temps en ms × 3.
+&#x27;* * *&#x27; = saut ne répond pas (normal). Délai élevé = goulot d&#x27;étranglement identifié.</p><p>tracert google.com → voir si le délai explose chez l&#x27;opérateur Internet ou au-delà</p><p>netstat -an</p><p>Liste toutes les connexions réseau actives + ports en écoute.</p><p>ESTABLISHED = connexion active. LISTENING = port ouvert en attente.
+CLOSE_WAIT = connexion en cours de fermeture. TIME_WAIT = récemment fermée.</p><p>netstat -b (admin) = voir quel programme tient chaque connexion → repérer malware</p><p>netstat -rn</p><p>Affiche la table de routage Windows — comment les paquets sont dirigés.</p><p>Ligne 0.0.0.0 = route par défaut (passerelle). Métrique = priorité de la route.
+Utile quand plusieurs interfaces réseau coexistent (VPN + LAN).</p><p>Si 2 passerelles = conflits VPN → vérifier les métriques des routes</p><p>nslookup [nom]</p><p>Interroger le DNS manuellement pour résoudre un nom en IP.</p><p>nslookup google.com → voir quelle IP est retournée et depuis quel serveur DNS.
+nslookup google.com 8.8.8.8 → forcer un serveur DNS spécifique pour comparer.</p><p>Si résultat différent entre 2 DNS → cache DNS corrompu ou DNS menteur (ISP)</p><p>tracert = tracer route · netstat = connexions actives · nslookup = tester DNS · arp -a = table MAC/IP</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 10</div><h2>Wi-Fi — Fréquences, protocoles et diagnostic</h2><table class="samo-table"><thead><tr><th>Bande</th><th>Portée</th><th>Débit max</th><th>Obstacles</th><th>Usage recommandé</th></tr></thead><tbody><tr><td>2.4 GHz</td><td>Très longue (30 m+)</td><td>150 Mb/s (Wi-Fi 5)</td><td>Pénètre murs · Nombreuses interférences</td><td>Appareils IoT · Loin du routeur · Faible débit OK</td></tr><tr><td>5 GHz</td><td>Moyenne (15 m)</td><td>1300 Mb/s (Wi-Fi 5)</td><td>Bloqué par murs épais · Moins d&#x27;interf.</td><td>PC, télé, gaming · Près du routeur</td></tr><tr><td>6 GHz (Wi-Fi 6E)</td><td>Courte (8 m)</td><td>9600 Mb/s (Wi-Fi 6E)</td><td>Très bloqué par murs · Matériaux denses</td><td>Appareils très récents · Ultra-proche routeur</td></tr></tbody></table><p>Le Wi-Fi ce n&#x27;est pas juste &#x27;branché ou pas&#x27;. Comprendre les fréquences explique 80 % des problèmes de performances.</p><p>Protocoles de sécurité Wi-Fi — du plus au moins sécurisé :</p><p>WPA3</p><p>Standard 2022+ · SAE remplace PSK · Résistant aux attaques dictionnaire — Recommandé si tous vos appareils le supportent</p><p>WPA2 (AES)</p><p>Standard depuis 2006 · CCMP/AES · Encore sécurisé — Utilisé par 90 % des réseaux Wi-Fi PME actuels</p><p>WPA (TKIP)</p><p>Obsolète · Vulnérable · Ne plus utiliser — Mettre à jour le firmware routeur</p><p>WEP</p><p>Cassable en quelques minutes · Complètement obsolète — Remplacer le routeur immédiatement</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Wi-Fi — Configurer et diagnostiquer sous Windows</h2><p>Connecter au Wi-Fi</p><p>1</p><p>Clic sur l&#x27;icône réseau (barre des tâches) → Voir les réseaux disponibles</p><p>2</p><p>Sélectionner le SSID → Se connecter → Saisir le mot de passe</p><p>3</p><p>Cocher &#x27;Connecter automatiquement&#x27; pour un réseau de confiance</p><p>4</p><p>Vérifier l&#x27;icône : pas de globe = pas d&#x27;Internet · pas de Wi-Fi = pas de signal</p><p>Oublier et reconnecter</p><p>1</p><p>Paramètres → Réseau et Internet → Wi-Fi → Gérer les réseaux connus</p><p>2</p><p>Trouver le réseau → Oublier → Se reconnecter en saisissant le MDP</p><p>3</p><p>Utile quand le mot de passe a changé ou connexion défaillante</p><p>4</p><p>Alternative : Shift+clic droit sur icône Wi-Fi → Oublier le réseau</p><p>Diagnostic Wi-Fi avancé</p><p>1</p><p>Paramètres → Système → Dépannage → Autres dépanneurs → Connexions Internet</p><p>2</p><p>netsh wlan show interfaces → voir SSID connecté · signal · bande · vitesse</p><p>3</p><p>netsh wlan show networks → voir tous les réseaux disponibles avec canal</p><p>4</p><p>Si signal faible : tester 2.4 GHz (plus portée) au lieu du 5 GHz</p><p>netsh wlan show interfaces → colonne &#x27;Signal&#x27; : &lt; 50 % = mauvais · 70 %+ = bon · 90 %+ = excellent</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>DNS — Changer et diagnostiquer les problèmes</h2><p>Le DNS est souvent la cause silencieuse de sites inaccessibles alors que &#x27;Internet marche&#x27;.</p><p>DNS du FAI</p><p>Primaire : Automatique (DHCP)</p><p>Secondaire : Automatique</p><p>Optimisé géographiquement</p><p>Variable selon le FAI</p><p>Google DNS</p><p>Primaire : 8.8.8.8</p><p>Secondaire : 8.8.4.4</p><p>Rapide · Fiable · Mondial</p><p>~25 ms</p><p>Cloudflare</p><p>Primaire : 1.1.1.1</p><p>Secondaire : 1.0.0.1</p><p>Le plus rapide · Privé (pas de logs)</p><p>~11 ms</p><p>OpenDNS</p><p>Primaire : 208.67.222.222</p><p>Secondaire : 208.67.220.220</p><p>Filtrage optionnel (adultes, malware)</p><p>~30 ms</p><p>Quad9</p><p>Primaire : 9.9.9.9</p><p>Secondaire : 149.112.112.112</p><p>Bloque domaines malveillants</p><p>~20 ms</p><p>Modifier DNS : Paramètres → Réseau → Wi-Fi ou Ethernet → Propriétés → DNS manuel · ou dans la carte réseau.</p><p>ipconfig /flushdns → vider le cache DNS local · résout les DNS &#x27;intermittents&#x27; en 5 secondes.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>IP statique — Configurer une adresse fixe sous Windows</h2><p>Utiliser une IP fixe pour les imprimantes, NAS, caméras IP — tout ce qui doit être joignable en permanence.</p><p>1</p><p>Ouvrir les paramètres réseau</p><p>Paramètres → Réseau et Internet → Wi-Fi ou Ethernet → Propriétés · OU: Centre réseau → Modifier les paramètres de la carte → Clic droit sur l&#x27;interface → Propriétés</p><p>2</p><p>Ouvrir IPv4</p><p>Sélectionner &#x27;Protocole Internet Version 4 (TCP/IPv4)&#x27; → Propriétés</p><p>3</p><p>Saisir les valeurs</p><p>Cocher &#x27;Utiliser l&#x27;adresse IP suivante&#x27;
+IP : ex. 192.168.1.100 (choisir hors plage DHCP) - Masque : 255.255.255.0 - Passerelle : 192.168.1.1 (adresse de votre routeur)</p><p>4</p><p>Configurer le DNS</p><p>Cocher &#x27;Utiliser l&#x27;adresse de serveur DNS suivante&#x27;
+DNS préféré : 8.8.8.8 (ou IP du routeur)
+DNS auxiliaire : 8.8.4.4</p><p>5</p><p>Valider et tester</p><p>OK → OK → Fermer
+ping 8.8.8.8 → vérifier la connexion
+ping google.com → vérifier le DNS</p><p>6</p><p>Si conflit IP</p><p>Si un autre appareil a déjà cette IP → les 2 tombent en panne
+Choisir une IP en dehors de la plage DHCP du routeur (ex: 192.168.1.100-200)</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Cas pratiques — Séance 8</h2><p>Cas 1 — Mario, ex-ex-maçon</p><p>Internet ne fonctionne plus depuis ce matin. Tout était OK hier. Wi-Fi connecté mais globe jaune.</p><p>• Quelle est votre séquence de test ?</p><p>• Si la passerelle ne répond pas, que vérifiez-vous ?</p><p>• Si 8.8.8.8 répond mais google.com non — quelle est la cause ?</p><p>Piste : 3 pings · ipconfig → APIPA ? · DNS seul</p><p>Cas 2 — Fatima, ex-ex-infirmière</p><p>PC très lent à ouvrir les sites web. Téléchargements normaux. Seulement les premières secondes.</p><p>• Quel composant réseau est probablement lent ?</p><p>• Comment tester votre hypothèse ?</p><p>• Quelle solution rapide proposer ?</p><p>Piste : DNS lent · nslookup comparatif · Changer vers 8.8.8.8</p><p>Cas 3 — Karim, ex-ex-plombier</p><p>Wi-Fi coupé toutes les heures environ. Reconnexion automatique. Depuis déménagement.</p><p>• Comment identifier la fréquence Wi-Fi utilisée ?</p><p>• Quelle fréquence est moins sujette aux interférences ?</p><p>• Que recommander comme solution permanente ?</p><p>Piste : netsh wlan show interfaces · 5 GHz · Réglage canal</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>Partager une connexion et bases du VPN</h2><p>Partage de connexion (Hotspot)</p><p>Paramètres → Réseau</p><p>Partage de connexion mobile → Activer</p><p>Nom et MDP</p><p>Modifier SSID et mot de passe Wi-Fi créé</p><p>Plage IP</p><p>Windows attribue 192.168.137.x aux clients</p><p>Limite</p><p>Connexion 4G/5G partagée — quota data s&#x27;applique</p><p>Alternative</p><p>Ethernet → Wi-Fi : partage via connexion réseau</p><p>VPN — Comprendre les bases</p><p>C&#x27;est quoi ?</p><p>Tunnel chiffré entre votre PC et un serveur distant</p><p>Masque l&#x27;IP</p><p>Votre adresse IP réelle est cachée</p><p>Chiffrement</p><p>Trafic chiffré même sur Wi-Fi public</p><p>VPN entreprise</p><p>Accès aux ressources internes depuis l&#x27;extérieur (RDP, fichiers)</p><p>Risques</p><p>VPN gratuits = souvent malveillants · Logs vendus</p><p>Ports réseau à connaître</p><p>Port 80</p><p>HTTP — Web non chiffré</p><p>Port 443</p><p>HTTPS — Web chiffré (TLS)</p><p>Port 3389</p><p>RDP — Bureau à distance Windows</p><p>Port 445</p><p>SMB — Partage de fichiers Windows</p><p>Port 53</p><p>DNS — Résolution de noms</p><p>Connaître les ports principaux = savoir quel service est bloqué par le pare-feu</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>VOCABULAIRE RÉSEAU — 18 termes essentiels</h2><p>Adresse IP</p><p>Identifiant numérique unique sur le réseau</p><p>Masque sous-réseau</p><p>Définit l&#x27;étendue du réseau local</p><p>Passerelle</p><p>Adresse du routeur — sortie vers Internet</p><p>DNS</p><p>Traduit noms de domaine en adresses IP</p><p>DHCP</p><p>Attribution automatique des adresses IP</p><p>Bail DHCP</p><p>Durée d&#x27;une attribution IP automatique</p><p>APIPA</p><p>169.254.x.x — IP auto si DHCP KO</p><p>MAC Address</p><p>Identifiant physique unique de la carte réseau</p><p>Ping</p><p>Tester la connectivité réseau avec TTL</p><p>tracert</p><p>Tracer le chemin des paquets</p><p>netstat</p><p>Voir toutes les connexions réseau actives</p><p>nslookup</p><p>Tester la résolution DNS manuellement</p><p>SSID</p><p>Nom du réseau Wi-Fi</p><p>WPA3</p><p>Standard sécurité Wi-Fi le plus récent</p><p>Port réseau</p><p>Numéro identifiant un service (443=HTTPS)</p><p>VPN</p><p>Tunnel chiffré entre 2 points</p><p>NAT</p><p>Traduction d&#x27;adresses réseau — routeur</p><p>Bande passante</p><p>Débit maximal d&#x27;une connexion (Mb/s)</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>Mémo commandes réseau — CMD et PowerShell</h2><p>Toutes disponibles dans CMD standard (pas besoin admin sauf netstat -b)</p><p>ipconfig</p><p>Afficher IP, masque, passerelle de toutes les interfaces</p><p>Version complète avec MAC, DNS, bail DHCP, status DHCP</p><p>ipconfig /release</p><p>Libérer le bail DHCP (IP 0.0.0.0)</p><p>ipconfig /renew</p><p>Demander un nouveau bail DHCP</p><p>ipconfig /flushdns</p><p>Vider le cache DNS local</p><p>ping [IP/nom] -t</p><p>Ping continu jusqu&#x27;à Ctrl+C — surveiller stabilité</p><p>tracert [destination]</p><p>Tracer la route jusqu&#x27;à destination</p><p>netstat -an</p><p>Toutes connexions + ports en écoute</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><div class="placeholder-box"><h3>📷 Architecture réseau typique PME — Schéma annoté</h3><p>Insérer ici : schéma réseau ou photo du réseau physique de votre environnement</p><p>Annoter : IP du routeur · plage DHCP · IP des imprimantes (fixes) · IP des PCs (DHCP)</p><p>Exercice : dessiner le schéma réseau de votre domicile avec les IPs de chaque appareil (ipconfig/all).</p><p>Advanced IP Scanner (gratuit) → scanner les IPs actives sur le réseau local</p></div></div>
+<div class="slide timeline"><div class="slide-number">Slide 19</div><h2>À vous de jouer.</h2><p>Diagnostiquez le réseau de votre VM avec les outils appris.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Lancer · noter IP · masque · passerelle · DNS · MAC · DHCP ou statique ?</span><div class="step-note">10 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">3 pings en séquence</span><div class="step-note">Pinger la passerelle → 8.8.8.8 → google.com · noter les résultats</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">tracert google.com</span><div class="step-note">Observer les sauts · noter les temps · identifier le premier saut lent</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Changer les DNS</span><div class="step-note">Modifier vers 1.1.1.1 et 8.8.8.8 · tester nslookup · comparer avec avant</div><div class="step-note">15 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Paramètres Wi-Fi Windows — Interface complète</h2><p>netsh wlan show interfaces → affiche dans le terminal : SSID, BSSID, type radio, canal, signal, vitesse de réception.</p><p>Changer de bande : oublier le réseau → reconnecter en choisissant le SSID 5 GHz (souvent même nom avec &#x27;5G&#x27; ou &#x27;_5&#x27;)</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>Mémo diagnostic — Tous les scénarios réseau</h2><p>1</p><p>Symptôme : Internet KO · Wi-Fi connecté · globe jaune</p><p>1. ipconfig /all → IP 169.254.x.x ? → DHCP KO → relancer routeur
+2. IP normale → ping passerelle → ping 8.8.8.8 → ping google.com
+3. Localiser le saut qui échoue → agir en conséquence</p><p>2</p><p>Symptôme : Sites lents · téléchargements normaux</p><p>1. nslookup google.com → temps de réponse &gt; 200ms = DNS lent
+2. Changer DNS → 8.8.8.8 et 8.8.4.4 → retester nslookup
+3. ipconfig /flushdns → retester navigation</p><p>3</p><p>Symptôme : Wi-Fi se coupe toutes les heures</p><p>1. netsh wlan show interfaces → noter la bande (2.4/5 GHz)
+2. Si 2.4 GHz → Essayer 5 GHz (moins d&#x27;interférences)
+3. Vérifier paramètres éco-énergie : Ne pas couper Wi-Fi en veille</p><p>4</p><p>Symptôme : Imprimante réseau introuvable</p><p>1. ping [IP imprimante] → répond ? → driver manquant ou file bloquée
+2. Ne répond pas → IP changée ? → redémarrer l&#x27;imprimante
+3. Toujours attribuer une IP fixe aux imprimantes réseau</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences acquises — À valider avec votre formateur</h2><p>☐</p><p>Je connais les 4 concepts TCP/IP : IP · masque · passerelle · DNS et leur rôle.</p><p>☐</p><p>J&#x27;applique la méthode des 3 pings pour localiser une panne réseau en moins de 3 minutes.</p><p>☐</p><p>Je lis et interprète ipconfig /all (IP, masque, passerelle, DNS, MAC, DHCP).</p><p>☐</p><p>Je reconnais l&#x27;APIPA (169.254.x.x) et sais ce que ça signifie.</p><p>☐</p><p>Je change les DNS vers 8.8.8.8/1.1.1.1 et vide le cache avec ipconfig /flushdns.</p><p>☐</p><p>Je distingue les bandes Wi-Fi 2.4 GHz (portée) et 5 GHz (vitesse) et je les configure.</p><p>☐</p><p>J&#x27;utilise tracert pour identifier à quel saut une connexion se dégrade.</p><p>☐</p><p>Je configure une IP statique sous Windows pour une imprimante ou un NAS.</p><p>FIN SÉANCE 8 — Valider avec votre formateur</p></div>
+</body>
+</html>

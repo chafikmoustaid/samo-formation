@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 3 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>TECHNIQUE SUPPORT INFORMATIQUE</h2><p>Séance 3 : Stockage, alimentation et pannes totales</p><p>Manuel de Formation Maître  —  Durée : 4 Heures  —  Niveau 1–2  —  Formation à distance individuelle Teams</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>📋  SOMMAIRE DE LA SÉANCE 3</h2><p>Pourquoi cette séance est critique</p><p>Le stockage : rôle réel et intervention</p><p>BIOS et stockage : points clés</p><p>L&#x27;alimentation (PSU) : cause n°1 des pannes</p><p>Pannes totales : lecture rapide</p><p>Exercices pratiques de synthèse</p><p>Chaque bloc s&#x27;imbrique pour former la grille de diagnostic du technicien.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Pourquoi cette séance est critique</h2><p>≈ 15 minutes</p><p>BLOC 1</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>🔷  POURQUOI CETTE SÉANCE EST CRITIQUE</h2><p>Après la carte mère, CPU et RAM — deux composants causent le plus de pannes graves :
+
+⚡  Le stockage
+→ Windows ne démarre plus, données en danger
+
+🔌  L&#x27;alimentation (PSU)
+→ PC mort, redémarrages, instabilité</p><p>Ces pannes : très fréquentes, stressantes, souvent mal diagnostiquées.</p><p>🎯  Objectif : 
+Reconnaître immédiatement une panne stockage ou PSU — agir dans le bon ordre.</p><p>📷
+Photo : PC ouvert montrant disques HDD/SSD et câbles d&#x27;alimentation visibles</p><p>🎯  RÈGLE FONDAMENTALE : protéger les données AVANT toute action lourde
+Une mauvaise PSU peut détruire carte mère, CPU ou disque — agir dans le bon ordre.</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Le stockage : rôle réel et moment d&#x27;intervention</h2><p>≈ 45 minutes</p><p>BLOC 2</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>💾  LE STOCKAGE — RÔLE RÉEL ET TYPES</h2><p>Rôle du stockage</p><p>✅  Conserve les données même PC éteint
+✅  Contient : Windows, logiciels, fichiers utilisateurs
+✅  Intervient APRÈS le BIOS
+
+👉  Un problème de stockage n&#x27;empêche PAS le PC de s&#x27;allumer.</p><p>Types de stockage à connaître</p><p>Type</p><p>Caractéristique</p><p>Risque principal</p><p>HDD</p><p>Mécanique</p><p>Pannes physiques</p><p>SSD SATA</p><p>Électronique</p><p>Usure cellules</p><p>NVMe</p><p>Très rapide, très petit</p><p>Chauffe</p><p>Symptômes typiques liés au stockage</p><p>Symptôme observé</p><p>Lecture technicien</p><p>Message &#x27;No boot device&#x27;</p><p>Disque non détecté</p><p>Windows ne démarre plus</p><p>OS corrompu</p><p>Démarrage très lent</p><p>Disque fatigué</p><p>Bruits (clic)</p><p>HDD en fin de vie — DANGER</p><p>Freezes fréquents</p><p>Erreurs disque</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>⚙️  BIOS &amp; STOCKAGE — POINTS CLÉS</h2><p>Paramètres BIOS liés au stockage</p><p>Paramètre</p><p>Effet</p><p>Erreur fréquente</p><p>Boot Order</p><p>Ordre de démarrage</p><p>Mauvais disque en priorité</p><p>SATA Mode</p><p>AHCI / RAID</p><p>Windows ne démarre plus si changé</p><p>Secure Boot</p><p>Sécurité OS</p><p>Blocage système d&#x27;exploitation</p><p>NVMe Detect</p><p>Détection SSD rapide</p><p>Disque invisible dans Windows</p><p>⚠️  Un mauvais réglage BIOS peut simuler une panne disque — toujours vérifier le BIOS AVANT de conclure.</p><p>Cas réel — « Windows ne démarre plus après changement de disque »</p><p>Question 1 : Le BIOS voit-il le disque ?
+
+❌  Non → vérifier câble / port / disque
+✅  Oui → vérifier Boot Order / SATA Mode</p><p>Règle absolue :
+On ne conclut jamais trop vite.
+
+Matériel → BIOS → Windows
+Dans cet ordre, toujours.</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>L&#x27;alimentation (PSU) : cause n°1 des pannes totales</h2><p>≈ 1 heure</p><p>BLOC 3</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>⚡  L&#x27;ALIMENTATION (PSU) — RÔLE ET SYMPTÔMES</h2><p>📷
+Photo : alimentation PSU avec connecteurs 24-broches et EPS 8-broches visibles</p><p>Transforme le courant</p><p>Convertit le 110V AC en tensions DC utilisables par les composants.</p><p>Distribue les tensions</p><p>+12V → CPU/GPU  |  +5V → composants  |  +3.3V → mémoire</p><p>Symptômes typiques de panne PSU</p><p>Symptôme</p><p>Interprétation</p><p>PC ne s&#x27;allume pas du tout</p><p>PSU hors service ou prise défectueuse</p><p>Redémarrages aléatoires</p><p>Tension instable — PSU fatiguée</p><p>Arrêt brutal en charge (jeu/vidéo)</p><p>PSU de puissance insuffisante</p><p>Odeur de brûlé / bruit anormal</p><p>DANGER IMMÉDIAT — éteindre et débrancher</p><p>⚡  RÈGLE : toujours suspecter la PSU EN PREMIER sur une panne totale.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>🔧  DIAGNOSTIC PSU — MÉTHODE TERRAIN</h2><p>1  Vérifier la prise murale et la multiprise
+Brancher un autre appareil pour confirmer — multiprise défectueuse = cause fréquente et invisible</p><p>2  Tester le câble secteur
+Échanger le câble d&#x27;alimentation avec un autre câble identique (IEC C13)</p><p>3  Vérifier l&#x27;interrupteur arrière de la PSU
+L&#x27;interrupteur On/Off à l&#x27;arrière est parfois sur OFF — vérifier avant tout démontage</p><p>4  Tester avec une autre PSU (substitution)
+C&#x27;est le test définitif — la PSU se teste par substitution, pas par intuition</p><p>5  Observer la stabilité en charge
+Lancer un test de charge (HWMonitor + application lourde) — si instabilité = PSU limite</p><p>❌  Erreurs classiques : tester avec une multiprise défectueuse · ignorer un bruit suspect · sous-estimer la puissance requise</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>🚨  PANNES TOTALES — TABLEAU DE LECTURE RAPIDE</h2><p>Symptôme observé</p><p>Priorité d&#x27;investigation</p><p>Action immédiate</p><p>PC totalement mort (aucun voyant)</p><p>PSU — alimentation</p><p>Vérifier prise, câble, interrupteur PSU</p><p>S&#x27;allume puis s&#x27;éteint immédiatement</p><p>PSU / CPU surchauffe</p><p>Tester substitution PSU, vérifier ventilateur</p><p>Redémarre en charge (jeu/vidéo)</p><p>PSU insuffisante</p><p>Mesurer consommation, tester PSU plus puissante</p><p>Disque non détecté dans le BIOS</p><p>Câble SATA / port / disque</p><p>Changer câble, tester autre port SATA</p><p>&#x27;No boot device&#x27; mais BIOS OK</p><p>Boot Order / SATA Mode</p><p>Rétablir ordre de démarrage dans BIOS</p><p>🎯  90 % des pannes totales = alimentation ou RAM — commencer toujours par là.</p><p>⚠️  Erreurs classiques des débutants</p><p>❌  Réinstaller Windows sans sauvegarde des données</p><p>❌  Insister sur un disque qui fait du bruit</p><p>❌  Confondre panne disque et panne Windows</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Exercices pratiques de synthèse</h2><p>30 minutes</p><p>BLOC 4</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>🧪  CAS PRATIQUES — CE QUE VOUS VERREZ EN VRAI SUR TEAMS</h2><p>🧪  Exercice 1 — PC mort</p><p>Mise en situation :
+Aucun voyant, aucun bruit. PC branché.
+
+Questions :
+• Composant prioritaire ?
+• Ordre de vérification ?
+
+💡  Indice : aucun voyant = PSU ?</p><p>🧪  Exercice 2 — No boot device</p><p>Mise en situation :
+Message &#x27;No boot device found&#x27;.
+
+Questions :
+• Disque ou BIOS ?
+• Première action ?
+
+💡  Indice : vérifier dans le BIOS</p><p>🧪  Exercice 3 — Redémarrage en charge</p><p>Mise en situation :
+PC redémarre pendant jeu ou logiciel lourd.
+
+Questions :
+• Cause probable ?
+• Test simple ?
+
+💡  Indice : chaleur ou PSU ?</p><p>✅  CORRIGÉS (synthèse)</p><p>PC mort → PSU — toujours vérifier prise, câble, interrupteur avant de démonter
+No boot → vérifier Boot Order dans BIOS / tester câble SATA / autre port
+Redémarrage en charge → PSU insuffisante — tester substitution</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>✅  CHECKLIST OBLIGATOIRE — FIN DE SÉANCE 3</h2><p>Validez mentalement chaque point avec votre formateur sur Teams avant de déclarer la séance terminée :</p><p>Je distingue une panne disque d&#x27;une panne Windows (le stockage intervient APRÈS le BIOS)</p><p>Je connais les 3 types de stockage (HDD / SSD SATA / NVMe) et leurs risques principaux</p><p>Je sais lire les paramètres BIOS liés au stockage (Boot Order, SATA Mode, Secure Boot, NVMe Detect)</p><p>Je diagnostique une panne PSU dans le bon ordre : prise → câble → interrupteur → substitution</p><p>Je ne réinstalle jamais Windows sans avoir d&#x27;abord sauvegardé les données et testé le matériel</p><p>Je sais qu&#x27;une PSU mal dimensionnée peut fonctionner... jusqu&#x27;au jour où elle lâche et endommage les composants</p><p>FIN DE LA SÉANCE 3 — SUPPORT VALIDÉ</p></div>
+</body>
+</html>

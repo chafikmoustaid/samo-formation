@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 6 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>☣</h2><p>Types de</p><p>menaces</p><p>⌂</p><p>Portes</p><p>d&#x27;entrée</p><p>⚑</p><p>Méthode</p><p>d&#x27;action</p><p>✓</p><p>Bonnes</p><p>pratiques</p><p>◈</p><p>Rôle</p><p>pédagogique</p><p>Sécurité,</p><p>virus et malwares</p><p>TYPES DE MENACES  ·  PORTES D&#x27;ENTRÉE  ·  MÉTHODOLOGIE  ·  BONNES PRATIQUES</p><p>SÉANCE 6 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>La plupart des infections</h2><p>ne viennent pas d&#x27;une faille système.</p><p>Elles viennent d&#x27;un clic. Le technicien protège l&#x27;utilisateur — parfois contre lui-même — sans jamais le juger.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>PLAN DE LA SÉANCE</h2><p>Au programme — 4 heures, 8 blocs</p><p>01 — Pourquoi la sécurité est centrale</p><p>Enjeux, coûts, réalité du terrain</p><p>15 min</p><p>02 — Virus, malware, ransomware</p><p>Types de menaces et symptômes</p><p>45 min</p><p>03 — Les portes d&#x27;entrée</p><p>Email, téléchargement, USB, sites, piratage</p><p>45 min</p><p>04 — Vocabulaire sécurité</p><p>18 termes essentiels</p><p>15 min</p><p>05 — Méthodologie d&#x27;intervention</p><p>Isoler → identifier → scanner → décider</p><p>45 min</p><p>06 — Bonnes pratiques &amp; 3-2-1</p><p>Protection réelle contre le ransomware</p><p>35 min</p><p>07 — Rôle pédagogique du technicien</p><p>Expliquer, prévenir, corriger sans juger</p><p>15 min</p><p>08 — Cas pratiques &amp; validation</p><p>3 mises en situation + checklist finale</p><p>35 min</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>CONTEXTE</h2><p>Pourquoi la sécurité est un sujet central</p><p>90 %</p><p>des infections par phishing évitées par la simple méfiance envers les emails suspects</p><p>3-2-1</p><p>seule vraie protection contre un ransomware : 3 copies, 2 supports, 1 hors site</p><p>1 clic</p><p>suffit souvent à infecter un PC — la majorité des menaces viennent de l&#x27;utilisateur</p><p>La sécurité n&#x27;est pas qu&#x27;une affaire d&#x27;antivirus. C&#x27;est une combinaison de bons réflexes techniques ET humains — un technicien qui ne travaille que sur l&#x27;aspect technique laisse la porte ouverte à la récidive.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 5</div><h2>BLOC 2 — VOCABULAIRE DES MENACES</h2><table class="samo-table"><thead><tr><th>Type</th><th>Description</th><th>Niveau de danger</th></tr></thead><tbody><tr><td>Virus</td><td>Se propage en s&#x27;attachant à des fichiers légitimes</td><td>Moyen</td></tr><tr><td>Malware</td><td>Terme générique pour tout logiciel malveillant</td><td>Variable</td></tr><tr><td>Trojan</td><td>Se fait passer pour un logiciel légitime</td><td>Élevé</td></tr><tr><td>Ransomware</td><td>Chiffre les données et demande une rançon</td><td>CRITIQUE</td></tr><tr><td>Spyware</td><td>Espionne l&#x27;utilisateur — vole des données</td><td>Élevé</td></tr><tr><td>Adware</td><td>Publicités envahissantes — souvent sans danger direct</td><td>Faible</td></tr></tbody></table><p>Virus, malware, ransomware — les différences</p><p>Tous les virus sont des malwares, mais tous les malwares ne sont pas des virus.</p><p>💡  Le niveau de danger guide la priorité d&#x27;intervention : un ransomware s&#x27;isole immédiatement, un adware se nettoie tranquillement.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 6</div><h2>BLOC 2 — DIAGNOSTIC</h2><table class="samo-table"><thead><tr><th>Symptôme</th><th>Interprétation possible</th></tr></thead><tbody><tr><td>PC très lent sans raison</td><td>Malware actif en arrière-plan</td></tr><tr><td>Pop-ups / publicités fréquentes</td><td>Adware</td></tr><tr><td>Antivirus désactivé automatiquement</td><td>Infection avancée — le malware se protège</td></tr><tr><td>Fichiers chiffrés / inaccessibles</td><td>Ransomware — agir immédiatement</td></tr><tr><td>Redirections de navigateur inattendues</td><td>Extension ou script malveillant</td></tr><tr><td>Programmes inconnus au démarrage</td><td>Persistance d&#x27;un malware installé</td></tr></tbody></table><p>Symptômes typiques d&#x27;une infection</p><p>🎯  Un seul symptôme ne suffit pas à conclure — c&#x27;est la COMBINAISON de symptômes qui oriente vers le bon type de menace.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>BLOC 3 — PRÉVENTION</h2><p>Les portes d&#x27;entrée des malwares (1/2)</p><p>La majorité des infections viennent de l&#x27;utilisateur, pas du système.</p><p>📧</p><p>Email</p><p>Pièce jointe piégée (.exe, .pdf, .docx macro)
+Lien frauduleux dans le corps du message
+Phishing : imite une vraie entreprise</p><p>⬇️</p><p>Téléchargement</p><p>Faux bouton &#x27;Download&#x27;
+Logiciels piratés / cracks
+Sites de streaming illégaux</p><p>💾</p><p>Clé USB</p><p>Support trouvé ou partagé
+Autorun automatique
+Ne jamais brancher une clé inconnue</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>BLOC 3 — PRÉVENTION (SUITE)</h2><p>Les portes d&#x27;entrée des malwares (2/2)</p><p>🌐</p><p>Site compromis</p><p>Script malveillant injecté
+Iframe caché
+Même sur des sites légitimes piratés</p><p>💀</p><p>Piratage logiciel</p><p>Crack logiciel
+Générateur de clé (keygen)
+Malware intégré quasi garanti</p><p>🎯  Un utilisateur informé = moins d&#x27;incidents.</p><p>Le technicien protège l&#x27;utilisateur contre lui-même — sans le culpabiliser, en expliquant chaque réflexe de sécurité simplement.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>BLOC 3 — ZOOM</h2><p>Reconnaître un email de phishing</p><p>Expéditeur</p><p>L&#x27;adresse réelle diffère souvent du nom affiché — toujours vérifier le domaine exact.</p><p>Urgence artificielle</p><p>« Votre compte sera bloqué dans 24h » — la pression est une technique classique de manipulation.</p><p>Demande inhabituelle</p><p>Aucune entreprise légitime ne demande un mot de passe ou un numéro de carte par email.</p><p>Liens et pièces jointes</p><p>Survoler un lien avant de cliquer ; se méfier des pièces jointes non attendues.</p><p>👉  Le réflexe qui protège : en cas de doute, contacter l&#x27;entreprise directement via son site officiel — jamais via le lien de l&#x27;email.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>BLOC 5 — ≈ 45 MINUTES</h2><p>Méthodologie face à une infection suspectée</p><p>1</p><p>Isoler le PC — débrancher Internet</p><p>Couper la connexion réseau pour empêcher l&#x27;exfiltration et la propagation.</p><p>2</p><p>Identifier les symptômes</p><p>PC lent ? Pop-ups ? Antivirus désactivé ? Fichiers chiffrés ? Redirections ?</p><p>3</p><p>Scanner avec l&#x27;antivirus principal</p><p>Windows Defender ou antivirus installé — lancer un scan complet.</p><p>4</p><p>Scanner avec un outil secondaire</p><p>Malwarebytes Free — complémentaire, pas concurrent de l&#x27;antivirus principal.</p><p>5</p><p>Évaluer les dégâts et décider</p><p>Nettoyage possible, ou réinstallation nécessaire ?</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>BLOC 5 — DÉCISION</h2><p>Réinstaller ou pas après une infection ?</p><p>✅  Réinstaller si</p><p>Ransomware confirmé
+Infection profonde et persistante
+Système compromis en profondeur
+Nettoyage complet impossible</p><p>❌  Ne PAS réinstaller si</p><p>Simple adware
+Faux positif de l&#x27;antivirus
+Lenteur d&#x27;origine logicielle non liée
+Nettoyage standard suffisant</p><p>💡  La décision se prend APRÈS l&#x27;étape 5 (évaluer les dégâts) — jamais dans la panique du moment.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 12</div><h2>BLOC 5 — OUTILS</h2><table class="samo-table"><thead><tr><th>Fonction Defender</th><th>Ce qu&#x27;elle fait</th></tr></thead><tbody><tr><td>Protection en temps réel</td><td>Analyse les fichiers à l&#x27;ouverture et bloque les menaces connues</td></tr><tr><td>Analyse complète</td><td>Scanne l&#x27;intégralité du disque — recommandé après suspicion d&#x27;infection</td></tr><tr><td>Pare-feu Windows</td><td>Filtre les connexions entrantes et sortantes suspectes</td></tr><tr><td>Protection contre les ransomwares</td><td>Accès contrôlé aux dossiers sensibles (à activer manuellement)</td></tr><tr><td>SmartScreen</td><td>Bloque les sites et téléchargements signalés comme dangereux</td></tr></tbody></table><p>Antivirus et protection Windows Defender</p><p>💡  Windows Defender suffit pour un usage courant bien entretenu — Malwarebytes reste le meilleur complément en cas de doute, pas un remplaçant.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>VOCABULAIRE</h2><p>Vocabulaire — Sécurité informatique (18 termes)</p><p>Malware</p><p>Terme générique pour tout logiciel malveillant</p><p>Ransomware</p><p>Chiffre les données et exige une rançon</p><p>Phishing</p><p>Tentative de vol d&#x27;identifiants par usurpation</p><p>Trojan</p><p>Se fait passer pour un logiciel légitime</p><p>Spyware</p><p>Espionne l&#x27;activité de l&#x27;utilisateur</p><p>Adware</p><p>Affiche des publicités envahissantes</p><p>2FA</p><p>Double authentification, 2e facteur de sécurité</p><p>Brute force</p><p>Essais successifs pour deviner un mot de passe</p><p>Exfiltration</p><p>Vol de données vers l&#x27;extérieur du réseau</p><p>Autorun</p><p>Exécution automatique d&#x27;un support (ex : clé USB)</p><p>Payload</p><p>Charge malveillante exécutée par un malware</p><p>Firewall</p><p>Pare-feu — filtre le trafic réseau</p><p>SmartScreen</p><p>Filtre Microsoft contre sites/fichiers dangereux</p><p>Sandbox</p><p>Environnement isolé pour tester un fichier suspect</p><p>Zero-day</p><p>Faille de sécurité inconnue et non corrigée</p><p>Patch</p><p>Correctif de sécurité publié par l&#x27;éditeur</p><p>IOC</p><p>Indicator of Compromise — signe d&#x27;une infection</p><p>Règle 3-2-1</p><p>3 copies, 2 supports différents, 1 copie hors site</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 14</div><h2>BLOC 6 — ≈ 35 MINUTES</h2><table class="samo-table"><thead><tr><th>Bonne pratique</th><th>Pourquoi c&#x27;est important</th><th>Niveau</th></tr></thead><tbody><tr><td>Mises à jour Windows automatiques</td><td>Corrigent les failles de sécurité exploitées</td><td>Essentiel</td></tr><tr><td>Mots de passe forts et uniques</td><td>Protègent les comptes contre le brute force</td><td>Essentiel</td></tr><tr><td>Double authentification (2FA)</td><td>Bloque l&#x27;accès même si le mot de passe est volé</td><td>Très élevé</td></tr><tr><td>Sauvegardes régulières (3-2-1)</td><td>Seule protection réelle contre le ransomware</td><td>Critique</td></tr><tr><td>Méfiance envers les emails suspects</td><td>Évite 90 % des infections par phishing</td><td>Très élevé</td></tr><tr><td>Antivirus activé et à jour</td><td>Détecte les menaces connues en temps réel</td><td>Bon</td></tr></tbody></table><p>Bonnes pratiques et niveau de protection</p><p>🎯  Ces pratiques se cumulent — aucune n&#x27;est suffisante seule, ensemble elles forment une vraie défense en profondeur.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>BLOC 6 — ZOOM PROTECTION</h2><p>Ransomware — la règle 3-2-1, seule protection réelle</p><p>3</p><p>copies de vos données</p><p>2</p><p>supports différents (ex. disque + cloud)</p><p>1</p><p>copie hors site, à l&#x27;abri d&#x27;un chiffrement local</p><p>Pourquoi payer la rançon n&#x27;est jamais une solution</p><p>Aucune garantie de récupération réelle des fichiers, et cela finance directement les attaquants pour de futures attaques. Seule une sauvegarde saine et hors ligne garantit une restauration fiable.</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>BLOC 7 — POSTURE PROFESSIONNELLE</h2><p>Rôle pédagogique du technicien</p><p>1</p><p>Expliquer sans juger</p><p>L&#x27;utilisateur ne sait pas ce qu&#x27;il ne sait pas — le rôle du technicien est d&#x27;informer, pas de critiquer.</p><p>2</p><p>Prévenir sans faire peur</p><p>L&#x27;objectif est de créer de bons réflexes durables, pas de la paranoïa qui paralyse l&#x27;utilisateur.</p><p>3</p><p>Corriger sans culpabiliser</p><p>L&#x27;incident est déjà stressant pour le client — l&#x27;objectif est d&#x27;éviter la récidive, pas de blâmer.</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>MISE EN PRATIQUE</h2><p>Cas pratiques — ce que vous verrez sur Teams</p><p>Le formateur joue le rôle de l&#x27;usager. Vous posez les questions et guidez le diagnostic.</p><p>Exercice 1 — PC lent et pop-ups</p><p>Mise en situation :</p><p>« Mon PC est devenu très lent et des publicités s&#x27;ouvrent tout seul. »</p><p>Questions :</p><p>Type de menace probable ? Première action ? Scanner avec quel outil ?</p><p>Exercice 2 — Email suspect</p><p>Mise en situation :</p><p>L&#x27;utilisateur reçoit un email de « Microsoft » lui demandant son mot de passe.</p><p>Questions :</p><p>Indices d&#x27;un phishing ? Réflexe à adopter ? Que vérifier dans l&#x27;email ?</p><p>Exercice 3 — Fichiers chiffrés</p><p>Mise en situation :</p><p>Tous les fichiers ont une extension bizarre (.locked). Message de rançon.</p><p>Questions :</p><p>Type d&#x27;attaque ? Action immédiate ? Faut-il payer la rançon ?</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>MISE EN PRATIQUE — SUITE</h2><p>Corrigés — synthèse des 3 exercices</p><p>PC lent + pop-ups</p><p>→ Adware probable → scanner avec Malwarebytes Free → vérifier les extensions du navigateur.</p><p>Email suspect « Microsoft »</p><p>→ Phishing → vérifier l&#x27;adresse d&#x27;expéditeur réelle → ne jamais cliquer, transmettre à l&#x27;IT.</p><p>Fichiers chiffrés (.locked)</p><p>→ Ransomware → isoler immédiatement → évaluer les sauvegardes → JAMAIS payer la rançon.</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>BONNES PRATIQUES</h2><p>Erreurs classiques à éviter en intervention</p><p>❌</p><p>Payer une rançon</p><p>Aucune garantie de récupération, et cela finance les attaquants pour de futures attaques.</p><p>❌</p><p>Réinstaller au premier symptôme</p><p>Un simple adware ou faux positif ne justifie pas une réinstallation complète.</p><p>❌</p><p>Juger ou culpabiliser l&#x27;utilisateur</p><p>Casse la relation de confiance et décourage de signaler un futur incident.</p><p>✅</p><p>Isoler avant d&#x27;agir sur un ransomware</p><p>Débrancher le réseau en premier réflexe, avant tout autre diagnostic.</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>FIN DE SÉANCE</h2><p>Checklist obligatoire — fin de Séance 6</p><p>Validez mentalement chaque point avec votre formateur sur Teams avant de déclarer la séance terminée :</p><p>Je reconnais les types de menaces : virus, malware, trojan, ransomware, spyware, adware</p><p>Je connais les symptômes d&#x27;une infection : lenteur, pop-ups, antivirus désactivé, fichiers chiffrés</p><p>Je sais identifier les 5 portes d&#x27;entrée : email, téléchargement, clé USB, site compromis, piratage</p><p>J&#x27;applique la méthode : isoler → identifier → scanner → évaluer → décider</p><p>Je connais les bonnes pratiques : mises à jour, mots de passe, 2FA, sauvegardes 3-2-1, méfiance email</p><p>Je sais quand réinstaller et quand ne pas réinstaller après une infection</p><p>Je connais mon rôle pédagogique : expliquer sans juger, prévenir sans peur, corriger sans culpabiliser</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>VALIDATION FORMATEUR</h2><p>Compétences Séance 6 — à valider avec votre formateur</p><p>Je distingue clairement virus, malware, trojan, ransomware, spyware et adware</p><p>J&#x27;isole un poste infecté avant toute autre action</p><p>Je scanne avec l&#x27;antivirus principal puis un outil complémentaire</p><p>Je reconnais un email de phishing et j&#x27;adopte le bon réflexe</p><p>J&#x27;explique la règle 3-2-1 et pourquoi elle protège contre le ransomware</p><p>J&#x27;adopte une posture pédagogique sans juger l&#x27;utilisateur</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Fin de la Séance 6</h2><p>Prochaine séance : Séance 7 — Comptes, Profils, Permissions et Diagnostic avancé</p><p>Validez la checklist et les compétences avec votre formateur avant de clore la session Teams.</p></div>
+</body>
+</html>

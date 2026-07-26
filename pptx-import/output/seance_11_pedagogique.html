@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 11 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Règle 3-2-1</h2><p>Protection totale</p><p>OneDrive</p><p>Cloud</p><p>Windows Backup</p><p>Image système</p><p>Récupération</p><p>Fichiers supprimés</p><p>WinRE</p><p>Urgence</p><p>Sauvegarde</p><p>et Récupération</p><p>RÈGLE 3-2-1 · WINDOWS BACKUP · ONEDRIVE · RECUVA · WINRE</p><p>SÉANCE 11 / 15</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>60 % des entreprises</h2><p>qui perdent leurs données ferment dans les 6 mois.</p><p>Ransomware, panne disque, suppression accidentelle, vol — 4 scénarios différents, un même résultat sans protection.
+La sauvegarde n&#x27;est pas une option technique : c&#x27;est la seule vraie assurance contre la perte de données. Cette séance vous rend capable de la mettre en place et de récupérer en urgence.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Au programme — 4 heures, 6 blocs</h2><p>01 — Pourquoi sauvegarder</p><p>Scénarios de perte · Coût réel d&#x27;un incident</p><p>02 — Règle 3-2-1</p><p>3 copies · 2 supports · 1 hors site</p><p>03 — Windows Backup</p><p>Configuration · Image système · Automatisation</p><p>04 — OneDrive</p><p>Synchronisation · Dossiers connus · Quota</p><p>05 — Récupération de fichiers</p><p>Corbeille · Historique · Recuva</p><p>06 — WinRE</p><p>Points de restauration · Options avancées</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>CONTEXTE</h2><p>Scénarios de perte de données — 4 causes, une seule protection</p><p>Ransomware</p><p>Chiffrement de tous les fichiers accessibles
+Demande de rançon pour déchiffrer
+Se propage aux lecteurs réseau connectés</p><p>Seule vraie solution : backup hors ligne testé</p><p>Panne disque</p><p>SSD ou HDD qui cesse de fonctionner
+Souvent sans avertissement clair
+Récupération professionnelle très coûteuse</p><p>S.M.A.R.T. alerte parfois avant la panne totale</p><p>Suppression accidentelle</p><p>Erreur humaine — la cause la plus fréquente
+Suppression en masse par script ou synchro
+Souvent découverte des jours plus tard</p><p>Historique des versions = meilleure protection</p><p>Vol ou sinistre</p><p>Vol du PC ou du disque externe
+Incendie, dégât d&#x27;eau, catastrophe
+Perte totale si tout est au même endroit</p><p>1 copie hors site est non négociable</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>PRINCIPE FONDAMENTAL</h2><p>Règle 3-2-1 — Appliquée à votre contexte</p><p>3 copies de vos données</p><p>Original sur le PC
+Sauvegarde sur disque externe
+Sauvegarde cloud (OneDrive)</p><p>Si 1 copie est corrompue, 2 autres restent disponibles</p><p>2 supports différents</p><p>SSD interne + disque USB externe
+Jamais 2 supports identiques de même marque/lot
+Un support HDD + un support cloud est idéal</p><p>2 disques identiques peuvent tomber en panne ensemble</p><p>1 copie hors site</p><p>OneDrive cloud, ou disque chez un proche
+Coffre-fort ou bureau distant
+Protège contre incendie, vol, dégât local</p><p>Incendie ou vol = perte totale si tout est au même endroit</p><p>Tester = restaurer un vrai fichier depuis la sauvegarde. Sans test, ce n&#x27;est pas une vraie sauvegarde.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 6</div><h2>TYPES DE SAUVEGARDE</h2><table class="samo-table"><thead><tr><th>Type</th><th>Ce qui est copié</th><th>Vitesse</th><th>Restauration</th></tr></thead><tbody><tr><td>Complète</td><td>Tous les fichiers, à chaque fois</td><td>Lente</td><td>Simple et rapide</td></tr><tr><td>Incrémentielle</td><td>Seulement les changements depuis la dernière sauvegarde</td><td>Rapide</td><td>Plus lente — chaîne complète nécessaire</td></tr><tr><td>Différentielle</td><td>Tous les changements depuis la dernière complète</td><td>Moyenne</td><td>Moyenne — 2 fichiers nécessaires</td></tr></tbody></table><p>Complète, incrémentielle, différentielle — Quelle méthode choisir ?</p><p>Windows Backup utilise une approche incrémentielle automatique — transparente pour l&#x27;utilisateur</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><div class="placeholder-box"><h3>📷 CONFIGURATION</h3><p>Windows Backup — Configuration initiale</p><p>[ Capture d&#x27;écran ]</p><p>Insérer ici : capture Paramètres → Système → Sauvegarde configurée</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre capture</p><p>Points clés à repérer</p><p>Activer la sauvegarde automatique
+Sélectionner le lecteur externe cible
+Choisir les dossiers couverts (Bureau, Documents, Images)
+Fréquence recommandée : toutes les heures</p><p>Tester la restauration : modifier un fichier → Restaurer les fichiers personnels → vérifier que la version précédente est disponible.</p><p>Paramètres → Système → Sauvegarde</p></div></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>CLOUD</h2><p>OneDrive — Synchronisation, pas seulement stockage</p><p>Sync vs Backup</p><p>OneDrive synchronise, il ne remplace pas un vrai backup
+Une suppression se synchronise aussi (30 jours de corbeille)
+Combiner OneDrive + disque externe = protection réelle</p><p>Dossiers connus</p><p>Bureau, Documents, Images redirigés vers OneDrive
+Paramètres → Sauvegarde → Gérer la sauvegarde
+Synchronisation continue et transparente</p><p>Quota et gestion</p><p>5 Go gratuit, plans payants jusqu&#x27;à 1 To+
+Fichiers à la demande : économiser l&#x27;espace disque local
+Historique de versions jusqu&#x27;à 30 jours (Microsoft 365)</p><p>OneDrive + disque externe = configuration minimale viable pour respecter la règle 3-2-1</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>IMAGE SYSTÈME</h2><p>Sauvegarde image complète vs sauvegarde de fichiers</p><p>Image système</p><p>Copie exacte du disque : OS, programmes, réglages, fichiers
+Restauration = PC identique à l&#x27;instant de la sauvegarde
+Fichier volumineux, nécessite un disque externe dédié</p><p>Idéal avant une mise à jour majeure ou un changement de disque</p><p>Sauvegarde de fichiers</p><p>Copie uniquement les documents personnels
+Plus légère, plus rapide, cloud possible
+Ne restaure pas Windows ni les logiciels installés</p><p>Suffisant pour la majorité des usages personnels</p><p>En PME : image système avant intervention majeure, sauvegarde de fichiers en continu</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>SUPPORT PHYSIQUE</h2><p>Choisir et gérer son disque de sauvegarde externe</p><p>Format</p><p>NTFS : compatible Windows, fichiers &gt; 4 Go
+exFAT : compatible multi-plateforme
+Éviter FAT32 pour les gros volumes de données</p><p>Capacité</p><p>Prévoir 2-3× l&#x27;espace utilisé actuellement
+Anticiper la croissance des données sur 2-3 ans
+SSD externe = plus rapide, HDD externe = plus économique</p><p>Rotation</p><p>Alterner 2 disques externes (semaine A / semaine B)
+Un disque toujours débranché = protection ransomware
+Étiqueter et dater chaque disque de sauvegarde</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 11</div><h2>COMPARATIF</h2><table class="samo-table"><thead><tr><th>Critère</th><th>Sauvegarde locale</th><th>Sauvegarde cloud</th></tr></thead><tbody><tr><td>Vitesse de restauration</td><td>Très rapide (câble direct)</td><td>Dépend de la connexion Internet</td></tr><tr><td>Protection contre le vol/incendie</td><td>Faible si au même endroit</td><td>Élevée — hors site par nature</td></tr><tr><td>Coût récurrent</td><td>Achat unique du disque</td><td>Abonnement mensuel/annuel</td></tr><tr><td>Protection ransomware</td><td>Bonne si débranché</td><td>Bonne si versions historiques activées</td></tr></tbody></table><p>Cloud vs local — Avantages et limites</p><p>La meilleure protection combine toujours les deux — jamais l&#x27;un sans l&#x27;autre</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>URGENCE</h2><p>Récupérer des fichiers supprimés — Protocole d&#x27;urgence</p><p>Règle n°1 avant tout</p><p>1</p><p>Arrêter d&#x27;écrire sur le disque</p><p>Chaque nouveau fichier risque d&#x27;écraser les données supprimées. Agir en moins de 15 minutes sur SSD (TRIM).</p><p>Selon le contexte</p><p>2</p><p>Corbeille Windows</p><p>Suppression normale (touche Suppr) → restaurer directement depuis la Corbeille.</p><p>3</p><p>Corbeille OneDrive</p><p>Fichier OneDrive supprimé → onedrive.com → Corbeille → Restaurer (30 jours).</p><p>4</p><p>Historique des fichiers</p><p>Windows Backup configuré → clic droit → Restaurer les versions précédentes.</p><p>5</p><p>Recuva</p><p>Shift+Suppr ou disque formaté → Scan rapide → Scan approfondi si nécessaire.</p><p>SSD avec TRIM : récupération difficile après quelques minutes · HDD : possible pendant plusieurs jours</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><div class="placeholder-box"><h3>📷 OUTIL DE RÉCUPÉRATION</h3><p>Recuva — Scanner et restaurer un fichier supprimé</p><p>[ Capture d&#x27;écran ]</p><p>Insérer ici : capture Recuva pendant un scan approfondi avec fichiers listés</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre capture</p><p>Points clés à repérer</p><p>Scan rapide d&#x27;abord, puis Scan approfondi si rien trouvé
+Filtrer par type de fichier ou par nom
+État « Excellent » = récupération fiable
+Toujours restaurer vers un autre disque, jamais le même</p><p>Ne jamais installer Recuva sur le disque à scanner — cela risque d&#x27;écraser les données à récupérer.</p><p>Recuva (gratuit) — piriform.com</p></div></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>RESTAURATION SYSTÈME</h2><p>Historique des fichiers et points de restauration</p><p>Historique des fichiers</p><p>Sauvegarde automatique de versions de fichiers
+Panneau de config → Historique des fichiers → Activer
+Nécessite un disque externe ou réseau connecté</p><p>Points de restauration</p><p>Capture l&#x27;état système (registre, pilotes, programmes)
+Créé automatiquement avant les mises à jour majeures
+sysdm.cpl → Protection du système → Créer</p><p>Différence clé</p><p>Historique = vos fichiers personnels
+Point de restauration = l&#x27;état de Windows
+Les deux sont complémentaires, pas interchangeables</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>URGENCE SYSTÈME</h2><p>WinRE — Quand Windows ne démarre plus</p><p>1</p><p>Réparation au démarrage</p><p>Windows tente de se réparer automatiquement. Première option à essayer.</p><p>5-10 min</p><p>2</p><p>Restauration système</p><p>Revenir à un point de restauration antérieur, sans perdre les fichiers.</p><p>10 min</p><p>3</p><p>Invite de commandes</p><p>Accès CMD pour bootrec, sfc, chkdsk en environnement de récupération.</p><p>Variable</p><p>4</p><p>Réinitialiser ce PC</p><p>Option « Conserver mes fichiers » — réinstalle Windows sans effacer les données.</p><p>30-60 min</p><p>Shift+Redémarrer pour accéder à WinRE depuis Windows · F8 pendant le démarrage si Windows ne charge pas</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>SÉCURITÉ</h2><p>Ransomware — Protocole de réponse immédiate</p><p>Isoler</p><p>Débrancher le réseau immédiatement
+Ne pas éteindre le PC (préserve les preuves)
+Alerter tous les autres postes du réseau</p><p>Ne jamais</p><p>Payer la rançon — aucune garantie de déchiffrement
+Reconnecter un disque de backup sans vérifier
+Redémarrer sans avoir isolé le réseau</p><p>Restaurer</p><p>Nettoyer complètement ou réinstaller le système
+Restaurer depuis une sauvegarde antérieure à l&#x27;infection
+Vérifier l&#x27;intégrité avant de reconnecter au réseau</p><p>Le meilleur antidote au ransomware a été préparé bien avant l&#x27;infection : une sauvegarde 3-2-1 testée</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 17</div><h2>ARGUMENTAIRE CLIENT</h2><table class="samo-table"><thead><tr><th>Scénario</th><th>Sans sauvegarde</th><th>Avec sauvegarde 3-2-1</th></tr></thead><tbody><tr><td>Ransomware</td><td>Rançon + arrêt d&#x27;activité + réputation</td><td>Restauration en quelques heures</td></tr><tr><td>Panne disque</td><td>Récupération pro : 500-2000 $, sans garantie</td><td>Restauration : gratuit, quelques minutes</td></tr><tr><td>Suppression accidentelle</td><td>Perte définitive si non détectée à temps</td><td>Restauration immédiate depuis l&#x27;historique</td></tr><tr><td>Coût de la solution</td><td>—</td><td>Disque externe (60-100 $) + OneDrive (~7 $/mois)</td></tr></tbody></table><p>Coût réel d&#x27;un incident vs coût de la prévention</p><p>Cet argumentaire justifie la mise en place d&#x27;un plan de sauvegarde même pour un particulier ou une petite structure</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>MISE EN PRATIQUE</h2><p>Cas pratiques — Séance 11</p><p>Cas 1 — Julien, ex-serveur</p><p>A supprimé par erreur un dossier client complet il y a 20 minutes, disque SSD.</p><p>Quelle est la première action ?
+Quel outil utiliser en priorité ?
+Pourquoi la rapidité est-elle critique ?</p><p>Piste : Arrêter d&#x27;écrire → Corbeille → Recuva si vidée</p><p>Cas 2 — Nadia, ex-agente de voyage</p><p>Tous les fichiers du bureau sont chiffrés avec l&#x27;extension .locked ce matin.</p><p>Quelle est la toute première action ?
+Que ne faut-il surtout pas faire ?
+Comment restaurer sans risque ?</p><p>Piste : Débrancher réseau → ne pas payer → restaurer backup</p><p>Cas 3 — Steve, ex-livreur</p><p>Le disque externe de sauvegarde ne se connecte plus, seule copie des données.</p><p>Quel est le vrai problème ici ?
+Comment cela aurait pu être évité ?
+Quelle solution proposer maintenant ?</p><p>Piste : Violation de la règle 3-2-1 → ajouter OneDrive en parallèle</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>VOCABULAIRE SAUVEGARDE — 18 termes essentiels</h2><p>Règle 3-2-1</p><p>3 copies · 2 supports · 1 hors site</p><p>Ransomware</p><p>Malware qui chiffre les fichiers contre rançon</p><p>Backup incrémentiel</p><p>Ne copie que les changements récents</p><p>Backup différentiel</p><p>Copie tout depuis la dernière sauvegarde complète</p><p>Image système</p><p>Copie exacte du disque entier</p><p>OneDrive</p><p>Stockage cloud Microsoft intégré à Windows</p><p>Historique des fichiers</p><p>Versions automatiques des documents</p><p>Point de restauration</p><p>Capture de l&#x27;état système Windows</p><p>WinRE</p><p>Environnement de récupération Windows</p><p>Recuva</p><p>Outil gratuit de récupération de fichiers</p><p>TRIM</p><p>Rend la récupération SSD plus difficile</p><p>Dossiers connus</p><p>Bureau/Documents/Images synchronisés OneDrive</p><p>NTFS</p><p>Système de fichiers natif Windows</p><p>exFAT</p><p>Format compatible multi-plateforme</p><p>bootrec</p><p>Commande de réparation du démarrage</p><p>Sauvegarde hors site</p><p>Copie stockée physiquement ailleurs</p><p>Rotation de disques</p><p>Alterner plusieurs disques de sauvegarde</p><p>Restauration testée</p><p>Vérification que le backup fonctionne réellement</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>BOÎTE À OUTILS</h2><p>Commandes et outils — Sauvegarde et récupération</p><p>Utilisables via CMD/PowerShell en administrateur</p><p>wbadmin start backup</p><p>Lancer une sauvegarde Windows en ligne de commande</p><p>wbadmin get versions</p><p>Lister les sauvegardes disponibles</p><p>robocopy source dest /MIR</p><p>Miroir de dossier — sauvegarde manuelle fiable</p><p>vssadmin list shadows</p><p>Lister les clichés instantanés de volume</p><p>bootrec /rebuildbcd</p><p>Reconstruire la configuration de démarrage</p><p>sysdm.cpl</p><p>Ouvrir la Protection du système / points de restauration</p><p>rstrui.exe</p><p>Lancer l&#x27;assistant de restauration système</p><p>fsutil behavior query DisableDeleteNotify</p><p>Vérifier l&#x27;état de TRIM sur SSD</p></div>
+<div class="slide timeline"><div class="slide-number">Slide 21</div><h2>À vous de jouer.</h2><p>Mettez en place une vraie stratégie de sauvegarde 3-2-1.</p><div class="timeline"><div class="step"><span class="step-num">01</span><span class="step-label">Configurer Windows Backup</span><div class="step-note">Activer la sauvegarde automatique vers un disque externe simulé.</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">02</span><span class="step-label">Créer un point de restauration</span><div class="step-note">sysdm.cpl → Protection du système → Créer manuellement.</div><div class="step-note">10 min</div></div><div class="step"><span class="step-num">03</span><span class="step-label">Simuler une suppression</span><div class="step-note">Supprimer un fichier test → le récupérer via Corbeille puis via Recuva.</div><div class="step-note">15 min</div></div><div class="step"><span class="step-num">04</span><span class="step-label">Tester une restauration</span><div class="step-note">Modifier un fichier sauvegardé → restaurer la version précédente → vérifier.</div><div class="step-note">10 min</div></div></div></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Compétences Séance 11 — À valider avec votre formateur</h2><p>Je connais et applique la règle 3-2-1 (3 copies, 2 supports, 1 hors site).</p><p>Je configure Windows Backup sur un disque externe avec sauvegarde automatique.</p><p>J&#x27;active la sauvegarde OneDrive (Bureau + Documents + Images).</p><p>Je sais récupérer un fichier supprimé : Corbeille → OneDrive → Recuva, dans cet ordre.</p><p>Je teste régulièrement la restauration en ouvrant un fichier depuis le backup.</p><p>J&#x27;accède à WinRE (F8 ou Shift+Redémarrer) pour les urgences Windows.</p><p>Je sais que sur SSD, il faut agir dans les premières minutes après une suppression.</p><p>Je connais le protocole de réponse immédiate à un ransomware.</p><p>FIN DE LA SÉANCE 11 — Valider avec votre formateur</p></div>
+</body>
+</html>
