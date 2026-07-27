@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import SignaturePad from "@/components/SignaturePad";
 import FicheTable from "@/components/FicheTable";
@@ -181,20 +182,33 @@ export default function AttendanceDetail() {
         />
 
         <Card>
-          <h2 className="text-lg font-bold text-gray-900 mb-4 text-center">
-            FICHE DE PRÉSENCE
-          </h2>
+          <div className="flex items-start justify-between mb-6">
+            <Image
+              src="/logo-samo.png"
+              alt="Formation SAMO"
+              width={120}
+              height={37}
+              className="h-8 w-auto"
+            />
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide">
+              FICHE DE PRÉSENCE
+            </h2>
+          </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 mb-6 text-sm">
-            <div>
-              <span className="text-gray-500">Nom de l&apos;étudiant(e) : </span>
-              <span className="font-medium text-gray-900">
+          <div className="space-y-2 mb-6 text-sm">
+            <div className="flex items-center gap-3">
+              <span className="font-semibold text-gray-900 w-52 shrink-0">
+                Nom de l&apos;étudiant(e) :
+              </span>
+              <span className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1">
                 {fiche.nom_etudiant}
               </span>
             </div>
-            <div>
-              <span className="text-gray-500">Nom du formateur(trice) : </span>
-              <span className="font-medium text-gray-900">
+            <div className="flex items-center gap-3">
+              <span className="font-semibold text-gray-900 w-52 shrink-0">
+                Nom du formateur(trice) :
+              </span>
+              <span className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1">
                 {fiche.nom_formateur || "—"}
               </span>
             </div>

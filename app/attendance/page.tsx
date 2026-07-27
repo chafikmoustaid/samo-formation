@@ -111,46 +111,46 @@ export default function Attendance() {
         />
 
         <Card>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-start justify-between mb-6">
             <Image
               src="/logo-samo.png"
               alt="Formation SAMO"
-              width={140}
-              height={43}
-              className="h-9 w-auto"
+              width={120}
+              height={37}
+              className="h-8 w-auto"
             />
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide">
               FICHE DE PRÉSENCE
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom de l&apos;étudiant(e)
+          <div className="space-y-2 mb-4 text-sm">
+            <div className="flex items-center gap-3">
+              <label className="font-semibold text-gray-900 w-52 shrink-0">
+                Nom de l&apos;étudiant(e) :
               </label>
               <input
                 type="text"
                 value={nomEtudiant}
                 onChange={(e) => setNomEtudiant(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1 text-sm"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom du formateur(trice)
+            <div className="flex items-center gap-3">
+              <label className="font-semibold text-gray-900 w-52 shrink-0">
+                Nom du formateur(trice) :
               </label>
               <input
                 type="text"
                 value={nomFormateur}
                 onChange={(e) => setNomFormateur(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1 text-sm"
               />
             </div>
           </div>
 
-          <div className="border border-gray-300 rounded p-3 text-xs italic text-gray-700 mb-6">
+          <div className="border border-gray-400 p-3 text-xs italic text-gray-800 mb-6">
             Cette fiche devra être complétée et signée par l&apos;étudiant(e) et
             remise au formateur(trice) à la fin de la semaine ou à la fin de la
             matière. Cette fiche devra ensuite être acheminée et signée par le

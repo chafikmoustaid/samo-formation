@@ -34,29 +34,45 @@ export async function GET(
     format: "a4",
   });
 
+  const GRIS_ENTETE: [number, number, number] = [229, 231, 235]; // gray-200
+  const GRIS_CLAIR: [number, number, number] = [243, 244, 246]; // gray-100
+  const GRIS_BORDURE: [number, number, number] = [156, 163, 175]; // gray-400
+
   const logoPath = path.join(process.cwd(), "public", "logo-samo.png");
 
   if (fs.existsSync(logoPath)) {
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-    pdf.addImage(`data:image/png;base64,${logoBase64}`, "PNG", 15, 12, 28, 8.6);
+    pdf.addImage(`data:image/png;base64,${logoBase64}`, "PNG", 15, 12, 24, 7.4);
   }
 
   pdf.setTextColor(0, 0, 0);
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
-  pdf.text("FICHE DE PRÉSENCE", 105, 30, { align: "center" });
+  pdf.text("FICHE DE PRÉSENCE", 195, 20, { align: "right" });
 
   pdf.setFontSize(10);
-  pdf.setFont("helvetica", "normal");
-  pdf.text("Nom de l'étudiant(e) :", 15, 42);
-  pdf.setFont("helvetica", "bold");
-  pdf.text(String(fiche.nom_etudiant ?? ""), 62, 42);
 
-  pdf.setFont("helvetica", "normal");
-  pdf.text("Nom du formateur(trice) :", 15, 49);
-  pdf.setFont("helvetica", "bold");
-  pdf.text(String(fiche.nom_formateur ?? ""), 62, 49);
+  const labelX = 15;
+  const boxX = 62;
+  const boxW = 70;
+  const boxH = 6;
 
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Nom de l'étudiant(e) :", labelX, 42);
+  pdf.setFillColor(...GRIS_CLAIR);
+  pdf.setDrawColor(...GRIS_BORDURE);
+  pdf.rect(boxX, 38.5, boxW, boxH, "FD");
+  pdf.setFont("helvetica", "normal");
+  pdf.text(String(fiche.nom_etudiant ?? ""), boxX + 2, 42.5);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Nom du formateur(trice) :", labelX, 51);
+  pdf.setFillColor(...GRIS_CLAIR);
+  pdf.rect(boxX, 47.5, boxW, boxH, "FD");
+  pdf.setFont("helvetica", "normal");
+  pdf.text(String(fiche.nom_formateur ?? ""), boxX + 2, 51.5);
+
+  pdf.setDrawColor(0, 0, 0);
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(8);
   const instructions =
@@ -100,8 +116,10 @@ export async function GET(
     ["Formation", colW.fDe + colW.fA + colW.fTot],
     ["Pratique", colW.pDe + colW.pA + colW.pTot],
   ];
+  pdf.setFillColor(...GRIS_ENTETE);
+  pdf.setDrawColor(...GRIS_BORDURE);
   headerLabels1.forEach(([label, w]) => {
-    pdf.rect(x, y, w, h1);
+    pdf.rect(x, y, w, h1, "FD");
     if (label) pdf.text(label, x + w / 2, y + h1 / 2 + 1.2, { align: "center" });
     x += w;
   });
@@ -110,7 +128,7 @@ export async function GET(
   // En-tête ligne 2
   const h2 = 5;
   x = x0 + colW.jour + colW.date + colW.matiere + colW.lp;
-  pdf.rect(x0, y, colW.jour + colW.date + colW.matiere + colW.lp, h2);
+  pdf.rect(x0, y, colW.jour + colW.date + colW.matiere + colW.lp, h2, "FD");
   const subLabels: [string, number][] = [
     ["De", colW.fDe],
     ["À", colW.fA],
@@ -120,11 +138,12 @@ export async function GET(
     ["Total", colW.pTot],
   ];
   subLabels.forEach(([label, w]) => {
-    pdf.rect(x, y, w, h2);
+    pdf.rect(x, y, w, h2, "FD");
     pdf.text(label, x + w / 2, y + h2 / 2 + 1, { align: "center" });
     x += w;
   });
   y += h2;
+  pdf.setDrawColor(0, 0, 0);
 
   // Lignes de données
   pdf.setFont("helvetica", "normal");
@@ -133,16 +152,17 @@ export async function GET(
   const hRow = 6;
   let indexDansJournee = 0;
 
-  lignes.forEach((ligne) => {
+  lignes.forEach((ligne, idx) => {
     x = x0;
-    const estPremiereLigne = ligne.type === "P";
+    const estPremiereLigne = idx % 2 === 0;
 
     if (estPremiereLigne) {
-      pdf.rect(x, y, colW.jour, hRow * 2);
+      pdf.setFillColor(...GRIS_ENTETE);
+      pdf.setDrawColor(...GRIS_BORDURE);
+      pdf.rect(x, y, colW.jour, hRow * 2, "FD");
+      pdf.setDrawColor(0, 0, 0);
       pdf.setFont("helvetica", "bold");
-      pdf.text(ligne.jour ?? "", x + colW.jour / 2, y + hRow + 1, {
-        align: "center",
-      });
+      pdf.text(ligne.jour ?? "", x + 1.5, y + hRow + 1);
       pdf.setFont("helvetica", "normal");
     }
     x += colW.jour;
@@ -174,7 +194,8 @@ export async function GET(
     });
     x += colW.fA;
 
-    pdf.rect(x, y, colW.fTot, hRow);
+    pdf.setFillColor(...GRIS_CLAIR);
+    pdf.rect(x, y, colW.fTot, hRow, "FD");
     pdf.text(fTotal ? String(fTotal) : "", x + colW.fTot / 2, y + hRow / 2 + 1, {
       align: "center",
     });
@@ -193,7 +214,8 @@ export async function GET(
     });
     x += colW.pA;
 
-    pdf.rect(x, y, colW.pTot, hRow);
+    pdf.setFillColor(...GRIS_CLAIR);
+    pdf.rect(x, y, colW.pTot, hRow, "FD");
     pdf.text(pTotal ? String(pTotal) : "", x + colW.pTot / 2, y + hRow / 2 + 1, {
       align: "center",
     });
@@ -204,8 +226,10 @@ export async function GET(
 
   // Ligne TOTAL
   pdf.setFont("helvetica", "bold");
+  pdf.setFillColor(...GRIS_ENTETE);
+  pdf.setDrawColor(...GRIS_BORDURE);
   x = x0;
-  pdf.rect(x, y, colW.jour + colW.date + colW.matiere + colW.lp, hRow);
+  pdf.rect(x, y, colW.jour + colW.date + colW.matiere + colW.lp, hRow, "FD");
   pdf.text(
     "TOTAL",
     x + (colW.jour + colW.date + colW.matiere + colW.lp) / 2,
@@ -214,27 +238,29 @@ export async function GET(
   );
   x += colW.jour + colW.date + colW.matiere + colW.lp;
 
-  pdf.rect(x, y, colW.fDe + colW.fA, hRow);
+  pdf.rect(x, y, colW.fDe + colW.fA, hRow, "FD");
   x += colW.fDe + colW.fA;
-  pdf.rect(x, y, colW.fTot, hRow);
+  pdf.rect(x, y, colW.fTot, hRow, "FD");
   pdf.text(String(fiche.total_formation ?? 0), x + colW.fTot / 2, y + hRow / 2 + 1, {
     align: "center",
   });
   x += colW.fTot;
 
-  pdf.rect(x, y, colW.pDe + colW.pA, hRow);
+  pdf.rect(x, y, colW.pDe + colW.pA, hRow, "FD");
   x += colW.pDe + colW.pA;
-  pdf.rect(x, y, colW.pTot, hRow);
+  pdf.rect(x, y, colW.pTot, hRow, "FD");
   pdf.text(String(fiche.total_pratique ?? 0), x + colW.pTot / 2, y + hRow / 2 + 1, {
     align: "center",
   });
+  pdf.setDrawColor(0, 0, 0);
 
   y += hRow + 6;
 
   // Motif écart d'heures
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(8);
-  pdf.rect(x0, y, tableWidth, 6);
+  pdf.setFillColor(...GRIS_ENTETE);
+  pdf.rect(x0, y, tableWidth, 6, "FD");
   pdf.text("SI PLUS OU MOINS D'HEURES, INSCRIRE LE MOTIF", x0 + tableWidth / 2, y + 4, {
     align: "center",
   });
