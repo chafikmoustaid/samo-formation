@@ -39,8 +39,19 @@ export default function Attendance() {
   }, []);
 
   async function chargerMatieresDisponibles() {
-    const { data } = await supabase.rpc("get_matieres_disponibles");
-    setMatieresDisponibles((data as string[]) ?? []);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("matieres")
+      .eq("id", user.id)
+      .single();
+
+    setMatieresDisponibles((data?.matieres as string[]) ?? []);
   }
 
   async function chargerSignatureEnregistree() {

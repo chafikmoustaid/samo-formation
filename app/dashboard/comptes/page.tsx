@@ -51,14 +51,27 @@ export default function ComptesPage() {
       .from("profiles")
       .select("id, email, role, created_at, matieres")
       .order("created_at", { ascending: true });
-    const liste = (data as Profile[]) ?? [];
-    setProfiles(liste);
-
-    const union = new Set<string>();
-    liste.forEach((p) => (p.matieres ?? []).forEach((m) => union.add(m)));
-    setToutesMatieres((prev) => Array.from(new Set([...prev, ...union])).sort());
-
+    setProfiles((data as Profile[]) ?? []);
     setLoading(false);
+  }
+
+  async function loadCatalogue() {
+    const { data } = await supabase
+      .from("matieres_catalogue")
+      .select("nom")
+      .order("nom", { ascending: true });
+    setToutesMatieres((data ?? []).map((m: { nom: string }) => m.nom));
+  }
+
+  async function ajouterAuCatalogue(matiere: string) {
+    const { error } = await supabase.rpc("admin_ajouter_matiere_catalogue", {
+      nom_matiere: matiere,
+    });
+    if (!error) {
+      setToutesMatieres((prev) =>
+        Array.from(new Set([...prev, matiere])).sort()
+      );
+    }
   }
 
   async function enregistrerMatieres(id: string, matieres: string[]) {
@@ -88,6 +101,7 @@ export default function ComptesPage() {
 
   useEffect(() => {
     loadProfiles();
+    loadCatalogue();
   }, []);
 
   async function changeRole(id: string, role: Role) {
@@ -292,7 +306,7 @@ export default function ComptesPage() {
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3">Email</th>
                   <th className="p-3">Rôle</th>
-                  <th className="p-3">Matières enseignées</th>
+                  <th className="p-3">Matières</th>
                   <th className="p-3">Créé le</th>
                   <th className="p-3">Actions</th>
                 </tr>
@@ -316,29 +330,21 @@ export default function ComptesPage() {
                       </select>
                     </td>
                     <td className="p-3">
-                      {p.role === "instructor" || p.role === "admin" ? (
-                        <div className="flex flex-col gap-2">
-                          <MatieresMultiSelect
-                            options={toutesMatieres}
-                            selected={p.matieres ?? []}
-                            onChange={(matieres) =>
-                              enregistrerMatieres(p.id, matieres)
-                            }
-                            onAjouterOption={(matiere) =>
-                              setToutesMatieres((prev) =>
-                                Array.from(new Set([...prev, matiere])).sort()
-                              )
-                            }
-                          />
-                          {savingMatieresId === p.id && (
-                            <span className="text-xs text-gray-400">
-                              Enregistrement…
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400">—</span>
-                      )}
+                      <div className="flex flex-col gap-2">
+                        <MatieresMultiSelect
+                          options={toutesMatieres}
+                          selected={p.matieres ?? []}
+                          onChange={(matieres) =>
+                            enregistrerMatieres(p.id, matieres)
+                          }
+                          onAjouterOption={ajouterAuCatalogue}
+                        />
+                        {savingMatieresId === p.id && (
+                          <span className="text-xs text-gray-400">
+                            Enregistrement…
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3 text-gray-500">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
