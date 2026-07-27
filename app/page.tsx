@@ -25,12 +25,12 @@ export default function Home() {
         />
 
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 max-w-xl">
-          Formation professionnelle à distance en support informatique
+          Formation professionnelle en support informatique
         </h1>
 
         <p className="mt-3 text-gray-500 max-w-md">
-          Plateforme d&apos;apprentissage réservée aux étudiants, formateurs
-          et à l&apos;administration.
+          La plateforme pédagogique de Formation SAMO — cours, présences et
+          évaluations, réunis au même endroit.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
@@ -38,21 +38,21 @@ export default function Home() {
             href="/login?role=student"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-green-700 hover:bg-green-800 transition-colors text-white text-base font-medium px-8 py-3.5 shadow-lg shadow-green-700/20 w-56 sm:w-auto"
           >
-            📚 Espace étudiant
+            Espace étudiant
           </Link>
 
           <Link
             href="/login?role=instructor"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 hover:bg-gray-800 transition-colors text-white text-base font-medium px-8 py-3.5 shadow-lg shadow-gray-900/20 w-56 sm:w-auto"
           >
-            🎓 Espace formateur
+            Espace formateur
           </Link>
 
           <Link
             href="/login?role=admin"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-700 text-base font-medium px-8 py-3.5 w-56 sm:w-auto"
           >
-            📊 Administration
+            Administration
           </Link>
         </div>
       </main>

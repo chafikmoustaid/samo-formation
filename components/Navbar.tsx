@@ -91,29 +91,38 @@ export default function Navbar() {
     <nav className="bg-green-700 text-white shadow">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-5 flex-wrap">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/"
+            className="flex items-center shrink-0 bg-white rounded-lg px-3 py-1.5 shadow-sm"
+          >
             <Image
               src="/logo-samo.png"
               alt="Formation SAMO"
-              width={120}
-              height={37}
-              className="h-7 w-auto brightness-0 invert"
+              width={160}
+              height={49}
+              className="h-9 w-auto"
             />
           </Link>
 
           {role === "admin" && section === "admin" && (
             <>
-              <Link href="/dashboard" className="hover:underline text-sm">
-                📊 Dashboard
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
+              >
+                Dashboard
               </Link>
-              <Link href="/attendance" className="hover:underline text-sm">
-                📄 Nouvelle fiche
+              <Link
+                href="/attendance"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
+              >
+                Nouvelle fiche
               </Link>
               <Link
                 href="/attendance/history"
-                className="hover:underline text-sm"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
               >
-                🕒 Historique
+                Historique
               </Link>
             </>
           )}
@@ -121,27 +130,36 @@ export default function Navbar() {
           {(role === "instructor" ||
             (role === "admin" && section === "instructor")) && (
             <>
-              <Link href="/instructor" className="hover:underline text-sm">
-                🎓 Portail formateur
+              <Link
+                href="/instructor"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
+              >
+                Portail formateur
               </Link>
               <Link
                 href="/instructor/attendance"
-                className="hover:underline text-sm"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
               >
-                🕒 Fiches de présence
+                Fiches de présence
               </Link>
             </>
           )}
 
           {role === "student" && (
-            <Link href="/student" className="hover:underline text-sm">
-              📚 Mon espace
+            <Link
+              href="/student"
+              className="text-sm font-medium hover:text-white/80 transition-colors"
+            >
+              Mon espace
             </Link>
           )}
 
           {role === "admin" && section === "student" && (
-            <Link href="/student" className="hover:underline text-sm">
-              📚 Portail étudiant
+            <Link
+              href="/student"
+              className="text-sm font-medium hover:text-white/80 transition-colors"
+            >
+              Portail étudiant
             </Link>
           )}
         </div>
