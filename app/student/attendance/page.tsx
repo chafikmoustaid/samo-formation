@@ -42,7 +42,7 @@ export default function StudentAttendancePage() {
       .from("attendance")
       .select("*")
       .eq("user_id", user.id)
-      .order("semaine_debut", { ascending: false });
+      .order("id", { ascending: false });
 
     setFiches(data ?? []);
     setLoading(false);
@@ -71,8 +71,8 @@ export default function StudentAttendancePage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-500">
-                  <th className="p-4 font-medium">Semaine du</th>
-                  <th className="p-4 font-medium">Au</th>
+                  <th className="p-4 font-medium">Formation</th>
+                  <th className="p-4 font-medium">Pratique</th>
                   <th className="p-4 font-medium">Total</th>
                   <th className="p-4 font-medium">Statut</th>
                   <th className="p-4"></th>
@@ -82,8 +82,8 @@ export default function StudentAttendancePage() {
               <tbody>
                 {fiches.map((fiche) => (
                   <tr key={fiche.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="p-4">{String(fiche.semaine_debut)}</td>
-                    <td className="p-4">{String(fiche.semaine_fin)}</td>
+                    <td className="p-4">{fiche.total_formation ?? 0} h</td>
+                    <td className="p-4">{fiche.total_pratique ?? 0} h</td>
                     <td className="p-4">{fiche.total_heures} h</td>
                     <td className="p-4">
                       <Badge

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import SignaturePad from "@/components/SignaturePad";
+import FicheTable from "@/components/FicheTable";
+import { LigneFiche } from "@/lib/fichePresence";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -15,19 +17,10 @@ const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
   refusee: "danger",
 };
 
-const STATUT_LABELS: Record<string, { texte: string; classe: string }> = {
-  en_attente: {
-    texte: "⏳ En attente de validation",
-    classe: "bg-yellow-100 text-yellow-800",
-  },
-  validee: {
-    texte: "✅ Validée",
-    classe: "bg-green-100 text-green-800",
-  },
-  refusee: {
-    texte: "❌ Refusée",
-    classe: "bg-red-100 text-red-800",
-  },
+const STATUT_LABELS: Record<string, string> = {
+  en_attente: "⏳ En attente de validation",
+  validee: "✅ Validée",
+  refusee: "❌ Refusée",
 };
 
 export default function AttendanceDetail() {
@@ -75,9 +68,7 @@ export default function AttendanceDetail() {
         .eq("id", user.id)
         .single();
 
-      setIsStaff(
-        profil?.role === "instructor" || profil?.role === "admin"
-      );
+      setIsStaff(profil?.role === "instructor" || profil?.role === "admin");
     }
 
     setLoading(false);
@@ -175,8 +166,7 @@ export default function AttendanceDetail() {
     return <div className="p-8 text-gray-500">Fiche introuvable</div>;
   }
 
-  const statutInfo =
-    STATUT_LABELS[fiche.statut] ?? STATUT_LABELS.en_attente;
+  const lignes: LigneFiche[] = Array.isArray(fiche.lignes) ? fiche.lignes : [];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -185,178 +175,190 @@ export default function AttendanceDetail() {
           title="Fiche de présence"
           action={
             <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
-              {statutInfo.texte}
+              {STATUT_LABELS[fiche.statut] ?? fiche.statut}
             </Badge>
           }
         />
 
         <Card>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <strong>Étudiant :</strong> {fiche.nom_etudiant}
-          </div>
+          <h2 className="text-lg font-bold text-gray-900 mb-4 text-center">
+            FICHE DE PRÉSENCE
+          </h2>
 
-          <div>
-            <strong>Formateur :</strong> {fiche.nom_formateur}
-          </div>
-
-          <div>
-            <strong>Matière :</strong> {fiche.matiere}
-          </div>
-
-          <div>
-            <strong>Total :</strong> {fiche.total_heures} h
-          </div>
-
-          <div>
-            <strong>Semaine du :</strong> {String(fiche.semaine_debut)}
-          </div>
-
-          <div>
-            <strong>Au :</strong> {String(fiche.semaine_fin)}
-          </div>
-        </div>
-
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold mb-4">Heures</h2>
-
-          <ul className="space-y-2">
-            <li>Lundi : {fiche.lundi} h</li>
-            <li>Mardi : {fiche.mardi} h</li>
-            <li>Mercredi : {fiche.mercredi} h</li>
-            <li>Jeudi : {fiche.jeudi} h</li>
-            <li>Vendredi : {fiche.vendredi} h</li>
-          </ul>
-        </div>
-
-        <div className="mt-10 border rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Signature étudiant</h2>
-
-          {fiche.signature_etudiant ? (
-            <img
-              src={fiche.signature_etudiant}
-              alt="Signature de l'étudiant"
-              className="border rounded bg-white h-24"
-            />
-          ) : (
-            <p className="text-gray-500">Aucune signature enregistrée.</p>
-          )}
-
-          <div className="mt-2 text-sm text-gray-600">
-            <strong>Date :</strong>{" "}
-            {fiche.date_signature_etudiant
-              ? new Date(fiche.date_signature_etudiant).toLocaleString(
-                  "fr-CA"
-                )
-              : "-"}
-          </div>
-        </div>
-
-        <div className="mt-10 border rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Validation du formateur</h2>
-
-          {fiche.statut === "validee" && (
-            <>
-              {fiche.signature_formateur ? (
-                <img
-                  src={fiche.signature_formateur}
-                  alt="Signature du formateur"
-                  className="border rounded bg-white h-24"
-                />
-              ) : (
-                <p className="text-gray-500">Aucune signature enregistrée.</p>
-              )}
-
-              <div className="mt-2 text-sm text-gray-600">
-                <strong>Validée le :</strong>{" "}
-                {fiche.date_signature_formateur
-                  ? new Date(fiche.date_signature_formateur).toLocaleString(
-                      "fr-CA"
-                    )
-                  : "-"}
-              </div>
-            </>
-          )}
-
-          {fiche.statut === "refusee" && (
-            <div className="text-red-700 bg-red-50 border border-red-100 rounded-lg p-4">
-              <strong>Motif du refus :</strong>{" "}
-              {fiche.motif || "Aucun motif renseigné."}
+          <div className="grid sm:grid-cols-2 gap-4 mb-6 text-sm">
+            <div>
+              <span className="text-gray-500">Nom de l&apos;étudiant(e) : </span>
+              <span className="font-medium text-gray-900">
+                {fiche.nom_etudiant}
+              </span>
             </div>
-          )}
+            <div>
+              <span className="text-gray-500">Nom du formateur(trice) : </span>
+              <span className="font-medium text-gray-900">
+                {fiche.nom_formateur || "—"}
+              </span>
+            </div>
+          </div>
 
-          {fiche.statut === "en_attente" && !isStaff && (
-            <p className="text-gray-500">
-              Cette fiche attend la validation du formateur.
+          {lignes.length > 0 ? (
+            <div className="overflow-x-auto">
+              <FicheTable lignes={lignes} />
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Total heures : {fiche.total_heures ?? 0} h
             </p>
           )}
 
-          {fiche.statut === "en_attente" && isStaff && !modeRefus && (
-            <div className="space-y-4">
-              <p className="text-gray-600 text-sm">
-                Vérifie les heures déclarées, puis signe pour valider cette
-                fiche.
-              </p>
-
-              <SignaturePad onSave={setSignatureFormateur} />
-
-              {signatureFormateur && (
-                <p className="text-sm text-green-700">
-                  ✓ Signature enregistrée, prête à être validée.
-                </p>
-              )}
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={validerFiche}
-                  disabled={enregistrement || !signatureFormateur}
-                >
-                  {enregistrement ? "Enregistrement..." : "✅ Valider la fiche"}
-                </Button>
-
-                <Button variant="outline" onClick={() => setModeRefus(true)}>
-                  ❌ Refuser
-                </Button>
-              </div>
+          {fiche.motif_heures && (
+            <div className="mt-4 bg-gray-50 border border-gray-200 rounded p-3 text-sm">
+              <span className="font-semibold text-gray-900">
+                Motif (écart d&apos;heures) :{" "}
+              </span>
+              {fiche.motif_heures}
             </div>
           )}
 
-          {fiche.statut === "en_attente" && isStaff && modeRefus && (
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Motif du refus
-              </label>
+          <div className="mt-10 border border-gray-200 rounded-lg p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">
+              Signature étudiant
+            </h2>
 
-              <textarea
-                value={motif}
-                onChange={(e) => setMotif(e.target.value)}
-                rows={4}
-                className="w-full border rounded-lg p-3"
-                placeholder="Explique pourquoi cette fiche est refusée..."
+            {fiche.signature_etudiant ? (
+              <img
+                src={fiche.signature_etudiant}
+                alt="Signature de l'étudiant"
+                className="border rounded bg-white h-24"
               />
+            ) : (
+              <p className="text-gray-500 text-sm">
+                Aucune signature enregistrée.
+              </p>
+            )}
 
-              <div className="flex gap-3">
-                <Button variant="danger" onClick={refuserFiche} disabled={enregistrement}>
-                  {enregistrement ? "Enregistrement..." : "Confirmer le refus"}
-                </Button>
-
-                <Button variant="outline" onClick={() => setModeRefus(false)}>
-                  Annuler
-                </Button>
-              </div>
+            <div className="mt-2 text-sm text-gray-600">
+              <strong>Date :</strong>{" "}
+              {fiche.date_signature_etudiant
+                ? new Date(fiche.date_signature_etudiant).toLocaleString(
+                    "fr-CA"
+                  )
+                : "-"}
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="mt-10">
-          <button
-            onClick={telechargerPdf}
-            disabled={telechargement}
-            className="text-green-700 hover:underline disabled:opacity-50 text-sm"
-          >
-            {telechargement ? "Génération du PDF..." : "📄 Télécharger le PDF"}
-          </button>
-        </div>
+          <div className="mt-6 border border-gray-200 rounded-lg p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">
+              Validation du formateur
+            </h2>
+
+            {fiche.statut === "validee" && (
+              <>
+                {fiche.signature_formateur ? (
+                  <img
+                    src={fiche.signature_formateur}
+                    alt="Signature du formateur"
+                    className="border rounded bg-white h-24"
+                  />
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    Aucune signature enregistrée.
+                  </p>
+                )}
+
+                <div className="mt-2 text-sm text-gray-600">
+                  <strong>Validée le :</strong>{" "}
+                  {fiche.date_signature_formateur
+                    ? new Date(fiche.date_signature_formateur).toLocaleString(
+                        "fr-CA"
+                      )
+                    : "-"}
+                </div>
+              </>
+            )}
+
+            {fiche.statut === "refusee" && (
+              <div className="text-red-700 bg-red-50 border border-red-100 rounded-lg p-4 text-sm">
+                <strong>Motif du refus :</strong>{" "}
+                {fiche.motif || "Aucun motif renseigné."}
+              </div>
+            )}
+
+            {fiche.statut === "en_attente" && !isStaff && (
+              <p className="text-gray-500 text-sm">
+                Cette fiche attend la validation du formateur.
+              </p>
+            )}
+
+            {fiche.statut === "en_attente" && isStaff && !modeRefus && (
+              <div className="space-y-4">
+                <p className="text-gray-600 text-sm">
+                  Vérifie les heures déclarées, puis signe pour valider cette
+                  fiche.
+                </p>
+
+                <SignaturePad onSave={setSignatureFormateur} />
+
+                {signatureFormateur && (
+                  <p className="text-sm text-green-700">
+                    ✓ Signature enregistrée, prête à être validée.
+                  </p>
+                )}
+
+                <div className="flex gap-3">
+                  <Button
+                    onClick={validerFiche}
+                    disabled={enregistrement || !signatureFormateur}
+                  >
+                    {enregistrement ? "Enregistrement..." : "✅ Valider la fiche"}
+                  </Button>
+
+                  <Button variant="outline" onClick={() => setModeRefus(true)}>
+                    ❌ Refuser
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {fiche.statut === "en_attente" && isStaff && modeRefus && (
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Motif du refus
+                </label>
+
+                <textarea
+                  value={motif}
+                  onChange={(e) => setMotif(e.target.value)}
+                  rows={4}
+                  className="w-full border border-gray-200 rounded-lg p-3 text-sm"
+                  placeholder="Explique pourquoi cette fiche est refusée..."
+                />
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="danger"
+                    onClick={refuserFiche}
+                    disabled={enregistrement}
+                  >
+                    {enregistrement ? "Enregistrement..." : "Confirmer le refus"}
+                  </Button>
+
+                  <Button variant="outline" onClick={() => setModeRefus(false)}>
+                    Annuler
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8">
+            <button
+              onClick={telechargerPdf}
+              disabled={telechargement}
+              className="text-green-700 hover:underline disabled:opacity-50 text-sm"
+            >
+              {telechargement ? "Génération du PDF..." : "📄 Télécharger le PDF"}
+            </button>
+          </div>
         </Card>
       </div>
     </div>

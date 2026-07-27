@@ -64,11 +64,10 @@ export default function AttendanceHistory() {
               <tr className="bg-gray-50 text-left text-gray-500">
                 <th className="p-4 font-medium">Étudiant</th>
                 <th className="p-4 font-medium">Formateur</th>
-                <th className="p-4 font-medium">Matière</th>
+                <th className="p-4 font-medium">Formation</th>
+                <th className="p-4 font-medium">Pratique</th>
                 <th className="p-4 font-medium">Total</th>
                 <th className="p-4 font-medium">Statut</th>
-                <th className="p-4 font-medium">Début</th>
-                <th className="p-4 font-medium">Fin</th>
                 <th className="p-4 font-medium">Actions</th>
               </tr>
             </thead>
@@ -78,13 +77,12 @@ export default function AttendanceHistory() {
                 <tr key={fiche.id} className="border-t border-gray-100 hover:bg-gray-50">
                   <td className="p-4">{fiche.nom_etudiant}</td>
                   <td className="p-4">{fiche.nom_formateur}</td>
-                  <td className="p-4">{fiche.matiere}</td>
+                  <td className="p-4">{fiche.total_formation ?? 0} h</td>
+                  <td className="p-4">{fiche.total_pratique ?? 0} h</td>
                   <td className="p-4">{fiche.total_heures} h</td>
                   <td className="p-4">
                     <StatusSelector id={fiche.id} statut={fiche.statut} />
                   </td>
-                  <td className="p-4">{String(fiche.semaine_debut)}</td>
-                  <td className="p-4">{String(fiche.semaine_fin)}</td>
 
                   <td className="p-4 space-x-2 whitespace-nowrap">
                     <Link
