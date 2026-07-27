@@ -20,7 +20,10 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 export default function ComptesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<{
+    texte: string;
+    type: "succes" | "erreur";
+  } | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const [newEmail, setNewEmail] = useState("");
@@ -28,6 +31,10 @@ export default function ComptesPage() {
   const [newRole, setNewRole] = useState<Role>("student");
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [settingPassword, setSettingPassword] = useState(false);
 
   async function loadProfiles() {
     setLoading(true);
@@ -55,38 +62,65 @@ export default function ComptesPage() {
     setBusyId(null);
 
     if (error) {
-      setMessage("Erreur lors du changement de rôle : " + error.message);
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors du changement de rôle : " + error.message,
+      });
       return;
     }
 
     setProfiles((prev) =>
       prev.map((p) => (p.id === id ? { ...p, role } : p))
     );
-    setMessage("Rôle mis à jour.");
+    setMessage({ type: "succes", texte: "Rôle mis à jour." });
   }
 
-  async function resetPassword(email: string) {
-    setBusyId(email);
-    setMessage(null);
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo:
-        typeof window !== "undefined"
-          ? `${window.location.origin}/login`
-          : undefined,
-    });
-
-    setBusyId(null);
-
-    if (error) {
-      setMessage(
-        "Erreur lors de l'envoi de l'email de réinitialisation : " +
-          error.message
-      );
+  async function definirMotDePasse(id: string, email: string) {
+    if (!passwordInput || passwordInput.length < 6) {
+      setMessage({
+        type: "erreur",
+        texte: "Le mot de passe doit contenir au moins 6 caractères.",
+      });
       return;
     }
 
-    setMessage(`Email de réinitialisation envoyé à ${email}.`);
+    setSettingPassword(true);
+    setMessage(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch("/api/admin/set-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(session
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {}),
+      },
+      body: JSON.stringify({ userId: id, password: passwordInput }),
+    });
+
+    const result = await response.json();
+    setSettingPassword(false);
+
+    if (!response.ok) {
+      setMessage({
+        type: "erreur",
+        texte:
+          "Erreur lors de la mise à jour du mot de passe : " +
+          (result.error ?? "erreur inconnue"),
+      });
+      return;
+    }
+
+    setEditingId(null);
+    setPasswordInput("");
+    setMessage({
+      type: "succes",
+      texte: `Mot de passe mis à jour pour ${email}.`,
+    });
   }
 
   async function createAccount(e: React.FormEvent) {
@@ -129,7 +163,7 @@ export default function ComptesPage() {
     setNewEmail("");
     setNewPassword("");
     setNewRole("student");
-    setMessage(`Compte créé pour ${newEmail}.`);
+    setMessage({ type: "succes", texte: `Compte créé pour ${newEmail}.` });
     loadProfiles();
   }
 
@@ -146,8 +180,14 @@ export default function ComptesPage() {
         </div>
 
         {message && (
-          <div className="mb-6 text-sm bg-green-50 border border-green-100 text-green-700 rounded-lg px-4 py-3">
-            {message}
+          <div
+            className={`mb-6 text-sm rounded-lg px-4 py-3 border ${
+              message.type === "erreur"
+                ? "bg-red-50 border-red-100 text-red-700"
+                : "bg-green-50 border-green-100 text-green-700"
+            }`}
+          >
+            {message.texte}
           </div>
         )}
 
@@ -188,13 +228,45 @@ export default function ComptesPage() {
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
                     </td>
                     <td className="p-3">
-                      <button
-                        onClick={() => resetPassword(p.email)}
-                        disabled={busyId === p.email}
-                        className="text-blue-600 hover:underline disabled:opacity-50"
-                      >
-                        Réinitialiser le mot de passe
-                      </button>
+                      {editingId === p.id ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            autoFocus
+                            placeholder="Nouveau mot de passe"
+                            value={passwordInput}
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                          />
+                          <button
+                            onClick={() => definirMotDePasse(p.id, p.email)}
+                            disabled={settingPassword}
+                            className="text-green-700 hover:underline disabled:opacity-50"
+                          >
+                            {settingPassword ? "…" : "Enregistrer"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingId(null);
+                              setPasswordInput("");
+                            }}
+                            className="text-gray-400 hover:underline"
+                          >
+                            Annuler
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setEditingId(p.id);
+                            setPasswordInput("");
+                            setMessage(null);
+                          }}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Nouveau mot de passe
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
