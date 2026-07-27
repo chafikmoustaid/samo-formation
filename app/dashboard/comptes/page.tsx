@@ -91,26 +91,44 @@ export default function ComptesPage() {
       data: { session },
     } = await supabase.auth.getSession();
 
-    const response = await fetch("/api/admin/set-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(session
-          ? { Authorization: `Bearer ${session.access_token}` }
-          : {}),
-      },
-      body: JSON.stringify({ userId: id, password: passwordInput }),
-    });
+    let result: { error?: string; success?: boolean } = {};
 
-    const result = await response.json();
-    setSettingPassword(false);
+    try {
+      const response = await fetch("/api/admin/set-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
+        body: JSON.stringify({ userId: id, password: passwordInput }),
+      });
 
-    if (!response.ok) {
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
+
+      setSettingPassword(false);
+
+      if (!response.ok) {
+        setMessage({
+          type: "erreur",
+          texte:
+            "Erreur lors de la mise à jour du mot de passe : " +
+            (result.error ?? `réponse serveur invalide (code ${response.status})`),
+        });
+        return;
+      }
+    } catch (err) {
+      setSettingPassword(false);
       setMessage({
         type: "erreur",
         texte:
-          "Erreur lors de la mise à jour du mot de passe : " +
-          (result.error ?? "erreur inconnue"),
+          "Erreur réseau lors de la mise à jour du mot de passe : " +
+          (err instanceof Error ? err.message : "erreur inconnue"),
       });
       return;
     }
