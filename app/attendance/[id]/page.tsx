@@ -296,7 +296,10 @@ export default function AttendanceDetail() {
                   fiche.
                 </p>
 
-                <SignaturePad onSave={setSignatureFormateur} />
+                <SignaturePad
+                  onSave={setSignatureFormateur}
+                  nomParDefaut={fiche.nom_formateur ?? ""}
+                />
 
                 {signatureFormateur && (
                   <p className="text-sm text-green-700">

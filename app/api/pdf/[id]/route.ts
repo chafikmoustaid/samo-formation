@@ -271,6 +271,7 @@ export async function GET(
 
   // Signatures
   const sigW = tableWidth / 2 - 2;
+  const sigH = 26;
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   pdf.text("Signature de l'étudiant(e)", x0 + sigW / 2, y, { align: "center" });
@@ -279,31 +280,75 @@ export async function GET(
   });
   y += 3;
 
-  pdf.rect(x0, y, sigW, 25);
-  pdf.rect(x0 + sigW + 4, y, sigW, 25);
+  function dessinerSignature(
+    x: number,
+    largeur: number,
+    image: string | null,
+    nom: string | null,
+    dateIso: string | null
+  ) {
+    pdf.setDrawColor(0);
+    pdf.rect(x, y, largeur, sigH);
 
-  if (fiche.signature_etudiant) {
+    if (!image) return;
+
+    const imageW = largeur * 0.6;
+    const texteX = x + imageW + 2;
+    const texteW = largeur - imageW - 4;
+
     try {
-      pdf.addImage(fiche.signature_etudiant, "PNG", x0 + 2, y + 2, sigW - 4, 21);
+      pdf.addImage(image, "PNG", x + 2, y + 2, imageW - 4, sigH - 4);
     } catch {
       // signature invalide, on l'ignore
     }
+
+    pdf.setDrawColor(210, 210, 210);
+    pdf.line(x + imageW, y + 2, x + imageW, y + sigH - 2);
+
+    pdf.setTextColor(90, 90, 90);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(6.5);
+
+    let ligneY = y + 6;
+    pdf.text(pdf.splitTextToSize("Signature numérique de", texteW), texteX, ligneY);
+    ligneY += 4.5;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7);
+    pdf.text(pdf.splitTextToSize(nom ?? "", texteW), texteX, ligneY);
+    ligneY += 6;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(6.5);
+    const dateTexte = dateIso
+      ? new Date(dateIso).toLocaleString("fr-CA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "-";
+    pdf.text(pdf.splitTextToSize(`Date : ${dateTexte}`, texteW), texteX, ligneY);
+
+    pdf.setTextColor(0, 0, 0);
   }
 
-  if (fiche.signature_formateur) {
-    try {
-      pdf.addImage(
-        fiche.signature_formateur,
-        "PNG",
-        x0 + sigW + 6,
-        y + 2,
-        sigW - 4,
-        21
-      );
-    } catch {
-      // signature invalide, on l'ignore
-    }
-  }
+  dessinerSignature(
+    x0,
+    sigW,
+    fiche.signature_etudiant ?? null,
+    fiche.nom_etudiant ?? null,
+    fiche.date_signature_etudiant ?? null
+  );
+
+  dessinerSignature(
+    x0 + sigW + 4,
+    sigW,
+    fiche.signature_formateur ?? null,
+    fiche.nom_formateur ?? null,
+    fiche.date_signature_formateur ?? null
+  );
 
   const buffer = pdf.output("arraybuffer");
 

@@ -105,7 +105,7 @@ export default function FicheTable({
         {lignes.map((ligne, index) => {
           const formationTotal = calculHeures(ligne.formationDe, ligne.formationA);
           const pratiqueTotal = calculHeures(ligne.pratiqueDe, ligne.pratiqueA);
-          const premiereLigneDuJour = ligne.type === "P";
+          const premiereLigneDuJour = index % 2 === 0;
 
           return (
             <tr key={index}>
@@ -145,8 +145,19 @@ export default function FicheTable({
                 )}
               </td>
 
-              <td className="border border-gray-300 p-1.5 text-center">
-                {ligne.type}
+              <td className="border border-gray-300 p-0 text-center">
+                {editable ? (
+                  <select
+                    value={ligne.type}
+                    onChange={(e) => set(index, "type", e.target.value)}
+                    className="w-full px-0.5 py-1.5 text-xs outline-none bg-transparent text-center"
+                  >
+                    <option value="P">P</option>
+                    <option value="L">L</option>
+                  </select>
+                ) : (
+                  ligne.type
+                )}
               </td>
 
               <td className="border border-gray-300 p-0">

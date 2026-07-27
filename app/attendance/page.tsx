@@ -196,6 +196,7 @@ export default function Attendance() {
                 setSignatureEtudiant(signature);
                 setDateSignatureEtudiant(new Date().toISOString());
               }}
+              nomParDefaut={nomEtudiant}
             />
 
             {signatureEtudiant && (
