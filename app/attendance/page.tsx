@@ -31,10 +31,17 @@ export default function Attendance() {
   const [signatureEnregistree, setSignatureEnregistree] = useState<string | null>(
     null
   );
+  const [matieresDisponibles, setMatieresDisponibles] = useState<string[]>([]);
 
   useEffect(() => {
     chargerSignatureEnregistree();
+    chargerMatieresDisponibles();
   }, []);
+
+  async function chargerMatieresDisponibles() {
+    const { data } = await supabase.rpc("get_matieres_disponibles");
+    setMatieresDisponibles((data as string[]) ?? []);
+  }
 
   async function chargerSignatureEnregistree() {
     const {
@@ -192,7 +199,12 @@ export default function Attendance() {
           </div>
 
           <div className="overflow-x-auto">
-            <FicheTable lignes={lignes} editable onChange={modifierLigne} />
+            <FicheTable
+              lignes={lignes}
+              editable
+              onChange={modifierLigne}
+              matieresDisponibles={matieresDisponibles}
+            />
           </div>
 
           <div className="mt-6 border border-black">

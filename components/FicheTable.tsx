@@ -29,10 +29,12 @@ export default function FicheTable({
   lignes,
   editable = false,
   onChange,
+  matieresDisponibles = [],
 }: {
   lignes: LigneFiche[];
   editable?: boolean;
   onChange?: (index: number, field: keyof LigneFiche, value: string) => void;
+  matieresDisponibles?: string[];
 }) {
   const totalFormation = lignes.reduce(
     (sum, l) => sum + calculHeures(l.formationDe, l.formationA),
@@ -133,13 +135,28 @@ export default function FicheTable({
 
               <td className="border border-black p-1">
                 {editable ? (
-                  <input
-                    type="text"
-                    value={ligne.matiere}
-                    onChange={(e) => set(index, "matiere", e.target.value)}
-                    placeholder="Matière"
-                    className="w-full px-1.5 py-1 text-sm outline-none bg-transparent"
-                  />
+                  matieresDisponibles.length > 0 ? (
+                    <select
+                      value={ligne.matiere}
+                      onChange={(e) => set(index, "matiere", e.target.value)}
+                      className="w-full px-1 py-1 text-sm outline-none bg-transparent"
+                    >
+                      <option value="">Choisir une matière</option>
+                      {matieresDisponibles.map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={ligne.matiere}
+                      onChange={(e) => set(index, "matiere", e.target.value)}
+                      placeholder="Matière"
+                      className="w-full px-1.5 py-1 text-sm outline-none bg-transparent"
+                    />
+                  )
                 ) : (
                   <span className="px-1.5">{ligne.matiere || "—"}</span>
                 )}

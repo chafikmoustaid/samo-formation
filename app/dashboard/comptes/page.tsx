@@ -13,6 +13,7 @@ type Profile = {
   email: string;
   role: Role;
   created_at: string;
+  matieres: string[] | null;
 };
 
 export default function ComptesPage() {
@@ -38,14 +39,52 @@ export default function ComptesPage() {
     null
   );
 
+  const [matieresEdition, setMatieresEdition] = useState<Record<string, string>>(
+    {}
+  );
+  const [savingMatieresId, setSavingMatieresId] = useState<string | null>(
+    null
+  );
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("id, email, role, created_at")
+      .select("id, email, role, created_at, matieres")
       .order("created_at", { ascending: true });
     setProfiles((data as Profile[]) ?? []);
     setLoading(false);
+  }
+
+  async function enregistrerMatieres(id: string) {
+    const texte = matieresEdition[id] ?? "";
+    const liste = texte
+      .split(",")
+      .map((m) => m.trim())
+      .filter(Boolean);
+
+    setSavingMatieresId(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_update_matieres", {
+      profil_id: id,
+      nouvelles_matieres: liste,
+    });
+
+    setSavingMatieresId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'enregistrement des matières : " + error.message,
+      });
+      return;
+    }
+
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, matieres: liste } : p))
+    );
+    setMessage({ type: "succes", texte: "Matières mises à jour." });
   }
 
   useEffect(() => {
@@ -254,13 +293,14 @@ export default function ComptesPage() {
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3">Email</th>
                   <th className="p-3">Rôle</th>
+                  <th className="p-3">Matières enseignées</th>
                   <th className="p-3">Créé le</th>
                   <th className="p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {profiles.map((p) => (
-                  <tr key={p.id} className="border-b last:border-0">
+                  <tr key={p.id} className="border-b last:border-0 align-top">
                     <td className="p-3">{p.email}</td>
                     <td className="p-3">
                       <select
@@ -275,6 +315,35 @@ export default function ComptesPage() {
                         <option value="instructor">Formateur</option>
                         <option value="admin">Administration</option>
                       </select>
+                    </td>
+                    <td className="p-3">
+                      {p.role === "instructor" || p.role === "admin" ? (
+                        <div className="flex flex-col gap-2 min-w-[220px]">
+                          <input
+                            type="text"
+                            defaultValue={(p.matieres ?? []).join(", ")}
+                            placeholder="Ex. Word, Excel, Outlook"
+                            onChange={(e) =>
+                              setMatieresEdition((prev) => ({
+                                ...prev,
+                                [p.id]: e.target.value,
+                              }))
+                            }
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
+                          />
+                          <button
+                            onClick={() => enregistrerMatieres(p.id)}
+                            disabled={savingMatieresId === p.id}
+                            className="text-blue-600 hover:underline disabled:opacity-50 text-left text-xs"
+                          >
+                            {savingMatieresId === p.id
+                              ? "Enregistrement…"
+                              : "Enregistrer les matières"}
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </td>
                     <td className="p-3 text-gray-500">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
