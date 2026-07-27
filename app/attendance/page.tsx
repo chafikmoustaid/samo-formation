@@ -127,7 +127,7 @@ export default function Attendance() {
 
     setMessage({
       type: "succes",
-      texte: "✅ Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur.",
+      texte: "Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur.",
     });
   }
 
@@ -233,7 +233,7 @@ export default function Attendance() {
 
             {signatureEtudiant && (
               <p className="mt-2 text-sm text-green-700">
-                ✓ Signature enregistrée, prête à être envoyée.
+                Signature enregistrée, prête à être envoyée.
               </p>
             )}
           </div>

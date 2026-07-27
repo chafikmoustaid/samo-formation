@@ -19,9 +19,9 @@ const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
 };
 
 const STATUT_LABELS: Record<string, string> = {
-  en_attente: "⏳ En attente de validation",
-  validee: "✅ Validée",
-  refusee: "❌ Refusée",
+  en_attente: "En attente de validation",
+  validee: "Validée",
+  refusee: "Refusée",
 };
 
 export default function AttendanceDetail() {
@@ -330,7 +330,7 @@ export default function AttendanceDetail() {
 
                 {signatureFormateur && (
                   <p className="text-sm text-green-700">
-                    ✓ Signature enregistrée, prête à être validée.
+                    Signature enregistrée, prête à être validée.
                   </p>
                 )}
 
@@ -339,11 +339,11 @@ export default function AttendanceDetail() {
                     onClick={validerFiche}
                     disabled={enregistrement || !signatureFormateur}
                   >
-                    {enregistrement ? "Enregistrement..." : "✅ Valider la fiche"}
+                    {enregistrement ? "Enregistrement..." : "Valider la fiche"}
                   </Button>
 
                   <Button variant="outline" onClick={() => setModeRefus(true)}>
-                    ❌ Refuser
+                    Refuser
                   </Button>
                 </div>
               </div>
@@ -381,13 +381,13 @@ export default function AttendanceDetail() {
           </div>
 
           <div className="mt-8">
-            <button
+            <Button
+              variant="ghost"
               onClick={telechargerPdf}
               disabled={telechargement}
-              className="text-green-700 hover:underline disabled:opacity-50 text-sm"
             >
-              {telechargement ? "Génération du PDF..." : "📄 Télécharger le PDF"}
-            </button>
+              {telechargement ? "Génération du PDF..." : "Télécharger le PDF"}
+            </Button>
           </div>
         </Card>
       </div>

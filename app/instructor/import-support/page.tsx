@@ -143,7 +143,7 @@ export default function ImportSupportPage() {
 
           {status.kind === "success" && (
             <div className="p-4 rounded-lg bg-green-50 text-green-800">
-              ✅ {status.message}{" "}
+              {status.message}{" "}
               <Link
                 href={`/instructor/supports/${sessionId}`}
                 className="underline font-medium"
@@ -155,7 +155,7 @@ export default function ImportSupportPage() {
 
           {status.kind === "error" && (
             <div className="p-4 rounded-lg bg-red-50 text-red-800">
-              ❌ {status.message}
+              {status.message}
             </div>
           )}
         </form>

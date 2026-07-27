@@ -102,7 +102,7 @@ export default function AssignmentCorrectionPage() {
                 rel="noopener noreferrer"
                 className="text-green-700 hover:underline"
               >
-                📎 {nomFichier(submission.fichier)}
+                {nomFichier(submission.fichier)}
               </a>
             </p>
 

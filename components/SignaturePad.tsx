@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
+import Button from "@/components/ui/Button";
 
 type SignaturePadProps = {
   onSave: (signature: string) => void;
@@ -77,53 +78,34 @@ export default function SignaturePad({
     }
   }
 
+  const onglets: { valeur: typeof mode; label: string }[] = [
+    ...(signatureEnregistree
+      ? [{ valeur: "enregistree" as const, label: "Signature enregistrée" }]
+      : []),
+    { valeur: "dessiner" as const, label: "Dessiner" },
+    { valeur: "texte" as const, label: "Écrire mon nom" },
+  ];
+
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-3">
-        {signatureEnregistree && (
+      <div className="inline-flex mb-4 rounded-lg border border-gray-200 bg-gray-50 p-1">
+        {onglets.map((onglet) => (
           <button
+            key={onglet.valeur}
             type="button"
             onClick={() => {
-              setMode("enregistree");
+              setMode(onglet.valeur);
               setEnregistre(false);
             }}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              mode === "enregistree"
-                ? "bg-green-700 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              mode === onglet.valeur
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            ⭐ Ma signature enregistrée
+            {onglet.label}
           </button>
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            setMode("dessiner");
-            setEnregistre(false);
-          }}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-            mode === "dessiner"
-              ? "bg-green-700 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-          }`}
-        >
-          ✍️ Dessiner
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setMode("texte");
-            setEnregistre(false);
-          }}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-            mode === "texte"
-              ? "bg-green-700 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-          }`}
-        >
-          ⌨️ Écrire mon nom
-        </button>
+        ))}
       </div>
 
       {mode === "enregistree" && signatureEnregistree ? (
@@ -131,16 +113,12 @@ export default function SignaturePad({
           <img
             src={signatureEnregistree}
             alt="Signature enregistrée"
-            className="border rounded-lg bg-white h-24"
+            className="border border-gray-200 rounded-lg bg-white h-24"
           />
           <div className="mt-3">
-            <button
-              type="button"
-              onClick={utiliserSignatureEnregistree}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-            >
+            <Button type="button" onClick={utiliserSignatureEnregistree}>
               Utiliser cette signature
-            </button>
+            </Button>
           </div>
         </div>
       ) : mode === "dessiner" ? (
@@ -151,7 +129,7 @@ export default function SignaturePad({
             canvasProps={{
               width: 500,
               height: 180,
-              className: "border rounded-lg bg-white",
+              className: "border border-gray-300 rounded-lg bg-white",
             }}
           />
 
@@ -167,21 +145,13 @@ export default function SignaturePad({
           )}
 
           <div className="flex gap-3 mt-3">
-            <button
-              type="button"
-              onClick={saveSignature}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-            >
+            <Button type="button" onClick={saveSignature}>
               Enregistrer la signature
-            </button>
+            </Button>
 
-            <button
-              type="button"
-              onClick={clearSignature}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
-            >
+            <Button type="button" variant="outline" onClick={clearSignature}>
               Effacer
-            </button>
+            </Button>
           </div>
         </>
       ) : mode === "texte" ? (
@@ -226,20 +196,19 @@ export default function SignaturePad({
           )}
 
           <div className="mt-3">
-            <button
+            <Button
               type="button"
               onClick={enregistrerNomTape}
               disabled={!nomTape.trim()}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg"
             >
               Utiliser cette signature
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}
 
       {enregistre && (
-        <p className="mt-2 text-sm text-green-700">✓ Signature enregistrée.</p>
+        <p className="mt-2 text-sm text-green-700">Signature enregistrée.</p>
       )}
     </div>
   );

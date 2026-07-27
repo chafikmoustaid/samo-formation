@@ -177,7 +177,7 @@ export default function StudentAssignmentDetailPage() {
               }`}
             >
               <p>
-                ✅ Remis le{" "}
+                Remis le{" "}
                 {new Date(submission.date_remise).toLocaleString("fr-CA")}
               </p>
 
@@ -189,11 +189,11 @@ export default function StudentAssignmentDetailPage() {
                   )}
                 </p>
               ) : (
-                <p className="mt-1">⏳ En attente de correction</p>
+                <p className="mt-1">En attente de correction</p>
               )}
             </div>
           ) : (
-            <p className="mb-4 text-sm text-gray-500">⏳ Pas encore remis</p>
+            <p className="mb-4 text-sm text-gray-500">Pas encore remis</p>
           )}
 
           <input

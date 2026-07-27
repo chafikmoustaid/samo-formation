@@ -81,27 +81,27 @@ export default function InstructorPage() {
 
           <div className="flex flex-wrap gap-3">
             <LinkButton href="/instructor/attendance" variant="primary">
-              🕒 Fiches de présence à valider
+              Fiches de présence à valider
             </LinkButton>
 
             <LinkButton href="/instructor/import-support" variant="outline">
-              📥 Publier un support
+              Publier un support
             </LinkButton>
 
             <LinkButton href="/instructor/courses" variant="outline">
-              📄 Supports & TP par séance
+              Supports & TP par séance
             </LinkButton>
 
             <LinkButton href="/instructor/assignments" variant="outline">
-              🛠 Remises TP
+              Remises TP
             </LinkButton>
 
             <LinkButton href="/instructor/results" variant="outline">
-              📊 Résultats
+              Résultats
             </LinkButton>
 
             <LinkButton href="/instructor/progress" variant="outline">
-              📈 Progression
+              Progression
             </LinkButton>
           </div>
         </Card>

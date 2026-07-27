@@ -98,7 +98,7 @@ export default function StudentExamsPage() {
 
                 {resultat && (
                   <div className="mt-4 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 text-sm">
-                    ✅ Complété le{" "}
+                    Complété le{" "}
                     {new Date(resultat.date_passage).toLocaleString("fr-CA")}
                     {" — "}
                     {Number(resultat.pourcentage).toFixed(0)} %

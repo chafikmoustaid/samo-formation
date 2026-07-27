@@ -135,7 +135,7 @@ export default function StudentAssignmentsPage() {
                     }`}
                   >
                     <p>
-                      ✅ Remis le{" "}
+                      Remis le{" "}
                       {new Date(remise.date_remise).toLocaleString("fr-CA")}
                     </p>
 
@@ -145,12 +145,12 @@ export default function StudentAssignmentsPage() {
                         {remise.commentaire && <>{" — "}{remise.commentaire}</>}
                       </p>
                     ) : (
-                      <p className="mt-1">⏳ En attente de correction</p>
+                      <p className="mt-1">En attente de correction</p>
                     )}
                   </div>
                 ) : (
                   <p className="mb-4 text-sm text-gray-500">
-                    ⏳ Pas encore remis
+                    Pas encore remis
                   </p>
                 )}
 

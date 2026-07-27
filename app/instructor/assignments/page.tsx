@@ -92,7 +92,7 @@ export default function InstructorAssignmentsPage() {
                       rel="noopener noreferrer"
                       className="text-green-700 hover:underline break-all"
                     >
-                      📎 {nomFichier(submission.fichier)}
+                      {nomFichier(submission.fichier)}
                     </a>
                   </td>
 

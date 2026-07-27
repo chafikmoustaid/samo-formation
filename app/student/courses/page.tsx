@@ -82,8 +82,8 @@ export default function StudentCoursesPage() {
                 </p>
 
                 <div className="mt-3 space-y-1 text-sm text-gray-700">
-                  <p>{quizComplete ? "✅ Quiz complété" : "⏳ Quiz à faire"}</p>
-                  <p>{tpComplete ? "✅ TP remis" : "⏳ TP à remettre"}</p>
+                  <p>{quizComplete ? "Quiz complété" : "Quiz à faire"}</p>
+                  <p>{tpComplete ? "TP remis" : "TP à remettre"}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 mt-5">
@@ -92,7 +92,7 @@ export default function StudentCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    📄 Support
+                    Support
                   </LinkButton>
 
                   <LinkButton
@@ -100,7 +100,7 @@ export default function StudentCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    📝 Quiz
+                    Quiz
                   </LinkButton>
 
                   <LinkButton
@@ -108,7 +108,7 @@ export default function StudentCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    🛠 TP
+                    TP
                   </LinkButton>
 
                   <LinkButton
@@ -116,11 +116,11 @@ export default function StudentCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    📊 Résultats
+                    Résultats
                   </LinkButton>
 
                   <LinkButton href="/student/exams" variant="outline" size="sm">
-                    📝 Examens
+                    Examens
                   </LinkButton>
                 </div>
               </Card>

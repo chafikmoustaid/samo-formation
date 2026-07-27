@@ -88,7 +88,7 @@ export default function ReportCardPage() {
             </p>
 
             <p>
-              Statut : {resultatFinal >= 60 ? "✅ Réussi" : "❌ Échec"}
+              Statut : {resultatFinal >= 60 ? "Réussi" : "Échec"}
             </p>
           </div>
         </Card>

@@ -72,7 +72,7 @@ export default function InstructorCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    📄 Support
+                    Support
                   </LinkButton>
 
                   <LinkButton
@@ -80,7 +80,7 @@ export default function InstructorCoursesPage() {
                     variant="outline"
                     size="sm"
                   >
-                    🧪 TP
+                    TP
                   </LinkButton>
                 </div>
               </div>
