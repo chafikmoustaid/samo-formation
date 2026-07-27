@@ -182,15 +182,15 @@ export default function AttendanceDetail() {
         />
 
         <Card>
-          <div className="flex items-start justify-between mb-6">
+          <div className="mb-6">
             <Image
               src="/logo-samo.png"
               alt="Formation SAMO"
-              width={120}
-              height={37}
-              className="h-8 w-auto"
+              width={260}
+              height={78}
+              className="h-16 w-auto mb-3"
             />
-            <h2 className="text-2xl font-bold text-gray-900 tracking-wide">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center">
               FICHE DE PRÉSENCE
             </h2>
           </div>
@@ -200,7 +200,7 @@ export default function AttendanceDetail() {
               <span className="font-semibold text-gray-900 w-52 shrink-0">
                 Nom de l&apos;étudiant(e) :
               </span>
-              <span className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1">
+              <span className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1">
                 {fiche.nom_etudiant}
               </span>
             </div>
@@ -208,7 +208,7 @@ export default function AttendanceDetail() {
               <span className="font-semibold text-gray-900 w-52 shrink-0">
                 Nom du formateur(trice) :
               </span>
-              <span className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1">
+              <span className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1">
                 {fiche.nom_formateur || "—"}
               </span>
             </div>

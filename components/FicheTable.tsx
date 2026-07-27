@@ -54,7 +54,7 @@ export default function FicheTable({
 
   return (
     <table
-      className="border border-gray-400 text-sm text-gray-900"
+      className="border border-black text-sm text-gray-900"
       style={{ tableLayout: "fixed", width: "1000px", minWidth: "100%" }}
     >
       <colgroup>
@@ -71,33 +71,33 @@ export default function FicheTable({
       </colgroup>
 
       <thead>
-        <tr className="bg-gray-200 text-gray-800">
-          <th rowSpan={2} className="border border-gray-400 p-2">
+        <tr className="bg-[#c8c8c8] text-gray-900">
+          <th rowSpan={2} className="border border-black p-2">
             Jour
           </th>
-          <th rowSpan={2} className="border border-gray-400 p-2">
+          <th rowSpan={2} className="border border-black p-2">
             Date
           </th>
-          <th rowSpan={2} className="border border-gray-400 p-2">
+          <th rowSpan={2} className="border border-black p-2">
             Matières
           </th>
-          <th rowSpan={2} className="border border-gray-400 p-2">
+          <th rowSpan={2} className="border border-black p-2">
             L/P
           </th>
-          <th colSpan={3} className="border border-gray-400 p-2">
+          <th colSpan={3} className="border border-black p-2">
             Formation
           </th>
-          <th colSpan={3} className="border border-gray-400 p-2">
+          <th colSpan={3} className="border border-black p-2">
             Pratique
           </th>
         </tr>
-        <tr className="bg-gray-200 text-gray-800">
-          <th className="border border-gray-400 p-1.5">De</th>
-          <th className="border border-gray-400 p-1.5">À</th>
-          <th className="border border-gray-400 p-1.5">Total</th>
-          <th className="border border-gray-400 p-1.5">De</th>
-          <th className="border border-gray-400 p-1.5">À</th>
-          <th className="border border-gray-400 p-1.5">Total</th>
+        <tr className="bg-[#c8c8c8] text-gray-900">
+          <th className="border border-black p-1.5">De</th>
+          <th className="border border-black p-1.5">À</th>
+          <th className="border border-black p-1.5">Total</th>
+          <th className="border border-black p-1.5">De</th>
+          <th className="border border-black p-1.5">À</th>
+          <th className="border border-black p-1.5">Total</th>
         </tr>
       </thead>
 
@@ -112,13 +112,13 @@ export default function FicheTable({
               {premiereLigneDuJour && (
                 <td
                   rowSpan={2}
-                  className="border border-gray-400 p-2 text-left align-middle bg-gray-200"
+                  className="border border-black p-2 text-left align-middle bg-[#c8c8c8]"
                 >
                   {ligne.jour}
                 </td>
               )}
 
-              <td className="border border-gray-400 p-0.5">
+              <td className="border border-black p-0.5">
                 {editable ? (
                   <input
                     type="date"
@@ -131,7 +131,7 @@ export default function FicheTable({
                 )}
               </td>
 
-              <td className="border border-gray-400 p-1">
+              <td className="border border-black p-1">
                 {editable ? (
                   <input
                     type="text"
@@ -145,7 +145,7 @@ export default function FicheTable({
                 )}
               </td>
 
-              <td className="border border-gray-400 p-0 text-center">
+              <td className="border border-black p-0 text-center">
                 {editable ? (
                   <select
                     value={ligne.type}
@@ -160,7 +160,7 @@ export default function FicheTable({
                 )}
               </td>
 
-              <td className="border border-gray-400 p-0">
+              <td className="border border-black p-0">
                 {editable ? (
                   <SelectHeure
                     value={ligne.formationDe}
@@ -172,7 +172,7 @@ export default function FicheTable({
                   </span>
                 )}
               </td>
-              <td className="border border-gray-400 p-0">
+              <td className="border border-black p-0">
                 {editable ? (
                   <SelectHeure
                     value={ligne.formationA}
@@ -184,11 +184,11 @@ export default function FicheTable({
                   </span>
                 )}
               </td>
-              <td className="border border-gray-400 p-1.5 text-center bg-gray-100 text-xs">
+              <td className="border border-black p-1.5 text-center bg-gray-100 text-xs">
                 {formationTotal || ""}
               </td>
 
-              <td className="border border-gray-400 p-0">
+              <td className="border border-black p-0">
                 {editable ? (
                   <SelectHeure
                     value={ligne.pratiqueDe}
@@ -200,7 +200,7 @@ export default function FicheTable({
                   </span>
                 )}
               </td>
-              <td className="border border-gray-400 p-0">
+              <td className="border border-black p-0">
                 {editable ? (
                   <SelectHeure
                     value={ligne.pratiqueA}
@@ -212,23 +212,23 @@ export default function FicheTable({
                   </span>
                 )}
               </td>
-              <td className="border border-gray-400 p-1.5 text-center bg-gray-50 text-xs">
+              <td className="border border-black p-1.5 text-center bg-gray-100 text-xs">
                 {pratiqueTotal || ""}
               </td>
             </tr>
           );
         })}
 
-        <tr className="bg-gray-200 font-semibold">
-          <td colSpan={4} className="border border-gray-400 p-2 text-center">
+        <tr className="bg-[#c8c8c8] font-semibold">
+          <td colSpan={4} className="border border-black p-2 text-center">
             TOTAL
           </td>
-          <td colSpan={2} className="border border-gray-400"></td>
-          <td className="border border-gray-400 p-2 text-center">
+          <td colSpan={2} className="border border-black"></td>
+          <td className="border border-black p-2 text-center">
             {totalFormation.toFixed(2)}
           </td>
-          <td colSpan={2} className="border border-gray-400"></td>
-          <td className="border border-gray-400 p-2 text-center">
+          <td colSpan={2} className="border border-black"></td>
+          <td className="border border-black p-2 text-center">
             {totalPratique.toFixed(2)}
           </td>
         </tr>

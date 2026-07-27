@@ -111,15 +111,15 @@ export default function Attendance() {
         />
 
         <Card>
-          <div className="flex items-start justify-between mb-6">
+          <div className="mb-6">
             <Image
               src="/logo-samo.png"
               alt="Formation SAMO"
-              width={120}
-              height={37}
-              className="h-8 w-auto"
+              width={260}
+              height={78}
+              className="h-16 w-auto mb-3"
             />
-            <h2 className="text-2xl font-bold text-gray-900 tracking-wide">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center">
               FICHE DE PRÉSENCE
             </h2>
           </div>
@@ -133,7 +133,7 @@ export default function Attendance() {
                 type="text"
                 value={nomEtudiant}
                 onChange={(e) => setNomEtudiant(e.target.value)}
-                className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1 text-sm"
+                className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
               />
             </div>
 
@@ -145,12 +145,12 @@ export default function Attendance() {
                 type="text"
                 value={nomFormateur}
                 onChange={(e) => setNomFormateur(e.target.value)}
-                className="flex-1 max-w-sm bg-gray-100 border border-gray-400 rounded-sm px-2 py-1 text-sm"
+                className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
               />
             </div>
           </div>
 
-          <div className="border border-gray-400 p-3 text-xs italic text-gray-800 mb-6">
+          <div className="border border-black p-3 text-sm italic text-gray-800 mb-6">
             Cette fiche devra être complétée et signée par l&apos;étudiant(e) et
             remise au formateur(trice) à la fin de la semaine ou à la fin de la
             matière. Cette fiche devra ensuite être acheminée et signée par le
@@ -162,15 +162,15 @@ export default function Attendance() {
             <FicheTable lignes={lignes} editable onChange={modifierLigne} />
           </div>
 
-          <div className="mt-6 bg-gray-100 border border-gray-300 rounded">
-            <div className="px-3 py-2 text-xs font-semibold text-center border-b border-gray-300">
+          <div className="mt-6 border border-black">
+            <div className="px-3 py-2 text-xs font-semibold text-center bg-[#c8c8c8] border-b border-black">
               SI PLUS OU MOINS D&apos;HEURES, INSCRIRE LE MOTIF
             </div>
             <textarea
               value={motifHeures}
               onChange={(e) => setMotifHeures(e.target.value)}
               rows={2}
-              className="w-full p-2 text-sm bg-gray-50 outline-none"
+              className="w-full p-2 text-sm bg-gray-100 outline-none"
             />
           </div>
 

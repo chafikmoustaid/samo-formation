@@ -34,21 +34,20 @@ export async function GET(
     format: "a4",
   });
 
-  const GRIS_ENTETE: [number, number, number] = [229, 231, 235]; // gray-200
-  const GRIS_CLAIR: [number, number, number] = [243, 244, 246]; // gray-100
-  const GRIS_BORDURE: [number, number, number] = [156, 163, 175]; // gray-400
+  const GRIS_ENTETE: [number, number, number] = [200, 200, 200];
+  const GRIS_CLAIR: [number, number, number] = [240, 240, 240];
 
   const logoPath = path.join(process.cwd(), "public", "logo-samo.png");
 
   if (fs.existsSync(logoPath)) {
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-    pdf.addImage(`data:image/png;base64,${logoBase64}`, "PNG", 15, 12, 24, 7.4);
+    pdf.addImage(`data:image/png;base64,${logoBase64}`, "PNG", 15, 10, 36, 10.8);
   }
 
   pdf.setTextColor(0, 0, 0);
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
-  pdf.text("FICHE DE PRÉSENCE", 195, 20, { align: "right" });
+  pdf.text("FICHE DE PRÉSENCE", 105, 32, { align: "center" });
 
   pdf.setFontSize(10);
 
@@ -60,7 +59,7 @@ export async function GET(
   pdf.setFont("helvetica", "bold");
   pdf.text("Nom de l'étudiant(e) :", labelX, 42);
   pdf.setFillColor(...GRIS_CLAIR);
-  pdf.setDrawColor(...GRIS_BORDURE);
+  pdf.setDrawColor(0, 0, 0);
   pdf.rect(boxX, 38.5, boxW, boxH, "FD");
   pdf.setFont("helvetica", "normal");
   pdf.text(String(fiche.nom_etudiant ?? ""), boxX + 2, 42.5);
@@ -74,17 +73,17 @@ export async function GET(
 
   pdf.setDrawColor(0, 0, 0);
   pdf.setFont("helvetica", "italic");
-  pdf.setFontSize(8);
+  pdf.setFontSize(9);
   const instructions =
     "Cette fiche devra être complétée et signée par l'étudiant(e) et remise au formateur(trice) à la fin de la semaine ou à la fin de la matière. " +
     "Cette fiche devra ensuite être acheminée et signée par le formateur(trice) à l'administration au plus tard le lundi suivant la semaine en cours.";
   const wrapped = pdf.splitTextToSize(instructions, 180);
-  pdf.rect(15, 55, 180, 14);
-  pdf.text(wrapped, 17, 60);
+  pdf.rect(15, 55, 180, 16);
+  pdf.text(wrapped, 17, 60.5);
 
   // --- Tableau ---
   const x0 = 15;
-  let y = 75;
+  let y = 77;
 
   const colW = {
     jour: 12,
@@ -117,7 +116,7 @@ export async function GET(
     ["Pratique", colW.pDe + colW.pA + colW.pTot],
   ];
   pdf.setFillColor(...GRIS_ENTETE);
-  pdf.setDrawColor(...GRIS_BORDURE);
+  pdf.setDrawColor(0, 0, 0);
   headerLabels1.forEach(([label, w]) => {
     pdf.rect(x, y, w, h1, "FD");
     if (label) pdf.text(label, x + w / 2, y + h1 / 2 + 1.2, { align: "center" });
@@ -158,7 +157,7 @@ export async function GET(
 
     if (estPremiereLigne) {
       pdf.setFillColor(...GRIS_ENTETE);
-      pdf.setDrawColor(...GRIS_BORDURE);
+      pdf.setDrawColor(0, 0, 0);
       pdf.rect(x, y, colW.jour, hRow * 2, "FD");
       pdf.setDrawColor(0, 0, 0);
       pdf.setFont("helvetica", "bold");
@@ -227,7 +226,7 @@ export async function GET(
   // Ligne TOTAL
   pdf.setFont("helvetica", "bold");
   pdf.setFillColor(...GRIS_ENTETE);
-  pdf.setDrawColor(...GRIS_BORDURE);
+  pdf.setDrawColor(0, 0, 0);
   x = x0;
   pdf.rect(x, y, colW.jour + colW.date + colW.matiere + colW.lp, hRow, "FD");
   pdf.text(
