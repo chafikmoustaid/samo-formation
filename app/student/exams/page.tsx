@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import LinkButton from "@/components/ui/LinkButton";
 
 export default function StudentExamsPage() {
   const [exams, setExams] = useState<any[]>([]);
@@ -63,43 +65,36 @@ export default function StudentExamsPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-8">
-
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Mes examens
-        </h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <PageHeader title="Mes examens" backHref="/student" backLabel="← Portail étudiant" />
 
         {exams.length === 0 && (
-          <p className="text-gray-500">Aucun examen publié pour le moment.</p>
+          <p className="text-gray-500 text-sm">
+            Aucun examen publié pour le moment.
+          </p>
         )}
 
-        <div className="space-y-6">
-
+        <div className="space-y-4">
           {exams.map((exam) => {
             const nbQuestions = questionCounts[exam.id] ?? 0;
             const resultat = dernierResultat(exam.id);
 
             return (
-              <div
-                key={exam.id}
-                className="border rounded-xl p-6"
-              >
-                <h2 className="text-2xl font-bold">
+              <Card key={exam.id}>
+                <h2 className="text-lg font-semibold text-gray-900">
                   {exam.titre}
                 </h2>
 
-                <p className="mt-2">
+                <p className="mt-2 text-sm text-gray-600">
                   Séance : {exam.session_id}
                 </p>
 
-                <p>
-                  Type : {exam.type}
-                </p>
+                <p className="text-sm text-gray-600">Type : {exam.type}</p>
 
                 {resultat && (
                   <div className="mt-4 rounded-lg border border-green-200 bg-green-50 text-green-800 px-4 py-3 text-sm">
@@ -111,24 +106,20 @@ export default function StudentExamsPage() {
                 )}
 
                 {nbQuestions > 0 ? (
-                  <Link
-                    href={`/student/exams/${exam.id}`}
-                    className="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-                  >
-                    {resultat ? "Repasser l'examen" : "Commencer l'examen"}
-                  </Link>
+                  <div className="mt-4">
+                    <LinkButton href={`/student/exams/${exam.id}`} variant="primary" size="sm">
+                      {resultat ? "Repasser l'examen" : "Commencer l'examen"}
+                    </LinkButton>
+                  </div>
                 ) : (
                   <p className="mt-4 text-sm text-gray-400">
                     Bientôt disponible — questions pas encore publiées.
                   </p>
                 )}
-
-              </div>
+              </Card>
             );
           })}
-
         </div>
-
       </div>
     </div>
   );

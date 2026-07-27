@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 export default function StudentExamPage() {
   const params = useParams<{ id: string }>();
@@ -82,80 +84,82 @@ export default function StudentExamPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (!evaluation) {
-    return <div className="p-8">Examen introuvable.</div>;
+    return <div className="p-8 text-gray-500">Examen introuvable.</div>;
   }
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-          Aucune question publiée pour cet examen pour le moment.
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-4xl mx-auto">
+          <PageHeader
+            title="Examen"
+            backHref="/student/exams"
+            backLabel="← Mes examens"
+          />
+          <Card>Aucune question publiée pour cet examen pour le moment.</Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-        <Link
-          href="/student/exams"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          ← Mes examens
-        </Link>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader
+          title={evaluation.titre}
+          backHref="/student/exams"
+          backLabel="← Mes examens"
+        />
 
-        <h1 className="text-3xl font-bold text-green-700 mt-4 mb-8">
-          {evaluation.titre}
-        </h1>
+        <Card>
+          {questions.map((question, index) => (
+            <div key={question.id} className="mb-8 border-b border-gray-100 pb-6 last:border-0 last:mb-0 last:pb-0">
+              <h2 className="text-base font-semibold text-gray-900 mb-3">
+                Question {index + 1}
+              </h2>
 
-        {questions.map((question, index) => (
-          <div key={question.id} className="mb-8 border-b pb-6">
-            <h2 className="text-xl font-semibold mb-4">
-              Question {index + 1}
-            </h2>
+              <p className="mb-4 text-sm text-gray-700">{question.question}</p>
 
-            <p className="mb-4">{question.question}</p>
+              {(["A", "B", "C", "D"] as const)
+                .filter((lettre) => question[`choix_${lettre.toLowerCase()}`])
+                .map((lettre) => (
+                  <label key={lettre} className="block mb-2 text-sm text-gray-700">
+                    <input
+                      type="radio"
+                      name={`question-${question.id}`}
+                      value={lettre}
+                      checked={reponses[question.id] === lettre}
+                      onChange={() => choisirReponse(question.id, lettre)}
+                      className="mr-2"
+                    />
+                    {question[`choix_${lettre.toLowerCase()}`]}
+                  </label>
+                ))}
+            </div>
+          ))}
 
-            {(["A", "B", "C", "D"] as const)
-              .filter((lettre) => question[`choix_${lettre.toLowerCase()}`])
-              .map((lettre) => (
-                <label key={lettre} className="block mb-2">
-                  <input
-                    type="radio"
-                    name={`question-${question.id}`}
-                    value={lettre}
-                    checked={reponses[question.id] === lettre}
-                    onChange={() => choisirReponse(question.id, lettre)}
-                    className="mr-2"
-                  />
-                  {question[`choix_${lettre.toLowerCase()}`]}
-                </label>
-              ))}
-          </div>
-        ))}
+          <Button
+            variant="danger"
+            onClick={soumettreExamen}
+            disabled={envoi || score !== null}
+          >
+            {score !== null ? "Examen soumis" : "Soumettre l'examen"}
+          </Button>
 
-        <button
-          onClick={soumettreExamen}
-          disabled={envoi || score !== null}
-          className="bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white px-6 py-3 rounded-lg"
-        >
-          {score !== null ? "Examen soumis" : "Soumettre l'examen"}
-        </button>
-
-        {score !== null && (
-          <div className="mt-8 p-6 bg-green-50 border border-green-300 rounded-lg">
-            <h2 className="text-2xl font-bold">Résultat</h2>
-            <p className="mt-2">
-              {bonnesReponses} / {questions.length} bonnes réponses —{" "}
-              {score.toFixed(0)} %
-            </p>
-          </div>
-        )}
+          {score !== null && (
+            <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+              <h2 className="text-lg font-semibold text-gray-900">Résultat</h2>
+              <p className="mt-2 text-sm text-gray-700">
+                {bonnesReponses} / {questions.length} bonnes réponses —{" "}
+                {score.toFixed(0)} %
+              </p>
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );

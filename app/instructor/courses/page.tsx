@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import LinkButton from "@/components/ui/LinkButton";
 
 export default function InstructorCoursesPage() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -32,7 +34,7 @@ export default function InstructorCoursesPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (error) {
@@ -40,52 +42,51 @@ export default function InstructorCoursesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-green-700">
-            Toutes les séances
-          </h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <PageHeader
+          title="Toutes les séances"
+          backHref="/instructor"
+          backLabel="← Portail formateur"
+        />
 
-          <Link
-            href="/instructor"
-            className="text-sm text-gray-500 hover:underline"
-          >
-            ← Portail formateur
-          </Link>
-        </div>
+        <Card className="p-4">
+          <div className="space-y-3">
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                className="border border-gray-100 rounded-xl p-5 flex flex-wrap items-center justify-between gap-4"
+              >
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Séance {course.session_id}
+                  </p>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {course.titre}
+                  </h2>
+                </div>
 
-        <div className="space-y-4">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="border rounded-xl p-5 flex flex-wrap items-center justify-between gap-4"
-            >
-              <div>
-                <p className="text-sm text-gray-500">
-                  Séance {course.session_id}
-                </p>
-                <h2 className="text-xl font-bold">{course.titre}</h2>
+                <div className="flex flex-wrap gap-3">
+                  <LinkButton
+                    href={`/instructor/supports/${course.session_id}`}
+                    variant="outline"
+                    size="sm"
+                  >
+                    📄 Support
+                  </LinkButton>
+
+                  <LinkButton
+                    href={`/instructor/tp/${course.session_id}`}
+                    variant="outline"
+                    size="sm"
+                  >
+                    🧪 TP
+                  </LinkButton>
+                </div>
               </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href={`/instructor/supports/${course.session_id}`}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg"
-                >
-                  📄 Support
-                </Link>
-
-                <Link
-                  href={`/instructor/tp/${course.session_id}`}
-                  className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg"
-                >
-                  🧪 TP
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Card>
       </div>
     </div>
   );

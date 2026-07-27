@@ -2,6 +2,9 @@
 import { supabase } from "@/lib/supabase";
 import SignaturePad from "@/components/SignaturePad";
 import { useState } from "react";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 export default function Attendance() {
   const [nomEtudiant, setNomEtudiant] = useState("");
@@ -150,20 +153,16 @@ alert(JSON.stringify(error, null, 2));
   );
 }
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        <PageHeader
+          title="Fiche de présence SAMO"
+          subtitle="Technique Support Informatique"
+          backHref="/dashboard"
+          backLabel="← Retour au tableau de bord"
+        />
 
-        <div className="bg-green-600 text-white p-6">
-          <h1 className="text-4xl font-bold">
-            Fiche de présence SAMO
-          </h1>
-
-          <p className="text-green-100 mt-2">
-            Technique Support Informatique
-          </p>
-        </div>
-
-        <div className="p-8">
+        <Card>
 
           <div className="grid md:grid-cols-2 gap-6 mb-10">
 
@@ -489,13 +488,13 @@ alert(JSON.stringify(error, null, 2));
   />
 
   {signatureEtudiant && (
-    <div className="mt-6 border-2 border-green-300 rounded-lg bg-white p-6">
+    <div className="mt-6 border-2 border-green-200 rounded-lg bg-white p-6">
 
-      <h3 className="text-xl font-bold mb-4">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Signature numérique enregistrée
       </h3>
 
-      <div className="space-y-2">
+      <div className="space-y-2 text-sm text-gray-700">
 
         <div>
           <strong>Étudiant :</strong>{" "}
@@ -515,12 +514,9 @@ alert(JSON.stringify(error, null, 2));
     </div>
   )}
 <div className="mt-8">
-  <button
-    onClick={enregistrerFiche}
-    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold"
-  >
+  <Button onClick={enregistrerFiche}>
     Enregistrer la fiche
-  </button>
+  </Button>
 </div>
 
 <div className="mt-12">
@@ -576,14 +572,14 @@ alert(JSON.stringify(error, null, 2));
 </div>
 
 {message && (
-  <div className="mt-4 bg-green-100 border border-green-400 rounded-lg p-4">
+  <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-800">
     {message}
   </div>
 )}
 
 </div>
 
-        </div>
+        </Card>
       </div>
     </div>
   );

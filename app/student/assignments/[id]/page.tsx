@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 export default function StudentAssignmentDetailPage() {
   const params = useParams<{ id: string }>();
@@ -116,103 +118,96 @@ export default function StudentAssignmentDetailPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (!assignment) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-          <Link
-            href="/student/courses"
-            className="text-sm text-gray-500 hover:underline"
-          >
-            ← Mes cours
-          </Link>
-          <p className="mt-4">
-            Aucun TP publié pour {titreSeance || "cette séance"}.
-          </p>
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-4xl mx-auto">
+          <PageHeader
+            title={titreSeance || "TP"}
+            backHref="/student/courses"
+            backLabel="← Mes cours"
+          />
+          <Card>Aucun TP publié pour {titreSeance || "cette séance"}.</Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-        <Link
-          href="/student/courses"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          ← Mes cours
-        </Link>
-
-        <h1 className="text-3xl font-bold text-green-700 mt-4 mb-6">
-          {assignment.titre}
-        </h1>
-
-        {assignment.contenu_html ? (
-          <div
-            className="mb-4 tp-content"
-            dangerouslySetInnerHTML={{
-              __html: assignment.contenu_html,
-            }}
-          />
-        ) : (
-          <p className="mb-4">{assignment.description}</p>
-        )}
-
-        {assignment.date_limite && (
-          <p className="mb-4">
-            <strong>Date limite :</strong> {assignment.date_limite}
-          </p>
-        )}
-
-        {submission ? (
-          <div
-            className={`mb-4 rounded-lg border px-4 py-3 text-sm ${
-              submission.note !== null && submission.note !== undefined
-                ? "bg-green-50 border-green-200 text-green-800"
-                : "bg-blue-50 border-blue-200 text-blue-800"
-            }`}
-          >
-            <p>
-              ✅ Remis le{" "}
-              {new Date(submission.date_remise).toLocaleString("fr-CA")}
-            </p>
-
-            {submission.note !== null && submission.note !== undefined ? (
-              <p className="mt-1">
-                <strong>Note :</strong> {submission.note}/20
-                {submission.commentaire && (
-                  <>{" — "}{submission.commentaire}</>
-                )}
-              </p>
-            ) : (
-              <p className="mt-1">⏳ En attente de correction</p>
-            )}
-          </div>
-        ) : (
-          <p className="mb-4 text-sm text-gray-500">⏳ Pas encore remis</p>
-        )}
-
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          className="mb-4"
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader
+          title={assignment.titre}
+          backHref="/student/courses"
+          backLabel="← Mes cours"
         />
 
-        <button
-          onClick={deposerTravail}
-          disabled={envoi}
-          className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white px-4 py-2 rounded-lg"
-        >
-          {envoi
-            ? "Envoi..."
-            : submission
-            ? "Remettre à nouveau"
-            : "Envoyer"}
-        </button>
+        <Card>
+          {assignment.contenu_html ? (
+            <div
+              className="mb-4 tp-content text-sm text-gray-700"
+              dangerouslySetInnerHTML={{
+                __html: assignment.contenu_html,
+              }}
+            />
+          ) : (
+            <p className="mb-4 text-sm text-gray-700">
+              {assignment.description}
+            </p>
+          )}
+
+          {assignment.date_limite && (
+            <p className="mb-4 text-sm text-gray-600">
+              <span className="font-medium text-gray-900">
+                Date limite :
+              </span>{" "}
+              {assignment.date_limite}
+            </p>
+          )}
+
+          {submission ? (
+            <div
+              className={`mb-4 rounded-lg border px-4 py-3 text-sm ${
+                submission.note !== null && submission.note !== undefined
+                  ? "bg-green-50 border-green-200 text-green-800"
+                  : "bg-blue-50 border-blue-200 text-blue-800"
+              }`}
+            >
+              <p>
+                ✅ Remis le{" "}
+                {new Date(submission.date_remise).toLocaleString("fr-CA")}
+              </p>
+
+              {submission.note !== null && submission.note !== undefined ? (
+                <p className="mt-1">
+                  <strong>Note :</strong> {submission.note}/20
+                  {submission.commentaire && (
+                    <>{" — "}{submission.commentaire}</>
+                  )}
+                </p>
+              ) : (
+                <p className="mt-1">⏳ En attente de correction</p>
+              )}
+            </div>
+          ) : (
+            <p className="mb-4 text-sm text-gray-500">⏳ Pas encore remis</p>
+          )}
+
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            className="mb-4 text-sm"
+          />
+
+          <div>
+            <Button onClick={deposerTravail} disabled={envoi}>
+              {envoi ? "Envoi..." : submission ? "Remettre à nouveau" : "Envoyer"}
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );

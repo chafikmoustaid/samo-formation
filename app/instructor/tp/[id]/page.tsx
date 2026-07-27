@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import TpCompare from "./TpCompare";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
 
 export default function InstructorTpPage() {
   const params = useParams<{ id: string }>();
@@ -33,45 +35,40 @@ export default function InstructorTpPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (!assignment) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-          <Link
-            href="/instructor"
-            className="text-sm text-gray-500 hover:underline"
-          >
-            ← Portail formateur
-          </Link>
-          <p className="mt-4">
-            Aucun TP publié pour la séance {id}.
-          </p>
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-4xl mx-auto">
+          <PageHeader
+            title={`Séance ${id}`}
+            backHref="/instructor"
+            backLabel="← Portail formateur"
+          />
+          <Card>Aucun TP publié pour la séance {id}.</Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow p-8">
-        <div className="flex items-center justify-between mb-4">
-          <Link
-            href="/instructor"
-            className="text-sm text-gray-500 hover:underline"
-          >
-            ← Portail formateur
-          </Link>
-
-          <Link
-            href="/instructor/assignments"
-            className="text-sm text-green-700 hover:underline"
-          >
-            Voir les remises des étudiants →
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-5xl mx-auto">
+        <PageHeader
+          title={assignment.titre ?? `TP séance ${id}`}
+          backHref="/instructor"
+          backLabel="← Portail formateur"
+          action={
+            <Link
+              href="/instructor/assignments"
+              className="text-sm text-green-700 hover:underline"
+            >
+              Voir les remises des étudiants →
+            </Link>
+          }
+        />
 
         <TpCompare
           titre={assignment.titre ?? `TP séance ${id}`}

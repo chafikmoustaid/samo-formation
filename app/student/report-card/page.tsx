@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
 
 export default function ReportCardPage() {
   const [loading, setLoading] = useState(true);
@@ -34,22 +36,17 @@ export default function ReportCardPage() {
 
     const moyenneQuizCalc =
       quizs && quizs.length > 0
-        ? quizs.reduce(
-            (sum, q) => sum + Number(q.pourcentage),
-            0
-          ) / quizs.length
+        ? quizs.reduce((sum, q) => sum + Number(q.pourcentage), 0) /
+          quizs.length
         : 0;
 
     const moyenneTPCalc =
-  tps && tps.length > 0
-    ? (
-        tps.reduce(
-          (sum, tp) =>
-            sum + (Number(tp.note ?? 0) / 20) * 100,
-          0
-        ) / tps.length
-      )
-    : 0;
+      tps && tps.length > 0
+        ? tps.reduce(
+            (sum, tp) => sum + (Number(tp.note ?? 0) / 20) * 100,
+            0
+          ) / tps.length
+        : 0;
 
     setMoyenneQuiz(moyenneQuizCalc);
     setMoyenneTP(moyenneTPCalc);
@@ -59,55 +56,42 @@ export default function ReportCardPage() {
   const examenFinal = 0;
 
   const resultatFinal =
-    moyenneQuiz * 0.3 +
-    moyenneTP * 0.3 +
-    examenFinal * 0.4;
+    moyenneQuiz * 0.3 + moyenneTP * 0.3 + examenFinal * 0.4;
 
   if (loading) {
-    return (
-      <div className="p-8">
-        Chargement...
-      </div>
-    );
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-3xl mx-auto">
+        <PageHeader title="Bulletin SAMO" backHref="/student" backLabel="← Portail étudiant" />
 
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Bulletin SAMO
-        </h1>
+        <Card>
+          <div className="space-y-3 text-base text-gray-800">
+            <p>
+              Quiz : <strong>{moyenneQuiz.toFixed(2)} %</strong>
+            </p>
 
-        <div className="space-y-4 text-xl">
+            <p>
+              TP : <strong>{moyenneTP.toFixed(2)} %</strong>
+            </p>
 
-          <p>
-            Quiz : <strong>{moyenneQuiz.toFixed(2)} %</strong>
-          </p>
+            <p>
+              Examen final : <strong>0.00 %</strong>
+            </p>
 
-          <p>
-            TP : <strong>{moyenneTP.toFixed(2)} %</strong>
-          </p>
+            <hr className="border-gray-100" />
 
-          <p>
-            Examen final : <strong>0.00 %</strong>
-          </p>
+            <p className="text-xl font-bold text-gray-900">
+              Résultat final : {resultatFinal.toFixed(2)} %
+            </p>
 
-          <hr />
-
-          <p className="text-2xl font-bold">
-            Résultat final : {resultatFinal.toFixed(2)} %
-          </p>
-
-          <p>
-            Statut :{" "}
-            {resultatFinal >= 60
-              ? "✅ Réussi"
-              : "❌ Échec"}
-          </p>
-
-        </div>
-
+            <p>
+              Statut : {resultatFinal >= 60 ? "✅ Réussi" : "❌ Échec"}
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );

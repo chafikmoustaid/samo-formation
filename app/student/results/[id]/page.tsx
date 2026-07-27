@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
 
 export default function StudentSessionResultsPage() {
   const params = useParams<{ id: string }>();
@@ -57,52 +58,49 @@ export default function StudentSessionResultsPage() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-        <Link
-          href="/student/courses"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          ← Mes cours
-        </Link>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader
+          title={`Résultats — ${titre || "Séance"}`}
+          backHref="/student/courses"
+          backLabel="← Mes cours"
+        />
 
-        <h1 className="text-3xl font-bold text-green-700 mt-4 mb-6">
-          Résultats — {titre || "Séance"}
-        </h1>
-
-        {results.length === 0 ? (
-          <p className="text-gray-500">
-            Aucun quiz complété pour cette séance pour le moment.
-          </p>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="p-3 text-left">Score</th>
-                <th className="p-3 text-left">Pourcentage</th>
-                <th className="p-3 text-left">Date</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {results.map((result) => (
-                <tr key={result.id} className="border-b">
-                  <td className="p-3">{result.score}</td>
-                  <td className="p-3">
-                    {Number(result.pourcentage).toFixed(2)} %
-                  </td>
-                  <td className="p-3">
-                    {new Date(result.date_passage).toLocaleString("fr-CA")}
-                  </td>
+        <Card>
+          {results.length === 0 ? (
+            <p className="text-gray-500 text-sm">
+              Aucun quiz complété pour cette séance pour le moment.
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-gray-500">
+                  <th className="p-3 font-medium">Score</th>
+                  <th className="p-3 font-medium">Pourcentage</th>
+                  <th className="p-3 font-medium">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+
+              <tbody>
+                {results.map((result) => (
+                  <tr key={result.id} className="border-b last:border-0">
+                    <td className="p-3">{result.score}</td>
+                    <td className="p-3">
+                      {Number(result.pourcentage).toFixed(2)} %
+                    </td>
+                    <td className="p-3 text-gray-500">
+                      {new Date(result.date_passage).toLocaleString("fr-CA")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Card>
       </div>
     </div>
   );

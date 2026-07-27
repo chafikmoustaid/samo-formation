@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import LinkButton from "@/components/ui/LinkButton";
 
 export default function StudentCoursesPage() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -49,23 +51,15 @@ export default function StudentCoursesPage() {
   }
 
   if (error) {
-    return (
-      <div className="p-8 text-red-600">
-        {error}
-      </div>
-    );
+    return <div className="p-8 text-red-600">{error}</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <PageHeader title="Mes cours" backHref="/student" backLabel="← Portail étudiant" />
 
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Mes cours
-        </h1>
-
-        <div className="space-y-6">
-
+        <div className="space-y-4">
           {courses.map((course) => {
             const quizComplete = quizResults.some(
               (q) => q.session_id === course.session_id
@@ -74,81 +68,65 @@ export default function StudentCoursesPage() {
             const tpComplete = submissions.length > 0;
 
             return (
-              <div
-                key={course.id}
-                className="border rounded-xl p-6"
-              >
-                <h2 className="text-2xl font-bold">
+              <Card key={course.id}>
+                <h2 className="text-lg font-semibold text-gray-900">
                   {course.titre}
                 </h2>
 
-                <p className="mt-2 text-gray-700">
+                <p className="mt-2 text-gray-600 text-sm">
                   {course.description}
                 </p>
 
-                <p className="mt-4">
+                <p className="mt-3 text-sm text-gray-500">
                   Séance : {course.session_id}
                 </p>
 
-                <div className="mt-4 space-y-2">
-                  <p>
-                    {quizComplete
-                      ? "✅ Quiz complété"
-                      : "⏳ Quiz à faire"}
-                  </p>
-
-                  <p>
-                    {tpComplete
-                      ? "✅ TP remis"
-                      : "⏳ TP à remettre"}
-                  </p>
+                <div className="mt-3 space-y-1 text-sm text-gray-700">
+                  <p>{quizComplete ? "✅ Quiz complété" : "⏳ Quiz à faire"}</p>
+                  <p>{tpComplete ? "✅ TP remis" : "⏳ TP à remettre"}</p>
                 </div>
 
-                <div className="flex flex-wrap gap-3 mt-6">
-
-                  <Link
+                <div className="flex flex-wrap gap-3 mt-5">
+                  <LinkButton
                     href={`/student/courses/${course.id}`}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg"
+                    variant="outline"
+                    size="sm"
                   >
                     📄 Support
-                  </Link>
+                  </LinkButton>
 
-                  <Link
+                  <LinkButton
                     href={`/student/quiz/${course.id}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                    variant="outline"
+                    size="sm"
                   >
                     📝 Quiz
-                  </Link>
+                  </LinkButton>
 
-                  <Link
+                  <LinkButton
                     href={`/student/assignments/${course.id}`}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                    variant="outline"
+                    size="sm"
                   >
                     🛠 TP
-                  </Link>
+                  </LinkButton>
 
-                  <Link
+                  <LinkButton
                     href={`/student/results/${course.id}`}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg"
+                    variant="outline"
+                    size="sm"
                   >
                     📊 Résultats
-                  </Link>
+                  </LinkButton>
 
-                  <Link
-                    href="/student/exams"
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-                  >
+                  <LinkButton href="/student/exams" variant="outline" size="sm">
                     📝 Examens
-                  </Link>
-
+                  </LinkButton>
                 </div>
-
-              </div>
+              </Card>
             );
           })}
-
         </div>
-
       </div>
     </div>
   );

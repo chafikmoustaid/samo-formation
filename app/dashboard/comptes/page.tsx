@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 type Role = "admin" | "instructor" | "student";
 
@@ -191,16 +193,13 @@ export default function ComptesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-green-700">
-            Gestion des comptes
-          </h1>
-          <Link href="/dashboard" className="text-sm text-gray-500 hover:underline">
-            ← Retour au tableau de bord
-          </Link>
-        </div>
+        <PageHeader
+          title="Gestion des comptes"
+          backHref="/dashboard"
+          backLabel="← Retour au tableau de bord"
+        />
 
         {generatedPassword && (
           <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg px-5 py-4">
@@ -244,8 +243,8 @@ export default function ComptesPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Comptes existants</h2>
+        <Card className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Comptes existants</h2>
 
           {loading ? (
             <div className="text-gray-500 text-sm">Chargement…</div>
@@ -296,10 +295,10 @@ export default function ComptesPage() {
               </tbody>
             </table>
           )}
-        </div>
+        </Card>
 
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Créer un compte</h2>
+        <Card>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Créer un compte</h2>
           <p className="text-sm text-gray-500 mb-4">
             Un mot de passe temporaire est généré automatiquement ; la
             personne devra le changer à sa première connexion.
@@ -340,15 +339,11 @@ export default function ComptesPage() {
               </select>
             </div>
 
-            <button
-              type="submit"
-              disabled={creating}
-              className="bg-green-700 hover:bg-green-800 disabled:opacity-60 text-white px-5 py-2.5 rounded-lg font-medium"
-            >
+            <Button type="submit" disabled={creating}>
               {creating ? "Création…" : "Créer"}
-            </button>
+            </Button>
           </form>
-        </div>
+        </Card>
       </div>
     </div>
   );

@@ -1,8 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import StatCard from "@/components/ui/StatCard";
+import Card from "@/components/ui/Card";
+import LinkButton from "@/components/ui/LinkButton";
 
 type Stats = {
   totalHeures: number;
@@ -66,100 +69,45 @@ export default function StudentPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Portail Étudiant
-        </h1>
+        <PageHeader title="Portail Étudiant" />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">
-              Mes heures
-            </div>
-
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.totalHeures : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">
-              Mes présences
-            </div>
-
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.presences : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">
-              Quiz à faire
-            </div>
-
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.quizRestants : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">
-              Examens
-            </div>
-
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.examens : "…"}
-            </div>
-          </div>
-
+          <StatCard label="Mes heures" value={stats ? stats.totalHeures : "…"} />
+          <StatCard label="Mes présences" value={stats ? stats.presences : "…"} />
+          <StatCard
+            label="Quiz à faire"
+            value={stats ? stats.quizRestants : "…"}
+            accent="orange"
+          />
+          <StatCard label="Examens" value={stats ? stats.examens : "…"} />
         </div>
 
-        <div className="mt-10 bg-white rounded-xl shadow p-6">
-
-          <h2 className="text-2xl font-bold mb-6">
+        <Card className="mt-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Accès rapide
           </h2>
 
-          <div className="flex gap-4 flex-wrap">
-
-            <Link
-              href="/student/attendance"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg"
-            >
+          <div className="flex gap-3 flex-wrap">
+            <LinkButton href="/student/attendance" variant="primary">
               Mes fiches de présence
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/student/courses"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/student/courses" variant="outline">
               Mes cours
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/student/assignments"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/student/assignments" variant="outline">
               Mes travaux pratiques
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/student/exams"
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/student/exams" variant="outline">
               Mes examens
-            </Link>
-
+            </LinkButton>
           </div>
-
-        </div>
-
+        </Card>
       </div>
-
     </div>
   );
 }

@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 export default function StudentAssignmentsPage() {
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -40,14 +43,10 @@ export default function StudentAssignmentsPage() {
   }
 
   function derniereRemise(assignmentId: number) {
-    return submissions.find(
-      (s) => s.assignment_id === assignmentId
-    );
+    return submissions.find((s) => s.assignment_id === assignmentId);
   }
 
-  async function deposerTravail(
-    assignmentId: number
-  ) {
+  async function deposerTravail(assignmentId: number) {
     const fichier = files[assignmentId];
 
     if (!fichier) {
@@ -66,68 +65,63 @@ export default function StudentAssignmentsPage() {
 
     const chemin = `${user.id}/${Date.now()}-${fichier.name}`;
 
-    const { error: uploadError } =
-      await supabase.storage
-        .from("tp-submissions")
-        .upload(chemin, fichier);
+    const { error: uploadError } = await supabase.storage
+      .from("tp-submissions")
+      .upload(chemin, fichier);
 
     if (uploadError) {
       alert(uploadError.message);
       return;
     }
 
-    await supabase
-      .from("assignment_submissions")
-      .insert({
-        assignment_id: assignmentId,
-        student_id: user.id,
-        student_email: user.email,
-        fichier: chemin,
-      });
+    await supabase.from("assignment_submissions").insert({
+      assignment_id: assignmentId,
+      student_id: user.id,
+      student_email: user.email,
+      fichier: chemin,
+    });
 
     alert("Travail remis avec succès");
     chargerTP();
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <PageHeader
+          title="Mes travaux pratiques"
+          backHref="/student"
+          backLabel="← Portail étudiant"
+        />
 
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-8">
-
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Mes travaux pratiques
-        </h1>
-
-        <div className="space-y-6">
-
+        <div className="space-y-4">
           {assignments.map((assignment) => {
             const remise = derniereRemise(assignment.id);
 
             return (
-              <div
-                key={assignment.id}
-                className="border rounded-xl p-6"
-              >
-                <h2 className="text-2xl font-bold mb-3">
+              <Card key={assignment.id}>
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">
                   {assignment.titre}
                 </h2>
 
                 {assignment.contenu_html ? (
                   <div
-                    className="mb-4 tp-content"
+                    className="mb-4 tp-content text-sm text-gray-700"
                     dangerouslySetInnerHTML={{
                       __html: assignment.contenu_html,
                     }}
                   />
                 ) : (
-                  <p className="mb-4">
+                  <p className="mb-4 text-sm text-gray-700">
                     {assignment.description}
                   </p>
                 )}
 
                 {assignment.date_limite && (
-                  <p className="mb-4">
-                    <strong>Date limite :</strong>{" "}
+                  <p className="mb-4 text-sm text-gray-600">
+                    <span className="font-medium text-gray-900">
+                      Date limite :
+                    </span>{" "}
                     {assignment.date_limite}
                   </p>
                 )}
@@ -142,20 +136,13 @@ export default function StudentAssignmentsPage() {
                   >
                     <p>
                       ✅ Remis le{" "}
-                      {new Date(remise.date_remise).toLocaleString(
-                        "fr-CA"
-                      )}
+                      {new Date(remise.date_remise).toLocaleString("fr-CA")}
                     </p>
 
                     {remise.note !== null && remise.note !== undefined ? (
                       <p className="mt-1">
                         <strong>Note :</strong> {remise.note}/20
-                        {remise.commentaire && (
-                          <>
-                            {" — "}
-                            {remise.commentaire}
-                          </>
-                        )}
+                        {remise.commentaire && <>{" — "}{remise.commentaire}</>}
                       </p>
                     ) : (
                       <p className="mt-1">⏳ En attente de correction</p>
@@ -170,8 +157,7 @@ export default function StudentAssignmentsPage() {
                 <input
                   type="file"
                   onChange={(e) => {
-                    const file =
-                      e.target.files?.[0];
+                    const file = e.target.files?.[0];
 
                     if (!file) return;
 
@@ -180,28 +166,19 @@ export default function StudentAssignmentsPage() {
                       [assignment.id]: file,
                     }));
                   }}
-                  className="mb-4"
+                  className="mb-4 text-sm"
                 />
 
-                <button
-                  onClick={() =>
-                    deposerTravail(
-                      assignment.id
-                    )
-                  }
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-                >
-                  {remise ? "Remettre à nouveau" : "Envoyer"}
-                </button>
-
-              </div>
+                <div>
+                  <Button onClick={() => deposerTravail(assignment.id)}>
+                    {remise ? "Remettre à nouveau" : "Envoyer"}
+                  </Button>
+                </div>
+              </Card>
             );
           })}
-
         </div>
-
       </div>
-
     </div>
   );
 }

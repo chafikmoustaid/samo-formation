@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
 
 export default function StudentProgressPage() {
   const [loading, setLoading] = useState(true);
@@ -41,85 +43,60 @@ export default function StudentProgressPage() {
     setLoading(false);
   }
 
-  const progressionQuiz =
-    (quizCount / totalSeances) * 100;
-
-  const progressionTP =
-    (tpCount / totalSeances) * 100;
-
-  const progressionGlobale =
-    (progressionQuiz + progressionTP) / 2;
+  const progressionQuiz = (quizCount / totalSeances) * 100;
+  const progressionTP = (tpCount / totalSeances) * 100;
+  const progressionGlobale = (progressionQuiz + progressionTP) / 2;
 
   if (loading) {
-    return (
-      <div className="p-8">
-        Chargement...
-      </div>
-    );
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <PageHeader title="Ma progression" backHref="/student" backLabel="← Portail étudiant" />
 
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-8">
-
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Ma progression
-        </h1>
-
-        <div className="space-y-6">
-
+        <Card className="space-y-6">
           <div>
-            <p>
+            <p className="text-sm text-gray-700">
               Quiz complétés : {quizCount}/{totalSeances}
             </p>
 
-            <div className="bg-gray-200 h-4 rounded mt-2">
+            <div className="bg-gray-100 h-3 rounded-full mt-2">
               <div
-                className="bg-blue-600 h-4 rounded"
-                style={{
-                  width: `${progressionQuiz}%`,
-                }}
+                className="bg-blue-600 h-3 rounded-full"
+                style={{ width: `${progressionQuiz}%` }}
               />
             </div>
           </div>
 
           <div>
-            <p>
+            <p className="text-sm text-gray-700">
               TP remis : {tpCount}/{totalSeances}
             </p>
 
-            <div className="bg-gray-200 h-4 rounded mt-2">
+            <div className="bg-gray-100 h-3 rounded-full mt-2">
               <div
-                className="bg-green-600 h-4 rounded"
-                style={{
-                  width: `${progressionTP}%`,
-                }}
+                className="bg-green-700 h-3 rounded-full"
+                style={{ width: `${progressionTP}%` }}
               />
             </div>
           </div>
 
           <div>
-            <p>
-              Progression globale :
-              {" "}
-              {progressionGlobale.toFixed(0)} %
+            <p className="text-sm text-gray-700">
+              Progression globale : {progressionGlobale.toFixed(0)} %
             </p>
 
-            <div className="bg-gray-200 h-4 rounded mt-2">
+            <div className="bg-gray-100 h-3 rounded-full mt-2">
               <div
-                className="bg-purple-600 h-4 rounded"
-                style={{
-                  width: `${progressionGlobale}%`,
-                }}
+                className="bg-purple-600 h-3 rounded-full"
+                style={{ width: `${progressionGlobale}%` }}
               />
             </div>
           </div>
-
-        </div>
-
+        </Card>
       </div>
-
     </div>
   );
 }

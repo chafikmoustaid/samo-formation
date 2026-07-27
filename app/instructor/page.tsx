@@ -1,8 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import StatCard from "@/components/ui/StatCard";
+import Card from "@/components/ui/Card";
+import LinkButton from "@/components/ui/LinkButton";
 
 type Stats = {
   totalSeances: number;
@@ -46,89 +49,62 @@ export default function InstructorPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Portail Formateur
-        </h1>
+        <PageHeader title="Portail Formateur" />
 
         <div className="grid md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">Séances publiées</div>
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.totalSeances : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">Fiches à valider</div>
-            <div className="text-4xl font-bold mt-2 text-orange-600">
-              {stats ? stats.fichesAttente : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">Remises à corriger</div>
-            <div className="text-4xl font-bold mt-2 text-orange-600">
-              {stats ? stats.remisesAttente : "…"}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow p-6">
-            <div className="text-gray-500">Total remises TP</div>
-            <div className="text-4xl font-bold mt-2">
-              {stats ? stats.totalRemises : "…"}
-            </div>
-          </div>
+          <StatCard
+            label="Séances publiées"
+            value={stats ? stats.totalSeances : "…"}
+          />
+          <StatCard
+            label="Fiches à valider"
+            value={stats ? stats.fichesAttente : "…"}
+            accent="orange"
+          />
+          <StatCard
+            label="Remises à corriger"
+            value={stats ? stats.remisesAttente : "…"}
+            accent="orange"
+          />
+          <StatCard
+            label="Total remises TP"
+            value={stats ? stats.totalRemises : "…"}
+          />
         </div>
 
-        <div className="mt-10 bg-white rounded-xl shadow p-6">
-          <h2 className="text-2xl font-bold mb-6">Accès rapide</h2>
+        <Card className="mt-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Accès rapide
+          </h2>
 
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/instructor/attendance"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-lg"
-            >
+          <div className="flex flex-wrap gap-3">
+            <LinkButton href="/instructor/attendance" variant="primary">
               🕒 Fiches de présence à valider
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/instructor/import-support"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/instructor/import-support" variant="outline">
               📥 Publier un support
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/instructor/courses"
-              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/instructor/courses" variant="outline">
               📄 Supports & TP par séance
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/instructor/assignments"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/instructor/assignments" variant="outline">
               🛠 Remises TP
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/instructor/results"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/instructor/results" variant="outline">
               📊 Résultats
-            </Link>
+            </LinkButton>
 
-            <Link
-              href="/instructor/progress"
-              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-lg"
-            >
+            <LinkButton href="/instructor/progress" variant="outline">
               📈 Progression
-            </Link>
+            </LinkButton>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 type Status =
   | { kind: "idle" }
@@ -57,19 +60,15 @@ export default function ImportSupportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
-        <Link
-          href="/instructor"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          ← Portail formateur
-        </Link>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-2xl mx-auto">
+        <PageHeader
+          title="Publier un support de séance"
+          backHref="/instructor"
+          backLabel="← Portail formateur"
+        />
 
-        <h1 className="text-3xl font-bold text-green-700 mt-4 mb-2">
-          Publier un support de séance
-        </h1>
-
+        <Card>
         <p className="text-gray-600 mb-8">
           Génère d&apos;abord les fichiers en local :
           <br />
@@ -138,13 +137,9 @@ export default function ImportSupportPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={status.kind === "loading"}
-            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-lg font-medium"
-          >
+          <Button type="submit" disabled={status.kind === "loading"}>
             {status.kind === "loading" ? "Publication..." : "Publier"}
-          </button>
+          </Button>
 
           {status.kind === "success" && (
             <div className="p-4 rounded-lg bg-green-50 text-green-800">
@@ -164,6 +159,7 @@ export default function ImportSupportPage() {
             </div>
           )}
         </form>
+        </Card>
       </div>
     </div>
   );

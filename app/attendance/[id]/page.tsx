@@ -4,6 +4,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import SignaturePad from "@/components/SignaturePad";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
+
+const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
+  en_attente: "warning",
+  validee: "success",
+  refusee: "danger",
+};
 
 const STATUT_LABELS: Record<string, { texte: string; classe: string }> = {
   en_attente: {
@@ -158,31 +168,29 @@ export default function AttendanceDetail() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (!fiche) {
-    return <div className="p-8">Fiche introuvable</div>;
+    return <div className="p-8 text-gray-500">Fiche introuvable</div>;
   }
 
   const statutInfo =
     STATUT_LABELS[fiche.statut] ?? STATUT_LABELS.en_attente;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
-          <h1 className="text-4xl font-bold text-green-700">
-            Fiche de présence
-          </h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-5xl mx-auto">
+        <PageHeader
+          title="Fiche de présence"
+          action={
+            <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
+              {statutInfo.texte}
+            </Badge>
+          }
+        />
 
-          <span
-            className={`px-3 py-1.5 rounded-full text-sm font-medium ${statutInfo.classe}`}
-          >
-            {statutInfo.texte}
-          </span>
-        </div>
-
+        <Card>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <strong>Étudiant :</strong> {fiche.nom_etudiant}
@@ -299,20 +307,16 @@ export default function AttendanceDetail() {
               )}
 
               <div className="flex gap-3">
-                <button
+                <Button
                   onClick={validerFiche}
                   disabled={enregistrement || !signatureFormateur}
-                  className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium"
                 >
                   {enregistrement ? "Enregistrement..." : "✅ Valider la fiche"}
-                </button>
+                </Button>
 
-                <button
-                  onClick={() => setModeRefus(true)}
-                  className="bg-red-100 hover:bg-red-200 text-red-700 px-6 py-3 rounded-lg font-medium"
-                >
+                <Button variant="outline" onClick={() => setModeRefus(true)}>
                   ❌ Refuser
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -332,20 +336,13 @@ export default function AttendanceDetail() {
               />
 
               <div className="flex gap-3">
-                <button
-                  onClick={refuserFiche}
-                  disabled={enregistrement}
-                  className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium"
-                >
+                <Button variant="danger" onClick={refuserFiche} disabled={enregistrement}>
                   {enregistrement ? "Enregistrement..." : "Confirmer le refus"}
-                </button>
+                </Button>
 
-                <button
-                  onClick={() => setModeRefus(false)}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium"
-                >
+                <Button variant="outline" onClick={() => setModeRefus(false)}>
                   Annuler
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -355,11 +352,12 @@ export default function AttendanceDetail() {
           <button
             onClick={telechargerPdf}
             disabled={telechargement}
-            className="text-blue-600 hover:underline disabled:opacity-50"
+            className="text-green-700 hover:underline disabled:opacity-50 text-sm"
           >
             {telechargement ? "Génération du PDF..." : "📄 Télécharger le PDF"}
           </button>
         </div>
+        </Card>
       </div>
     </div>
   );

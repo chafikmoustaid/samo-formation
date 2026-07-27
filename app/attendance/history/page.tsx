@@ -5,6 +5,8 @@ import StatusSelector from "@/components/StatusSelector";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
+import PageHeader from "@/components/ui/PageHeader";
+import Card from "@/components/ui/Card";
 
 export default function AttendanceHistory() {
   const [fiches, setFiches] = useState<any[]>([]);
@@ -32,82 +34,73 @@ export default function AttendanceHistory() {
   }
 
   if (loading) {
-    return <div className="p-8">Chargement...</div>;
+    return <div className="p-8 text-gray-400">Chargement...</div>;
   }
 
   if (error) {
     return (
       <div className="p-8">
-        <h1 className="text-red-600 text-2xl font-bold">
+        <h1 className="text-red-600 text-xl font-bold">
           Erreur de chargement
         </h1>
 
-        <pre className="mt-4">
-          {JSON.stringify(error, null, 2)}
-        </pre>
+        <pre className="mt-4 text-sm">{JSON.stringify(error, null, 2)}</pre>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-green-700 mb-8">
-          Historique des fiches de présence
-        </h1>
+        <PageHeader
+          title="Historique des fiches de présence"
+          backHref="/dashboard"
+          backLabel="← Retour au tableau de bord"
+        />
 
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <table className="w-full">
+        <Card className="p-0 overflow-hidden">
+          <table className="w-full text-sm">
             <thead>
-              <tr className="bg-green-600 text-white">
-                <th className="p-4 text-left">Étudiant</th>
-                <th className="p-4 text-left">Formateur</th>
-                <th className="p-4 text-left">Matière</th>
-                <th className="p-4 text-left">Total</th>
-                <th className="p-4 text-left">Statut</th>
-                <th className="p-4 text-left">Début</th>
-                <th className="p-4 text-left">Fin</th>
-                <th className="p-4 text-left">Actions</th>
+              <tr className="bg-gray-50 text-left text-gray-500">
+                <th className="p-4 font-medium">Étudiant</th>
+                <th className="p-4 font-medium">Formateur</th>
+                <th className="p-4 font-medium">Matière</th>
+                <th className="p-4 font-medium">Total</th>
+                <th className="p-4 font-medium">Statut</th>
+                <th className="p-4 font-medium">Début</th>
+                <th className="p-4 font-medium">Fin</th>
+                <th className="p-4 font-medium">Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {fiches.map((fiche) => (
-                <tr
-                  key={fiche.id}
-                  className="border-b hover:bg-gray-50"
-                >
+                <tr key={fiche.id} className="border-t border-gray-100 hover:bg-gray-50">
                   <td className="p-4">{fiche.nom_etudiant}</td>
                   <td className="p-4">{fiche.nom_formateur}</td>
                   <td className="p-4">{fiche.matiere}</td>
                   <td className="p-4">{fiche.total_heures} h</td>
                   <td className="p-4">
-                    <StatusSelector
-  id={fiche.id}
-  statut={fiche.statut}
-/>
+                    <StatusSelector id={fiche.id} statut={fiche.statut} />
                   </td>
                   <td className="p-4">{String(fiche.semaine_debut)}</td>
                   <td className="p-4">{String(fiche.semaine_fin)}</td>
 
-                  <td className="p-4 space-x-2">
-                    {/* Balise <Link> corrigée ici */}
+                  <td className="p-4 space-x-2 whitespace-nowrap">
                     <Link
                       href={`/attendance/${fiche.id}`}
-                      className="bg-blue-100 text-blue-700 px-3 py-2 rounded"
+                      className="text-green-700 hover:underline"
                     >
                       Voir
                     </Link>
 
-                    <DeleteAttendanceButton
-  id={fiche.id}
-/>
+                    <DeleteAttendanceButton id={fiche.id} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       </div>
     </div>
   );
