@@ -4,8 +4,19 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
+function fichierUrl(chemin: string) {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/tp-submissions/${chemin}`;
+}
+
+function nomFichier(chemin: string) {
+  const base = chemin.split("/").pop() ?? chemin;
+  // enlève le préfixe timestamp "1784868804241-"
+  return base.replace(/^\d+-/, "");
+}
+
 export default function InstructorAssignmentsPage() {
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +32,17 @@ export default function InstructorAssignmentsPage() {
       });
 
     setSubmissions(data ?? []);
+
+    const { data: tps } = await supabase
+      .from("assignments")
+      .select("id, titre");
+
+    const map: Record<string, string> = {};
+    (tps ?? []).forEach((tp) => {
+      map[String(tp.id)] = tp.titre;
+    });
+    setAssignments(map);
+
     setLoading(false);
   }
 
@@ -59,11 +81,19 @@ export default function InstructorAssignmentsPage() {
                 </td>
 
                 <td className="p-3">
-                  {submission.assignment_id}
+                  {assignments[String(submission.assignment_id)] ??
+                    `TP ${submission.assignment_id}`}
                 </td>
 
-                <td className="p-3 break-all">
-                  {submission.fichier}
+                <td className="p-3">
+                  <a
+                    href={fichierUrl(submission.fichier)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline break-all"
+                  >
+                    📎 {nomFichier(submission.fichier)}
+                  </a>
                 </td>
 
                 <td className="p-3">

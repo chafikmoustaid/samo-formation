@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+function fichierUrl(chemin: string) {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/tp-submissions/${chemin}`;
+}
+
+function nomFichier(chemin: string) {
+  const base = chemin.split("/").pop() ?? chemin;
+  return base.replace(/^\d+-/, "");
+}
+
 export default function AssignmentCorrectionPage({
   params,
 }: {
@@ -12,6 +21,9 @@ export default function AssignmentCorrectionPage({
 }) {
   const [submission, setSubmission] =
     useState<any>(null);
+
+  const [assignmentTitre, setAssignmentTitre] =
+    useState<string>("");
 
   const [note, setNote] = useState("");
 
@@ -34,6 +46,14 @@ export default function AssignmentCorrectionPage({
     setSubmission(data);
     setNote(String(data.note ?? ""));
     setCommentaire(data.commentaire ?? "");
+
+    const { data: tp } = await supabase
+      .from("assignments")
+      .select("titre")
+      .eq("id", data.assignment_id)
+      .maybeSingle();
+
+    setAssignmentTitre(tp?.titre ?? `TP ${data.assignment_id}`);
   }
 
   async function enregistrerCorrection() {
@@ -79,12 +99,19 @@ export default function AssignmentCorrectionPage({
 
           <p>
             <strong>TP :</strong>{" "}
-            {submission.assignment_id}
+            {assignmentTitre}
           </p>
 
           <p>
             <strong>Fichier :</strong>{" "}
-            {submission.fichier}
+            <a
+              href={fichierUrl(submission.fichier)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              📎 {nomFichier(submission.fichier)}
+            </a>
           </p>
 
           <div>
