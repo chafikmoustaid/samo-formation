@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import MatieresMultiSelect from "@/components/ui/MatieresMultiSelect";
 
 type Role = "admin" | "instructor" | "student";
 
@@ -39,12 +40,10 @@ export default function ComptesPage() {
     null
   );
 
-  const [matieresEdition, setMatieresEdition] = useState<Record<string, string>>(
-    {}
-  );
   const [savingMatieresId, setSavingMatieresId] = useState<string | null>(
     null
   );
+  const [toutesMatieres, setToutesMatieres] = useState<string[]>([]);
 
   async function loadProfiles() {
     setLoading(true);
@@ -52,23 +51,23 @@ export default function ComptesPage() {
       .from("profiles")
       .select("id, email, role, created_at, matieres")
       .order("created_at", { ascending: true });
-    setProfiles((data as Profile[]) ?? []);
+    const liste = (data as Profile[]) ?? [];
+    setProfiles(liste);
+
+    const union = new Set<string>();
+    liste.forEach((p) => (p.matieres ?? []).forEach((m) => union.add(m)));
+    setToutesMatieres((prev) => Array.from(new Set([...prev, ...union])).sort());
+
     setLoading(false);
   }
 
-  async function enregistrerMatieres(id: string) {
-    const texte = matieresEdition[id] ?? "";
-    const liste = texte
-      .split(",")
-      .map((m) => m.trim())
-      .filter(Boolean);
-
+  async function enregistrerMatieres(id: string, matieres: string[]) {
     setSavingMatieresId(id);
     setMessage(null);
 
     const { error } = await supabase.rpc("admin_update_matieres", {
       profil_id: id,
-      nouvelles_matieres: liste,
+      nouvelles_matieres: matieres,
     });
 
     setSavingMatieresId(null);
@@ -82,7 +81,7 @@ export default function ComptesPage() {
     }
 
     setProfiles((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, matieres: liste } : p))
+      prev.map((p) => (p.id === id ? { ...p, matieres } : p))
     );
     setMessage({ type: "succes", texte: "Matières mises à jour." });
   }
@@ -318,28 +317,24 @@ export default function ComptesPage() {
                     </td>
                     <td className="p-3">
                       {p.role === "instructor" || p.role === "admin" ? (
-                        <div className="flex flex-col gap-2 min-w-[220px]">
-                          <input
-                            type="text"
-                            defaultValue={(p.matieres ?? []).join(", ")}
-                            placeholder="Ex. Word, Excel, Outlook"
-                            onChange={(e) =>
-                              setMatieresEdition((prev) => ({
-                                ...prev,
-                                [p.id]: e.target.value,
-                              }))
+                        <div className="flex flex-col gap-2">
+                          <MatieresMultiSelect
+                            options={toutesMatieres}
+                            selected={p.matieres ?? []}
+                            onChange={(matieres) =>
+                              enregistrerMatieres(p.id, matieres)
                             }
-                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
+                            onAjouterOption={(matiere) =>
+                              setToutesMatieres((prev) =>
+                                Array.from(new Set([...prev, matiere])).sort()
+                              )
+                            }
                           />
-                          <button
-                            onClick={() => enregistrerMatieres(p.id)}
-                            disabled={savingMatieresId === p.id}
-                            className="text-blue-600 hover:underline disabled:opacity-50 text-left text-xs"
-                          >
-                            {savingMatieresId === p.id
-                              ? "Enregistrement…"
-                              : "Enregistrer les matières"}
-                          </button>
+                          {savingMatieresId === p.id && (
+                            <span className="text-xs text-gray-400">
+                              Enregistrement…
+                            </span>
+                          )}
                         </div>
                       ) : (
                         <span className="text-gray-400">—</span>
