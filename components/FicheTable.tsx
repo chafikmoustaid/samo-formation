@@ -72,13 +72,26 @@ export default function FicheTable({
                 </td>
               )}
 
+              <td className="border border-gray-300 p-0.5">
+                {editable ? (
+                  <input
+                    type="date"
+                    value={ligne.date}
+                    onChange={(e) => set(index, "date", e.target.value)}
+                    className="w-full px-1 py-1 text-xs outline-none"
+                  />
+                ) : (
+                  <span className="block text-center text-xs">{ligne.date || ""}</span>
+                )}
+              </td>
+
               <td className="border border-gray-300 p-1">
                 {editable ? (
                   <input
                     type="text"
                     value={ligne.matiere}
                     onChange={(e) => set(index, "matiere", e.target.value)}
-                    placeholder="Matière / date"
+                    placeholder="Matière"
                     className="w-full px-1.5 py-1 text-sm outline-none"
                   />
                 ) : (
