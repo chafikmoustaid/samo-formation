@@ -104,7 +104,18 @@ export default function ComptesPage() {
     loadCatalogue();
   }, []);
 
-  async function changeRole(id: string, role: Role) {
+  async function changeRole(id: string, role: Role, email: string) {
+    const confirmation = window.confirm(
+      `Changer le rôle de ${email} en "${
+        role === "admin"
+          ? "Administration"
+          : role === "instructor"
+          ? "Formateur"
+          : "Étudiant"
+      }" ?`
+    );
+    if (!confirmation) return;
+
     setBusyId(id);
     setMessage(null);
 
@@ -305,30 +316,18 @@ export default function ComptesPage() {
               <thead>
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3">Email</th>
-                  <th className="p-3">Rôle</th>
                   <th className="p-3">Matières</th>
                   <th className="p-3">Créé le</th>
                   <th className="p-3">Actions</th>
+                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600">
+                    Rôle (sensible)
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {profiles.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
                     <td className="p-3">{p.email}</td>
-                    <td className="p-3">
-                      <select
-                        value={p.role}
-                        disabled={busyId === p.id}
-                        onChange={(e) =>
-                          changeRole(p.id, e.target.value as Role)
-                        }
-                        className="border border-gray-200 rounded-lg px-2 py-1"
-                      >
-                        <option value="student">Étudiant</option>
-                        <option value="instructor">Formateur</option>
-                        <option value="admin">Administration</option>
-                      </select>
-                    </td>
                     <td className="p-3">
                       <div className="flex flex-col gap-2">
                         <MatieresMultiSelect
@@ -359,6 +358,20 @@ export default function ComptesPage() {
                           ? "Génération…"
                           : "Générer un nouveau mot de passe"}
                       </button>
+                    </td>
+                    <td className="p-3 border-l border-gray-200 pl-6">
+                      <select
+                        value={p.role}
+                        disabled={busyId === p.id}
+                        onChange={(e) =>
+                          changeRole(p.id, e.target.value as Role, p.email)
+                        }
+                        className="border border-gray-200 rounded-lg px-2 py-1"
+                      >
+                        <option value="student">Étudiant</option>
+                        <option value="instructor">Formateur</option>
+                        <option value="admin">Administration</option>
+                      </select>
                     </td>
                   </tr>
                 ))}
