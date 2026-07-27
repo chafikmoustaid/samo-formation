@@ -149,34 +149,37 @@ export default function Attendance() {
               height={78}
               className="h-16 w-auto mb-3"
             />
-            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center">
-              FICHE DE PRÉSENCE
-            </h2>
           </div>
 
-          <div className="space-y-2 mb-4 text-sm">
-            <div className="flex items-center gap-3">
-              <label className="font-semibold text-gray-900 w-52 shrink-0">
-                Nom de l&apos;étudiant(e) :
-              </label>
-              <input
-                type="text"
-                value={nomEtudiant}
-                onChange={(e) => setNomEtudiant(e.target.value)}
-                className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
-              />
-            </div>
+          <div className="max-w-md mx-auto mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center mb-5">
+              FICHE DE PRÉSENCE
+            </h2>
 
-            <div className="flex items-center gap-3">
-              <label className="font-semibold text-gray-900 w-52 shrink-0">
-                Nom du formateur(trice) :
-              </label>
-              <input
-                type="text"
-                value={nomFormateur}
-                onChange={(e) => setNomFormateur(e.target.value)}
-                className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
-              />
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-3">
+                <label className="font-semibold text-gray-900 w-44 shrink-0 text-right">
+                  Nom de l&apos;étudiant(e) :
+                </label>
+                <input
+                  type="text"
+                  value={nomEtudiant}
+                  onChange={(e) => setNomEtudiant(e.target.value)}
+                  className="flex-1 bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <label className="font-semibold text-gray-900 w-44 shrink-0 text-right">
+                  Nom du formateur(trice) :
+                </label>
+                <input
+                  type="text"
+                  value={nomFormateur}
+                  onChange={(e) => setNomFormateur(e.target.value)}
+                  className="flex-1 bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
+                />
+              </div>
             </div>
           </div>
 

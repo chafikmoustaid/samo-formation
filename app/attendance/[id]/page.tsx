@@ -201,27 +201,30 @@ export default function AttendanceDetail() {
               height={78}
               className="h-16 w-auto mb-3"
             />
-            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center">
-              FICHE DE PRÉSENCE
-            </h2>
           </div>
 
-          <div className="space-y-2 mb-6 text-sm">
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-gray-900 w-52 shrink-0">
-                Nom de l&apos;étudiant(e) :
-              </span>
-              <span className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1">
-                {fiche.nom_etudiant}
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-gray-900 w-52 shrink-0">
-                Nom du formateur(trice) :
-              </span>
-              <span className="flex-1 max-w-sm bg-gray-100 border border-black rounded-sm px-2 py-1">
-                {fiche.nom_formateur || "—"}
-              </span>
+          <div className="max-w-md mx-auto mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-wide text-center mb-5">
+              FICHE DE PRÉSENCE
+            </h2>
+
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-3">
+                <span className="font-semibold text-gray-900 w-44 shrink-0 text-right">
+                  Nom de l&apos;étudiant(e) :
+                </span>
+                <span className="flex-1 bg-gray-100 border border-black rounded-sm px-2 py-1">
+                  {fiche.nom_etudiant}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-semibold text-gray-900 w-44 shrink-0 text-right">
+                  Nom du formateur(trice) :
+                </span>
+                <span className="flex-1 bg-gray-100 border border-black rounded-sm px-2 py-1">
+                  {fiche.nom_formateur || "—"}
+                </span>
+              </div>
             </div>
           </div>
 
