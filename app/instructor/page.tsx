@@ -8,6 +8,7 @@ type Stats = {
   totalSeances: number;
   remisesAttente: number;
   totalRemises: number;
+  fichesAttente: number;
 };
 
 export default function InstructorPage() {
@@ -17,9 +18,10 @@ export default function InstructorPage() {
     let active = true;
 
     async function load() {
-      const [coursesRes, submissionsRes] = await Promise.all([
+      const [coursesRes, submissionsRes, attendanceRes] = await Promise.all([
         supabase.from("courses").select("id"),
         supabase.from("assignment_submissions").select("id, note"),
+        supabase.from("attendance").select("id, statut"),
       ]);
 
       if (!active) return;
@@ -29,8 +31,11 @@ export default function InstructorPage() {
       const remisesAttente = (submissionsRes.data ?? []).filter(
         (s) => s.note === null
       ).length;
+      const fichesAttente = (attendanceRes.data ?? []).filter(
+        (f) => f.statut === "en_attente"
+      ).length;
 
-      setStats({ totalSeances, remisesAttente, totalRemises });
+      setStats({ totalSeances, remisesAttente, totalRemises, fichesAttente });
     }
 
     load();
@@ -47,11 +52,18 @@ export default function InstructorPage() {
           Portail Formateur
         </h1>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           <div className="bg-white rounded-xl shadow p-6">
             <div className="text-gray-500">Séances publiées</div>
             <div className="text-4xl font-bold mt-2">
               {stats ? stats.totalSeances : "…"}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow p-6">
+            <div className="text-gray-500">Fiches à valider</div>
+            <div className="text-4xl font-bold mt-2 text-orange-600">
+              {stats ? stats.fichesAttente : "…"}
             </div>
           </div>
 
@@ -74,6 +86,13 @@ export default function InstructorPage() {
           <h2 className="text-2xl font-bold mb-6">Accès rapide</h2>
 
           <div className="flex flex-wrap gap-4">
+            <Link
+              href="/instructor/attendance"
+              className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-lg"
+            >
+              🕒 Fiches de présence à valider
+            </Link>
+
             <Link
               href="/instructor/import-support"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg"

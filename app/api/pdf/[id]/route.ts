@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
-import { supabase } from "@/lib/supabase";
+import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
 
 export async function GET(
   request: Request,
@@ -13,6 +13,7 @@ export async function GET(
   }
 ) {
   const { id } = await context.params;
+  const supabase = supabaseFromRequest(request);
 
   const { data: fiche, error } = await supabase
     .from("attendance")

@@ -114,16 +114,19 @@ export default function Navbar() {
             </>
           )}
 
-          {role === "instructor" && (
-            <Link href="/instructor" className="hover:underline text-sm">
-              🎓 Portail formateur
-            </Link>
-          )}
-
-          {role === "admin" && section === "instructor" && (
-            <Link href="/instructor" className="hover:underline text-sm">
-              🎓 Portail formateur
-            </Link>
+          {(role === "instructor" ||
+            (role === "admin" && section === "instructor")) && (
+            <>
+              <Link href="/instructor" className="hover:underline text-sm">
+                🎓 Portail formateur
+              </Link>
+              <Link
+                href="/instructor/attendance"
+                className="hover:underline text-sm"
+              >
+                🕒 Fiches de présence
+              </Link>
+            </>
           )}
 
           {role === "student" && (
