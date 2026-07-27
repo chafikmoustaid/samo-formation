@@ -15,6 +15,12 @@ type Profile = {
   role: Role;
   created_at: string;
   matieres: string[] | null;
+  formation_id: number | null;
+};
+
+type Formation = {
+  id: number;
+  nom: string;
 };
 
 export default function ComptesPage() {
@@ -43,28 +49,69 @@ export default function ComptesPage() {
   const [savingMatieresId, setSavingMatieresId] = useState<string | null>(
     null
   );
+  const [savingFormationId, setSavingFormationId] = useState<string | null>(
+    null
+  );
   const [toutesMatieres, setToutesMatieres] = useState<string[]>([]);
+  const [formations, setFormations] = useState<Formation[]>([]);
+
+  const [formationChoisieId, setFormationChoisieId] = useState<number | null>(
+    null
+  );
+  const [matieresFormation, setMatieresFormation] = useState<string[]>([]);
+  const [savingFormationMatieres, setSavingFormationMatieres] =
+    useState(false);
 
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("id, email, role, created_at, matieres")
+      .select("id, email, role, created_at, matieres, formation_id")
       .order("created_at", { ascending: true });
     setProfiles((data as Profile[]) ?? []);
     setLoading(false);
   }
 
-  async function loadCatalogue() {
+  async function loadMatieres() {
     const { data } = await supabase
-      .from("matieres_catalogue")
+      .from("matieres")
       .select("nom")
       .order("nom", { ascending: true });
     setToutesMatieres((data ?? []).map((m: { nom: string }) => m.nom));
   }
 
-  async function ajouterAuCatalogue(matiere: string) {
-    const { error } = await supabase.rpc("admin_ajouter_matiere_catalogue", {
+  async function loadFormations() {
+    const { data } = await supabase
+      .from("formations")
+      .select("id, nom")
+      .order("nom", { ascending: true });
+    const liste = (data as Formation[]) ?? [];
+    setFormations(liste);
+    if (liste.length > 0 && formationChoisieId === null) {
+      setFormationChoisieId(liste[0].id);
+    }
+  }
+
+  async function loadMatieresFormation(formationId: number) {
+    const { data } = await supabase
+      .from("formation_matieres")
+      .select("matieres(nom)")
+      .eq("formation_id", formationId);
+    const noms = (data ?? [])
+      .map((row: any) => row.matieres?.nom)
+      .filter(Boolean);
+    setMatieresFormation(noms);
+  }
+
+  useEffect(() => {
+    if (formationChoisieId !== null) {
+      loadMatieresFormation(formationChoisieId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formationChoisieId]);
+
+  async function ajouterMatiere(matiere: string) {
+    const { error } = await supabase.rpc("admin_ajouter_matiere", {
       nom_matiere: matiere,
     });
     if (!error) {
@@ -72,6 +119,58 @@ export default function ComptesPage() {
         Array.from(new Set([...prev, matiere])).sort()
       );
     }
+  }
+
+  async function enregistrerMatieresFormation(matieres: string[]) {
+    if (formationChoisieId === null) return;
+
+    setSavingFormationMatieres(true);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_update_formation_matieres", {
+      cible_formation_id: formationChoisieId,
+      noms_matieres: matieres,
+    });
+
+    setSavingFormationMatieres(false);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte:
+          "Erreur lors de l'enregistrement des matières de la formation : " +
+          error.message,
+      });
+      return;
+    }
+
+    setMatieresFormation(matieres);
+    setMessage({ type: "succes", texte: "Matières de la formation mises à jour." });
+  }
+
+  async function enregistrerFormationEtudiant(id: string, formationId: number) {
+    setSavingFormationId(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_set_formation", {
+      profil_id: id,
+      nouvelle_formation_id: formationId,
+    });
+
+    setSavingFormationId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'assignation de la formation : " + error.message,
+      });
+      return;
+    }
+
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, formation_id: formationId } : p))
+    );
+    setMessage({ type: "succes", texte: "Formation assignée." });
   }
 
   async function enregistrerMatieres(id: string, matieres: string[]) {
@@ -101,7 +200,8 @@ export default function ComptesPage() {
 
   useEffect(() => {
     loadProfiles();
-    loadCatalogue();
+    loadMatieres();
+    loadFormations();
   }, []);
 
   async function changeRole(id: string, role: Role, email: string) {
@@ -316,7 +416,7 @@ export default function ComptesPage() {
               <thead>
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3">Email</th>
-                  <th className="p-3">Matières</th>
+                  <th className="p-3">Formation / Matières</th>
                   <th className="p-3">Créé le</th>
                   <th className="p-3">Actions</th>
                   <th className="p-3 border-l border-gray-200 pl-6 text-red-600">
@@ -329,21 +429,51 @@ export default function ComptesPage() {
                   <tr key={p.id} className="border-b last:border-0 align-top">
                     <td className="p-3">{p.email}</td>
                     <td className="p-3">
-                      <div className="flex flex-col gap-2">
-                        <MatieresMultiSelect
-                          options={toutesMatieres}
-                          selected={p.matieres ?? []}
-                          onChange={(matieres) =>
-                            enregistrerMatieres(p.id, matieres)
-                          }
-                          onAjouterOption={ajouterAuCatalogue}
-                        />
-                        {savingMatieresId === p.id && (
-                          <span className="text-xs text-gray-400">
-                            Enregistrement…
-                          </span>
-                        )}
-                      </div>
+                      {p.role === "student" ? (
+                        <div className="flex flex-col gap-1">
+                          <select
+                            value={p.formation_id ?? ""}
+                            onChange={(e) =>
+                              enregistrerFormationEtudiant(
+                                p.id,
+                                Number(e.target.value)
+                              )
+                            }
+                            disabled={savingFormationId === p.id}
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm min-w-[220px]"
+                          >
+                            <option value="" disabled>
+                              Choisir une formation
+                            </option>
+                            {formations.map((f) => (
+                              <option key={f.id} value={f.id}>
+                                {f.nom}
+                              </option>
+                            ))}
+                          </select>
+                          {savingFormationId === p.id && (
+                            <span className="text-xs text-gray-400">
+                              Enregistrement…
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <MatieresMultiSelect
+                            options={toutesMatieres}
+                            selected={p.matieres ?? []}
+                            onChange={(matieres) =>
+                              enregistrerMatieres(p.id, matieres)
+                            }
+                            onAjouterOption={ajouterMatiere}
+                          />
+                          {savingMatieresId === p.id && (
+                            <span className="text-xs text-gray-400">
+                              Enregistrement…
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="p-3 text-gray-500">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
@@ -378,6 +508,42 @@ export default function ComptesPage() {
               </tbody>
             </table>
           )}
+        </Card>
+
+        <Card className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            Matières par formation
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Chaque formation (programme) a ses propres matières. Une matière
+            peut appartenir à plusieurs formations (tronc commun, ex. Word,
+            Excel).
+          </p>
+
+          <div className="flex flex-col gap-3 max-w-md">
+            <select
+              value={formationChoisieId ?? ""}
+              onChange={(e) => setFormationChoisieId(Number(e.target.value))}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            >
+              {formations.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.nom}
+                </option>
+              ))}
+            </select>
+
+            <MatieresMultiSelect
+              options={toutesMatieres}
+              selected={matieresFormation}
+              onChange={enregistrerMatieresFormation}
+              onAjouterOption={ajouterMatiere}
+            />
+
+            {savingFormationMatieres && (
+              <span className="text-xs text-gray-400">Enregistrement…</span>
+            )}
+          </div>
         </Card>
 
         <Card>

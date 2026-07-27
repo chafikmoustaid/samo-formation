@@ -45,13 +45,27 @@ export default function Attendance() {
 
     if (!user) return;
 
-    const { data } = await supabase
+    const { data: profil } = await supabase
       .from("profiles")
-      .select("matieres")
+      .select("matieres, formation_id")
       .eq("id", user.id)
       .single();
 
-    setMatieresDisponibles((data?.matieres as string[]) ?? []);
+    if (profil?.formation_id) {
+      const { data: liees } = await supabase
+        .from("formation_matieres")
+        .select("matieres(nom)")
+        .eq("formation_id", profil.formation_id);
+
+      const noms = (liees ?? [])
+        .map((row: any) => row.matieres?.nom)
+        .filter(Boolean);
+
+      setMatieresDisponibles(noms.length > 0 ? noms : (profil.matieres as string[]) ?? []);
+      return;
+    }
+
+    setMatieresDisponibles((profil?.matieres as string[]) ?? []);
   }
 
   async function chargerSignatureEnregistree() {
