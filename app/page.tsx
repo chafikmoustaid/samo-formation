@@ -33,12 +33,28 @@ export default function Home() {
           et à l&apos;administration.
         </p>
 
-        <Link
-          href="/login"
-          className="mt-10 inline-flex items-center justify-center rounded-full bg-green-700 hover:bg-green-800 transition-colors text-white text-base font-medium px-10 py-3.5 shadow-lg shadow-green-700/20"
-        >
-          Se connecter
-        </Link>
+        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
+          <Link
+            href="/login?role=student"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-green-700 hover:bg-green-800 transition-colors text-white text-base font-medium px-8 py-3.5 shadow-lg shadow-green-700/20 w-56 sm:w-auto"
+          >
+            📚 Espace étudiant
+          </Link>
+
+          <Link
+            href="/login?role=instructor"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 hover:bg-gray-800 transition-colors text-white text-base font-medium px-8 py-3.5 shadow-lg shadow-gray-900/20 w-56 sm:w-auto"
+          >
+            🎓 Espace formateur
+          </Link>
+
+          <Link
+            href="/login?role=admin"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-700 text-base font-medium px-8 py-3.5 w-56 sm:w-auto"
+          >
+            📊 Administration
+          </Link>
+        </div>
       </main>
 
       <footer className="relative py-6 text-center text-xs text-gray-400">

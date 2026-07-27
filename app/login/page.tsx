@@ -1,11 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+const CATEGORIES = {
+  student: {
+    titre: "Connexion étudiant",
+    sousTitre: "Connecte-toi avec ton compte étudiant.",
+  },
+  instructor: {
+    titre: "Connexion formateur",
+    sousTitre: "Connecte-toi avec ton compte formateur.",
+  },
+  admin: {
+    titre: "Connexion administration",
+    sousTitre: "Connecte-toi avec ton compte administrateur.",
+  },
+} as const;
+
+type Categorie = keyof typeof CATEGORIES;
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const roleParam = searchParams.get("role");
+  const categorie: Categorie =
+    roleParam === "student" || roleParam === "instructor" || roleParam === "admin"
+      ? roleParam
+      : "student";
+
+  const { titre, sousTitre } = CATEGORIES[categorie];
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -71,6 +98,9 @@ export default function LoginPage() {
       return;
     }
 
+    // La redirection suit toujours le vrai rôle enregistré en base,
+    // jamais la catégorie choisie sur la page d'accueil (qui n'affecte
+    // que le texte affiché ici).
     if (profil.role === "admin") {
       window.location.href = "/dashboard";
       return;
@@ -109,12 +139,9 @@ export default function LoginPage() {
           className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm"
         >
           <h1 className="text-xl font-semibold text-gray-900 mb-1">
-            Connexion
+            {titre}
           </h1>
-          <p className="text-sm text-gray-500 mb-6">
-            Étudiant, formateur ou administration — connecte-toi avec ton
-            compte.
-          </p>
+          <p className="text-sm text-gray-500 mb-6">{sousTitre}</p>
 
           {error && (
             <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
@@ -233,5 +260,13 @@ export default function LoginPage() {
         ← Retour à l&apos;accueil
       </Link>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
