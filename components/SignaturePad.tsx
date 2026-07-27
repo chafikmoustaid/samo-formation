@@ -6,14 +6,30 @@ import SignatureCanvas from "react-signature-canvas";
 type SignaturePadProps = {
   onSave: (signature: string) => void;
   nomParDefaut?: string;
+  signatureEnregistree?: string | null;
+  onEnregistrerPreference?: (signature: string) => void;
 };
 
-export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePadProps) {
-  const [mode, setMode] = useState<"dessiner" | "texte">("dessiner");
+export default function SignaturePad({
+  onSave,
+  nomParDefaut = "",
+  signatureEnregistree = null,
+  onEnregistrerPreference,
+}: SignaturePadProps) {
+  const [mode, setMode] = useState<"enregistree" | "dessiner" | "texte">(
+    signatureEnregistree ? "enregistree" : "dessiner"
+  );
   const [nomTape, setNomTape] = useState(nomParDefaut);
   const [enregistre, setEnregistre] = useState(false);
+  const [memoriser, setMemoriser] = useState(false);
 
   const sigCanvas = useRef<SignatureCanvas | null>(null);
+
+  const utiliserSignatureEnregistree = () => {
+    if (!signatureEnregistree) return;
+    onSave(signatureEnregistree);
+    setEnregistre(true);
+  };
 
   const saveSignature = () => {
     if (!sigCanvas.current) return;
@@ -22,6 +38,10 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
 
     onSave(signature);
     setEnregistre(true);
+
+    if (memoriser) {
+      onEnregistrerPreference?.(signature);
+    }
   };
 
   const clearSignature = () => {
@@ -48,13 +68,34 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
     ctx.textAlign = "center";
     ctx.fillText(nomTape.trim(), canvas.width / 2, canvas.height / 2);
 
-    onSave(canvas.toDataURL("image/png"));
+    const signature = canvas.toDataURL("image/png");
+    onSave(signature);
     setEnregistre(true);
+
+    if (memoriser) {
+      onEnregistrerPreference?.(signature);
+    }
   }
 
   return (
     <div>
-      <div className="flex gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3">
+        {signatureEnregistree && (
+          <button
+            type="button"
+            onClick={() => {
+              setMode("enregistree");
+              setEnregistre(false);
+            }}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              mode === "enregistree"
+                ? "bg-green-700 text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            ⭐ Ma signature enregistrée
+          </button>
+        )}
         <button
           type="button"
           onClick={() => {
@@ -85,7 +126,24 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
         </button>
       </div>
 
-      {mode === "dessiner" ? (
+      {mode === "enregistree" && signatureEnregistree ? (
+        <div>
+          <img
+            src={signatureEnregistree}
+            alt="Signature enregistrée"
+            className="border rounded-lg bg-white h-24"
+          />
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={utiliserSignatureEnregistree}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+            >
+              Utiliser cette signature
+            </button>
+          </div>
+        </div>
+      ) : mode === "dessiner" ? (
         <>
           <SignatureCanvas
             ref={sigCanvas}
@@ -96,6 +154,17 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
               className: "border rounded-lg bg-white",
             }}
           />
+
+          {onEnregistrerPreference && (
+            <label className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={memoriser}
+                onChange={(e) => setMemoriser(e.target.checked)}
+              />
+              Mémoriser cette signature pour mes prochaines fiches
+            </label>
+          )}
 
           <div className="flex gap-3 mt-3">
             <button
@@ -115,7 +184,7 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
             </button>
           </div>
         </>
-      ) : (
+      ) : mode === "texte" ? (
         <div>
           <input
             type="text"
@@ -145,6 +214,17 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
             </div>
           )}
 
+          {onEnregistrerPreference && (
+            <label className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={memoriser}
+                onChange={(e) => setMemoriser(e.target.checked)}
+              />
+              Mémoriser cette signature pour mes prochaines fiches
+            </label>
+          )}
+
           <div className="mt-3">
             <button
               type="button"
@@ -156,7 +236,7 @@ export default function SignaturePad({ onSave, nomParDefaut = "" }: SignaturePad
             </button>
           </div>
         </div>
-      )}
+      ) : null}
 
       {enregistre && (
         <p className="mt-2 text-sm text-green-700">✓ Signature enregistrée.</p>

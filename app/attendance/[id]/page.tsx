@@ -35,6 +35,9 @@ export default function AttendanceDetail() {
   const [signatureFormateur, setSignatureFormateur] = useState<string | null>(
     null
   );
+  const [signatureEnregistree, setSignatureEnregistree] = useState<
+    string | null
+  >(null);
   const [enregistrement, setEnregistrement] = useState(false);
 
   const [modeRefus, setModeRefus] = useState(false);
@@ -65,14 +68,22 @@ export default function AttendanceDetail() {
     if (user) {
       const { data: profil } = await supabase
         .from("profiles")
-        .select("role")
+        .select("role, signature_enregistree")
         .eq("id", user.id)
         .single();
 
       setIsStaff(profil?.role === "instructor" || profil?.role === "admin");
+      setSignatureEnregistree(profil?.signature_enregistree ?? null);
     }
 
     setLoading(false);
+  }
+
+  async function memoriserSignature(signature: string) {
+    await supabase.rpc("update_own_signature", {
+      nouvelle_signature: signature,
+    });
+    setSignatureEnregistree(signature);
   }
 
   async function validerFiche() {
@@ -313,6 +324,8 @@ export default function AttendanceDetail() {
                 <SignaturePad
                   onSave={setSignatureFormateur}
                   nomParDefaut={fiche.nom_formateur ?? ""}
+                  signatureEnregistree={signatureEnregistree}
+                  onEnregistrerPreference={memoriserSignature}
                 />
 
                 {signatureFormateur && (

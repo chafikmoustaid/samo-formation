@@ -55,19 +55,19 @@ export default function FicheTable({
   return (
     <table
       className="border border-black text-sm text-gray-900"
-      style={{ tableLayout: "fixed", width: "1000px", minWidth: "100%" }}
+      style={{ tableLayout: "fixed", width: "100%" }}
     >
       <colgroup>
-        <col style={{ width: "50px" }} />
-        <col style={{ width: "110px" }} />
-        <col />
-        <col style={{ width: "36px" }} />
-        <col style={{ width: "70px" }} />
-        <col style={{ width: "70px" }} />
-        <col style={{ width: "60px" }} />
-        <col style={{ width: "70px" }} />
-        <col style={{ width: "70px" }} />
-        <col style={{ width: "60px" }} />
+        <col style={{ width: "7%" }} />
+        <col style={{ width: "11%" }} />
+        <col style={{ width: "25%" }} />
+        <col style={{ width: "6%" }} />
+        <col style={{ width: "8.5%" }} />
+        <col style={{ width: "8.5%" }} />
+        <col style={{ width: "8.5%" }} />
+        <col style={{ width: "8.5%" }} />
+        <col style={{ width: "8.5%" }} />
+        <col style={{ width: "8.5%" }} />
       </colgroup>
 
       <thead>

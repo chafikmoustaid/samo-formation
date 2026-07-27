@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import SignaturePad from "@/components/SignaturePad";
 import FicheTable from "@/components/FicheTable";
@@ -28,6 +28,36 @@ export default function Attendance() {
     type: "succes" | "erreur";
   } | null>(null);
   const [enregistrement, setEnregistrement] = useState(false);
+  const [signatureEnregistree, setSignatureEnregistree] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    chargerSignatureEnregistree();
+  }, []);
+
+  async function chargerSignatureEnregistree() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("signature_enregistree")
+      .eq("id", user.id)
+      .single();
+
+    setSignatureEnregistree(data?.signature_enregistree ?? null);
+  }
+
+  async function memoriserSignature(signature: string) {
+    await supabase.rpc("update_own_signature", {
+      nouvelle_signature: signature,
+    });
+    setSignatureEnregistree(signature);
+  }
 
   const totalF = totalFormation(lignes);
   const totalP = totalPratique(lignes);
@@ -197,6 +227,8 @@ export default function Attendance() {
                 setDateSignatureEtudiant(new Date().toISOString());
               }}
               nomParDefaut={nomEtudiant}
+              signatureEnregistree={signatureEnregistree}
+              onEnregistrerPreference={memoriserSignature}
             />
 
             {signatureEtudiant && (
