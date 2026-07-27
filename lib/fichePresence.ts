@@ -54,3 +54,19 @@ export function totalPratique(lignes: LigneFiche[]): number {
     0
   );
 }
+
+// Liste des heures sélectionnables (par demi-heure), utilisée pour les
+// menus déroulants "De" / "À" du tableau de présence.
+export const OPTIONS_HEURES: { value: string; label: string }[] = (() => {
+  const options: { value: string; label: string }[] = [];
+
+  for (let demiHeure = 0; demiHeure <= 47; demiHeure++) {
+    const heure = Math.floor(demiHeure / 2);
+    const minutes = demiHeure % 2 === 0 ? "00" : "30";
+    const value = demiHeure % 2 === 0 ? String(heure) : `${heure}.5`;
+    const label = `${String(heure).padStart(2, "0")}h${minutes}`;
+    options.push({ value, label });
+  }
+
+  return options;
+})();
