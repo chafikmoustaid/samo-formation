@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 function fichierUrl(chemin: string) {
@@ -12,13 +13,10 @@ function nomFichier(chemin: string) {
   return base.replace(/^\d+-/, "");
 }
 
-export default function AssignmentCorrectionPage({
-  params,
-}: {
-  params: {
-    id: string;
-  };
-}) {
+export default function AssignmentCorrectionPage() {
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+
   const [submission, setSubmission] =
     useState<any>(null);
 
@@ -31,14 +29,15 @@ export default function AssignmentCorrectionPage({
     useState("");
 
   useEffect(() => {
-    chargerRemise();
-  }, []);
+    if (id) chargerRemise();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   async function chargerRemise() {
     const { data } = await supabase
       .from("assignment_submissions")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (!data) return;
@@ -63,7 +62,7 @@ export default function AssignmentCorrectionPage({
         note: Number(note),
         commentaire,
       })
-      .eq("id", params.id);
+      .eq("id", id);
 
     if (error) {
       alert(error.message);

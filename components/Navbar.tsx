@@ -81,7 +81,10 @@ export default function Navbar() {
     ? "instructor"
     : "admin";
 
-  const peutChangerEspace = role === "admin";
+  // Le sélecteur d'espace n'apparaît que depuis la section Administration,
+  // pour ne pas dupliquer le lien de la section où l'admin se trouve déjà
+  // (ex: "Portail formateur" à gauche + pastille "Formateur" à droite).
+  const peutChangerEspace = role === "admin" && section === "admin";
 
   return (
     <nav className="bg-green-700 text-white shadow">
@@ -144,35 +147,12 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3 text-sm">
           {peutChangerEspace && (
-            <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
-              <Link
-                href="/dashboard"
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  section === "admin"
-                    ? "bg-white/25"
-                    : "hover:bg-white/15 opacity-90"
-                }`}
-              >
-                Administration
-              </Link>
-              <Link
-                href="/instructor"
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  section === "instructor"
-                    ? "bg-white/25"
-                    : "hover:bg-white/15 opacity-90"
-                }`}
-              >
+            <div className="flex items-center gap-3 text-xs opacity-80">
+              <span>Aller vers :</span>
+              <Link href="/instructor" className="hover:underline">
                 Formateur
               </Link>
-              <Link
-                href="/student"
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  section === "student"
-                    ? "bg-white/25"
-                    : "hover:bg-white/15 opacity-90"
-                }`}
-              >
+              <Link href="/student" className="hover:underline">
                 Étudiant
               </Link>
             </div>
