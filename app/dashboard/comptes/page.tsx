@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
 type Role = "admin" | "instructor" | "student";
@@ -13,9 +12,6 @@ type Profile = {
   role: Role;
   created_at: string;
 };
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export default function ComptesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -146,34 +142,47 @@ export default function ComptesPage() {
     setCreateError(null);
     setCreating(true);
 
-    // Client temporaire qui ne persiste pas la session, pour ne pas
-    // écraser la session de l'administrateur actuellement connecté.
-    const tempClient = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    const { data, error } = await tempClient.auth.signUp({
-      email: newEmail,
-      password: newPassword,
-    });
+    let result: { error?: string; success?: boolean } = {};
 
-    if (error || !data.user) {
-      setCreateError(error?.message ?? "Erreur inconnue lors de la création.");
+    try {
+      const response = await fetch("/api/admin/create-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
+        body: JSON.stringify({
+          email: newEmail,
+          password: newPassword,
+          role: newRole,
+        }),
+      });
+
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
+
       setCreating(false);
-      return;
-    }
 
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
-      email: newEmail,
-      role: newRole,
-    });
-
-    setCreating(false);
-
-    if (profileError) {
+      if (!response.ok) {
+        setCreateError(
+          result.error ?? `réponse serveur invalide (code ${response.status})`
+        );
+        return;
+      }
+    } catch (err) {
+      setCreating(false);
       setCreateError(
-        "Compte créé mais profil non enregistré : " + profileError.message
+        "Erreur réseau lors de la création : " +
+          (err instanceof Error ? err.message : "erreur inconnue")
       );
       return;
     }
