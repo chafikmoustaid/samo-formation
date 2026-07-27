@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { generatePassword } from "@/lib/generatePassword";
 
 type Role = "admin" | "instructor" | "student";
 
@@ -36,25 +37,20 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { email, password, role } = body as {
+    const { email, role } = body as {
       email?: string;
-      password?: string;
       role?: Role;
     };
 
-    if (!email || !password || password.length < 6) {
-      return NextResponse.json(
-        {
-          error:
-            "Email ou mot de passe invalide (6 caractères minimum).",
-        },
-        { status: 400 }
-      );
+    if (!email) {
+      return NextResponse.json({ error: "Email requis." }, { status: 400 });
     }
 
     if (role !== "admin" && role !== "instructor" && role !== "student") {
       return NextResponse.json({ error: "Rôle invalide." }, { status: 400 });
     }
+
+    const password = generatePassword();
 
     // email_confirm: true — le compte est immédiatement utilisable, sans
     // dépendre de l'envoi (limité) d'un email de confirmation.
@@ -76,6 +72,7 @@ export async function POST(request: Request) {
       id: created.user.id,
       email,
       role,
+      must_change_password: true,
     });
 
     if (profileError) {
@@ -89,7 +86,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, password });
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Erreur serveur inconnue.";

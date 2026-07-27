@@ -45,7 +45,7 @@ export function useAuthGuard(allowedRoles: Role[]) {
 
       const { data: profil } = await supabase
         .from("profiles")
-        .select("role, email")
+        .select("role, email, must_change_password")
         .eq("id", user.id)
         .single();
 
@@ -55,6 +55,11 @@ export function useAuthGuard(allowedRoles: Role[]) {
 
       if (!role || !rolesKey.split(",").includes(role)) {
         router.replace("/login");
+        return;
+      }
+
+      if (profil?.must_change_password) {
+        router.replace("/change-password");
         return;
       }
 

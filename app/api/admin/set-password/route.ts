@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { generatePassword } from "@/lib/generatePassword";
 
 export async function POST(request: Request) {
   try {
@@ -34,20 +35,16 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { userId, password } = body as {
-      userId?: string;
-      password?: string;
-    };
+    const { userId } = body as { userId?: string };
 
-    if (!userId || !password || password.length < 6) {
+    if (!userId) {
       return NextResponse.json(
-        {
-          error:
-            "Identifiant ou mot de passe invalide (6 caractères minimum).",
-        },
+        { error: "Identifiant manquant." },
         { status: 400 }
       );
     }
+
+    const password = generatePassword();
 
     const { error } = await admin.auth.admin.updateUserById(userId, {
       password,
@@ -57,7 +54,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
+    await admin
+      .from("profiles")
+      .update({ must_change_password: true })
+      .eq("id", userId);
+
+    return NextResponse.json({ success: true, password });
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Erreur serveur inconnue.";

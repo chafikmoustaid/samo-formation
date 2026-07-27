@@ -58,7 +58,8 @@ export default function Navbar() {
   if (
     pathname === "/" ||
     pathname === "/login" ||
-    pathname === "/reset-password"
+    pathname === "/reset-password" ||
+    pathname === "/change-password"
   ) {
     return null;
   }

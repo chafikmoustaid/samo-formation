@@ -22,15 +22,19 @@ export default function ComptesPage() {
   } | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
+  const [generatedPassword, setGeneratedPassword] = useState<{
+    email: string;
+    password: string;
+  } | null>(null);
+
   const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState<Role>("student");
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [settingPassword, setSettingPassword] = useState(false);
+  const [settingPasswordId, setSettingPasswordId] = useState<string | null>(
+    null
+  );
 
   async function loadProfiles() {
     setLoading(true);
@@ -72,22 +76,15 @@ export default function ComptesPage() {
   }
 
   async function definirMotDePasse(id: string, email: string) {
-    if (!passwordInput || passwordInput.length < 6) {
-      setMessage({
-        type: "erreur",
-        texte: "Le mot de passe doit contenir au moins 6 caractères.",
-      });
-      return;
-    }
-
-    setSettingPassword(true);
+    setSettingPasswordId(id);
     setMessage(null);
+    setGeneratedPassword(null);
 
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    let result: { error?: string; success?: boolean } = {};
+    let result: { error?: string; success?: boolean; password?: string } = {};
 
     try {
       const response = await fetch("/api/admin/set-password", {
@@ -98,7 +95,7 @@ export default function ComptesPage() {
             ? { Authorization: `Bearer ${session.access_token}` }
             : {}),
         },
-        body: JSON.stringify({ userId: id, password: passwordInput }),
+        body: JSON.stringify({ userId: id }),
       });
 
       try {
@@ -107,7 +104,7 @@ export default function ComptesPage() {
         result = {};
       }
 
-      setSettingPassword(false);
+      setSettingPasswordId(null);
 
       if (!response.ok) {
         setMessage({
@@ -119,7 +116,7 @@ export default function ComptesPage() {
         return;
       }
     } catch (err) {
-      setSettingPassword(false);
+      setSettingPasswordId(null);
       setMessage({
         type: "erreur",
         texte:
@@ -129,24 +126,22 @@ export default function ComptesPage() {
       return;
     }
 
-    setEditingId(null);
-    setPasswordInput("");
-    setMessage({
-      type: "succes",
-      texte: `Mot de passe mis à jour pour ${email}.`,
-    });
+    if (result.password) {
+      setGeneratedPassword({ email, password: result.password });
+    }
   }
 
   async function createAccount(e: React.FormEvent) {
     e.preventDefault();
     setCreateError(null);
     setCreating(true);
+    setGeneratedPassword(null);
 
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    let result: { error?: string; success?: boolean } = {};
+    let result: { error?: string; success?: boolean; password?: string } = {};
 
     try {
       const response = await fetch("/api/admin/create-account", {
@@ -159,7 +154,6 @@ export default function ComptesPage() {
         },
         body: JSON.stringify({
           email: newEmail,
-          password: newPassword,
           role: newRole,
         }),
       });
@@ -187,10 +181,12 @@ export default function ComptesPage() {
       return;
     }
 
+    if (result.password) {
+      setGeneratedPassword({ email: newEmail, password: result.password });
+    }
+
     setNewEmail("");
-    setNewPassword("");
     setNewRole("student");
-    setMessage({ type: "succes", texte: `Compte créé pour ${newEmail}.` });
     loadProfiles();
   }
 
@@ -205,6 +201,36 @@ export default function ComptesPage() {
             ← Retour au tableau de bord
           </Link>
         </div>
+
+        {generatedPassword && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg px-5 py-4">
+            <p className="text-sm text-amber-900 mb-2">
+              Mot de passe temporaire pour <strong>{generatedPassword.email}</strong> —
+              note-le maintenant, il ne sera plus jamais affiché. La personne
+              devra le changer à sa première connexion.
+            </p>
+            <div className="flex items-center gap-3">
+              <code className="bg-white border border-amber-200 rounded px-3 py-2 font-mono text-lg tracking-wide">
+                {generatedPassword.password}
+              </code>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(generatedPassword.password);
+                  setMessage({ type: "succes", texte: "Mot de passe copié." });
+                }}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Copier
+              </button>
+              <button
+                onClick={() => setGeneratedPassword(null)}
+                className="text-sm text-gray-400 hover:underline"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        )}
 
         {message && (
           <div
@@ -255,45 +281,15 @@ export default function ComptesPage() {
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
                     </td>
                     <td className="p-3">
-                      {editingId === p.id ? (
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            autoFocus
-                            placeholder="Nouveau mot de passe"
-                            value={passwordInput}
-                            onChange={(e) => setPasswordInput(e.target.value)}
-                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm"
-                          />
-                          <button
-                            onClick={() => definirMotDePasse(p.id, p.email)}
-                            disabled={settingPassword}
-                            className="text-green-700 hover:underline disabled:opacity-50"
-                          >
-                            {settingPassword ? "…" : "Enregistrer"}
-                          </button>
-                          <button
-                            onClick={() => {
-                              setEditingId(null);
-                              setPasswordInput("");
-                            }}
-                            className="text-gray-400 hover:underline"
-                          >
-                            Annuler
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setEditingId(p.id);
-                            setPasswordInput("");
-                            setMessage(null);
-                          }}
-                          className="text-blue-600 hover:underline"
-                        >
-                          Nouveau mot de passe
-                        </button>
-                      )}
+                      <button
+                        onClick={() => definirMotDePasse(p.id, p.email)}
+                        disabled={settingPasswordId === p.id}
+                        className="text-blue-600 hover:underline disabled:opacity-50"
+                      >
+                        {settingPasswordId === p.id
+                          ? "Génération…"
+                          : "Générer un nouveau mot de passe"}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -304,6 +300,10 @@ export default function ComptesPage() {
 
         <div className="bg-white rounded-xl shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Créer un compte</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Un mot de passe temporaire est généré automatiquement ; la
+            personne devra le changer à sa première connexion.
+          </p>
 
           {createError && (
             <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
@@ -321,20 +321,6 @@ export default function ComptesPage() {
                 required
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Mot de passe provisoire
-              </label>
-              <input
-                type="text"
-                required
-                minLength={6}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
                 className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
               />
             </div>
