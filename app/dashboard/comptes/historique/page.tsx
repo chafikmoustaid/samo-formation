@@ -20,6 +20,10 @@ const ACTION_LABELS: Record<string, string> = {
   matieres_change: "Changement de matières",
   formation_change: "Changement de formation",
   formation_matieres_change: "Matières d'une formation modifiées",
+  matiere_renommee: "Matière renommée",
+  matiere_supprimee: "Matière supprimée",
+  formation_renommee: "Formation renommée",
+  formation_supprimee: "Formation supprimée",
 };
 
 const ACTION_TONE: Record<string, "warning" | "neutral"> = {
@@ -42,6 +46,14 @@ function decrireDetails(entree: EntreeAudit): string {
       }`;
     case "formation_matieres_change":
       return `nouvelles matières : ${(d.nouvelles_matieres ?? []).join(", ") || "aucune"}`;
+    case "matiere_renommee":
+      return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
+    case "matiere_supprimee":
+      return `${d.nom ?? "?"}`;
+    case "formation_renommee":
+      return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
+    case "formation_supprimee":
+      return `${d.nom ?? "?"} (${d.etudiants_detaches ?? 0} étudiant(s) détaché(s))`;
     default:
       return JSON.stringify(d);
   }

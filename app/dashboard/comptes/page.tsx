@@ -68,6 +68,17 @@ export default function ComptesPage() {
   const [savingFormationMatieres, setSavingFormationMatieres] =
     useState(false);
 
+  const [recherche, setRecherche] = useState("");
+  const [filtreRole, setFiltreRole] = useState<Role | "">("");
+  const [filtreFormationId, setFiltreFormationId] = useState<string>("");
+
+  const [busyMatiereCatalogue, setBusyMatiereCatalogue] = useState<
+    string | null
+  >(null);
+  const [busyFormationCatalogue, setBusyFormationCatalogue] = useState<
+    number | null
+  >(null);
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -233,6 +244,134 @@ export default function ComptesPage() {
     loadMatieres();
     loadFormations();
   }, []);
+
+  async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
+    const nom = nouveauNom.trim();
+    if (!nom || nom === ancienNom) return;
+
+    setBusyMatiereCatalogue(ancienNom);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_renommer_matiere", {
+      ancien_nom: ancienNom,
+      nouveau_nom: nom,
+    });
+
+    setBusyMatiereCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors du renommage de la matière : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Matière renommée." });
+    loadMatieres();
+    loadProfiles();
+    if (formationChoisieId !== null) loadMatieresFormation(formationChoisieId);
+  }
+
+  async function supprimerMatiereCatalogue(nom: string) {
+    const confirmation = window.confirm(
+      `Supprimer la matière "${nom}" ? Elle sera retirée de toutes les formations et de tous les comptes qui l'enseignent.`
+    );
+    if (!confirmation) return;
+
+    setBusyMatiereCatalogue(nom);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_supprimer_matiere", {
+      nom_matiere: nom,
+    });
+
+    setBusyMatiereCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de la suppression de la matière : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Matière supprimée." });
+    loadMatieres();
+    loadProfiles();
+    if (formationChoisieId !== null) loadMatieresFormation(formationChoisieId);
+  }
+
+  async function renommerFormationCatalogue(id: number, nouveauNom: string) {
+    const nom = nouveauNom.trim();
+    const actuelle = formations.find((f) => f.id === id);
+    if (!nom || nom === actuelle?.nom) return;
+
+    setBusyFormationCatalogue(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_renommer_formation", {
+      cible_formation_id: id,
+      nouveau_nom: nom,
+    });
+
+    setBusyFormationCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors du renommage de la formation : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Formation renommée." });
+    loadFormations();
+    loadProfiles();
+  }
+
+  async function supprimerFormationCatalogue(id: number, nom: string) {
+    const confirmation = window.confirm(
+      `Supprimer la formation "${nom}" ? Les étudiants qui y sont inscrits seront détachés (formation à réassigner).`
+    );
+    if (!confirmation) return;
+
+    setBusyFormationCatalogue(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_supprimer_formation", {
+      cible_formation_id: id,
+    });
+
+    setBusyFormationCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de la suppression de la formation : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Formation supprimée." });
+    if (formationChoisieId === id) setFormationChoisieId(null);
+    loadFormations();
+    loadProfiles();
+  }
+
+  const profilesFiltres = profiles.filter((p) => {
+    if (filtreRole && p.role !== filtreRole) return false;
+    if (filtreFormationId && String(p.formation_id ?? "") !== filtreFormationId)
+      return false;
+
+    if (recherche.trim()) {
+      const q = recherche.trim().toLowerCase();
+      const cible = `${p.email} ${p.nom_complet ?? ""}`.toLowerCase();
+      if (!cible.includes(q)) return false;
+    }
+
+    return true;
+  });
 
   async function changeRole(id: string, role: Role, email: string) {
     const confirmation = window.confirm(
@@ -462,8 +601,42 @@ export default function ComptesPage() {
         <Card className="mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Comptes existants</h2>
 
+          <div className="flex flex-wrap gap-3 mb-4">
+            <input
+              type="text"
+              value={recherche}
+              onChange={(e) => setRecherche(e.target.value)}
+              placeholder="Rechercher par email ou nom…"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[220px]"
+            />
+            <select
+              value={filtreRole}
+              onChange={(e) => setFiltreRole(e.target.value as Role | "")}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="">Tous les rôles</option>
+              <option value="student">Étudiant</option>
+              <option value="instructor">Formateur</option>
+              <option value="admin">Administration</option>
+            </select>
+            <select
+              value={filtreFormationId}
+              onChange={(e) => setFiltreFormationId(e.target.value)}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="">Toutes les formations</option>
+              {formations.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.nom}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {loading ? (
             <div className="text-gray-500 text-sm">Chargement…</div>
+          ) : profilesFiltres.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucun compte ne correspond à ces critères.</p>
           ) : (
             <div className="overflow-x-auto">
             <table className="w-full text-sm" style={{ minWidth: "980px" }}>
@@ -480,7 +653,7 @@ export default function ComptesPage() {
                 </tr>
               </thead>
               <tbody>
-                {profiles.map((p) => (
+                {profilesFiltres.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
                     <td className="p-3 whitespace-nowrap">{p.email}</td>
                     <td className="p-3">
@@ -613,6 +786,78 @@ export default function ComptesPage() {
             )}
           </div>
         </Card>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Catalogue des matières
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Renommer ou supprimer une matière la met à jour partout où elle est
+              utilisée (formations, comptes formateurs).
+            </p>
+
+            {toutesMatieres.length === 0 ? (
+              <p className="text-sm text-gray-400">Aucune matière pour l&apos;instant.</p>
+            ) : (
+              <ul className="space-y-2 max-h-72 overflow-y-auto">
+                {toutesMatieres.map((matiere) => (
+                  <li key={matiere} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      defaultValue={matiere}
+                      onBlur={(e) => renommerMatiereCatalogue(matiere, e.target.value)}
+                      disabled={busyMatiereCatalogue === matiere}
+                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                    />
+                    <button
+                      onClick={() => supprimerMatiereCatalogue(matiere)}
+                      disabled={busyMatiereCatalogue === matiere}
+                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      Supprimer
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Catalogue des formations
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Supprimer une formation détache les étudiants qui y sont inscrits
+              (à réassigner ensuite).
+            </p>
+
+            {formations.length === 0 ? (
+              <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>
+            ) : (
+              <ul className="space-y-2 max-h-72 overflow-y-auto">
+                {formations.map((f) => (
+                  <li key={f.id} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      defaultValue={f.nom}
+                      onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
+                      disabled={busyFormationCatalogue === f.id}
+                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                    />
+                    <button
+                      onClick={() => supprimerFormationCatalogue(f.id, f.nom)}
+                      disabled={busyFormationCatalogue === f.id}
+                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      Supprimer
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </div>
 
         <Card>
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Créer un compte</h2>
