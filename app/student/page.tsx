@@ -40,10 +40,7 @@ export default function StudentPage() {
             .from("attendance")
             .select("total_heures, statut")
             .eq("user_id", user.id),
-          supabase
-            .from("sessions")
-            .select("id, formation_id")
-            .eq("actif", true),
+          supabase.from("sessions").select("id").eq("actif", true),
           supabase
             .from("quiz_results")
             .select("session_id")
@@ -65,10 +62,7 @@ export default function StudentPage() {
 
       const presences = attendanceRes.data?.length ?? 0;
 
-      const formationIdEtudiant = (profilRes.data as any)?.formation_id;
-      const totalSessions = (sessionsRes.data ?? []).filter(
-        (s: any) => s.formation_id === formationIdEtudiant
-      ).length;
+      const totalSessions = sessionsRes.data?.length ?? 0;
       const quizFaits = new Set(
         (quizRes.data ?? []).map((q) => q.session_id)
       ).size;
