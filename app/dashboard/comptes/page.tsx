@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import LinkButton from "@/components/ui/LinkButton";
 import MatieresMultiSelect from "@/components/ui/MatieresMultiSelect";
 
 type Role = "admin" | "instructor" | "student";
@@ -248,10 +249,10 @@ export default function ComptesPage() {
     setBusyId(id);
     setMessage(null);
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role })
-      .eq("id", id);
+    const { error } = await supabase.rpc("admin_set_role", {
+      profil_id: id,
+      nouveau_role: role,
+    });
 
     setBusyId(null);
 
@@ -409,6 +410,11 @@ export default function ComptesPage() {
           title="Gestion des comptes"
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"
+          action={
+            <LinkButton href="/dashboard/comptes/historique" variant="outline">
+              Historique des changements
+            </LinkButton>
+          }
         />
 
         {generatedPassword && (
