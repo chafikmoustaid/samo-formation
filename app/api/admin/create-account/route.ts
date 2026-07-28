@@ -119,6 +119,13 @@ export async function POST(request: Request) {
       );
     }
 
+    await requester.rpc("log_audit", {
+      p_action: "compte_cree",
+      p_target_id: created.user.id,
+      p_target_email: emailNettoye,
+      p_details: { role },
+    });
+
     return NextResponse.json({ success: true, password });
   } catch (err) {
     const message =

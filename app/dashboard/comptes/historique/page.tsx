@@ -25,6 +25,8 @@ const ACTION_LABELS: Record<string, string> = {
   formation_renommee: "Formation renommée",
   formation_supprimee: "Formation supprimée",
   formation_heures_attendues_change: "Heures attendues modifiées",
+  compte_cree: "Compte créé",
+  mot_de_passe_regenere: "Mot de passe régénéré",
 };
 
 const ACTION_TONE: Record<string, "warning" | "neutral"> = {
@@ -57,6 +59,10 @@ function decrireDetails(entree: EntreeAudit): string {
       return `${d.nom ?? "?"} (${d.etudiants_detaches ?? 0} étudiant(s) détaché(s))`;
     case "formation_heures_attendues_change":
       return `${d.anciennes_heures ?? "—"} → ${d.nouvelles_heures ?? "—"} h`;
+    case "compte_cree":
+      return `rôle : ${d.role ?? "?"}`;
+    case "mot_de_passe_regenere":
+      return "nouveau mot de passe temporaire généré";
     default:
       return JSON.stringify(d);
   }

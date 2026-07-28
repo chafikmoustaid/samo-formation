@@ -54,6 +54,10 @@ export default function Home() {
         <Link href="/confidentialite" className="hover:text-gray-600 hover:underline">
           Politique de confidentialité
         </Link>
+        {" · "}
+        <Link href="/conditions-utilisation" className="hover:text-gray-600 hover:underline">
+          Conditions d&apos;utilisation
+        </Link>
       </footer>
     </div>
   );

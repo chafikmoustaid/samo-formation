@@ -59,6 +59,19 @@ export async function POST(request: Request) {
       .update({ must_change_password: true })
       .eq("id", userId);
 
+    const { data: cible } = await admin
+      .from("profiles")
+      .select("email")
+      .eq("id", userId)
+      .single();
+
+    await requester.rpc("log_audit", {
+      p_action: "mot_de_passe_regenere",
+      p_target_id: userId,
+      p_target_email: cible?.email ?? null,
+      p_details: {},
+    });
+
     return NextResponse.json({ success: true, password });
   } catch (err) {
     const message =
