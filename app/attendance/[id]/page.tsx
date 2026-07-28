@@ -31,6 +31,8 @@ export default function AttendanceDetail() {
   const [fiche, setFiche] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isStaff, setIsStaff] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [signatureFormateur, setSignatureFormateur] = useState<string | null>(
     null
@@ -66,6 +68,8 @@ export default function AttendanceDetail() {
     } = await supabase.auth.getUser();
 
     if (user) {
+      setUserId(user.id);
+
       const { data: profil } = await supabase
         .from("profiles")
         .select("role, signature_enregistree")
@@ -73,6 +77,7 @@ export default function AttendanceDetail() {
         .single();
 
       setIsStaff(profil?.role === "instructor" || profil?.role === "admin");
+      setIsAdmin(profil?.role === "admin");
       setSignatureEnregistree(profil?.signature_enregistree ?? null);
     }
 
@@ -99,6 +104,7 @@ export default function AttendanceDetail() {
       .update({
         signature_formateur: signatureFormateur,
         date_signature_formateur: new Date().toISOString(),
+        formateur_id: fiche.formateur_id ?? userId,
         statut: "validee",
         motif: null,
       })
@@ -179,6 +185,9 @@ export default function AttendanceDetail() {
   }
 
   const lignes: LigneFiche[] = Array.isArray(fiche.lignes) ? fiche.lignes : [];
+
+  const peutValider =
+    isStaff && (isAdmin || !fiche.formateur_id || fiche.formateur_id === userId);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -311,13 +320,15 @@ export default function AttendanceDetail() {
               </div>
             )}
 
-            {fiche.statut === "en_attente" && !isStaff && (
+            {fiche.statut === "en_attente" && !peutValider && (
               <p className="text-gray-500 text-sm">
-                Cette fiche attend la validation du formateur.
+                {isStaff
+                  ? "Cette fiche est assignée à un autre formateur."
+                  : "Cette fiche attend la validation du formateur."}
               </p>
             )}
 
-            {fiche.statut === "en_attente" && isStaff && !modeRefus && (
+            {fiche.statut === "en_attente" && peutValider && !modeRefus && (
               <div className="space-y-4">
                 <p className="text-gray-600 text-sm">
                   Vérifie les heures déclarées, puis signe pour valider cette
@@ -352,7 +363,7 @@ export default function AttendanceDetail() {
               </div>
             )}
 
-            {fiche.statut === "en_attente" && isStaff && modeRefus && (
+            {fiche.statut === "en_attente" && peutValider && modeRefus && (
               <div className="space-y-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Motif du refus

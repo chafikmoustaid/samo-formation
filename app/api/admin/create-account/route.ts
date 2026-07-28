@@ -37,9 +37,10 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { email, role } = body as {
+    const { email, role, nomComplet } = body as {
       email?: string;
       role?: Role;
+      nomComplet?: string;
     };
 
     if (!email) {
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
       id: created.user.id,
       email,
       role,
+      nom_complet: nomComplet?.trim() || null,
       must_change_password: true,
     });
 

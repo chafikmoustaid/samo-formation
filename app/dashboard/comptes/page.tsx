@@ -16,6 +16,7 @@ type Profile = {
   created_at: string;
   matieres: string[] | null;
   formation_id: number | null;
+  nom_complet: string | null;
 };
 
 type Formation = {
@@ -38,9 +39,13 @@ export default function ComptesPage() {
   } | null>(null);
 
   const [newEmail, setNewEmail] = useState("");
+  const [newNomComplet, setNewNomComplet] = useState("");
   const [newRole, setNewRole] = useState<Role>("student");
+  const [newFormationId, setNewFormationId] = useState<string>("");
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+
+  const [savingNomId, setSavingNomId] = useState<string | null>(null);
 
   const [settingPasswordId, setSettingPasswordId] = useState<string | null>(
     null
@@ -66,10 +71,34 @@ export default function ComptesPage() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("id, email, role, created_at, matieres, formation_id")
+      .select("id, email, role, created_at, matieres, formation_id, nom_complet")
       .order("created_at", { ascending: true });
     setProfiles((data as Profile[]) ?? []);
     setLoading(false);
+  }
+
+  async function enregistrerNomComplet(id: string, nom: string) {
+    setSavingNomId(id);
+    setMessage(null);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ nom_complet: nom.trim() || null })
+      .eq("id", id);
+
+    setSavingNomId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'enregistrement du nom : " + error.message,
+      });
+      return;
+    }
+
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, nom_complet: nom.trim() || null } : p))
+    );
   }
 
   async function loadMatieres() {
@@ -320,6 +349,7 @@ export default function ComptesPage() {
         body: JSON.stringify({
           email: newEmail,
           role: newRole,
+          nomComplet: newNomComplet,
         }),
       });
 
@@ -350,8 +380,25 @@ export default function ComptesPage() {
       setGeneratedPassword({ email: newEmail, password: result.password });
     }
 
+    if (newRole === "student" && newFormationId) {
+      const { data: created } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", newEmail)
+        .single();
+
+      if (created?.id) {
+        await supabase.rpc("admin_set_formation", {
+          profil_id: created.id,
+          nouvelle_formation_id: Number(newFormationId),
+        });
+      }
+    }
+
     setNewEmail("");
+    setNewNomComplet("");
     setNewRole("student");
+    setNewFormationId("");
     loadProfiles();
   }
 
@@ -416,6 +463,7 @@ export default function ComptesPage() {
               <thead>
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3">Email</th>
+                  <th className="p-3">Nom complet</th>
                   <th className="p-3">Formation / Matières</th>
                   <th className="p-3">Créé le</th>
                   <th className="p-3">Actions</th>
@@ -428,6 +476,20 @@ export default function ComptesPage() {
                 {profiles.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
                     <td className="p-3">{p.email}</td>
+                    <td className="p-3">
+                      <input
+                        type="text"
+                        defaultValue={p.nom_complet ?? ""}
+                        placeholder="Nom Prénom"
+                        onBlur={(e) => {
+                          if (e.target.value !== (p.nom_complet ?? "")) {
+                            enregistrerNomComplet(p.id, e.target.value);
+                          }
+                        }}
+                        disabled={savingNomId === p.id}
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full min-w-[160px]"
+                      />
+                    </td>
                     <td className="p-3">
                       {p.role === "student" ? (
                         <div className="flex flex-col gap-1">
@@ -575,6 +637,19 @@ export default function ComptesPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nom complet
+              </label>
+              <input
+                type="text"
+                placeholder="Nom Prénom"
+                value={newNomComplet}
+                onChange={(e) => setNewNomComplet(e.target.value)}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Rôle
               </label>
               <select
@@ -587,6 +662,26 @@ export default function ComptesPage() {
                 <option value="admin">Administration</option>
               </select>
             </div>
+
+            {newRole === "student" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Formation
+                </label>
+                <select
+                  value={newFormationId}
+                  onChange={(e) => setNewFormationId(e.target.value)}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                >
+                  <option value="">Aucune pour l&apos;instant</option>
+                  {formations.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.nom}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <Button type="submit" disabled={creating}>
               {creating ? "Création…" : "Créer"}

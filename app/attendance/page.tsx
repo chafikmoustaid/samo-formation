@@ -14,9 +14,12 @@ import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
+type Formateur = { id: string; nom: string; matieres: string[] | null };
+
 export default function Attendance() {
   const [nomEtudiant, setNomEtudiant] = useState("");
-  const [nomFormateur, setNomFormateur] = useState("");
+  const [formateurId, setFormateurId] = useState("");
+  const [formateurs, setFormateurs] = useState<Formateur[]>([]);
   const [lignes, setLignes] = useState(creerLignesVides());
   const [motifHeures, setMotifHeures] = useState("");
   const [confirmation, setConfirmation] = useState(false);
@@ -51,6 +54,8 @@ export default function Attendance() {
       .eq("id", user.id)
       .single();
 
+    let matieres: string[] = (profil?.matieres as string[]) ?? [];
+
     if (profil?.formation_id) {
       const { data: liees } = await supabase
         .from("formation_matieres")
@@ -61,11 +66,25 @@ export default function Attendance() {
         .map((row: any) => row.matieres?.nom)
         .filter(Boolean);
 
-      setMatieresDisponibles(noms.length > 0 ? noms : (profil.matieres as string[]) ?? []);
-      return;
+      if (noms.length > 0) matieres = noms;
     }
 
-    setMatieresDisponibles((profil?.matieres as string[]) ?? []);
+    setMatieresDisponibles(matieres);
+    chargerFormateurs(matieres);
+  }
+
+  async function chargerFormateurs(matieres: string[]) {
+    const { data } = await supabase.rpc("get_formateurs");
+    const liste = (data as Formateur[]) ?? [];
+
+    const filtres =
+      matieres.length === 0
+        ? liste
+        : liste.filter((f) =>
+            (f.matieres ?? []).some((m) => matieres.includes(m))
+          );
+
+    setFormateurs(filtres.length > 0 ? filtres : liste);
   }
 
   async function chargerSignatureEnregistree() {
@@ -135,10 +154,13 @@ export default function Attendance() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    const formateurChoisi = formateurs.find((f) => f.id === formateurId);
+
     const { error } = await supabase.from("attendance").insert({
       user_id: user?.id,
       nom_etudiant: nomEtudiant,
-      nom_formateur: nomFormateur,
+      nom_formateur: formateurChoisi?.nom ?? "",
+      formateur_id: formateurId || null,
       lignes,
       total_formation: totalF,
       total_pratique: totalP,
@@ -205,12 +227,18 @@ export default function Attendance() {
                 <label className="font-semibold text-gray-900 w-44 shrink-0 text-right">
                   Nom du formateur(trice) :
                 </label>
-                <input
-                  type="text"
-                  value={nomFormateur}
-                  onChange={(e) => setNomFormateur(e.target.value)}
+                <select
+                  value={formateurId}
+                  onChange={(e) => setFormateurId(e.target.value)}
                   className="flex-1 bg-gray-100 border border-black rounded-sm px-2 py-1 text-sm"
-                />
+                >
+                  <option value="">Choisir un formateur</option>
+                  {formateurs.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.nom}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
