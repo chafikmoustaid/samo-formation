@@ -210,7 +210,7 @@ function LoginForm() {
                 setResetSent(false);
                 setResetError(null);
               }}
-              className="text-xs text-gray-400 hover:text-green-700"
+              className="text-xs text-gray-600 hover:text-green-700 underline"
             >
               Mot de passe oublié ?
             </button>
@@ -275,7 +275,7 @@ function LoginForm() {
           <button
             type="button"
             onClick={() => setMode("login")}
-            className="w-full text-center text-sm text-gray-400 hover:text-gray-600 mt-4"
+            className="w-full text-center text-sm text-gray-600 hover:text-gray-900 underline mt-4"
           >
             ← Retour à la connexion
           </button>

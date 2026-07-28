@@ -93,7 +93,7 @@ export default function SignaturePad({
       <div
         role="tablist"
         aria-label="Mode de signature"
-        className="inline-flex mb-4 rounded-lg border border-gray-200 bg-gray-50 p-1"
+        className="inline-flex gap-2 mb-4"
       >
         {onglets.map((onglet) => (
           <button
@@ -107,10 +107,10 @@ export default function SignaturePad({
               setMode(onglet.valeur);
               setEnregistre(false);
             }}
-            className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${
               mode === onglet.valeur
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
+                ? "bg-green-700 text-white border-green-700 shadow-sm"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
             }`}
           >
             {onglet.label}

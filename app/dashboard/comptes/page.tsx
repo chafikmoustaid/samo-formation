@@ -609,7 +609,7 @@ export default function ComptesPage() {
               </button>
               <button
                 onClick={() => setGeneratedPassword(null)}
-                className="text-sm text-gray-400 hover:underline"
+                className="text-sm text-gray-600 hover:text-gray-900 underline"
               >
                 Fermer
               </button>
