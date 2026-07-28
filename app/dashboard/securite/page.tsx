@@ -186,10 +186,10 @@ export default function SecuritePage() {
                 code généré.
               </p>
 
-              <div
-                className="border border-gray-200 rounded-lg p-4 w-fit bg-white"
-                dangerouslySetInnerHTML={{ __html: enrolement.qrCode }}
-              />
+              <div className="border border-gray-200 rounded-lg p-4 w-fit bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={enrolement.qrCode} alt="Code QR à scanner" width={200} height={200} />
+              </div>
 
               <p className="text-xs text-gray-400">
                 Impossible de scanner ? Clé manuelle :{" "}
