@@ -15,21 +15,29 @@ const STATUT_TONE = {
   refusee: "danger",
 } as const;
 
+const SEUIL_RETARD_JOURS = 7;
+
 export default function Dashboard() {
   const [fiches, setFiches] = useState<any[]>([]);
+  const [profils, setProfils] = useState<any[]>([]);
+  const [formations, setFormations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    chargerFiches();
+    chargerDonnees();
   }, []);
 
-  async function chargerFiches() {
-    const { data } = await supabase
-      .from("attendance")
-      .select("*")
-      .order("id", { ascending: false });
+  async function chargerDonnees() {
+    const [{ data: fichesData }, { data: profilsData }, { data: formationsData }] =
+      await Promise.all([
+        supabase.from("attendance").select("*").order("id", { ascending: false }),
+        supabase.from("profiles").select("id, formation_id, nom_complet, email"),
+        supabase.from("formations").select("id, nom"),
+      ]);
 
-    setFiches(data ?? []);
+    setFiches(fichesData ?? []);
+    setProfils(profilsData ?? []);
+    setFormations(formationsData ?? []);
     setLoading(false);
   }
 
@@ -42,6 +50,51 @@ export default function Dashboard() {
     (total, fiche) => total + Number(fiche.total_heures || 0),
     0
   );
+
+  const profilsParId = new Map(profils.map((p) => [p.id, p]));
+  const formationsParId = new Map(formations.map((f) => [f.id, f.nom]));
+
+  const heuresParEtudiant = new Map<string, number>();
+  const heuresParFormation = new Map<string, number>();
+
+  for (const fiche of fiches) {
+    if (fiche.statut !== "validee") continue;
+
+    const heures = Number(fiche.total_heures || 0);
+    const nomEtudiant = fiche.nom_etudiant || "Étudiant inconnu";
+    heuresParEtudiant.set(
+      nomEtudiant,
+      (heuresParEtudiant.get(nomEtudiant) || 0) + heures
+    );
+
+    const profil = profilsParId.get(fiche.user_id);
+    const nomFormation = profil?.formation_id
+      ? formationsParId.get(profil.formation_id) ?? "Formation inconnue"
+      : "Formation non assignée";
+    heuresParFormation.set(
+      nomFormation,
+      (heuresParFormation.get(nomFormation) || 0) + heures
+    );
+  }
+
+  const classementEtudiants = [...heuresParEtudiant.entries()].sort(
+    (a, b) => b[1] - a[1]
+  );
+  const classementFormations = [...heuresParFormation.entries()].sort(
+    (a, b) => b[1] - a[1]
+  );
+
+  const maintenant = Date.now();
+  const fichesEnRetard = fiches
+    .filter((f) => f.statut === "en_attente" && f.created_at)
+    .map((f) => ({
+      ...f,
+      joursAttente: Math.floor(
+        (maintenant - new Date(f.created_at).getTime()) / (1000 * 60 * 60 * 24)
+      ),
+    }))
+    .filter((f) => f.joursAttente >= SEUIL_RETARD_JOURS)
+    .sort((a, b) => b.joursAttente - a.joursAttente);
 
   if (loading) {
     return <div className="p-8 text-gray-400">Chargement...</div>;
@@ -74,6 +127,43 @@ export default function Dashboard() {
           <StatCard label="Refusées" value={refusees} accent="red" />
           <StatCard label="Total heures" value={totalHeures} />
         </div>
+
+        {fichesEnRetard.length > 0 && (
+          <Card className="mt-8 border-amber-200 bg-amber-50">
+            <h2 className="text-lg font-semibold text-amber-900 mb-1">
+              Fiches en attente depuis plus de {SEUIL_RETARD_JOURS} jours
+            </h2>
+            <p className="text-sm text-amber-800 mb-4">
+              Ces fiches n&apos;ont pas encore été validées par leur formateur(trice).
+            </p>
+
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-amber-200 text-left text-amber-700">
+                  <th className="p-3 font-medium">Étudiant</th>
+                  <th className="p-3 font-medium">Formateur</th>
+                  <th className="p-3 font-medium">En attente depuis</th>
+                  <th className="p-3 font-medium"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {fichesEnRetard.map((fiche) => (
+                  <tr key={fiche.id} className="border-b border-amber-100 last:border-0">
+                    <td className="p-3">{fiche.nom_etudiant}</td>
+                    <td className="p-3">{fiche.nom_formateur || "—"}</td>
+                    <td className="p-3">{fiche.joursAttente} jours</td>
+                    <td className="p-3">
+                      <LinkButton href={`/attendance/${fiche.id}`} variant="outline">
+                        Voir la fiche
+                      </LinkButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        )}
 
         <Card className="mt-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -124,6 +214,46 @@ export default function Dashboard() {
             </tbody>
           </table>
         </Card>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Heures cumulées par formation
+            </h2>
+
+            {classementFormations.length === 0 ? (
+              <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
+            ) : (
+              <ul className="space-y-3">
+                {classementFormations.map(([nom, heures]) => (
+                  <li key={nom} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-700">{nom}</span>
+                    <span className="font-semibold text-gray-900">{heures} h</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Heures cumulées par étudiant
+            </h2>
+
+            {classementEtudiants.length === 0 ? (
+              <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
+            ) : (
+              <ul className="space-y-3 max-h-72 overflow-y-auto">
+                {classementEtudiants.map(([nom, heures]) => (
+                  <li key={nom} className="flex items-center justify-between text-sm">
+                    <span className="text-gray-700">{nom}</span>
+                    <span className="font-semibold text-gray-900">{heures} h</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </div>
       </div>
     </div>
   );
