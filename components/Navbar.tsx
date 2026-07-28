@@ -60,7 +60,8 @@ export default function Navbar() {
     pathname === "/login" ||
     pathname === "/reset-password" ||
     pathname === "/change-password" ||
-    pathname === "/confidentialite"
+    pathname === "/confidentialite" ||
+    pathname === "/mfa-challenge"
   ) {
     return null;
   }

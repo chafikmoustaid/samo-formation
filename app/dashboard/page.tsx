@@ -139,6 +139,9 @@ export default function Dashboard() {
               <LinkButton href="/dashboard/comptes" variant="outline">
                 Gestion des comptes
               </LinkButton>
+              <LinkButton href="/dashboard/securite" variant="outline">
+                Sécurité
+              </LinkButton>
             </div>
           }
         />

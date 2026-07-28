@@ -63,6 +63,20 @@ export function useAuthGuard(allowedRoles: Role[]) {
         return;
       }
 
+      // Si le compte a activé la vérification en deux étapes mais que la
+      // session courante n'est qu'au niveau aal1 (ex. accès direct par
+      // lien après une connexion incomplète), on renvoie vers le défi MFA
+      // plutôt que de laisser passer.
+      const { data: aal } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+      if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+        router.replace(
+          `/mfa-challenge?next=${encodeURIComponent(window.location.pathname)}`
+        );
+        return;
+      }
+
       setProfile({
         id: user.id,
         email: profil?.email ?? user.email ?? "",

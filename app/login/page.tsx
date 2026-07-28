@@ -101,23 +101,32 @@ function LoginForm() {
     // La redirection suit toujours le vrai rôle enregistré en base,
     // jamais la catégorie choisie sur la page d'accueil (qui n'affecte
     // que le texte affiché ici).
-    if (profil.role === "admin") {
-      window.location.href = "/dashboard";
+    const destination =
+      profil.role === "admin"
+        ? "/dashboard"
+        : profil.role === "instructor"
+        ? "/instructor"
+        : profil.role === "student"
+        ? "/student"
+        : null;
+
+    if (!destination) {
+      setError("Rôle de compte inconnu. Contacte l'administration.");
+      setLoading(false);
       return;
     }
 
-    if (profil.role === "instructor") {
-      window.location.href = "/instructor";
+    // Si le compte a activé la vérification en deux étapes, la connexion
+    // par mot de passe seul n'est qu'au niveau aal1 : on redirige vers le
+    // défi MFA avant d'accéder à l'espace protégé.
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+    if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+      window.location.href = `/mfa-challenge?next=${encodeURIComponent(destination)}`;
       return;
     }
 
-    if (profil.role === "student") {
-      window.location.href = "/student";
-      return;
-    }
-
-    setError("Rôle de compte inconnu. Contacte l'administration.");
-    setLoading(false);
+    window.location.href = destination;
   }
 
   return (
