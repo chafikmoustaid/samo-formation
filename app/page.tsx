@@ -50,6 +50,10 @@ export default function Home() {
 
       <footer className="relative py-6 text-center text-xs text-gray-400">
         © {new Date().getFullYear()} Formation SAMO — Depuis 1989
+        {" · "}
+        <Link href="/confidentialite" className="hover:text-gray-600 hover:underline">
+          Politique de confidentialité
+        </Link>
       </footer>
     </div>
   );

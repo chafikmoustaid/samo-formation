@@ -330,6 +330,16 @@ export default function Attendance() {
                 Signature enregistrée, prête à être envoyée.
               </p>
             )}
+
+            <p className="mt-3 text-xs text-gray-400">
+              En signant, tu consens à la collecte et à la conservation de ta
+              signature électronique aux fins de validation de cette fiche
+              de présence. Voir notre{" "}
+              <a href="/confidentialite" target="_blank" className="underline hover:text-gray-600">
+                politique de confidentialité
+              </a>
+              .
+            </p>
           </div>
 
           <div className="mt-6 border border-dashed border-gray-300 rounded p-4 text-sm text-gray-500">

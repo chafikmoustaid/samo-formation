@@ -367,6 +367,16 @@ export default function AttendanceDetail() {
                   </p>
                 )}
 
+                <p className="text-xs text-gray-400">
+                  En signant, tu consens à la collecte et à la conservation
+                  de ta signature électronique aux fins de validation de
+                  cette fiche de présence. Voir notre{" "}
+                  <a href="/confidentialite" target="_blank" className="underline hover:text-gray-600">
+                    politique de confidentialité
+                  </a>
+                  .
+                </p>
+
                 <div className="flex gap-3">
                   <Button
                     onClick={validerFiche}
