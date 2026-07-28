@@ -23,6 +23,7 @@ type Profile = {
 type Formation = {
   id: number;
   nom: string;
+  heures_attendues: number | null;
 };
 
 export default function ComptesPage() {
@@ -124,7 +125,7 @@ export default function ComptesPage() {
   async function loadFormations() {
     const { data } = await supabase
       .from("formations")
-      .select("id, nom")
+      .select("id, nom, heures_attendues")
       .order("nom", { ascending: true });
     const liste = (data as Formation[]) ?? [];
     setFormations(liste);
@@ -328,6 +329,36 @@ export default function ComptesPage() {
     setMessage({ type: "succes", texte: "Formation renommée." });
     loadFormations();
     loadProfiles();
+  }
+
+  async function enregistrerHeuresAttendues(id: number, valeur: string) {
+    const heures = valeur.trim() === "" ? null : Number(valeur);
+    if (valeur.trim() !== "" && (Number.isNaN(heures) || Number(heures) < 0)) {
+      setMessage({ type: "erreur", texte: "Nombre d'heures invalide." });
+      return;
+    }
+
+    setBusyFormationCatalogue(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_set_heures_attendues", {
+      cible_formation_id: id,
+      nouvelles_heures: heures,
+    });
+
+    setBusyFormationCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'enregistrement des heures attendues : " + error.message,
+      });
+      return;
+    }
+
+    setFormations((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, heures_attendues: heures } : f))
+    );
   }
 
   async function supprimerFormationCatalogue(id: number, nom: string) {
@@ -829,7 +860,8 @@ export default function ComptesPage() {
             </h2>
             <p className="text-sm text-gray-500 mb-4">
               Supprimer une formation détache les étudiants qui y sont inscrits
-              (à réassigner ensuite).
+              (à réassigner ensuite). Les heures attendues alimentent la barre
+              de progression affichée aux étudiants.
             </p>
 
             {formations.length === 0 ? (
@@ -844,6 +876,15 @@ export default function ComptesPage() {
                       onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
                       disabled={busyFormationCatalogue === f.id}
                       className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      defaultValue={f.heures_attendues ?? ""}
+                      placeholder="Heures"
+                      onBlur={(e) => enregistrerHeuresAttendues(f.id, e.target.value)}
+                      disabled={busyFormationCatalogue === f.id}
+                      className="w-24 border border-gray-200 rounded-lg px-2 py-1 text-sm"
                     />
                     <button
                       onClick={() => supprimerFormationCatalogue(f.id, f.nom)}

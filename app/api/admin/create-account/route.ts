@@ -43,12 +43,35 @@ export async function POST(request: Request) {
       nomComplet?: string;
     };
 
-    if (!email) {
+    const emailNettoye = email?.trim().toLowerCase();
+
+    if (!emailNettoye) {
       return NextResponse.json({ error: "Email requis." }, { status: 400 });
+    }
+
+    const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNettoye);
+    if (!emailValide) {
+      return NextResponse.json(
+        { error: "Adresse courriel invalide." },
+        { status: 400 }
+      );
     }
 
     if (role !== "admin" && role !== "instructor" && role !== "student") {
       return NextResponse.json({ error: "Rôle invalide." }, { status: 400 });
+    }
+
+    const { data: profilExistant } = await admin
+      .from("profiles")
+      .select("id")
+      .ilike("email", emailNettoye)
+      .maybeSingle();
+
+    if (profilExistant) {
+      return NextResponse.json(
+        { error: "Un compte existe déjà avec cette adresse courriel." },
+        { status: 409 }
+      );
     }
 
     const password = generatePassword();
@@ -57,21 +80,29 @@ export async function POST(request: Request) {
     // dépendre de l'envoi (limité) d'un email de confirmation.
     const { data: created, error: createError } =
       await admin.auth.admin.createUser({
-        email,
+        email: emailNettoye,
         password,
         email_confirm: true,
       });
 
     if (createError || !created.user) {
+      const dejaEnregistre = createError?.message
+        ?.toLowerCase()
+        .includes("already been registered");
+
       return NextResponse.json(
-        { error: createError?.message ?? "Erreur inconnue lors de la création." },
-        { status: 500 }
+        {
+          error: dejaEnregistre
+            ? "Un compte existe déjà avec cette adresse courriel."
+            : createError?.message ?? "Erreur inconnue lors de la création.",
+        },
+        { status: dejaEnregistre ? 409 : 500 }
       );
     }
 
     const { error: profileError } = await admin.from("profiles").insert({
       id: created.user.id,
-      email,
+      email: emailNettoye,
       role,
       nom_complet: nomComplet?.trim() || null,
       must_change_password: true,

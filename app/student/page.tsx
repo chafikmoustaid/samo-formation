@@ -14,8 +14,15 @@ type Stats = {
   examens: number;
 };
 
+type Progression = {
+  nomFormation: string;
+  heuresValidees: number;
+  heuresAttendues: number | null;
+};
+
 export default function StudentPage() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [progression, setProgression] = useState<Progression | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -27,11 +34,11 @@ export default function StudentPage() {
 
       if (!user) return;
 
-      const [attendanceRes, sessionsRes, quizRes, examRes] =
+      const [attendanceRes, sessionsRes, quizRes, examRes, profilRes] =
         await Promise.all([
           supabase
             .from("attendance")
-            .select("total_heures")
+            .select("total_heures, statut")
             .eq("user_id", user.id),
           supabase.from("sessions").select("id").eq("actif", true),
           supabase
@@ -39,6 +46,11 @@ export default function StudentPage() {
             .select("session_id")
             .eq("user_id", user.id),
           supabase.from("exam_results").select("id").eq("user_id", user.id),
+          supabase
+            .from("profiles")
+            .select("formation_id, formations(nom, heures_attendues)")
+            .eq("id", user.id)
+            .single(),
         ]);
 
       if (!active) return;
@@ -59,6 +71,19 @@ export default function StudentPage() {
       const examens = examRes.data?.length ?? 0;
 
       setStats({ totalHeures, presences, quizRestants, examens });
+
+      const formation = (profilRes.data as any)?.formations;
+      if (formation) {
+        const heuresValidees = (attendanceRes.data ?? [])
+          .filter((f: any) => f.statut === "validee")
+          .reduce((sum, f: any) => sum + Number(f.total_heures || 0), 0);
+
+        setProgression({
+          nomFormation: formation.nom,
+          heuresValidees,
+          heuresAttendues: formation.heures_attendues,
+        });
+      }
     }
 
     load();
@@ -83,6 +108,38 @@ export default function StudentPage() {
           />
           <StatCard label="Examens" value={stats ? stats.examens : "…"} />
         </div>
+
+        {progression && (
+          <Card className="mt-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Progression — {progression.nomFormation}
+            </h2>
+
+            {progression.heuresAttendues ? (
+              <>
+                <p className="text-sm text-gray-500 mb-3">
+                  {progression.heuresValidees} h validées sur{" "}
+                  {progression.heuresAttendues} h attendues
+                </p>
+                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-green-700 h-3 rounded-full transition-all"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        (progression.heuresValidees / progression.heuresAttendues) * 100
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">
+                {progression.heuresValidees} h validées jusqu&apos;à maintenant.
+              </p>
+            )}
+          </Card>
+        )}
 
         <Card className="mt-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">

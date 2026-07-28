@@ -24,6 +24,7 @@ const ACTION_LABELS: Record<string, string> = {
   matiere_supprimee: "Matière supprimée",
   formation_renommee: "Formation renommée",
   formation_supprimee: "Formation supprimée",
+  formation_heures_attendues_change: "Heures attendues modifiées",
 };
 
 const ACTION_TONE: Record<string, "warning" | "neutral"> = {
@@ -54,6 +55,8 @@ function decrireDetails(entree: EntreeAudit): string {
       return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
     case "formation_supprimee":
       return `${d.nom ?? "?"} (${d.etudiants_detaches ?? 0} étudiant(s) détaché(s))`;
+    case "formation_heures_attendues_change":
+      return `${d.anciennes_heures ?? "—"} → ${d.nouvelles_heures ?? "—"} h`;
     default:
       return JSON.stringify(d);
   }

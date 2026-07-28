@@ -8,6 +8,29 @@ import PageHeader from "@/components/ui/PageHeader";
 import StatCard from "@/components/ui/StatCard";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+
+function exporterHeuresCsv(
+  titre: string,
+  fichierSuffixe: string,
+  lignes: [string, number][]
+) {
+  const echapper = (valeur: unknown) => `"${String(valeur ?? "").replace(/"/g, '""')}"`;
+  const csv =
+    "﻿" +
+    [
+      [titre, "Heures validées"].map(echapper).join(","),
+      ...lignes.map(([nom, heures]) => [nom, heures].map(echapper).join(",")),
+    ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `heures-${fichierSuffixe}-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const STATUT_TONE = {
   en_attente: "warning",
@@ -217,9 +240,22 @@ export default function Dashboard() {
 
         <div className="grid md:grid-cols-2 gap-6 mt-8">
           <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Heures cumulées par formation
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Heures cumulées par formation
+              </h2>
+              {classementFormations.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    exporterHeuresCsv("Formation", "par-formation", classementFormations)
+                  }
+                >
+                  Exporter
+                </Button>
+              )}
+            </div>
 
             {classementFormations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
@@ -236,9 +272,22 @@ export default function Dashboard() {
           </Card>
 
           <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Heures cumulées par étudiant
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Heures cumulées par étudiant
+              </h2>
+              {classementEtudiants.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    exporterHeuresCsv("Étudiant", "par-etudiant", classementEtudiants)
+                  }
+                >
+                  Exporter
+                </Button>
+              )}
+            </div>
 
             {classementEtudiants.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
