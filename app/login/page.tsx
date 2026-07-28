@@ -70,6 +70,23 @@ function LoginForm() {
     setError(null);
     setLoading(true);
 
+    const { data: verrou } = await supabase.rpc("verifier_verrouillage", {
+      p_email: email,
+    });
+
+    const etatVerrou = verrou?.[0];
+
+    if (etatVerrou?.verrouille) {
+      const minutes = Math.ceil(etatVerrou.secondes_restantes / 60);
+      setError(
+        `Trop de tentatives échouées. Réessaie dans environ ${minutes} minute${
+          minutes > 1 ? "s" : ""
+        }.`
+      );
+      setLoading(false);
+      return;
+    }
+
     const { data, error: authError } =
       await supabase.auth.signInWithPassword({
         email,
@@ -77,10 +94,13 @@ function LoginForm() {
       });
 
     if (authError) {
+      await supabase.rpc("enregistrer_echec_connexion", { p_email: email });
       setError("Email ou mot de passe incorrect.");
       setLoading(false);
       return;
     }
+
+    await supabase.rpc("reinitialiser_echecs_connexion", { p_email: email });
 
     const userId = data.user.id;
 
