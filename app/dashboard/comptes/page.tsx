@@ -26,6 +26,13 @@ type Formation = {
   heures_attendues: number | null;
 };
 
+type Session = {
+  id: number;
+  numero: number;
+  titre: string;
+  formation_id: number | null;
+};
+
 export default function ComptesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +93,9 @@ export default function ComptesPage() {
   const [nouvellesHeuresFormation, setNouvellesHeuresFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [busySessionId, setBusySessionId] = useState<number | null>(null);
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -138,6 +148,44 @@ export default function ComptesPage() {
     if (liste.length > 0 && formationChoisieId === null) {
       setFormationChoisieId(liste[0].id);
     }
+  }
+
+  async function loadSessions() {
+    const { data } = await supabase
+      .from("sessions")
+      .select("id, numero, titre, formation_id")
+      .order("numero", { ascending: true });
+    setSessions((data as Session[]) ?? []);
+  }
+
+  async function toggleSessionFormation(sessionId: number, associer: boolean) {
+    if (formationChoisieId === null) return;
+
+    setBusySessionId(sessionId);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_set_session_formation", {
+      cible_session_id: sessionId,
+      nouvelle_formation_id: associer ? formationChoisieId : null,
+    });
+
+    setBusySessionId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'association du cours : " + error.message,
+      });
+      return;
+    }
+
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === sessionId
+          ? { ...s, formation_id: associer ? formationChoisieId : null }
+          : s
+      )
+    );
   }
 
   async function loadMatieresFormation(formationId: number) {
@@ -250,6 +298,7 @@ export default function ComptesPage() {
     loadProfiles();
     loadMatieres();
     loadFormations();
+    loadSessions();
   }, []);
 
   async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
@@ -888,6 +937,54 @@ export default function ComptesPage() {
               <span className="text-xs text-gray-400">Enregistrement…</span>
             )}
           </div>
+        </Card>
+
+        <Card className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            Cours par formation
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Coche les cours (séances) qui appartiennent à la formation
+            sélectionnée ci-dessus. Pour l&apos;instant, seul le contenu
+            « informatique » existe ; les autres formations pourront être
+            complétées au fur et à mesure.
+          </p>
+
+          {sessions.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucun cours pour l&apos;instant.</p>
+          ) : (
+            <ul className="space-y-1 max-h-80 overflow-y-auto max-w-2xl">
+              {sessions.map((s) => {
+                const associe = s.formation_id === formationChoisieId;
+                return (
+                  <li
+                    key={s.id}
+                    className="flex items-center gap-3 py-1.5 px-2 rounded-lg hover:bg-gray-50"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={associe}
+                      disabled={busySessionId === s.id}
+                      onChange={(e) =>
+                        toggleSessionFormation(s.id, e.target.checked)
+                      }
+                      className="shrink-0"
+                    />
+                    <span className="text-sm text-gray-500 w-16 shrink-0">
+                      Séance {s.numero}
+                    </span>
+                    <span className="text-sm text-gray-900 flex-1">{s.titre}</span>
+                    {!associe && s.formation_id !== null && (
+                      <span className="text-xs text-gray-400 shrink-0">
+                        {formations.find((f) => f.id === s.formation_id)?.nom ??
+                          "autre formation"}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">

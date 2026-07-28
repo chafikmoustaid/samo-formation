@@ -26,6 +26,7 @@ const ACTION_LABELS: Record<string, string> = {
   formation_renommee: "Formation renommée",
   formation_supprimee: "Formation supprimée",
   formation_creee: "Formation créée",
+  session_formation_change: "Cours associé à une formation",
   formation_heures_attendues_change: "Heures attendues modifiées",
   compte_cree: "Compte créé",
   mot_de_passe_regenere: "Mot de passe régénéré",
@@ -59,6 +60,8 @@ function decrireDetails(entree: EntreeAudit): string {
       return `${d.nom ?? "?"}`;
     case "formation_creee":
       return `${d.nom ?? "?"}`;
+    case "session_formation_change":
+      return `${d.session_titre ?? "?"} : formation #${d.ancienne_formation_id ?? "—"} → #${d.nouvelle_formation_id ?? "aucune"}`;
     case "formation_renommee":
       return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
     case "formation_supprimee":

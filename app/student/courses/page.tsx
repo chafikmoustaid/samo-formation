@@ -31,9 +31,34 @@ export default function StudentCoursesPage() {
       return;
     }
 
-    setCourses(coursesData ?? []);
-
     if (!user) return;
+
+    const { data: profil } = await supabase
+      .from("profiles")
+      .select("formation_id")
+      .eq("id", user.id)
+      .single();
+
+    // Un cours (courses.session_id) référence sessions.numero. On ne garde
+    // que les cours dont la séance est associée à la formation de
+    // l'étudiant, pour ne pas afficher le contenu d'autres formations.
+    if (profil?.formation_id) {
+      const { data: sessionsData } = await supabase
+        .from("sessions")
+        .select("numero, formation_id");
+
+      const numerosAutorises = new Set(
+        (sessionsData ?? [])
+          .filter((s: any) => s.formation_id === profil.formation_id)
+          .map((s: any) => s.numero)
+      );
+
+      setCourses(
+        (coursesData ?? []).filter((c: any) => numerosAutorises.has(c.session_id))
+      );
+    } else {
+      setCourses([]);
+    }
 
     const { data: quizData } = await supabase
       .from("quiz_results")
