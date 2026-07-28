@@ -404,7 +404,7 @@ export default function ComptesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <PageHeader
           title="Gestion des comptes"
           backHref="/dashboard"
@@ -459,15 +459,16 @@ export default function ComptesPage() {
           {loading ? (
             <div className="text-gray-500 text-sm">Chargement…</div>
           ) : (
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full text-sm" style={{ minWidth: "980px" }}>
               <thead>
                 <tr className="border-b text-left text-gray-500">
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Nom complet</th>
+                  <th className="p-3 whitespace-nowrap">Email</th>
+                  <th className="p-3 whitespace-nowrap">Nom complet</th>
                   <th className="p-3">Formation / Matières</th>
-                  <th className="p-3">Créé le</th>
-                  <th className="p-3">Actions</th>
-                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600">
+                  <th className="p-3 whitespace-nowrap">Créé le</th>
+                  <th className="p-3 whitespace-nowrap">Mot de passe</th>
+                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600 whitespace-nowrap">
                     Rôle (sensible)
                   </th>
                 </tr>
@@ -475,7 +476,7 @@ export default function ComptesPage() {
               <tbody>
                 {profiles.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
-                    <td className="p-3">{p.email}</td>
+                    <td className="p-3 whitespace-nowrap">{p.email}</td>
                     <td className="p-3">
                       <input
                         type="text"
@@ -537,21 +538,19 @@ export default function ComptesPage() {
                         </div>
                       )}
                     </td>
-                    <td className="p-3 text-gray-500">
+                    <td className="p-3 text-gray-500 whitespace-nowrap">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
                     </td>
-                    <td className="p-3">
+                    <td className="p-3 whitespace-nowrap">
                       <button
                         onClick={() => definirMotDePasse(p.id, p.email)}
                         disabled={settingPasswordId === p.id}
                         className="text-blue-600 hover:underline disabled:opacity-50"
                       >
-                        {settingPasswordId === p.id
-                          ? "Génération…"
-                          : "Générer un nouveau mot de passe"}
+                        {settingPasswordId === p.id ? "Génération…" : "Regénérer"}
                       </button>
                     </td>
-                    <td className="p-3 border-l border-gray-200 pl-6">
+                    <td className="p-3 border-l border-gray-200 pl-6 whitespace-nowrap">
                       <select
                         value={p.role}
                         disabled={busyId === p.id}
@@ -569,6 +568,7 @@ export default function ComptesPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </Card>
 
