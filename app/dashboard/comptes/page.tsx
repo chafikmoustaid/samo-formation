@@ -86,6 +86,15 @@ export default function ComptesPage() {
   const [nouvellesHeuresFormation, setNouvellesHeuresFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
+  const [toutesCours, setToutesCours] = useState<string[]>([]);
+  const [coursFormation, setCoursFormation] = useState<string[]>([]);
+  const [savingFormationCours, setSavingFormationCours] = useState(false);
+  const [busyCoursCatalogue, setBusyCoursCatalogue] = useState<string | null>(
+    null
+  );
+  const [nouveauCours, setNouveauCours] = useState("");
+  const [ajoutCoursEnCours, setAjoutCoursEnCours] = useState(false);
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -196,6 +205,147 @@ export default function ComptesPage() {
     setMessage({ type: "succes", texte: "Matières de la formation mises à jour." });
   }
 
+  async function loadCours() {
+    const { data } = await supabase
+      .from("cours")
+      .select("nom")
+      .order("nom", { ascending: true });
+    setToutesCours((data ?? []).map((c: { nom: string }) => c.nom));
+  }
+
+  async function loadCoursFormation(formationId: number) {
+    const { data } = await supabase
+      .from("formation_cours")
+      .select("cours(nom)")
+      .eq("formation_id", formationId);
+    const noms = (data ?? [])
+      .map((row: any) => row.cours?.nom)
+      .filter(Boolean);
+    setCoursFormation(noms);
+  }
+
+  useEffect(() => {
+    if (formationChoisieId !== null) {
+      loadCoursFormation(formationChoisieId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formationChoisieId]);
+
+  async function ajouterCoursOption(cours: string) {
+    const { error } = await supabase.rpc("admin_ajouter_cours", {
+      nom_cours: cours,
+    });
+    if (!error) {
+      setToutesCours((prev) => Array.from(new Set([...prev, cours])).sort());
+    }
+  }
+
+  async function enregistrerCoursFormation(cours: string[]) {
+    if (formationChoisieId === null) return;
+
+    setSavingFormationCours(true);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_update_formation_cours", {
+      cible_formation_id: formationChoisieId,
+      noms_cours: cours,
+    });
+
+    setSavingFormationCours(false);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'enregistrement des cours de la formation : " + error.message,
+      });
+      return;
+    }
+
+    setCoursFormation(cours);
+    setMessage({ type: "succes", texte: "Cours de la formation mis à jour." });
+  }
+
+  async function ajouterCoursCatalogue() {
+    const nom = nouveauCours.trim();
+    if (!nom) return;
+
+    setAjoutCoursEnCours(true);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_ajouter_cours", {
+      nom_cours: nom,
+    });
+
+    setAjoutCoursEnCours(false);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'ajout du cours : " + error.message,
+      });
+      return;
+    }
+
+    setNouveauCours("");
+    setMessage({ type: "succes", texte: "Cours ajouté." });
+    loadCours();
+  }
+
+  async function renommerCoursCatalogue(ancienNom: string, nouveauNom: string) {
+    const nom = nouveauNom.trim();
+    if (!nom || nom === ancienNom) return;
+
+    setBusyCoursCatalogue(ancienNom);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_renommer_cours", {
+      ancien_nom: ancienNom,
+      nouveau_nom: nom,
+    });
+
+    setBusyCoursCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors du renommage du cours : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Cours renommé." });
+    loadCours();
+    if (formationChoisieId !== null) loadCoursFormation(formationChoisieId);
+  }
+
+  async function supprimerCoursCatalogue(nom: string) {
+    const confirmation = window.confirm(
+      `Supprimer le cours "${nom}" ? Il sera retiré de toutes les formations.`
+    );
+    if (!confirmation) return;
+
+    setBusyCoursCatalogue(nom);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_supprimer_cours", {
+      nom_cours: nom,
+    });
+
+    setBusyCoursCatalogue(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de la suppression du cours : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Cours supprimé." });
+    loadCours();
+    if (formationChoisieId !== null) loadCoursFormation(formationChoisieId);
+  }
+
   async function enregistrerFormationEtudiant(id: string, formationId: number) {
     setSavingFormationId(id);
     setMessage(null);
@@ -250,6 +400,7 @@ export default function ComptesPage() {
     loadProfiles();
     loadMatieres();
     loadFormations();
+    loadCours();
   }, []);
 
   async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
@@ -890,7 +1041,43 @@ export default function ComptesPage() {
           </div>
         </Card>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <Card className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            Cours par formation
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Chaque formation a ses propres cours. Pour l&apos;instant, seul le
+            contenu informatique existe ; les cours des autres formations
+            pourront être ajoutés au fur et à mesure.
+          </p>
+
+          <div className="flex flex-col gap-3 max-w-md">
+            <select
+              value={formationChoisieId ?? ""}
+              onChange={(e) => setFormationChoisieId(Number(e.target.value))}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            >
+              {formations.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.nom}
+                </option>
+              ))}
+            </select>
+
+            <MatieresMultiSelect
+              options={toutesCours}
+              selected={coursFormation}
+              onChange={enregistrerCoursFormation}
+              onAjouterOption={ajouterCoursOption}
+            />
+
+            {savingFormationCours && (
+              <span className="text-xs text-gray-400">Enregistrement…</span>
+            )}
+          </div>
+        </Card>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card>
             <h2 className="text-lg font-semibold text-gray-900 mb-1">
               Catalogue des matières
@@ -1018,6 +1205,65 @@ export default function ComptesPage() {
                     <button
                       onClick={() => supprimerFormationCatalogue(f.id, f.nom)}
                       disabled={busyFormationCatalogue === f.id}
+                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      Supprimer
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Catalogue des cours
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Renommer ou supprimer un cours le met à jour partout où il est
+              utilisé (formations).
+            </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                ajouterCoursCatalogue();
+              }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <input
+                type="text"
+                value={nouveauCours}
+                onChange={(e) => setNouveauCours(e.target.value)}
+                placeholder="Nouveau cours"
+                disabled={ajoutCoursEnCours}
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={ajoutCoursEnCours || !nouveauCours.trim()}
+              >
+                Ajouter
+              </Button>
+            </form>
+
+            {toutesCours.length === 0 ? (
+              <p className="text-sm text-gray-400">Aucun cours pour l&apos;instant.</p>
+            ) : (
+              <ul className="space-y-2 max-h-72 overflow-y-auto">
+                {toutesCours.map((cours) => (
+                  <li key={cours} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      defaultValue={cours}
+                      onBlur={(e) => renommerCoursCatalogue(cours, e.target.value)}
+                      disabled={busyCoursCatalogue === cours}
+                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                    />
+                    <button
+                      onClick={() => supprimerCoursCatalogue(cours)}
+                      disabled={busyCoursCatalogue === cours}
                       className="text-sm text-red-600 hover:underline disabled:opacity-50"
                     >
                       Supprimer
