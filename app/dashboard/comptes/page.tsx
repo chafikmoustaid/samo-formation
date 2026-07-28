@@ -80,6 +80,12 @@ export default function ComptesPage() {
     number | null
   >(null);
 
+  const [nouvelleMatiere, setNouvelleMatiere] = useState("");
+  const [ajoutMatiereEnCours, setAjoutMatiereEnCours] = useState(false);
+  const [nouvelleFormation, setNouvelleFormation] = useState("");
+  const [nouvellesHeuresFormation, setNouvellesHeuresFormation] = useState("");
+  const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -359,6 +365,72 @@ export default function ComptesPage() {
     setFormations((prev) =>
       prev.map((f) => (f.id === id ? { ...f, heures_attendues: heures } : f))
     );
+  }
+
+  async function ajouterMatiereCatalogue() {
+    const nom = nouvelleMatiere.trim();
+    if (!nom) return;
+
+    setAjoutMatiereEnCours(true);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_ajouter_matiere", {
+      nom_matiere: nom,
+    });
+
+    setAjoutMatiereEnCours(false);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'ajout de la matière : " + error.message,
+      });
+      return;
+    }
+
+    setNouvelleMatiere("");
+    setMessage({ type: "succes", texte: "Matière ajoutée." });
+    loadMatieres();
+  }
+
+  async function creerFormationCatalogue() {
+    const nom = nouvelleFormation.trim();
+    if (!nom) return;
+
+    const heures =
+      nouvellesHeuresFormation.trim() === ""
+        ? null
+        : Number(nouvellesHeuresFormation);
+    if (
+      nouvellesHeuresFormation.trim() !== "" &&
+      (Number.isNaN(heures) || Number(heures) < 0)
+    ) {
+      setMessage({ type: "erreur", texte: "Nombre d'heures invalide." });
+      return;
+    }
+
+    setAjoutFormationEnCours(true);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_creer_formation", {
+      nom_formation: nom,
+      heures_attendues: heures,
+    });
+
+    setAjoutFormationEnCours(false);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de la création de la formation : " + error.message,
+      });
+      return;
+    }
+
+    setNouvelleFormation("");
+    setNouvellesHeuresFormation("");
+    setMessage({ type: "succes", texte: "Formation créée." });
+    loadFormations();
   }
 
   async function supprimerFormationCatalogue(id: number, nom: string) {
@@ -828,6 +900,30 @@ export default function ComptesPage() {
               utilisée (formations, comptes formateurs).
             </p>
 
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                ajouterMatiereCatalogue();
+              }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <input
+                type="text"
+                value={nouvelleMatiere}
+                onChange={(e) => setNouvelleMatiere(e.target.value)}
+                placeholder="Nouvelle matière"
+                disabled={ajoutMatiereEnCours}
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={ajoutMatiereEnCours || !nouvelleMatiere.trim()}
+              >
+                Ajouter
+              </Button>
+            </form>
+
             {toutesMatieres.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune matière pour l&apos;instant.</p>
             ) : (
@@ -863,6 +959,39 @@ export default function ComptesPage() {
               (à réassigner ensuite). Les heures attendues alimentent la barre
               de progression affichée aux étudiants.
             </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                creerFormationCatalogue();
+              }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <input
+                type="text"
+                value={nouvelleFormation}
+                onChange={(e) => setNouvelleFormation(e.target.value)}
+                placeholder="Nouvelle formation"
+                disabled={ajoutFormationEnCours}
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+              />
+              <input
+                type="number"
+                min={0}
+                value={nouvellesHeuresFormation}
+                onChange={(e) => setNouvellesHeuresFormation(e.target.value)}
+                placeholder="Heures"
+                disabled={ajoutFormationEnCours}
+                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={ajoutFormationEnCours || !nouvelleFormation.trim()}
+              >
+                Ajouter
+              </Button>
+            </form>
 
             {formations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>

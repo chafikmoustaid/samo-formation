@@ -22,8 +22,10 @@ const ACTION_LABELS: Record<string, string> = {
   formation_matieres_change: "Matières d'une formation modifiées",
   matiere_renommee: "Matière renommée",
   matiere_supprimee: "Matière supprimée",
+  matiere_ajoutee: "Matière ajoutée",
   formation_renommee: "Formation renommée",
   formation_supprimee: "Formation supprimée",
+  formation_creee: "Formation créée",
   formation_heures_attendues_change: "Heures attendues modifiées",
   compte_cree: "Compte créé",
   mot_de_passe_regenere: "Mot de passe régénéré",
@@ -52,6 +54,10 @@ function decrireDetails(entree: EntreeAudit): string {
     case "matiere_renommee":
       return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
     case "matiere_supprimee":
+      return `${d.nom ?? "?"}`;
+    case "matiere_ajoutee":
+      return `${d.nom ?? "?"}`;
+    case "formation_creee":
       return `${d.nom ?? "?"}`;
     case "formation_renommee":
       return `${d.ancien_nom ?? "?"} → ${d.nouveau_nom ?? "?"}`;
