@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useId, useState, useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import Button from "@/components/ui/Button";
 
@@ -25,6 +25,8 @@ export default function SignaturePad({
   const [memoriser, setMemoriser] = useState(false);
 
   const sigCanvas = useRef<SignatureCanvas | null>(null);
+  const idBase = useId();
+  const idNomTape = `${idBase}-nom-tape`;
 
   const utiliserSignatureEnregistree = () => {
     if (!signatureEnregistree) return;
@@ -88,11 +90,19 @@ export default function SignaturePad({
 
   return (
     <div>
-      <div className="inline-flex mb-4 rounded-lg border border-gray-200 bg-gray-50 p-1">
+      <div
+        role="tablist"
+        aria-label="Mode de signature"
+        className="inline-flex mb-4 rounded-lg border border-gray-200 bg-gray-50 p-1"
+      >
         {onglets.map((onglet) => (
           <button
             key={onglet.valeur}
             type="button"
+            role="tab"
+            aria-selected={mode === onglet.valeur}
+            aria-controls={`${idBase}-panel-${onglet.valeur}`}
+            id={`${idBase}-tab-${onglet.valeur}`}
             onClick={() => {
               setMode(onglet.valeur);
               setEnregistre(false);
@@ -109,7 +119,11 @@ export default function SignaturePad({
       </div>
 
       {mode === "enregistree" && signatureEnregistree ? (
-        <div>
+        <div
+          role="tabpanel"
+          id={`${idBase}-panel-enregistree`}
+          aria-labelledby={`${idBase}-tab-enregistree`}
+        >
           <img
             src={signatureEnregistree}
             alt="Signature enregistrée"
@@ -122,7 +136,17 @@ export default function SignaturePad({
           </div>
         </div>
       ) : mode === "dessiner" ? (
-        <>
+        <div
+          role="tabpanel"
+          id={`${idBase}-panel-dessiner`}
+          aria-labelledby={`${idBase}-tab-dessiner`}
+        >
+          <p className="text-xs text-gray-500 mb-2">
+            Cette zone se dessine à la souris ou au doigt. Si tu utilises le
+            clavier ou un lecteur d&apos;écran, utilise plutôt l&apos;onglet
+            « Écrire mon nom ».
+          </p>
+
           <SignatureCanvas
             ref={sigCanvas}
             penColor="black"
@@ -130,6 +154,9 @@ export default function SignaturePad({
               width: 500,
               height: 180,
               className: "border border-gray-300 rounded-lg bg-white",
+              "aria-label":
+                "Zone de dessin de la signature (souris ou écran tactile requis)",
+              role: "img",
             }}
           />
 
@@ -153,10 +180,18 @@ export default function SignaturePad({
               Effacer
             </Button>
           </div>
-        </>
+        </div>
       ) : mode === "texte" ? (
-        <div>
+        <div
+          role="tabpanel"
+          id={`${idBase}-panel-texte`}
+          aria-labelledby={`${idBase}-tab-texte`}
+        >
+          <label htmlFor={idNomTape} className="block text-sm font-medium text-gray-700 mb-1">
+            Ton nom complet
+          </label>
           <input
+            id={idNomTape}
             type="text"
             value={nomTape}
             onChange={(e) => {
@@ -207,9 +242,9 @@ export default function SignaturePad({
         </div>
       ) : null}
 
-      {enregistre && (
-        <p className="mt-2 text-sm text-green-700">Signature enregistrée.</p>
-      )}
+      <p role="status" aria-live="polite" className="mt-2 text-sm text-green-700">
+        {enregistre ? "Signature enregistrée." : ""}
+      </p>
     </div>
   );
 }
