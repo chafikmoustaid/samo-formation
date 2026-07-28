@@ -117,7 +117,25 @@ export default function AttendanceDetail() {
       return;
     }
 
+    notifier(id, "validee");
     chargerFiche();
+  }
+
+  async function notifier(ficheId: string, type: "creee" | "validee" | "refusee") {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    fetch("/api/notify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
+      body: JSON.stringify({ ficheId, type }),
+    }).catch(() => {
+      // La notification par courriel est non bloquante.
+    });
   }
 
   async function refuserFiche() {
@@ -144,6 +162,7 @@ export default function AttendanceDetail() {
       return;
     }
 
+    notifier(id, "refusee");
     chargerFiche();
   }
 

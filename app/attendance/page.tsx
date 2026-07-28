@@ -156,21 +156,25 @@ export default function Attendance() {
 
     const formateurChoisi = formateurs.find((f) => f.id === formateurId);
 
-    const { error } = await supabase.from("attendance").insert({
-      user_id: user?.id,
-      nom_etudiant: nomEtudiant,
-      nom_formateur: formateurChoisi?.nom ?? "",
-      formateur_id: formateurId || null,
-      lignes,
-      total_formation: totalF,
-      total_pratique: totalP,
-      total_heures: totalF + totalP,
-      motif_heures: motifHeures || null,
-      confirmation,
-      signature_etudiant: signatureEtudiant,
-      date_signature_etudiant: dateSignatureEtudiant,
-      statut: "en_attente",
-    });
+    const { data: ficheCreee, error } = await supabase
+      .from("attendance")
+      .insert({
+        user_id: user?.id,
+        nom_etudiant: nomEtudiant,
+        nom_formateur: formateurChoisi?.nom ?? "",
+        formateur_id: formateurId || null,
+        lignes,
+        total_formation: totalF,
+        total_pratique: totalP,
+        total_heures: totalF + totalP,
+        motif_heures: motifHeures || null,
+        confirmation,
+        signature_etudiant: signatureEtudiant,
+        date_signature_etudiant: dateSignatureEtudiant,
+        statut: "en_attente",
+      })
+      .select("id")
+      .single();
 
     setEnregistrement(false);
 
@@ -179,9 +183,31 @@ export default function Attendance() {
       return;
     }
 
+    if (ficheCreee?.id) {
+      notifier(ficheCreee.id, "creee");
+    }
+
     setMessage({
       type: "succes",
       texte: "Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur.",
+    });
+  }
+
+  async function notifier(ficheId: number, type: "creee" | "validee" | "refusee") {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    fetch("/api/notify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
+      body: JSON.stringify({ ficheId, type }),
+    }).catch(() => {
+      // La notification par courriel est non bloquante : un échec ici ne
+      // doit pas empêcher l'enregistrement de la fiche.
     });
   }
 
