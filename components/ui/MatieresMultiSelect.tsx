@@ -7,6 +7,9 @@ type MatieresMultiSelectProps = {
   selected: string[];
   onChange: (matieres: string[]) => void;
   onAjouterOption?: (matiere: string) => void;
+  libellePluriel?: string;
+  texteVide?: string;
+  placeholderAjout?: string;
 };
 
 export default function MatieresMultiSelect({
@@ -14,6 +17,9 @@ export default function MatieresMultiSelect({
   selected,
   onChange,
   onAjouterOption,
+  libellePluriel = "matières",
+  texteVide = "Aucune matière pour l'instant.",
+  placeholderAjout = "Nouvelle matière",
 }: MatieresMultiSelectProps) {
   const [ouvert, setOuvert] = useState(false);
   const [nouvelleMatiere, setNouvelleMatiere] = useState("");
@@ -60,7 +66,7 @@ export default function MatieresMultiSelect({
         <span className={selected.length ? "text-gray-900" : "text-gray-400"}>
           {selected.length > 0
             ? selected.join(", ")
-            : "Sélectionner les matières"}
+            : `Sélectionner les ${libellePluriel}`}
         </span>
         <span className="text-gray-400 ml-2">▾</span>
       </button>
@@ -69,7 +75,7 @@ export default function MatieresMultiSelect({
         <div className="absolute z-10 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
           <div className="max-h-48 overflow-y-auto space-y-1.5">
             {options.length === 0 && (
-              <p className="text-sm text-gray-400">Aucune matière pour l'instant.</p>
+              <p className="text-sm text-gray-400">{texteVide}</p>
             )}
             {options.map((matiere) => (
               <label
@@ -97,7 +103,7 @@ export default function MatieresMultiSelect({
                   ajouterMatiere();
                 }
               }}
-              placeholder="Nouvelle matière"
+              placeholder={placeholderAjout}
               className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
             />
             <button

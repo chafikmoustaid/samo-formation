@@ -1069,6 +1069,9 @@ export default function ComptesPage() {
               selected={coursFormation}
               onChange={enregistrerCoursFormation}
               onAjouterOption={ajouterCoursOption}
+              libellePluriel="cours"
+              texteVide="Aucun cours pour l'instant."
+              placeholderAjout="Nouveau cours"
             />
 
             {savingFormationCours && (
