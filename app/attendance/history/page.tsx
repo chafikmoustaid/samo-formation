@@ -1,18 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import StatusSelector from "@/components/StatusSelector";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
 
 const STATUT_LABELS: Record<string, string> = {
   en_attente: "En attente",
   validee: "Validée",
   refusee: "Refusée",
+};
+
+const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
+  en_attente: "warning",
+  validee: "success",
+  refusee: "danger",
 };
 
 function exporterCsv(fiches: any[]) {
@@ -66,9 +72,36 @@ export default function AttendanceHistory() {
   const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
 
+  const [userId, setUserId] = useState<string | null>(null);
+  const [estAdmin, setEstAdmin] = useState(false);
+  const [signatureEnregistree, setSignatureEnregistree] = useState<
+    string | null
+  >(null);
+  const [selectionnees, setSelectionnees] = useState<Set<number>>(new Set());
+  const [validationEnCours, setValidationEnCours] = useState(false);
+
   useEffect(() => {
     chargerFiches();
+    chargerProfil();
   }, []);
+
+  async function chargerProfil() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    setUserId(user.id);
+
+    const { data: profil } = await supabase
+      .from("profiles")
+      .select("role, signature_enregistree")
+      .eq("id", user.id)
+      .single();
+
+    setEstAdmin(profil?.role === "admin");
+    setSignatureEnregistree(profil?.signature_enregistree ?? null);
+  }
 
   async function chargerFiches() {
     const { data, error } = await supabase
@@ -84,6 +117,74 @@ export default function AttendanceHistory() {
 
     setFiches(data ?? []);
     setLoading(false);
+  }
+
+  function peutValider(fiche: any) {
+    return (
+      fiche.statut === "en_attente" &&
+      (estAdmin || fiche.formateur_id === userId || fiche.formateur_id === null)
+    );
+  }
+
+  function toggleSelection(id: number) {
+    setSelectionnees((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  async function notifier(ficheId: number, type: "validee") {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    fetch("/api/notify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
+      body: JSON.stringify({ ficheId, type }),
+    }).catch(() => {
+      // La notification par courriel est non bloquante.
+    });
+  }
+
+  async function validerSelection() {
+    if (!signatureEnregistree || selectionnees.size === 0 || !userId) return;
+
+    const confirmation = window.confirm(
+      `Valider ${selectionnees.size} fiche(s) avec ta signature enregistrée ?`
+    );
+    if (!confirmation) return;
+
+    setValidationEnCours(true);
+
+    const ids = Array.from(selectionnees);
+
+    await Promise.all(
+      ids.map(async (id) => {
+        const fiche = fiches.find((f) => f.id === id);
+        const { error } = await supabase
+          .from("attendance")
+          .update({
+            signature_formateur: signatureEnregistree,
+            date_signature_formateur: new Date().toISOString(),
+            formateur_id: fiche?.formateur_id ?? userId,
+            statut: "validee",
+            motif: null,
+          })
+          .eq("id", id);
+
+        if (!error) notifier(id, "validee");
+      })
+    );
+
+    setValidationEnCours(false);
+    setSelectionnees(new Set());
+    chargerFiches();
   }
 
   const formateurs = useMemo(
@@ -212,6 +313,27 @@ export default function AttendanceHistory() {
           </div>
         </Card>
 
+        {selectionnees.size > 0 && (
+          <Card className="mb-6 flex items-center justify-between gap-4">
+            <p className="text-sm text-gray-700">
+              {selectionnees.size} fiche(s) sélectionnée(s)
+            </p>
+            <div className="flex items-center gap-3">
+              {!signatureEnregistree && (
+                <p className="text-xs text-gray-400">
+                  Signe et mémorise ta signature depuis une fiche pour activer la validation groupée.
+                </p>
+              )}
+              <Button
+                onClick={validerSelection}
+                disabled={!signatureEnregistree || validationEnCours}
+              >
+                {validationEnCours ? "Validation…" : "Valider la sélection"}
+              </Button>
+            </div>
+          </Card>
+        )}
+
         <Card className="p-0 overflow-hidden">
           {fichesFiltrees.length === 0 ? (
             <p className="p-6 text-sm text-gray-400">
@@ -221,6 +343,7 @@ export default function AttendanceHistory() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-500">
+                  <th className="p-4 font-medium w-10"></th>
                   <th className="p-4 font-medium">Étudiant</th>
                   <th className="p-4 font-medium">Formateur</th>
                   <th className="p-4 font-medium">Formation</th>
@@ -234,13 +357,24 @@ export default function AttendanceHistory() {
               <tbody>
                 {fichesFiltrees.map((fiche) => (
                   <tr key={fiche.id} className="border-t border-gray-100 hover:bg-gray-50">
+                    <td className="p-4">
+                      {peutValider(fiche) && (
+                        <input
+                          type="checkbox"
+                          checked={selectionnees.has(fiche.id)}
+                          onChange={() => toggleSelection(fiche.id)}
+                        />
+                      )}
+                    </td>
                     <td className="p-4">{fiche.nom_etudiant}</td>
                     <td className="p-4">{fiche.nom_formateur}</td>
                     <td className="p-4">{fiche.total_formation ?? 0} h</td>
                     <td className="p-4">{fiche.total_pratique ?? 0} h</td>
                     <td className="p-4">{fiche.total_heures} h</td>
                     <td className="p-4">
-                      <StatusSelector id={fiche.id} statut={fiche.statut} />
+                      <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
+                        {STATUT_LABELS[fiche.statut] ?? fiche.statut}
+                      </Badge>
                     </td>
 
                     <td className="p-4 space-x-2 whitespace-nowrap">

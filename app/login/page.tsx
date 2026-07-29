@@ -32,6 +32,7 @@ function LoginForm() {
       : "student";
 
   const { titre, sousTitre } = CATEGORIES[categorie];
+  const sessionExpiree = searchParams.get("session") === "expiree";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -171,6 +172,12 @@ function LoginForm() {
             {titre}
           </h1>
           <p className="text-sm text-gray-500 mb-6">{sousTitre}</p>
+
+          {sessionExpiree && !error && (
+            <div className="mb-4 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+              Ta session a expiré après une période d&apos;inactivité. Reconnecte-toi.
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">

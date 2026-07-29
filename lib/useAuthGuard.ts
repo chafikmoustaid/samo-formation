@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
@@ -13,6 +13,16 @@ type Profile = {
   email: string;
   role: Role;
 };
+
+// Déconnexion automatique après une période d'inactivité, pour limiter le
+// risque si une session reste ouverte sur un poste partagé ou oublié.
+const DELAI_INACTIVITE_MS = 30 * 60 * 1000;
+const EVENEMENTS_ACTIVITE = [
+  "mousedown",
+  "keydown",
+  "scroll",
+  "touchstart",
+] as const;
 
 /**
  * Vérifie côté client que l'utilisateur est connecté ET a l'un des rôles
@@ -92,6 +102,35 @@ export function useAuthGuard(allowedRoles: Role[]) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rolesKey, router]);
+
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (status !== "ok") return;
+
+    function deconnecterPourInactivite() {
+      supabase.auth.signOut().finally(() => {
+        router.replace("/login?session=expiree");
+      });
+    }
+
+    function reinitialiserTimer() {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(deconnecterPourInactivite, DELAI_INACTIVITE_MS);
+    }
+
+    reinitialiserTimer();
+    EVENEMENTS_ACTIVITE.forEach((evt) =>
+      window.addEventListener(evt, reinitialiserTimer)
+    );
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      EVENEMENTS_ACTIVITE.forEach((evt) =>
+        window.removeEventListener(evt, reinitialiserTimer)
+      );
+    };
+  }, [status, router]);
 
   return { status, profile };
 }
