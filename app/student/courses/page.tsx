@@ -21,10 +21,32 @@ export default function StudentCoursesPage() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { data: coursesData, error: coursesError } = await supabase
-      .from("courses")
-      .select("*")
-      .order("session_id");
+    let sessionIds: number[] | null = null;
+
+    if (user) {
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("formation_id")
+        .eq("id", user.id)
+        .single();
+
+      if (profil?.formation_id) {
+        const { data: sessionsData } = await supabase
+          .from("sessions")
+          .select("id")
+          .eq("formation_id", profil.formation_id);
+
+        sessionIds = (sessionsData ?? []).map((s) => s.id);
+      }
+    }
+
+    let coursesQuery = supabase.from("courses").select("*").order("session_id");
+
+    if (sessionIds) {
+      coursesQuery = coursesQuery.in("session_id", sessionIds);
+    }
+
+    const { data: coursesData, error: coursesError } = await coursesQuery;
 
     if (coursesError) {
       setError("Erreur lors du chargement des cours.");

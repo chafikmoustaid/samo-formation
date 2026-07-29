@@ -34,23 +34,32 @@ export default function StudentPage() {
 
       if (!user) return;
 
-      const [attendanceRes, sessionsRes, quizRes, examRes, profilRes] =
+      const profilRes = await supabase
+        .from("profiles")
+        .select("formation_id, formations(nom, heures_attendues)")
+        .eq("id", user.id)
+        .single();
+
+      const formationId = (profilRes.data as any)?.formation_id ?? null;
+
+      const [attendanceRes, sessionsRes, quizRes, examRes] =
         await Promise.all([
           supabase
             .from("attendance")
             .select("total_heures, statut")
             .eq("user_id", user.id),
-          supabase.from("sessions").select("id").eq("actif", true),
+          formationId
+            ? supabase
+                .from("sessions")
+                .select("id")
+                .eq("actif", true)
+                .eq("formation_id", formationId)
+            : supabase.from("sessions").select("id").eq("actif", true),
           supabase
             .from("quiz_results")
             .select("session_id")
             .eq("user_id", user.id),
           supabase.from("exam_results").select("id").eq("user_id", user.id),
-          supabase
-            .from("profiles")
-            .select("formation_id, formations(nom, heures_attendues)")
-            .eq("id", user.id)
-            .single(),
         ]);
 
       if (!active) return;

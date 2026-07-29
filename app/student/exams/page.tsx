@@ -19,11 +19,40 @@ export default function StudentExamsPage() {
   }, []);
 
   async function chargerExamens() {
-    const { data: evaluations } = await supabase
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    let sessionIds: number[] | null = null;
+
+    if (user) {
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("formation_id")
+        .eq("id", user.id)
+        .single();
+
+      if (profil?.formation_id) {
+        const { data: sessionsData } = await supabase
+          .from("sessions")
+          .select("id")
+          .eq("formation_id", profil.formation_id);
+
+        sessionIds = (sessionsData ?? []).map((s) => s.id);
+      }
+    }
+
+    let evaluationsQuery = supabase
       .from("evaluations")
       .select("*")
-      .in("type", ["examen_partiel", "examen_final"])
+      .in("type", ["examen_partiel", "examen_final", "test"])
       .order("session_id");
+
+    if (sessionIds) {
+      evaluationsQuery = evaluationsQuery.in("session_id", sessionIds);
+    }
+
+    const { data: evaluations } = await evaluationsQuery;
 
     setExams(evaluations ?? []);
 
