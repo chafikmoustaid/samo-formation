@@ -6,7 +6,6 @@ import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import LinkButton from "@/components/ui/LinkButton";
-import MatieresMultiSelect from "@/components/ui/MatieresMultiSelect";
 
 type Role = "admin" | "instructor" | "student";
 
@@ -158,17 +157,6 @@ export default function ComptesPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formationChoisieId]);
-
-  async function ajouterMatiere(matiere: string) {
-    const { error } = await supabase.rpc("admin_ajouter_matiere", {
-      nom_matiere: matiere,
-    });
-    if (!error) {
-      setToutesMatieres((prev) =>
-        Array.from(new Set([...prev, matiere])).sort()
-      );
-    }
-  }
 
   async function enregistrerMatieresFormation(matieres: string[]) {
     if (formationChoisieId === null) return;
@@ -360,8 +348,32 @@ export default function ComptesPage() {
     }
 
     setNouvelleMatiere("");
-    setMessage({ type: "succes", texte: "Matière ajoutée." });
     loadMatieres();
+
+    // Si on est en train de gérer les matières d'une formation précise,
+    // la nouvelle matière lui est directement assignée.
+    if (formationChoisieId !== null && filtrerMatieresParFormation) {
+      await enregistrerMatieresFormation([...matieresFormation, nom]);
+      setMessage({
+        type: "succes",
+        texte: "Matière créée et assignée à la formation.",
+      });
+    } else {
+      setMessage({ type: "succes", texte: "Matière ajoutée." });
+    }
+  }
+
+  async function assignerMatiereAFormation(nomMatiere: string) {
+    if (formationChoisieId === null) return;
+    if (matieresFormation.includes(nomMatiere)) return;
+    await enregistrerMatieresFormation([...matieresFormation, nomMatiere]);
+  }
+
+  async function retirerMatiereDeFormation(nomMatiere: string) {
+    if (formationChoisieId === null) return;
+    await enregistrerMatieresFormation(
+      matieresFormation.filter((m) => m !== nomMatiere)
+    );
   }
 
   async function creerFormationCatalogue() {
@@ -896,42 +908,6 @@ export default function ComptesPage() {
           )}
         </Card>
 
-        <Card className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Matières par formation
-          </h2>
-          <p className="text-sm text-gray-500 mb-4">
-            Chaque formation (programme) a ses propres matières. Une matière
-            peut appartenir à plusieurs formations (tronc commun, ex. Word,
-            Excel).
-          </p>
-
-          <div className="flex flex-col gap-3 max-w-md">
-            <select
-              value={formationChoisieId ?? ""}
-              onChange={(e) => setFormationChoisieId(Number(e.target.value))}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-            >
-              {formations.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.nom}
-                </option>
-              ))}
-            </select>
-
-            <MatieresMultiSelect
-              options={toutesMatieres}
-              selected={matieresFormation}
-              onChange={enregistrerMatieresFormation}
-              onAjouterOption={ajouterMatiere}
-            />
-
-            {savingFormationMatieres && (
-              <span className="text-xs text-gray-400">Enregistrement…</span>
-            )}
-          </div>
-        </Card>
-
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card>
             <h2 className="text-lg font-semibold text-gray-900 mb-1">
@@ -1010,8 +986,9 @@ export default function ComptesPage() {
               Catalogue des matières
             </h2>
             <p className="text-sm text-gray-500 mb-2">
-              Renommer ou supprimer une matière la met à jour partout où elle est
-              utilisée (formations, comptes formateurs).
+              Renommer une matière la met à jour partout où elle est utilisée.
+              Supprimer l&apos;efface complètement (toutes formations, tous
+              comptes formateurs).
             </p>
 
             {formationChoisieId !== null && (
@@ -1035,6 +1012,37 @@ export default function ComptesPage() {
               </div>
             )}
 
+            {formationChoisieId !== null && filtrerMatieresParFormation && (
+              <div className="flex items-center gap-2 mb-3">
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      assignerMatiereAFormation(e.target.value);
+                      e.target.value = "";
+                    }
+                  }}
+                  defaultValue=""
+                  className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                >
+                  <option value="" disabled>
+                    Assigner une matière existante…
+                  </option>
+                  {toutesMatieres
+                    .filter((m) => !matieresFormation.includes(m))
+                    .map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                </select>
+                {savingFormationMatieres && (
+                  <span className="text-xs text-gray-400 whitespace-nowrap">
+                    Enregistrement…
+                  </span>
+                )}
+              </div>
+            )}
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -1046,7 +1054,11 @@ export default function ComptesPage() {
                 type="text"
                 value={nouvelleMatiere}
                 onChange={(e) => setNouvelleMatiere(e.target.value)}
-                placeholder="Nouvelle matière"
+                placeholder={
+                  formationChoisieId !== null && filtrerMatieresParFormation
+                    ? "Nouvelle matière (créée + assignée ici)"
+                    : "Nouvelle matière"
+                }
                 disabled={ajoutMatiereEnCours}
                 className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
               />
@@ -1060,15 +1072,17 @@ export default function ComptesPage() {
             </form>
 
             {(() => {
-              const matieresAffichees =
-                formationChoisieId !== null && filtrerMatieresParFormation
-                  ? toutesMatieres.filter((m) => matieresFormation.includes(m))
-                  : toutesMatieres;
+              const modeFormation =
+                formationChoisieId !== null && filtrerMatieresParFormation;
+
+              const matieresAffichees = modeFormation
+                ? toutesMatieres.filter((m) => matieresFormation.includes(m))
+                : toutesMatieres;
 
               if (matieresAffichees.length === 0) {
                 return (
                   <p className="text-sm text-gray-400">
-                    {formationChoisieId !== null && filtrerMatieresParFormation
+                    {modeFormation
                       ? "Aucune matière pour cette formation."
                       : "Aucune matière pour l'instant."}
                   </p>
@@ -1088,13 +1102,23 @@ export default function ComptesPage() {
                         disabled={busyMatiereCatalogue === matiere}
                         className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
                       />
-                      <button
-                        onClick={() => supprimerMatiereCatalogue(matiere)}
-                        disabled={busyMatiereCatalogue === matiere}
-                        className="text-sm text-red-600 hover:underline disabled:opacity-50"
-                      >
-                        Supprimer
-                      </button>
+                      {modeFormation ? (
+                        <button
+                          onClick={() => retirerMatiereDeFormation(matiere)}
+                          disabled={savingFormationMatieres}
+                          className="text-sm text-red-600 hover:underline disabled:opacity-50 whitespace-nowrap"
+                        >
+                          Retirer
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => supprimerMatiereCatalogue(matiere)}
+                          disabled={busyMatiereCatalogue === matiere}
+                          className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                        >
+                          Supprimer
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>
