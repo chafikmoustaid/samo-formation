@@ -85,17 +85,11 @@ export default function ComptesPage() {
   const [filtrerMatieresParFormation, setFiltrerMatieresParFormation] =
     useState(true);
   const [nouvelleFormation, setNouvelleFormation] = useState("");
-  const [nouvellesHeuresFormation, setNouvellesHeuresFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
   const [toutesCours, setToutesCours] = useState<string[]>([]);
   const [coursFormation, setCoursFormation] = useState<string[]>([]);
   const [savingFormationCours, setSavingFormationCours] = useState(false);
-  const [busyCoursCatalogue, setBusyCoursCatalogue] = useState<string | null>(
-    null
-  );
-  const [nouveauCours, setNouveauCours] = useState("");
-  const [ajoutCoursEnCours, setAjoutCoursEnCours] = useState(false);
 
   async function loadProfiles() {
     setLoading(true);
@@ -267,87 +261,6 @@ export default function ComptesPage() {
     setMessage({ type: "succes", texte: "Cours de la formation mis à jour." });
   }
 
-  async function ajouterCoursCatalogue() {
-    const nom = nouveauCours.trim();
-    if (!nom) return;
-
-    setAjoutCoursEnCours(true);
-    setMessage(null);
-
-    const { error } = await supabase.rpc("admin_ajouter_cours", {
-      nom_cours: nom,
-    });
-
-    setAjoutCoursEnCours(false);
-
-    if (error) {
-      setMessage({
-        type: "erreur",
-        texte: "Erreur lors de l'ajout du cours : " + error.message,
-      });
-      return;
-    }
-
-    setNouveauCours("");
-    setMessage({ type: "succes", texte: "Cours ajouté." });
-    loadCours();
-  }
-
-  async function renommerCoursCatalogue(ancienNom: string, nouveauNom: string) {
-    const nom = nouveauNom.trim();
-    if (!nom || nom === ancienNom) return;
-
-    setBusyCoursCatalogue(ancienNom);
-    setMessage(null);
-
-    const { error } = await supabase.rpc("admin_renommer_cours", {
-      ancien_nom: ancienNom,
-      nouveau_nom: nom,
-    });
-
-    setBusyCoursCatalogue(null);
-
-    if (error) {
-      setMessage({
-        type: "erreur",
-        texte: "Erreur lors du renommage du cours : " + error.message,
-      });
-      return;
-    }
-
-    setMessage({ type: "succes", texte: "Cours renommé." });
-    loadCours();
-    if (formationChoisieId !== null) loadCoursFormation(formationChoisieId);
-  }
-
-  async function supprimerCoursCatalogue(nom: string) {
-    const confirmation = window.confirm(
-      `Supprimer le cours "${nom}" ? Il sera retiré de toutes les formations.`
-    );
-    if (!confirmation) return;
-
-    setBusyCoursCatalogue(nom);
-    setMessage(null);
-
-    const { error } = await supabase.rpc("admin_supprimer_cours", {
-      nom_cours: nom,
-    });
-
-    setBusyCoursCatalogue(null);
-
-    if (error) {
-      setMessage({
-        type: "erreur",
-        texte: "Erreur lors de la suppression du cours : " + error.message,
-      });
-      return;
-    }
-
-    setMessage({ type: "succes", texte: "Cours supprimé." });
-    loadCours();
-    if (formationChoisieId !== null) loadCoursFormation(formationChoisieId);
-  }
-
   async function enregistrerFormationEtudiant(id: string, formationId: number) {
     setSavingFormationId(id);
     setMessage(null);
@@ -490,36 +403,6 @@ export default function ComptesPage() {
     loadProfiles();
   }
 
-  async function enregistrerHeuresAttendues(id: number, valeur: string) {
-    const heures = valeur.trim() === "" ? null : Number(valeur);
-    if (valeur.trim() !== "" && (Number.isNaN(heures) || Number(heures) < 0)) {
-      setMessage({ type: "erreur", texte: "Nombre d'heures invalide." });
-      return;
-    }
-
-    setBusyFormationCatalogue(id);
-    setMessage(null);
-
-    const { error } = await supabase.rpc("admin_set_heures_attendues", {
-      cible_formation_id: id,
-      nouvelles_heures: heures,
-    });
-
-    setBusyFormationCatalogue(null);
-
-    if (error) {
-      setMessage({
-        type: "erreur",
-        texte: "Erreur lors de l'enregistrement des heures attendues : " + error.message,
-      });
-      return;
-    }
-
-    setFormations((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, heures_attendues: heures } : f))
-    );
-  }
-
   async function ajouterMatiereCatalogue() {
     const nom = nouvelleMatiere.trim();
     if (!nom) return;
@@ -550,24 +433,12 @@ export default function ComptesPage() {
     const nom = nouvelleFormation.trim();
     if (!nom) return;
 
-    const heures =
-      nouvellesHeuresFormation.trim() === ""
-        ? null
-        : Number(nouvellesHeuresFormation);
-    if (
-      nouvellesHeuresFormation.trim() !== "" &&
-      (Number.isNaN(heures) || Number(heures) < 0)
-    ) {
-      setMessage({ type: "erreur", texte: "Nombre d'heures invalide." });
-      return;
-    }
-
     setAjoutFormationEnCours(true);
     setMessage(null);
 
     const { error } = await supabase.rpc("admin_creer_formation", {
       nom_formation: nom,
-      heures_attendues: heures,
+      heures_attendues: null,
     });
 
     setAjoutFormationEnCours(false);
@@ -581,7 +452,6 @@ export default function ComptesPage() {
     }
 
     setNouvelleFormation("");
-    setNouvellesHeuresFormation("");
     setMessage({ type: "succes", texte: "Formation créée." });
     loadFormations();
   }
@@ -1082,16 +952,15 @@ export default function ComptesPage() {
           </div>
         </Card>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card>
             <h2 className="text-lg font-semibold text-gray-900 mb-1">
               Catalogue des formations
             </h2>
             <p className="text-sm text-gray-500 mb-4">
               Supprimer une formation détache les étudiants qui y sont inscrits
-              (à réassigner ensuite). Les heures attendues alimentent la barre
-              de progression affichée aux étudiants. Clique sur une formation
-              pour filtrer le catalogue des matières à droite.
+              (à réassigner ensuite). Clique sur une formation pour filtrer le
+              catalogue des matières à droite.
             </p>
 
             <form
@@ -1108,15 +977,6 @@ export default function ComptesPage() {
                 placeholder="Nouvelle formation"
                 disabled={ajoutFormationEnCours}
                 className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
-              />
-              <input
-                type="number"
-                min={0}
-                value={nouvellesHeuresFormation}
-                onChange={(e) => setNouvellesHeuresFormation(e.target.value)}
-                placeholder="Heures"
-                disabled={ajoutFormationEnCours}
-                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
               />
               <Button
                 type="submit"
@@ -1148,16 +1008,6 @@ export default function ComptesPage() {
                       onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
                       disabled={busyFormationCatalogue === f.id}
                       className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
-                    />
-                    <input
-                      type="number"
-                      min={0}
-                      defaultValue={f.heures_attendues ?? ""}
-                      placeholder="Heures"
-                      onClick={(e) => e.stopPropagation()}
-                      onBlur={(e) => enregistrerHeuresAttendues(f.id, e.target.value)}
-                      disabled={busyFormationCatalogue === f.id}
-                      className="w-24 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
                     />
                     <button
                       onClick={(e) => {
@@ -1272,64 +1122,6 @@ export default function ComptesPage() {
             })()}
           </Card>
 
-          <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Catalogue des cours
-            </h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Renommer ou supprimer un cours le met à jour partout où il est
-              utilisé (formations).
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                ajouterCoursCatalogue();
-              }}
-              className="flex items-center gap-2 mb-4"
-            >
-              <input
-                type="text"
-                value={nouveauCours}
-                onChange={(e) => setNouveauCours(e.target.value)}
-                placeholder="Nouveau cours"
-                disabled={ajoutCoursEnCours}
-                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                disabled={ajoutCoursEnCours || !nouveauCours.trim()}
-              >
-                Ajouter
-              </Button>
-            </form>
-
-            {toutesCours.length === 0 ? (
-              <p className="text-sm text-gray-400">Aucun cours pour l&apos;instant.</p>
-            ) : (
-              <ul className="space-y-2 max-h-72 overflow-y-auto">
-                {toutesCours.map((cours) => (
-                  <li key={cours} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      defaultValue={cours}
-                      onBlur={(e) => renommerCoursCatalogue(cours, e.target.value)}
-                      disabled={busyCoursCatalogue === cours}
-                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
-                    />
-                    <button
-                      onClick={() => supprimerCoursCatalogue(cours)}
-                      disabled={busyCoursCatalogue === cours}
-                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Supprimer
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
         </div>
 
         <Card>
