@@ -27,24 +27,14 @@ export default function StudentQuizDynamicPage() {
   }, [courseId]);
 
   async function resolveSessionId(): Promise<number | null> {
+    // courses.session_id référence directement sessions.id.
     const { data: course } = await supabase
       .from("courses")
       .select("session_id")
       .eq("id", Number(courseId))
       .single();
 
-    if (!course) return null;
-
-    // quiz_questions.session_id référence sessions.id, pas le numéro de
-    // séance affiché ailleurs (courses.session_id) — il faut résoudre
-    // via sessions.numero.
-    const { data: session } = await supabase
-      .from("sessions")
-      .select("id")
-      .eq("numero", course.session_id)
-      .single();
-
-    return session?.id ?? null;
+    return course?.session_id ?? null;
   }
 
   async function chargerQuestions() {

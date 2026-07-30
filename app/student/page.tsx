@@ -20,9 +20,15 @@ type Progression = {
   heuresAttendues: number | null;
 };
 
+type Matiere = {
+  id: number;
+  nom: string;
+};
+
 export default function StudentPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [progression, setProgression] = useState<Progression | null>(null);
+  const [matieres, setMatieres] = useState<Matiere[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -42,7 +48,7 @@ export default function StudentPage() {
 
       const formationId = (profilRes.data as any)?.formation_id ?? null;
 
-      const [attendanceRes, sessionsRes, quizRes, examRes] =
+      const [attendanceRes, sessionsRes, quizRes, examRes, matieresRes] =
         await Promise.all([
           supabase
             .from("attendance")
@@ -60,6 +66,12 @@ export default function StudentPage() {
             .select("session_id")
             .eq("user_id", user.id),
           supabase.from("exam_results").select("id").eq("user_id", user.id),
+          formationId
+            ? supabase
+                .from("formation_matieres")
+                .select("matieres(id, nom)")
+                .eq("formation_id", formationId)
+            : Promise.resolve({ data: [] as any[] }),
         ]);
 
       if (!active) return;
@@ -80,6 +92,12 @@ export default function StudentPage() {
       const examens = examRes.data?.length ?? 0;
 
       setStats({ totalHeures, presences, quizRestants, examens });
+
+      const matieresFormation = ((matieresRes as any).data ?? [])
+        .map((row: any) => row.matieres)
+        .filter(Boolean)
+        .sort((a: Matiere, b: Matiere) => a.nom.localeCompare(b.nom));
+      setMatieres(matieresFormation);
 
       const formation = (profilRes.data as any)?.formations;
       if (formation) {
@@ -105,7 +123,10 @@ export default function StudentPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <PageHeader title="Portail Étudiant" />
+        <PageHeader
+          title="Portail Étudiant"
+          subtitle={progression ? progression.nomFormation : undefined}
+        />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard label="Mes heures" value={stats ? stats.totalHeures : "…"} />
@@ -147,6 +168,29 @@ export default function StudentPage() {
                 {progression.heuresValidees} h validées jusqu&apos;à maintenant.
               </p>
             )}
+          </Card>
+        )}
+
+        {matieres.length > 0 && (
+          <Card className="mt-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Mes matières
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Choisis une matière pour voir ses séances.
+            </p>
+
+            <div className="flex gap-3 flex-wrap">
+              {matieres.map((m) => (
+                <LinkButton
+                  key={m.id}
+                  href={`/student/matieres/${m.id}`}
+                  variant="outline"
+                >
+                  {m.nom}
+                </LinkButton>
+              ))}
+            </div>
           </Card>
         )}
 
