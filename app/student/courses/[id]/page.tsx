@@ -56,7 +56,11 @@ export default function CoursePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow p-8">
+      <div
+        className="no-print max-w-5xl mx-auto bg-white rounded-xl shadow p-8"
+        onCopy={(e) => e.preventDefault()}
+        onCut={(e) => e.preventDefault()}
+      >
         <SeanceNav courseId={courseId} current="support" />
 
         <h1 className="text-3xl font-bold text-green-700 mt-4 mb-6">
@@ -71,9 +75,16 @@ export default function CoursePage() {
 
         {html && (
           <p className="text-xs text-gray-400 mt-3">
-            Vue protégée (clic droit, copie et téléchargement désactivés).
+            Vue protégée (clic droit, copie, sélection et impression
+            désactivés).
           </p>
         )}
+      </div>
+
+      <div className="print-only p-12 text-center text-lg text-gray-700">
+        Ce support de cours est la propriété de Formation SAMO et ne peut
+        pas être imprimé ni exporté en PDF. Merci de le consulter en ligne
+        sur formationsamo.ca.
       </div>
     </div>
   );

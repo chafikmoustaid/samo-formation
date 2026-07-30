@@ -64,3 +64,20 @@ body {
   border-radius: 8px;
   padding: 4px 16px;
 }
+
+/* Support de cours protégé (propriété SAMO Formation) : le contenu ne
+   doit jamais apparaître dans une impression ou une "impression PDF"
+   du navigateur. On masque tout le corps de page et on affiche un
+   message à la place — voir .no-print / .print-only ci-dessous. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
