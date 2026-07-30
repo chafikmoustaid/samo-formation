@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import SeanceNav from "@/components/student/SeanceNav";
 
 export default function StudentQuizDynamicPage() {
   const params = useParams<{ id: string }>();
@@ -125,11 +125,10 @@ export default function StudentQuizDynamicPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <PageHeader
-            title={titre || "Quiz"}
-            backHref="/student/courses"
-            backLabel="← Mes cours"
-          />
+          <SeanceNav courseId={courseId} current="quiz" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            {titre || "Quiz"}
+          </h1>
           <Card>Aucun quiz disponible pour cette séance pour le moment.</Card>
         </div>
       </div>
@@ -139,11 +138,10 @@ export default function StudentQuizDynamicPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <PageHeader
-          title={`Quiz : ${titre}`}
-          backHref="/student/courses"
-          backLabel="← Mes cours"
-        />
+        <SeanceNav courseId={courseId} current="quiz" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Quiz : {titre}
+        </h1>
 
         <Card>
           {questions.map((question, index) => (

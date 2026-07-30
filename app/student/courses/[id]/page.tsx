@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import SeanceNav from "@/components/student/SeanceNav";
 
 export default function CoursePage() {
   const params = useParams<{ id: string }>();
@@ -57,12 +57,7 @@ export default function CoursePage() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-5xl mx-auto bg-white rounded-xl shadow p-8">
-        <Link
-          href="/student/courses"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          ← Mes cours
-        </Link>
+        <SeanceNav courseId={courseId} current="support" />
 
         <h1 className="text-3xl font-bold text-green-700 mt-4 mb-6">
           {titre || "Support de cours"}

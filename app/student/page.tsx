@@ -204,10 +204,6 @@ export default function StudentPage() {
               Mes fiches de présence
             </LinkButton>
 
-            <LinkButton href="/student/courses" variant="outline">
-              Mes cours
-            </LinkButton>
-
             <LinkButton href="/student/assignments" variant="outline">
               Mes travaux pratiques
             </LinkButton>

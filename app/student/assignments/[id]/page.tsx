@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import SeanceNav from "@/components/student/SeanceNav";
 
 export default function StudentAssignmentDetailPage() {
   const params = useParams<{ id: string }>();
@@ -125,11 +125,10 @@ export default function StudentAssignmentDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <PageHeader
-            title={titreSeance || "TP"}
-            backHref="/student/courses"
-            backLabel="← Mes cours"
-          />
+          <SeanceNav courseId={courseId} current="tp" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            {titreSeance || "TP"}
+          </h1>
           <Card>Aucun TP publié pour {titreSeance || "cette séance"}.</Card>
         </div>
       </div>
@@ -139,11 +138,10 @@ export default function StudentAssignmentDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <PageHeader
-          title={assignment.titre}
-          backHref="/student/courses"
-          backLabel="← Mes cours"
-        />
+        <SeanceNav courseId={courseId} current="tp" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          {assignment.titre}
+        </h1>
 
         <Card>
           {assignment.contenu_html ? (

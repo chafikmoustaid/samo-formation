@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
+import SeanceNav from "@/components/student/SeanceNav";
 
 export default function StudentSessionResultsPage() {
   const params = useParams<{ id: string }>();
@@ -64,11 +64,11 @@ export default function StudentSessionResultsPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <PageHeader
-          title={`Résultats — ${titre || "Séance"}`}
-          backHref="/student/courses"
-          backLabel="← Mes cours"
-        />
+        <SeanceNav courseId={courseId} current="resultats" />
+
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Résultats — {titre || "Séance"}
+        </h1>
 
         <Card>
           {results.length === 0 ? (
