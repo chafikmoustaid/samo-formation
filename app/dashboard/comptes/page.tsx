@@ -86,6 +86,13 @@ export default function ComptesPage() {
   const [nouvelleFormation, setNouvelleFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
+  const [formationsCochees, setFormationsCochees] = useState<Set<number>>(
+    new Set()
+  );
+  const [matieresCochees, setMatieresCochees] = useState<Set<string>>(
+    new Set()
+  );
+
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -155,8 +162,9 @@ export default function ComptesPage() {
     if (formationChoisieId !== null) {
       loadMatieresFormation(formationChoisieId);
     }
+    setMatieresCochees(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formationChoisieId]);
+  }, [formationChoisieId, filtrerMatieresParFormation]);
 
   async function enregistrerMatieresFormation(matieres: string[]) {
     if (formationChoisieId === null) return;
@@ -430,6 +438,134 @@ export default function ComptesPage() {
     if (formationChoisieId === id) setFormationChoisieId(null);
     loadFormations();
     loadProfiles();
+  }
+
+  function basculerFormationCochee(id: number) {
+    setFormationsCochees((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  async function renommerFormationsCochees() {
+    if (formationsCochees.size !== 1) {
+      setMessage({
+        type: "erreur",
+        texte: "Coche exactement une formation à renommer.",
+      });
+      return;
+    }
+
+    const id = Array.from(formationsCochees)[0];
+    const actuelle = formations.find((f) => f.id === id);
+    const nouveauNom = window.prompt("Nouveau nom de la formation :", actuelle?.nom ?? "");
+    if (nouveauNom === null) return;
+
+    await renommerFormationCatalogue(id, nouveauNom);
+    setFormationsCochees(new Set());
+  }
+
+  async function supprimerFormationsCochees() {
+    if (formationsCochees.size === 0) return;
+
+    const noms = formations
+      .filter((f) => formationsCochees.has(f.id))
+      .map((f) => f.nom);
+
+    const confirmation = window.confirm(
+      `Supprimer ${noms.length > 1 ? "les formations" : "la formation"} "${noms.join(
+        '", "'
+      )}" ? Les étudiants qui y sont inscrits seront détachés (formation à réassigner).`
+    );
+    if (!confirmation) return;
+
+    setMessage(null);
+
+    for (const id of formationsCochees) {
+      const { error } = await supabase.rpc("admin_supprimer_formation", {
+        cible_formation_id: id,
+      });
+      if (error) {
+        setMessage({
+          type: "erreur",
+          texte: "Erreur lors de la suppression de la formation : " + error.message,
+        });
+      }
+      if (formationChoisieId === id) setFormationChoisieId(null);
+    }
+
+    setFormationsCochees(new Set());
+    setMessage((prev) => prev ?? { type: "succes", texte: "Formation(s) supprimée(s)." });
+    loadFormations();
+    loadProfiles();
+  }
+
+  function basculerMatiereCochee(nom: string) {
+    setMatieresCochees((prev) => {
+      const next = new Set(prev);
+      if (next.has(nom)) next.delete(nom);
+      else next.add(nom);
+      return next;
+    });
+  }
+
+  async function renommerMatieresCochees() {
+    if (matieresCochees.size !== 1) {
+      setMessage({
+        type: "erreur",
+        texte: "Coche exactement une matière à renommer.",
+      });
+      return;
+    }
+
+    const ancienNom = Array.from(matieresCochees)[0];
+    const nouveauNom = window.prompt("Nouveau nom de la matière :", ancienNom);
+    if (nouveauNom === null) return;
+
+    await renommerMatiereCatalogue(ancienNom, nouveauNom);
+    setMatieresCochees(new Set());
+  }
+
+  async function supprimerMatieresCochees() {
+    if (matieresCochees.size === 0) return;
+
+    const noms = Array.from(matieresCochees);
+    const confirmation = window.confirm(
+      `Supprimer ${noms.length > 1 ? "les matières" : "la matière"} "${noms.join(
+        '", "'
+      )}" ? Elle${noms.length > 1 ? "s seront retirées" : " sera retirée"} de toutes les formations et de tous les comptes qui l'enseignent.`
+    );
+    if (!confirmation) return;
+
+    setMessage(null);
+
+    for (const nom of noms) {
+      const { error } = await supabase.rpc("admin_supprimer_matiere", {
+        nom_matiere: nom,
+      });
+      if (error) {
+        setMessage({
+          type: "erreur",
+          texte: "Erreur lors de la suppression de la matière : " + error.message,
+        });
+      }
+    }
+
+    setMatieresCochees(new Set());
+    setMessage((prev) => prev ?? { type: "succes", texte: "Matière(s) supprimée(s)." });
+    loadMatieres();
+    loadProfiles();
+    if (formationChoisieId !== null) loadMatieresFormation(formationChoisieId);
+  }
+
+  async function retirerMatieresCocheesDeFormation() {
+    if (formationChoisieId === null || matieresCochees.size === 0) return;
+    await enregistrerMatieresFormation(
+      matieresFormation.filter((m) => !matieresCochees.has(m))
+    );
+    setMatieresCochees(new Set());
   }
 
   const profilesFiltres = profiles.filter((p) => {
@@ -914,9 +1050,9 @@ export default function ComptesPage() {
               Catalogue des formations
             </h2>
             <p className="text-sm text-gray-500 mb-4">
-              Supprimer une formation détache les étudiants qui y sont inscrits
-              (à réassigner ensuite). Clique sur une formation pour filtrer le
-              catalogue des matières à droite.
+              Clique sur une formation pour filtrer le catalogue des matières
+              à droite. Coche une ou plusieurs formations pour les renommer ou
+              les supprimer.
             </p>
 
             <form
@@ -924,7 +1060,7 @@ export default function ComptesPage() {
                 e.preventDefault();
                 creerFormationCatalogue();
               }}
-              className="flex items-center gap-2 mb-4"
+              className="flex items-center gap-2 mb-3"
             >
               <input
                 type="text"
@@ -943,6 +1079,23 @@ export default function ComptesPage() {
               </Button>
             </form>
 
+            <div className="flex items-center gap-4 mb-3 text-sm">
+              <button
+                onClick={renommerFormationsCochees}
+                disabled={formationsCochees.size !== 1}
+                className="text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
+              >
+                Renommer
+              </button>
+              <button
+                onClick={supprimerFormationsCochees}
+                disabled={formationsCochees.size === 0}
+                className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+              >
+                Supprimer{formationsCochees.size > 1 ? ` (${formationsCochees.size})` : ""}
+              </button>
+            </div>
+
             {formations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>
             ) : (
@@ -950,30 +1103,24 @@ export default function ComptesPage() {
                 {formations.map((f) => (
                   <li
                     key={f.id}
-                    onClick={() => setFormationChoisieId(f.id)}
-                    className={`flex items-center gap-2 rounded-lg px-1 py-0.5 cursor-pointer ${
+                    className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${
                       formationChoisieId === f.id
                         ? "bg-blue-50 ring-1 ring-blue-200"
                         : ""
                     }`}
                   >
                     <input
-                      type="text"
-                      defaultValue={f.nom}
-                      onFocus={() => setFormationChoisieId(f.id)}
-                      onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
-                      disabled={busyFormationCatalogue === f.id}
-                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
+                      type="checkbox"
+                      checked={formationsCochees.has(f.id)}
+                      onChange={() => basculerFormationCochee(f.id)}
+                      className="shrink-0"
                     />
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        supprimerFormationCatalogue(f.id, f.nom);
-                      }}
+                      onClick={() => setFormationChoisieId(f.id)}
                       disabled={busyFormationCatalogue === f.id}
-                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                      className="flex-1 text-left text-sm text-gray-900"
                     >
-                      Supprimer
+                      {f.nom}
                     </button>
                   </li>
                 ))}
@@ -986,9 +1133,8 @@ export default function ComptesPage() {
               Catalogue des matières
             </h2>
             <p className="text-sm text-gray-500 mb-2">
-              Renommer une matière la met à jour partout où elle est utilisée.
-              Supprimer l&apos;efface complètement (toutes formations, tous
-              comptes formateurs).
+              Coche une matière pour la renommer (partout où elle est
+              utilisée) ou la retirer/supprimer.
             </p>
 
             {formationChoisieId !== null && (
@@ -1079,49 +1225,59 @@ export default function ComptesPage() {
                 ? toutesMatieres.filter((m) => matieresFormation.includes(m))
                 : toutesMatieres;
 
-              if (matieresAffichees.length === 0) {
-                return (
-                  <p className="text-sm text-gray-400">
-                    {modeFormation
-                      ? "Aucune matière pour cette formation."
-                      : "Aucune matière pour l'instant."}
-                  </p>
-                );
-              }
-
               return (
-                <ul className="space-y-2 max-h-72 overflow-y-auto">
-                  {matieresAffichees.map((matiere) => (
-                    <li key={matiere} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        defaultValue={matiere}
-                        onBlur={(e) =>
-                          renommerMatiereCatalogue(matiere, e.target.value)
-                        }
-                        disabled={busyMatiereCatalogue === matiere}
-                        className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
-                      />
-                      {modeFormation ? (
-                        <button
-                          onClick={() => retirerMatiereDeFormation(matiere)}
-                          disabled={savingFormationMatieres}
-                          className="text-sm text-red-600 hover:underline disabled:opacity-50 whitespace-nowrap"
-                        >
-                          Retirer
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => supprimerMatiereCatalogue(matiere)}
-                          disabled={busyMatiereCatalogue === matiere}
-                          className="text-sm text-red-600 hover:underline disabled:opacity-50"
-                        >
-                          Supprimer
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <div className="flex items-center gap-4 mb-3 text-sm">
+                    <button
+                      onClick={renommerMatieresCochees}
+                      disabled={matieresCochees.size !== 1}
+                      className="text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                    >
+                      Renommer
+                    </button>
+                    {modeFormation ? (
+                      <button
+                        onClick={retirerMatieresCocheesDeFormation}
+                        disabled={matieresCochees.size === 0 || savingFormationMatieres}
+                        className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                      >
+                        Retirer{matieresCochees.size > 1 ? ` (${matieresCochees.size})` : ""}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={supprimerMatieresCochees}
+                        disabled={matieresCochees.size === 0}
+                        className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                      >
+                        Supprimer{matieresCochees.size > 1 ? ` (${matieresCochees.size})` : ""}
+                      </button>
+                    )}
+                  </div>
+
+                  {matieresAffichees.length === 0 ? (
+                    <p className="text-sm text-gray-400">
+                      {modeFormation
+                        ? "Aucune matière pour cette formation."
+                        : "Aucune matière pour l'instant."}
+                    </p>
+                  ) : (
+                    <ul className="space-y-2 max-h-72 overflow-y-auto">
+                      {matieresAffichees.map((matiere) => (
+                        <li key={matiere} className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={matieresCochees.has(matiere)}
+                            onChange={() => basculerMatiereCochee(matiere)}
+                            className="shrink-0"
+                          />
+                          <span className="flex-1 text-sm text-gray-900 px-2 py-1.5">
+                            {matiere}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
               );
             })()}
           </Card>
