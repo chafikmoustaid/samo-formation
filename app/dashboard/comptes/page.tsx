@@ -794,15 +794,23 @@ export default function ComptesPage() {
             <p className="text-sm text-gray-400">Aucun compte ne correspond à ces critères.</p>
           ) : (
             <div className="overflow-x-auto">
-            <table className="w-full text-sm" style={{ minWidth: "980px" }}>
+            <table className="w-full text-sm table-fixed">
+              <colgroup>
+                <col className="w-[19%]" />
+                <col className="w-[16%]" />
+                <col className="w-[24%]" />
+                <col className="w-[9%]" />
+                <col className="w-[11%]" />
+                <col className="w-[21%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b text-left text-gray-500">
-                  <th className="p-3 whitespace-nowrap">Email</th>
-                  <th className="p-3 whitespace-nowrap">Nom complet</th>
+                  <th className="p-3">Email</th>
+                  <th className="p-3">Nom complet</th>
                   <th className="p-3">Formation</th>
-                  <th className="p-3 whitespace-nowrap">Créé le</th>
-                  <th className="p-3 whitespace-nowrap">Mot de passe</th>
-                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600 whitespace-nowrap">
+                  <th className="p-3">Créé le</th>
+                  <th className="p-3">Mot de passe</th>
+                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600">
                     Rôle (sensible)
                   </th>
                 </tr>
@@ -810,7 +818,7 @@ export default function ComptesPage() {
               <tbody>
                 {profilesFiltres.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
-                    <td className="p-3 whitespace-nowrap">{p.email}</td>
+                    <td className="p-3 truncate" title={p.email}>{p.email}</td>
                     <td className="p-3">
                       <input
                         type="text"
@@ -822,7 +830,7 @@ export default function ComptesPage() {
                           }
                         }}
                         disabled={savingNomId === p.id}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full min-w-[160px]"
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
                       />
                     </td>
                     <td className="p-3">
@@ -836,7 +844,7 @@ export default function ComptesPage() {
                             )
                           }
                           disabled={savingFormationId === p.id}
-                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm min-w-[220px]"
+                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
                         >
                           <option value="" disabled>
                             Choisir une formation
@@ -857,7 +865,7 @@ export default function ComptesPage() {
                     <td className="p-3 text-gray-500 whitespace-nowrap">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
                     </td>
-                    <td className="p-3 whitespace-nowrap">
+                    <td className="p-3">
                       <button
                         onClick={() => definirMotDePasse(p.id, p.email)}
                         disabled={settingPasswordId === p.id}
@@ -866,14 +874,14 @@ export default function ComptesPage() {
                         {settingPasswordId === p.id ? "Génération…" : "Regénérer"}
                       </button>
                     </td>
-                    <td className="p-3 border-l border-gray-200 pl-6 whitespace-nowrap">
+                    <td className="p-3 border-l border-gray-200 pl-6">
                       <select
                         value={p.role}
                         disabled={busyId === p.id}
                         onChange={(e) =>
                           changeRole(p.id, e.target.value as Role, p.email)
                         }
-                        className="border border-gray-200 rounded-lg px-2 py-1"
+                        className="border border-gray-200 rounded-lg px-2 py-1 w-full"
                       >
                         <option value="student">Étudiant</option>
                         <option value="instructor">Formateur</option>
