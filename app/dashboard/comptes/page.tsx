@@ -659,6 +659,100 @@ export default function ComptesPage() {
           </div>
         )}
 
+        <div className="mb-8 rounded-xl border border-green-100 bg-gradient-to-br from-green-50 to-white shadow-sm overflow-hidden">
+          <div className="px-6 py-5 border-b border-green-100 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-green-700 text-white flex items-center justify-center text-lg font-semibold shrink-0">
+              +
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Créer un compte</h2>
+              <p className="text-sm text-gray-500">
+                Un mot de passe temporaire est généré automatiquement ; la
+                personne devra le changer à sa première connexion.
+              </p>
+            </div>
+          </div>
+
+          <div className="px-6 py-5">
+            {createError && (
+              <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                {createError}
+              </div>
+            )}
+
+            <form onSubmit={createAccount}>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="nom@exemple.com"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nom complet
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nom Prénom"
+                    value={newNomComplet}
+                    onChange={(e) => setNewNomComplet(e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rôle
+                  </label>
+                  <select
+                    value={newRole}
+                    onChange={(e) => setNewRole(e.target.value as Role)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  >
+                    <option value="student">Étudiant</option>
+                    <option value="instructor">Formateur</option>
+                    <option value="admin">Administration</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Formation
+                  </label>
+                  <select
+                    value={newFormationId}
+                    onChange={(e) => setNewFormationId(e.target.value)}
+                    disabled={newRole !== "student"}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
+                  >
+                    <option value="">Aucune pour l&apos;instant</option>
+                    {formations.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.nom}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-5 flex justify-end">
+                <Button type="submit" disabled={creating} className="px-6">
+                  {creating ? "Création…" : "Créer le compte"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <Card className="mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Comptes existants</h2>
 
@@ -1001,87 +1095,6 @@ export default function ComptesPage() {
           </Card>
 
         </div>
-
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Créer un compte</h2>
-          <p className="text-sm text-gray-500 mb-4">
-            Un mot de passe temporaire est généré automatiquement ; la
-            personne devra le changer à sa première connexion.
-          </p>
-
-          {createError && (
-            <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-              {createError}
-            </div>
-          )}
-
-          <form onSubmit={createAccount} className="flex flex-wrap gap-4 items-end">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                required
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom complet
-              </label>
-              <input
-                type="text"
-                placeholder="Nom Prénom"
-                value={newNomComplet}
-                onChange={(e) => setNewNomComplet(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rôle
-              </label>
-              <select
-                value={newRole}
-                onChange={(e) => setNewRole(e.target.value as Role)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              >
-                <option value="student">Étudiant</option>
-                <option value="instructor">Formateur</option>
-                <option value="admin">Administration</option>
-              </select>
-            </div>
-
-            {newRole === "student" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Formation
-                </label>
-                <select
-                  value={newFormationId}
-                  onChange={(e) => setNewFormationId(e.target.value)}
-                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-                >
-                  <option value="">Aucune pour l&apos;instant</option>
-                  {formations.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.nom}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <Button type="submit" disabled={creating}>
-              {creating ? "Création…" : "Créer"}
-            </Button>
-          </form>
-        </Card>
       </div>
     </div>
   );
