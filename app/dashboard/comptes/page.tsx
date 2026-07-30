@@ -82,6 +82,8 @@ export default function ComptesPage() {
 
   const [nouvelleMatiere, setNouvelleMatiere] = useState("");
   const [ajoutMatiereEnCours, setAjoutMatiereEnCours] = useState(false);
+  const [filtrerMatieresParFormation, setFiltrerMatieresParFormation] =
+    useState(true);
   const [nouvelleFormation, setNouvelleFormation] = useState("");
   const [nouvellesHeuresFormation, setNouvellesHeuresFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
@@ -1083,71 +1085,13 @@ export default function ComptesPage() {
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card>
             <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Catalogue des matières
-            </h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Renommer ou supprimer une matière la met à jour partout où elle est
-              utilisée (formations, comptes formateurs).
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                ajouterMatiereCatalogue();
-              }}
-              className="flex items-center gap-2 mb-4"
-            >
-              <input
-                type="text"
-                value={nouvelleMatiere}
-                onChange={(e) => setNouvelleMatiere(e.target.value)}
-                placeholder="Nouvelle matière"
-                disabled={ajoutMatiereEnCours}
-                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                disabled={ajoutMatiereEnCours || !nouvelleMatiere.trim()}
-              >
-                Ajouter
-              </Button>
-            </form>
-
-            {toutesMatieres.length === 0 ? (
-              <p className="text-sm text-gray-400">Aucune matière pour l&apos;instant.</p>
-            ) : (
-              <ul className="space-y-2 max-h-72 overflow-y-auto">
-                {toutesMatieres.map((matiere) => (
-                  <li key={matiere} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      defaultValue={matiere}
-                      onBlur={(e) => renommerMatiereCatalogue(matiere, e.target.value)}
-                      disabled={busyMatiereCatalogue === matiere}
-                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
-                    />
-                    <button
-                      onClick={() => supprimerMatiereCatalogue(matiere)}
-                      disabled={busyMatiereCatalogue === matiere}
-                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Supprimer
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-
-          <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
               Catalogue des formations
             </h2>
             <p className="text-sm text-gray-500 mb-4">
               Supprimer une formation détache les étudiants qui y sont inscrits
               (à réassigner ensuite). Les heures attendues alimentent la barre
-              de progression affichée aux étudiants.
+              de progression affichée aux étudiants. Clique sur une formation
+              pour filtrer le catalogue des matières à droite.
             </p>
 
             <form
@@ -1188,25 +1132,38 @@ export default function ComptesPage() {
             ) : (
               <ul className="space-y-2 max-h-72 overflow-y-auto">
                 {formations.map((f) => (
-                  <li key={f.id} className="flex items-center gap-2">
+                  <li
+                    key={f.id}
+                    onClick={() => setFormationChoisieId(f.id)}
+                    className={`flex items-center gap-2 rounded-lg px-1 py-0.5 cursor-pointer ${
+                      formationChoisieId === f.id
+                        ? "bg-blue-50 ring-1 ring-blue-200"
+                        : ""
+                    }`}
+                  >
                     <input
                       type="text"
                       defaultValue={f.nom}
+                      onClick={(e) => e.stopPropagation()}
                       onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
                       disabled={busyFormationCatalogue === f.id}
-                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                      className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
                     />
                     <input
                       type="number"
                       min={0}
                       defaultValue={f.heures_attendues ?? ""}
                       placeholder="Heures"
+                      onClick={(e) => e.stopPropagation()}
                       onBlur={(e) => enregistrerHeuresAttendues(f.id, e.target.value)}
                       disabled={busyFormationCatalogue === f.id}
-                      className="w-24 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                      className="w-24 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
                     />
                     <button
-                      onClick={() => supprimerFormationCatalogue(f.id, f.nom)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        supprimerFormationCatalogue(f.id, f.nom);
+                      }}
                       disabled={busyFormationCatalogue === f.id}
                       className="text-sm text-red-600 hover:underline disabled:opacity-50"
                     >
@@ -1216,6 +1173,103 @@ export default function ComptesPage() {
                 ))}
               </ul>
             )}
+          </Card>
+
+          <Card>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Catalogue des matières
+            </h2>
+            <p className="text-sm text-gray-500 mb-2">
+              Renommer ou supprimer une matière la met à jour partout où elle est
+              utilisée (formations, comptes formateurs).
+            </p>
+
+            {formationChoisieId !== null && (
+              <div className="flex items-center justify-between mb-3 text-xs">
+                <span className="text-gray-500">
+                  Filtré sur :{" "}
+                  <strong className="text-gray-700">
+                    {formations.find((f) => f.id === formationChoisieId)?.nom}
+                  </strong>
+                </span>
+                <button
+                  onClick={() =>
+                    setFiltrerMatieresParFormation((prev) => !prev)
+                  }
+                  className="text-blue-600 hover:underline"
+                >
+                  {filtrerMatieresParFormation
+                    ? "Voir toutes les matières"
+                    : "Filtrer par formation"}
+                </button>
+              </div>
+            )}
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                ajouterMatiereCatalogue();
+              }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <input
+                type="text"
+                value={nouvelleMatiere}
+                onChange={(e) => setNouvelleMatiere(e.target.value)}
+                placeholder="Nouvelle matière"
+                disabled={ajoutMatiereEnCours}
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={ajoutMatiereEnCours || !nouvelleMatiere.trim()}
+              >
+                Ajouter
+              </Button>
+            </form>
+
+            {(() => {
+              const matieresAffichees =
+                formationChoisieId !== null && filtrerMatieresParFormation
+                  ? toutesMatieres.filter((m) => matieresFormation.includes(m))
+                  : toutesMatieres;
+
+              if (matieresAffichees.length === 0) {
+                return (
+                  <p className="text-sm text-gray-400">
+                    {formationChoisieId !== null && filtrerMatieresParFormation
+                      ? "Aucune matière pour cette formation."
+                      : "Aucune matière pour l'instant."}
+                  </p>
+                );
+              }
+
+              return (
+                <ul className="space-y-2 max-h-72 overflow-y-auto">
+                  {matieresAffichees.map((matiere) => (
+                    <li key={matiere} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        defaultValue={matiere}
+                        onBlur={(e) =>
+                          renommerMatiereCatalogue(matiere, e.target.value)
+                        }
+                        disabled={busyMatiereCatalogue === matiere}
+                        className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm"
+                      />
+                      <button
+                        onClick={() => supprimerMatiereCatalogue(matiere)}
+                        disabled={busyMatiereCatalogue === matiere}
+                        className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Supprimer
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
           </Card>
 
           <Card>
