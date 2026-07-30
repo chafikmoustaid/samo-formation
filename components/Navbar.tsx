@@ -85,11 +85,6 @@ export default function Navbar() {
     ? "instructor"
     : "admin";
 
-  // Le sélecteur d'espace n'apparaît que depuis la section Administration,
-  // pour ne pas dupliquer le lien de la section où l'admin se trouve déjà
-  // (ex: "Portail formateur" à gauche + pastille "Formateur" à droite).
-  const peutChangerEspace = role === "admin" && section === "admin";
-
   return (
     <nav className="bg-green-700 text-white shadow">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
@@ -168,18 +163,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3 text-sm">
-          {peutChangerEspace && (
-            <div className="flex items-center gap-3 text-xs opacity-80">
-              <span>Aller vers :</span>
-              <Link href="/instructor" className="hover:underline">
-                Formateur
-              </Link>
-              <Link href="/student" className="hover:underline">
-                Étudiant
-              </Link>
-            </div>
-          )}
-
           {email && (
             <>
               <span className="opacity-90 hidden sm:inline">{email}</span>
