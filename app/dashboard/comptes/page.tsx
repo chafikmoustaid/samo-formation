@@ -86,10 +86,16 @@ export default function ComptesPage() {
   const [nouvelleFormation, setNouvelleFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
-  const [formationsCochees, setFormationsCochees] = useState<Set<number>>(
+  const [formationsARenommer, setFormationsARenommer] = useState<Set<number>>(
     new Set()
   );
-  const [matieresCochees, setMatieresCochees] = useState<Set<string>>(
+  const [formationsASupprimer, setFormationsASupprimer] = useState<
+    Set<number>
+  >(new Set());
+  const [matieresARenommer, setMatieresARenommer] = useState<Set<string>>(
+    new Set()
+  );
+  const [matieresASupprimer, setMatieresASupprimer] = useState<Set<string>>(
     new Set()
   );
 
@@ -162,7 +168,8 @@ export default function ComptesPage() {
     if (formationChoisieId !== null) {
       loadMatieresFormation(formationChoisieId);
     }
-    setMatieresCochees(new Set());
+    setMatieresARenommer(new Set());
+    setMatieresASupprimer(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formationChoisieId, filtrerMatieresParFormation]);
 
@@ -440,38 +447,40 @@ export default function ComptesPage() {
     loadProfiles();
   }
 
-  function basculerFormationCochee(id: number) {
-    setFormationsCochees((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  function basculerCase(
+    set: Set<any>,
+    setter: (s: Set<any>) => void,
+    valeur: any
+  ) {
+    const next = new Set(set);
+    if (next.has(valeur)) next.delete(valeur);
+    else next.add(valeur);
+    setter(next);
   }
 
   async function renommerFormationsCochees() {
-    if (formationsCochees.size !== 1) {
+    if (formationsARenommer.size !== 1) {
       setMessage({
         type: "erreur",
-        texte: "Coche exactement une formation à renommer.",
+        texte: "Coche exactement une formation (colonne Renommer) à renommer.",
       });
       return;
     }
 
-    const id = Array.from(formationsCochees)[0];
+    const id = Array.from(formationsARenommer)[0];
     const actuelle = formations.find((f) => f.id === id);
     const nouveauNom = window.prompt("Nouveau nom de la formation :", actuelle?.nom ?? "");
     if (nouveauNom === null) return;
 
     await renommerFormationCatalogue(id, nouveauNom);
-    setFormationsCochees(new Set());
+    setFormationsARenommer(new Set());
   }
 
   async function supprimerFormationsCochees() {
-    if (formationsCochees.size === 0) return;
+    if (formationsASupprimer.size === 0) return;
 
     const noms = formations
-      .filter((f) => formationsCochees.has(f.id))
+      .filter((f) => formationsASupprimer.has(f.id))
       .map((f) => f.nom);
 
     const confirmation = window.confirm(
@@ -483,7 +492,7 @@ export default function ComptesPage() {
 
     setMessage(null);
 
-    for (const id of formationsCochees) {
+    for (const id of formationsASupprimer) {
       const { error } = await supabase.rpc("admin_supprimer_formation", {
         cible_formation_id: id,
       });
@@ -496,42 +505,34 @@ export default function ComptesPage() {
       if (formationChoisieId === id) setFormationChoisieId(null);
     }
 
-    setFormationsCochees(new Set());
+    setFormationsASupprimer(new Set());
+    setFormationsARenommer(new Set());
     setMessage((prev) => prev ?? { type: "succes", texte: "Formation(s) supprimée(s)." });
     loadFormations();
     loadProfiles();
   }
 
-  function basculerMatiereCochee(nom: string) {
-    setMatieresCochees((prev) => {
-      const next = new Set(prev);
-      if (next.has(nom)) next.delete(nom);
-      else next.add(nom);
-      return next;
-    });
-  }
-
   async function renommerMatieresCochees() {
-    if (matieresCochees.size !== 1) {
+    if (matieresARenommer.size !== 1) {
       setMessage({
         type: "erreur",
-        texte: "Coche exactement une matière à renommer.",
+        texte: "Coche exactement une matière (colonne Renommer) à renommer.",
       });
       return;
     }
 
-    const ancienNom = Array.from(matieresCochees)[0];
+    const ancienNom = Array.from(matieresARenommer)[0];
     const nouveauNom = window.prompt("Nouveau nom de la matière :", ancienNom);
     if (nouveauNom === null) return;
 
     await renommerMatiereCatalogue(ancienNom, nouveauNom);
-    setMatieresCochees(new Set());
+    setMatieresARenommer(new Set());
   }
 
   async function supprimerMatieresCochees() {
-    if (matieresCochees.size === 0) return;
+    if (matieresASupprimer.size === 0) return;
 
-    const noms = Array.from(matieresCochees);
+    const noms = Array.from(matieresASupprimer);
     const confirmation = window.confirm(
       `Supprimer ${noms.length > 1 ? "les matières" : "la matière"} "${noms.join(
         '", "'
@@ -553,7 +554,8 @@ export default function ComptesPage() {
       }
     }
 
-    setMatieresCochees(new Set());
+    setMatieresASupprimer(new Set());
+    setMatieresARenommer(new Set());
     setMessage((prev) => prev ?? { type: "succes", texte: "Matière(s) supprimée(s)." });
     loadMatieres();
     loadProfiles();
@@ -561,11 +563,12 @@ export default function ComptesPage() {
   }
 
   async function retirerMatieresCocheesDeFormation() {
-    if (formationChoisieId === null || matieresCochees.size === 0) return;
+    if (formationChoisieId === null || matieresASupprimer.size === 0) return;
     await enregistrerMatieresFormation(
-      matieresFormation.filter((m) => !matieresCochees.has(m))
+      matieresFormation.filter((m) => !matieresASupprimer.has(m))
     );
-    setMatieresCochees(new Set());
+    setMatieresASupprimer(new Set());
+    setMatieresARenommer(new Set());
   }
 
   const profilesFiltres = profiles.filter((p) => {
@@ -1079,20 +1082,20 @@ export default function ComptesPage() {
               </Button>
             </form>
 
-            <div className="flex items-center gap-4 mb-3 text-sm">
+            <div className="flex items-center justify-end gap-4 mb-2 text-sm">
               <button
                 onClick={renommerFormationsCochees}
-                disabled={formationsCochees.size !== 1}
-                className="text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                disabled={formationsARenommer.size !== 1}
+                className="w-20 text-center text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
               >
                 Renommer
               </button>
               <button
                 onClick={supprimerFormationsCochees}
-                disabled={formationsCochees.size === 0}
-                className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                disabled={formationsASupprimer.size === 0}
+                className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
               >
-                Supprimer{formationsCochees.size > 1 ? ` (${formationsCochees.size})` : ""}
+                Supprimer{formationsASupprimer.size > 1 ? ` (${formationsASupprimer.size})` : ""}
               </button>
             </div>
 
@@ -1109,12 +1112,6 @@ export default function ComptesPage() {
                         : ""
                     }`}
                   >
-                    <input
-                      type="checkbox"
-                      checked={formationsCochees.has(f.id)}
-                      onChange={() => basculerFormationCochee(f.id)}
-                      className="shrink-0"
-                    />
                     <button
                       onClick={() => setFormationChoisieId(f.id)}
                       disabled={busyFormationCatalogue === f.id}
@@ -1122,6 +1119,26 @@ export default function ComptesPage() {
                     >
                       {f.nom}
                     </button>
+                    <div className="w-20 flex justify-center">
+                      <input
+                        type="checkbox"
+                        checked={formationsARenommer.has(f.id)}
+                        onChange={() =>
+                          basculerCase(formationsARenommer, setFormationsARenommer, f.id)
+                        }
+                        className="shrink-0"
+                      />
+                    </div>
+                    <div className="w-20 flex justify-center">
+                      <input
+                        type="checkbox"
+                        checked={formationsASupprimer.has(f.id)}
+                        onChange={() =>
+                          basculerCase(formationsASupprimer, setFormationsASupprimer, f.id)
+                        }
+                        className="shrink-0"
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -1227,29 +1244,29 @@ export default function ComptesPage() {
 
               return (
                 <>
-                  <div className="flex items-center gap-4 mb-3 text-sm">
+                  <div className="flex items-center justify-end gap-4 mb-2 text-sm">
                     <button
                       onClick={renommerMatieresCochees}
-                      disabled={matieresCochees.size !== 1}
-                      className="text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                      disabled={matieresARenommer.size !== 1}
+                      className="w-20 text-center text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
                     >
                       Renommer
                     </button>
                     {modeFormation ? (
                       <button
                         onClick={retirerMatieresCocheesDeFormation}
-                        disabled={matieresCochees.size === 0 || savingFormationMatieres}
-                        className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                        disabled={matieresASupprimer.size === 0 || savingFormationMatieres}
+                        className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
                       >
-                        Retirer{matieresCochees.size > 1 ? ` (${matieresCochees.size})` : ""}
+                        Retirer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
                       </button>
                     ) : (
                       <button
                         onClick={supprimerMatieresCochees}
-                        disabled={matieresCochees.size === 0}
-                        className="text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
+                        disabled={matieresASupprimer.size === 0}
+                        className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
                       >
-                        Supprimer{matieresCochees.size > 1 ? ` (${matieresCochees.size})` : ""}
+                        Supprimer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
                       </button>
                     )}
                   </div>
@@ -1264,15 +1281,29 @@ export default function ComptesPage() {
                     <ul className="space-y-2 max-h-72 overflow-y-auto">
                       {matieresAffichees.map((matiere) => (
                         <li key={matiere} className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={matieresCochees.has(matiere)}
-                            onChange={() => basculerMatiereCochee(matiere)}
-                            className="shrink-0"
-                          />
                           <span className="flex-1 text-sm text-gray-900 px-2 py-1.5">
                             {matiere}
                           </span>
+                          <div className="w-20 flex justify-center">
+                            <input
+                              type="checkbox"
+                              checked={matieresARenommer.has(matiere)}
+                              onChange={() =>
+                                basculerCase(matieresARenommer, setMatieresARenommer, matiere)
+                              }
+                              className="shrink-0"
+                            />
+                          </div>
+                          <div className="w-20 flex justify-center">
+                            <input
+                              type="checkbox"
+                              checked={matieresASupprimer.has(matiere)}
+                              onChange={() =>
+                                basculerCase(matieresASupprimer, setMatieresASupprimer, matiere)
+                              }
+                              className="shrink-0"
+                            />
+                          </div>
                         </li>
                       ))}
                     </ul>
