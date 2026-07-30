@@ -87,10 +87,6 @@ export default function ComptesPage() {
   const [nouvelleFormation, setNouvelleFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
-  const [toutesCours, setToutesCours] = useState<string[]>([]);
-  const [coursFormation, setCoursFormation] = useState<string[]>([]);
-  const [savingFormationCours, setSavingFormationCours] = useState(false);
-
   async function loadProfiles() {
     setLoading(true);
     const { data } = await supabase
@@ -201,66 +197,6 @@ export default function ComptesPage() {
     setMessage({ type: "succes", texte: "Matières de la formation mises à jour." });
   }
 
-  async function loadCours() {
-    const { data } = await supabase
-      .from("cours")
-      .select("nom")
-      .order("nom", { ascending: true });
-    setToutesCours((data ?? []).map((c: { nom: string }) => c.nom));
-  }
-
-  async function loadCoursFormation(formationId: number) {
-    const { data } = await supabase
-      .from("formation_cours")
-      .select("cours(nom)")
-      .eq("formation_id", formationId);
-    const noms = (data ?? [])
-      .map((row: any) => row.cours?.nom)
-      .filter(Boolean);
-    setCoursFormation(noms);
-  }
-
-  useEffect(() => {
-    if (formationChoisieId !== null) {
-      loadCoursFormation(formationChoisieId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formationChoisieId]);
-
-  async function ajouterCoursOption(cours: string) {
-    const { error } = await supabase.rpc("admin_ajouter_cours", {
-      nom_cours: cours,
-    });
-    if (!error) {
-      setToutesCours((prev) => Array.from(new Set([...prev, cours])).sort());
-    }
-  }
-
-  async function enregistrerCoursFormation(cours: string[]) {
-    if (formationChoisieId === null) return;
-
-    setSavingFormationCours(true);
-    setMessage(null);
-
-    const { error } = await supabase.rpc("admin_update_formation_cours", {
-      cible_formation_id: formationChoisieId,
-      noms_cours: cours,
-    });
-
-    setSavingFormationCours(false);
-
-    if (error) {
-      setMessage({
-        type: "erreur",
-        texte: "Erreur lors de l'enregistrement des cours de la formation : " + error.message,
-      });
-      return;
-    }
-
-    setCoursFormation(cours);
-    setMessage({ type: "succes", texte: "Cours de la formation mis à jour." });
-  }
-
   async function enregistrerFormationEtudiant(id: string, formationId: number) {
     setSavingFormationId(id);
     setMessage(null);
@@ -315,7 +251,6 @@ export default function ComptesPage() {
     loadProfiles();
     loadMatieres();
     loadFormations();
-    loadCours();
   }, []);
 
   async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
@@ -908,45 +843,6 @@ export default function ComptesPage() {
             />
 
             {savingFormationMatieres && (
-              <span className="text-xs text-gray-400">Enregistrement…</span>
-            )}
-          </div>
-        </Card>
-
-        <Card className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Cours par formation
-          </h2>
-          <p className="text-sm text-gray-500 mb-4">
-            Chaque formation a ses propres cours. Pour l&apos;instant, seul le
-            contenu informatique existe ; les cours des autres formations
-            pourront être ajoutés au fur et à mesure.
-          </p>
-
-          <div className="flex flex-col gap-3 max-w-md">
-            <select
-              value={formationChoisieId ?? ""}
-              onChange={(e) => setFormationChoisieId(Number(e.target.value))}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-            >
-              {formations.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.nom}
-                </option>
-              ))}
-            </select>
-
-            <MatieresMultiSelect
-              options={toutesCours}
-              selected={coursFormation}
-              onChange={enregistrerCoursFormation}
-              onAjouterOption={ajouterCoursOption}
-              libellePluriel="cours"
-              texteVide="Aucun cours pour l'instant."
-              placeholderAjout="Nouveau cours"
-            />
-
-            {savingFormationCours && (
               <span className="text-xs text-gray-400">Enregistrement…</span>
             )}
           </div>
