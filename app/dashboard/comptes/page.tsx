@@ -793,33 +793,33 @@ export default function ComptesPage() {
           ) : profilesFiltres.length === 0 ? (
             <p className="text-sm text-gray-400">Aucun compte ne correspond à ces critères.</p>
           ) : (
-            <div className="overflow-x-auto">
-            <table className="w-full text-sm table-fixed">
+            <div className="w-full overflow-hidden">
+            <table className="w-full text-sm table-fixed border-collapse">
               <colgroup>
-                <col className="w-[19%]" />
-                <col className="w-[16%]" />
-                <col className="w-[24%]" />
-                <col className="w-[9%]" />
-                <col className="w-[11%]" />
-                <col className="w-[21%]" />
+                <col className="w-[20%]" />
+                <col className="w-[17%]" />
+                <col className="w-[25%]" />
+                <col className="w-[8%]" />
+                <col className="w-[10%]" />
+                <col className="w-[20%]" />
               </colgroup>
               <thead>
                 <tr className="border-b text-left text-gray-500">
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Nom complet</th>
-                  <th className="p-3">Formation</th>
-                  <th className="p-3">Créé le</th>
-                  <th className="p-3">Mot de passe</th>
-                  <th className="p-3 border-l border-gray-200 pl-6 text-red-600">
-                    Rôle (sensible)
+                  <th className="p-2 truncate">Email</th>
+                  <th className="p-2 truncate">Nom complet</th>
+                  <th className="p-2 truncate">Formation</th>
+                  <th className="p-2 truncate">Créé le</th>
+                  <th className="p-2 truncate">Mot de passe</th>
+                  <th className="p-2 pl-3 border-l border-gray-200 text-red-600 truncate">
+                    Rôle
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {profilesFiltres.map((p) => (
                   <tr key={p.id} className="border-b last:border-0 align-top">
-                    <td className="p-3 truncate" title={p.email}>{p.email}</td>
-                    <td className="p-3">
+                    <td className="p-2 truncate" title={p.email}>{p.email}</td>
+                    <td className="p-2">
                       <input
                         type="text"
                         defaultValue={p.nom_complet ?? ""}
@@ -830,11 +830,11 @@ export default function ComptesPage() {
                           }
                         }}
                         disabled={savingNomId === p.id}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
                       />
                     </td>
-                    <td className="p-3">
-                      <div className="flex flex-col gap-1">
+                    <td className="p-2">
+                      <div className="flex flex-col gap-1 w-full">
                         <select
                           value={p.formation_id ?? ""}
                           onChange={(e) =>
@@ -844,7 +844,7 @@ export default function ComptesPage() {
                             )
                           }
                           disabled={savingFormationId === p.id}
-                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full"
+                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
                         >
                           <option value="" disabled>
                             Choisir une formation
@@ -862,10 +862,10 @@ export default function ComptesPage() {
                         )}
                       </div>
                     </td>
-                    <td className="p-3 text-gray-500 whitespace-nowrap">
+                    <td className="p-2 text-gray-500 truncate">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
                     </td>
-                    <td className="p-3">
+                    <td className="p-2 truncate">
                       <button
                         onClick={() => definirMotDePasse(p.id, p.email)}
                         disabled={settingPasswordId === p.id}
@@ -874,14 +874,14 @@ export default function ComptesPage() {
                         {settingPasswordId === p.id ? "Génération…" : "Regénérer"}
                       </button>
                     </td>
-                    <td className="p-3 border-l border-gray-200 pl-6">
+                    <td className="p-2 pl-3 border-l border-gray-200">
                       <select
                         value={p.role}
                         disabled={busyId === p.id}
                         onChange={(e) =>
                           changeRole(p.id, e.target.value as Role, p.email)
                         }
-                        className="border border-gray-200 rounded-lg px-2 py-1 w-full"
+                        className="border border-gray-200 rounded-lg px-2 py-1 w-full box-border"
                       >
                         <option value="student">Étudiant</option>
                         <option value="instructor">Formateur</option>
