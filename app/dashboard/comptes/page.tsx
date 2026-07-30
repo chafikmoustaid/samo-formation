@@ -705,7 +705,7 @@ export default function ComptesPage() {
                 <tr className="border-b text-left text-gray-500">
                   <th className="p-3 whitespace-nowrap">Email</th>
                   <th className="p-3 whitespace-nowrap">Nom complet</th>
-                  <th className="p-3">Formation / Matières</th>
+                  <th className="p-3">Formation</th>
                   <th className="p-3 whitespace-nowrap">Créé le</th>
                   <th className="p-3 whitespace-nowrap">Mot de passe</th>
                   <th className="p-3 border-l border-gray-200 pl-6 text-red-600 whitespace-nowrap">
@@ -732,51 +732,33 @@ export default function ComptesPage() {
                       />
                     </td>
                     <td className="p-3">
-                      {p.role === "student" ? (
-                        <div className="flex flex-col gap-1">
-                          <select
-                            value={p.formation_id ?? ""}
-                            onChange={(e) =>
-                              enregistrerFormationEtudiant(
-                                p.id,
-                                Number(e.target.value)
-                              )
-                            }
-                            disabled={savingFormationId === p.id}
-                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm min-w-[220px]"
-                          >
-                            <option value="" disabled>
-                              Choisir une formation
+                      <div className="flex flex-col gap-1">
+                        <select
+                          value={p.formation_id ?? ""}
+                          onChange={(e) =>
+                            enregistrerFormationEtudiant(
+                              p.id,
+                              Number(e.target.value)
+                            )
+                          }
+                          disabled={savingFormationId === p.id}
+                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm min-w-[220px]"
+                        >
+                          <option value="" disabled>
+                            Choisir une formation
+                          </option>
+                          {formations.map((f) => (
+                            <option key={f.id} value={f.id}>
+                              {f.nom}
                             </option>
-                            {formations.map((f) => (
-                              <option key={f.id} value={f.id}>
-                                {f.nom}
-                              </option>
-                            ))}
-                          </select>
-                          {savingFormationId === p.id && (
-                            <span className="text-xs text-gray-400">
-                              Enregistrement…
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          <MatieresMultiSelect
-                            options={toutesMatieres}
-                            selected={p.matieres ?? []}
-                            onChange={(matieres) =>
-                              enregistrerMatieres(p.id, matieres)
-                            }
-                            onAjouterOption={ajouterMatiere}
-                          />
-                          {savingMatieresId === p.id && (
-                            <span className="text-xs text-gray-400">
-                              Enregistrement…
-                            </span>
-                          )}
-                        </div>
-                      )}
+                          ))}
+                        </select>
+                        {savingFormationId === p.id && (
+                          <span className="text-xs text-gray-400">
+                            Enregistrement…
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3 text-gray-500 whitespace-nowrap">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
