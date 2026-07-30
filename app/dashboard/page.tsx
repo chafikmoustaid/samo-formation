@@ -130,13 +130,7 @@ export default function Dashboard() {
           title="Tableau de bord SAMO"
           action={
             <div className="flex gap-3">
-              <LinkButton href="/attendance" variant="primary">
-                Nouvelle fiche
-              </LinkButton>
-              <LinkButton href="/attendance/history" variant="outline">
-                Historique
-              </LinkButton>
-              <LinkButton href="/dashboard/comptes" variant="outline">
+              <LinkButton href="/dashboard/comptes" variant="primary">
                 Gestion des comptes
               </LinkButton>
               <LinkButton href="/dashboard/securite" variant="outline">
