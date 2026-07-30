@@ -1,0 +1,42 @@
+{
+  "file": "Seance_16.pptx",
+  "slides": 24,
+  "issues": [
+    {
+      "slide": 4,
+      "type": "PLACEHOLDER",
+      "title": "Qu'est-ce que Windows Server ?"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Tableau comparatif 2019 / 2022 / 2025"
+    },
+    {
+      "slide": 10,
+      "type": "PLACEHOLDER",
+      "title": "Desktop Experience ou Server Core ?"
+    },
+    {
+      "slide": 15,
+      "type": "PLACEHOLDER",
+      "title": "Aperçu pratique"
+    },
+    {
+      "slide": 16,
+      "type": "PLACEHOLDER",
+      "title": "Aperçu pratique"
+    },
+    {
+      "slide": 17,
+      "type": "PLACEHOLDER",
+      "title": "Aperçu pratique"
+    },
+    {
+      "slide": 24,
+      "type": "TABLE",
+      "title": "Feuille de route du cours"
+    }
+  ],
+  "integrity_score": 56
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 20 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Soutien Réseautique</h2><p>Administration
+Windows Server</p><p>Formateur — SAMO Formation</p><p>SÉANCE 5</p><p>Hyper-V avancé : intégration,
+mémoire dynamique, BPA</p><p>Affiner et fiabiliser les VMs de la maquette</p><p>⏱</p><p>4 heures — à distance (Teams)</p><p>🎯</p><p>Bloc Fondations — 5ᵉ séance sur 45</p><p>💻</p><p>Prérequis : les 5 VMs de la maquette créées (Séance 4)</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Une VM mal réglée gaspille de la RAM ou tourne sans les pilotes optimisés.
+Aujourd&#x27;hui, on fiabilise chaque VM de la maquette avant d&#x27;aller plus loin.</h2><p>Pourquoi affiner les VMs maintenant ?</p><p>🧩</p><p>Intégration Hyper-V</p><p>Sans les services d&#x27;intégration, les VMs restent lentes et mal synchronisées avec l&#x27;hôte.</p><p>⚖️</p><p>Éviter de figer 2 Go sur une VM qui n&#x27;en utilise que 400 Mo au repos.</p><p>🔍</p><p>BPA</p><p>Le Best Practices Analyzer détecte les erreurs de configuration avant qu&#x27;elles ne posent problème.</p><p>Séance 5 — Introduction</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Plan de la séance</h2><p>6 blocs pour fiabiliser les VMs</p><p>1</p><p>Services d&#x27;intégration</p><p>Composants et rôle de chacun</p><p>2</p><p>Min, démarrage, max, buffer, priorité</p><p>3</p><p>Configurer la mémoire</p><p>PowerShell et interface graphique</p><p>4</p><p>Gestion de l&#x27;état des VMs</p><p>Arrêter, enregistrer, mettre en pause</p><p>5</p><p>Best Practices Analyzer</p><p>Détecter les erreurs de configuration</p><p>6</p><p>Export et sauvegarde</p><p>Notions de base pour protéger une VM</p><p>Séance 5 — Plan de la séance</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>Les services d&#x27;intégration</h2><p>Le pont entre l&#x27;hôte et la VM</p><p>Les services d&#x27;intégration (Integration Services) sont un ensemble de pilotes et services installés dans le système invité, permettant une communication optimisée avec l&#x27;hyperviseur.</p><p>💓</p><p>Pulsation (Heartbeat)</p><p>Signale à l&#x27;hôte que la VM répond toujours, utile pour la supervision.</p><p>🕐</p><p>Synchronisation de l&#x27;heure</p><p>Aligne l&#x27;horloge de la VM sur celle de l&#x27;hôte.</p><p>💾</p><p>Sauvegarde (VSS)</p><p>Permet des sauvegardes cohérentes de la VM depuis l&#x27;hôte, sans l&#x27;arrêter.</p><p>🖱</p><p>Échange de données / Session invité</p><p>Copier-coller entre hôte et VM, exécution de commandes à distance légères.</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Vérifier les services d&#x27;intégration</h2><p>S&#x27;assurer qu&#x27;ils sont actifs et à jour</p><p>🔎</p><p>Depuis le Gestionnaire Hyper-V</p><p>Onglet Intégration des services dans les Paramètres de la VM : coche verte si le service est actif.</p><p>⌨</p><p>Depuis PowerShell (sur l&#x27;hôte)</p><p>Get-VMIntegrationService -VMName &quot;SV1&quot; liste l’état de chaque service pour la VM.</p><p>🔄</p><p>Mise à jour automatique</p><p>Depuis Windows Server 2016/VM Génération 2, les services d&#x27;intégration se mettent à jour via Windows Update, sans ISO séparé.</p><p>📌</p><p>À vérifier en priorité</p><p>Sur SRVCore comme sur SV1, confirmer que le service « Échange de données » et « Heartbeat » sont actifs : ce sont les plus utiles au quotidien.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Comprendre la mémoire dynamique</h2><p>4 paramètres à connaître</p><p>Paramètre</p><p>Rôle</p><p>Mémoire de démarrage</p><p>RAM allouée au démarrage de la VM, avant ajustement dynamique</p><p>Minimum de RAM</p><p>Plancher : la VM ne descendra jamais en dessous</p><p>Maximum de RAM</p><p>Plafond : la VM ne dépassera jamais cette limite, même sous forte charge</p><p>Mémoire tampon (%)</p><p>Marge de RAM supplémentaire allouée au-delà du besoin réel observé</p><p>💡</p><p>Priorité mémoire</p><p>En cas de ressources limitées sur l&#x27;hôte, un poids (priorité) plus élevé donne à une VM la priorité pour obtenir de la RAM supplémentaire face aux autres VMs.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>Ajuster les 5 VMs de la maquette</h2><p>VM</p><p>Démarrage</p><p>Minimum</p><p>Maximum</p><p>AD1</p><p>2048 Mo</p><p>1024 Mo</p><p>4096 Mo</p><p>AD2</p><p>2048 Mo</p><p>1024 Mo</p><p>4096 Mo</p><p>SV1</p><p>2048 Mo</p><p>512 Mo</p><p>4096 Mo</p><p>SRVCore</p><p>1024 Mo</p><p>512 Mo</p><p>2048 Mo</p><p>CL10-01</p><p>4096 Mo</p><p>2048 Mo</p><p>6144 Mo</p><p>PowerShell — activer la mémoire dynamique sur AD1</p><p>Set-VMMemory -VMName &quot;AD1&quot; -DynamicMemoryEnabled $true -MinimumBytes 1GB -StartupBytes 2GB -MaximumBytes 4GB</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Configurer la mémoire dynamique</h2><p>Par l&#x27;interface graphique</p><p>Étape 1</p><p>Paramètres de la VM</p><p>Sélectionner la VM dans le Gestionnaire Hyper-V, puis Paramètres.</p><p>Étape 2</p><p>Section Mémoire</p><p>Cocher « Activer la mémoire dynamique ».</p><p>Étape 3</p><p>Minimum et maximum</p><p>Renseigner les valeurs minimale et maximale de RAM.</p><p>Étape 4</p><p>Mémoire tampon</p><p>Ajuster le pourcentage de marge (20 % par défaut, souvent suffisant en labo.</p><p>Étape 5</p><p>Priorité mémoire</p><p>Ajuster le poids relatif si plusieurs VMs sont en concurrence pour la RAM.</p><p>Étape 6</p><p>Appliquer</p><p>Valider : certains changements demandent l&#x27;arrêt préalable de la VM.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>Gérer l&#x27;état des VMs</h2><p>Arrêter n&#x27;est pas toujours la bonne option</p><p>🛑</p><p>Arrêter (Shut down)</p><p>Arrêt propre du système d&#x27;exploitation invité, comme un vrai serveur. À privilégier avant maintenance.</p><p>⏸</p><p>Enregistrer l&#x27;état (Save)</p><p>Fige l&#x27;état en mémoire sur disque et libère les ressources : reprise rapide, comme une mise en veille prolongée.</p><p>⏯</p><p>Mettre en pause (Pause)</p><p>Fige la VM en mémoire sans libérer le CPU : reprise quasi instantanée mais consomme toujours la RAM.</p><p>🔌</p><p>Éteindre (Turn off)</p><p>Équivalent à débrancher : à éviter, risque de corruption de données non enregistrées.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>Best Practices Analyzer (BPA)</h2><p>Un audit intégré à Windows Server</p><p>Le BPA analyse la configuration d&#x27;un rôle installé (comme Hyper-V) et compare les paramètres actuels aux recommandations de Microsoft, en signalant les écarts par niveau de gravité.</p><p>🔴</p><p>Erreur</p><p>Configuration risquant de provoquer un dysfonctionnement du rôle.</p><p>🟠</p><p>Avertissement</p><p>Configuration qui s&#x27;écarte des bonnes pratiques, sans être bloquante.</p><p>🔵</p><p>Information</p><p>Suggestion ou rappel, sans impact direct sur le fonctionnement.</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Exécuter le BPA sur Hyper-V</h2><p>Via le Gestionnaire de serveur ou PowerShell</p><p>🖱</p><p>Interface graphique</p><p>Gestionnaire de serveur → Hyper-V → section Analyseur de meilleures pratiques → Lancer une analyse BPA.</p><p>⌨</p><p>PowerShell</p><p>Invoke-BpaModel -ModelId Microsoft/Windows/Hyper-V lance l’analyse ; Get-BpaResult en affiche les résultats.</p><p>📋</p><p>Traitement des résultats</p><p>Chaque écart signalé inclut une explication et un lien vers la correction recommandée par Microsoft.</p><p>PowerShell — lancer l&#x27;analyse BPA</p><p>Invoke-BpaModel -ModelId Microsoft/Windows/Hyper-V</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Export et sauvegarde d&#x27;une VM</h2><p>Protéger le travail effectué</p><p>📤</p><p>Exporter une VM</p><p>Copie complète de la configuration et des disques virtuels vers un dossier, pour sauvegarde ou migration vers un autre hôte.</p><p>📥</p><p>Importer une VM</p><p>Recrée la VM à partir d&#x27;un export, avec options pour copier ou réutiliser les fichiers, et régénérer les identifiants si besoin.</p><p>PowerShell — exporter AD1</p><p>Export-VM -Name &quot;AD1&quot; -Path &quot;E:\Sauvegardes\&quot;</p><p>📌</p><p>Bon réflexe avant toute manipulation majeure</p><p>Exporter (ou au minimum créer un checkpoint) avant une opération risquée sur AD1/AD2 : la promotion en DC (Séance 7) en est un excellent exemple.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>Suivre l&#x27;utilisation des ressources</h2><p>Resource Metering</p><p>📊</p><p>Activer le suivi</p><p>Enable-VMResourceMetering -VMName &quot;SV1&quot; active la collecte de métriques (CPU, RAM, réseau, disque) pour la VM.</p><p>📈</p><p>Consulter les données</p><p>Measure-VM -VMName &quot;SV1&quot; affiche la consommation moyenne depuis l’activation du suivi.</p><p>🎯</p><p>Utilité en entreprise</p><p>Facturation interne, planification de capacité, ou identification d&#x27;une VM anormalement gourmande en ressources.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Bonnes pratiques Hyper-V</h2><p>Ce qu&#x27;il faut retenir de cette séance</p><p>✅</p><p>Toujours activer les services d&#x27;intégration</p><p>Sur chaque VM, vérifier l&#x27;état des 4 services essentiels après chaque installation.</p><p>✅</p><p>Préférer la mémoire dynamique en labo</p><p>Sauf cas particulier, elle optimise l&#x27;usage de la RAM de l&#x27;hôte partagée entre 5 VMs.</p><p>✅</p><p>Exécuter le BPA après tout changement majeur</p><p>Un rôle nouvellement configuré doit être validé par une analyse BPA avant mise en service.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>Aperçu pratique</h2><p>Onglet Intégration des services</p><p>Séance 5 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>Aperçu pratique</h2><p>Configuration de la mémoire dynamique</p><p>Séance 5 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>Aperçu pratique</h2><p>Résultats de l&#x27;analyse BPA</p><p>Séance 5 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>Vocabulaire clé</h2><p>18 termes à maîtriser avant la Séance 6</p><p>Services d&#x27;intégration</p><p>Pilotes et services optimisant la communication VM ↔ hôte</p><p>Heartbeat</p><p>Signal indiquant que la VM répond toujours</p><p>Ajustement automatique de la RAM allouée à une VM</p><p>Mémoire de démarrage</p><p>RAM allouée au lancement, avant ajustement dynamique</p><p>Mémoire tampon</p><p>Marge de RAM allouée au-delà du besoin réel observé</p><p>Priorité mémoire</p><p>Poids relatif d&#x27;une VM dans la répartition de RAM disponible</p><p>BPA</p><p>Best Practices Analyzer, outil d&#x27;audit de configuration Windows Server</p><p>Invoke-BpaModel</p><p>Enregistrer (Save)</p><p>Figer l&#x27;état d&#x27;une VM sur disque et libérer les ressources</p><p>Mettre en pause</p><p>Figer une VM en mémoire sans libérer le CPU</p><p>Export-VM</p><p>Import-VM</p><p>Resource Metering</p><p>Suivi de la consommation de ressources d&#x27;une VM</p><p>Measure-VM</p><p>VSS</p><p>Volume Shadow Copy Service, service de cliché instantané Windows</p><p>Set-VMMemory</p><p>Get-VMIntegrationService</p><p>Checkpoint</p><p>Instantané réversible de l&#x27;état d&#x27;une VM</p><p>Séance 5 — Vocabulaire clé</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>Mémo commandes</h2><p>PowerShell — Hyper-V avancé</p><p>Voir les services d&#x27;intégration</p><p>Get-VMIntegrationService -VMName &quot;SV1&quot;</p><p>Activer la mémoire dynamique</p><p>Set-VMMemory -VMName &quot;AD1&quot; -DynamicMemoryEnabled $true -MinimumBytes 1GB -StartupBytes 2GB -MaximumBytes 4GB</p><p>Lancer une analyse BPA</p><p>Invoke-BpaModel -ModelId Microsoft/Windows/Hyper-V</p><p>Voir les résultats du BPA</p><p>Get-BpaResult -ModelId Microsoft/Windows/Hyper-V</p><p>Exporter une VM</p><p>Export-VM -Name &quot;AD1&quot; -Path &quot;E:\Sauvegardes\&quot;</p><p>Activer le suivi des ressources</p><p>Enable-VMResourceMetering -VMName &quot;SV1&quot;</p><p>Séance 5 — Mémo commandes</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Cas pratiques</h2><p>3 mises en situation</p><p>Julien — Admin réseau junior</p><p>Julien remarque que CL10-01 est très lente au démarrage. Quel élément vérifier en premier concernant les services d&#x27;intégration ?</p><p>Sophie — Technicienne support N2</p><p>Sophie doit réduire la RAM figée sur SRVCore, qui n&#x27;utilise en réalité que 600 Mo. Quelle solution lui proposez-vous ?</p><p>Isabelle — Analyste sécurité</p><p>Isabelle veut s&#x27;assurer que la configuration Hyper-V ne présente aucune erreur critique avant la mise en production. Quel outil utilise-t-elle ?</p><p>Séance 5 — Cas pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>À vous de jouer</h2><p>4 exercices avant la Séance 6</p><p>Exercice 1</p><p>Vérifiez les services</p><p>Contrôlez l&#x27;état des services d&#x27;intégration sur les 5 VMs de la maquette.</p><p>Exercice 2</p><p>Activez la mémoire dynamique</p><p>Configurez min/démarrage/max sur chacune des 5 VMs selon les recommandations.</p><p>Exercice 3</p><p>Lancez une analyse BPA</p><p>Exécutez le BPA sur le rôle Hyper-V et notez les écarts signalés.</p><p>Exercice 4</p><p>Exportez une VM</p><p>Exportez AD1 vers un dossier de sauvegarde, puis vérifiez le contenu généré.</p><p>Séance 5 — À vous de jouer</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Récapitulatif et checklist</h2><p>Avant de passer à la Séance 6</p><p>Ce que nous avons vu</p><p>✓</p><p>Services d&#x27;intégration Hyper-V</p><p>✓</p><p>✓</p><p>Gestion de l&#x27;état des VMs</p><p>✓</p><p>Best Practices Analyzer (BPA)</p><p>✓</p><p>Export et import d&#x27;une VM</p><p>✓</p><p>Resource Metering</p><p>☑  CHECKLIST AVANT LA SÉANCE 6</p><p>Services d&#x27;intégration vérifiés sur les 5 VMs</p><p>Analyse BPA exécutée sur Hyper-V</p><p>Écarts BPA corrigés ou documentés</p><p>Export de test réalisé sur AD1</p><p>Resource Metering activé sur au moins 1 VM</p><p>Espace disque suffisant pour les exports</p><p>Notes de configuration à jour</p><p>Séance 5 — Récapitulatif</p></div>
+</body>
+</html>

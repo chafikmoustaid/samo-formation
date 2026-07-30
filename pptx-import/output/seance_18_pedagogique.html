@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 18 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Soutien Réseautique</h2><p>Administration
+Windows Server</p><p>Formateur — SAMO Formation</p><p>SÉANCE 3</p><p>VMs AD1 &amp; AD2 : création,
+OS et post-installation</p><p>Les deux premiers contrôleurs de domaine prennent vie</p><p>⏱</p><p>4 heures — à distance (Teams)</p><p>🎯</p><p>Bloc Fondations — 3ᵉ séance sur 45</p><p>💻</p><p>Prérequis : bac à sable Hyper-V opérationnel (Séance 2)</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Aujourd&#x27;hui, votre bac à sable cesse d&#x27;être une coquille vide : AD1 et AD2 deviennent
+les deux premières machines réelles de la maquette du cours.</h2><p>Pourquoi deux contrôleurs de domaine ?</p><p>🏗</p><p>Construction, pas configuration</p><p>Avant de parler Active Directory (Séance 7), il faut d&#x27;abord que les machines physiques-virtuelles existent.</p><p>🔁</p><p>Tolérance de panne dès le départ</p><p>Un second DC (AD2) habitue à la redondance avant même la promotion en contrôleur de domaine.</p><p>📐</p><p>Rigueur dans la méthode</p><p>Nommage, génération de VM, ressources allouées : les choix d&#x27;aujourd&#x27;hui structurent tout le reste du cours.</p><p>Séance 3 — Introduction</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Plan de la séance</h2><p>6 blocs pour donner vie à AD1 et AD2</p><p>1</p><p>Rappel de la maquette</p><p>Où en sommes-nous ? Ce qui se construit aujourd&#x27;hui</p><p>2</p><p>Création des VMs</p><p>L&#x27;assistant Nouvelle machine virtuelle</p><p>3</p><p>Génération et ressources</p><p>Gen 1/Gen 2, mémoire, processeurs, VHDX</p><p>4</p><p>Monter l&#x27;ISO et suivre l&#x27;assistant Windows Server</p><p>5</p><p>Post-installation</p><p>Renommage, adresse IP statique</p><p>6</p><p>Vérifications finales</p><p>Checkpoint et checklist avant la Séance 4</p><p>Séance 3 — Plan de la séance</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>Où en est la maquette ?</h2><p>Deux VMs à construire aujourd&#x27;hui</p><p>🖥</p><p>AD1</p><p>Contrôleur de domaine</p><p>★ Aujourd&#x27;hui</p><p>🖥</p><p>AD2</p><p>Contrôleur de domaine</p><p>★ Aujourd&#x27;hui</p><p>🖥</p><p>SV1</p><p>Serveur membre</p><p>🖥</p><p>SRVCore</p><p>Serveur membre (Core)</p><p>🖥</p><p>CL10-01</p><p>Poste client</p><p>🗓</p><p>Rappel de la feuille de route</p><p>SV1, SRVCore et CL10-01 suivront en Séance 4. AD1 et AD2 seront promus contrôleurs de domaine dès la Séance 7 (AD DS).</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Créer une VM dans Hyper-V</h2><p>L&#x27;assistant Nouvelle machine virtuelle</p><p>Étape 1</p><p>Nom et emplacement</p><p>Nommer la VM (ex. AD1) et choisir le dossier de stockage dédié.</p><p>Étape 2</p><p>Génération</p><p>Choisir Génération 1 ou 2 selon les besoins de compatibilité.</p><p>Étape 3</p><p>Mémoire de démarrage</p><p>Allouer la RAM et activer ou non la mémoire dynamique.</p><p>Étape 4</p><p>Mise en réseau</p><p>Connecter la VM au commutateur virtuel « LAN-Labo ».</p><p>Étape 5</p><p>Disque dur virtuel</p><p>Créer un nouveau VHDX, avec une taille adaptée au rôle prévu.</p><p>Étape 6</p><p>Pointer vers l&#x27;image ISO de Windows Server pour l&#x27;installation initiale.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Génération 1 vs Génération 2</h2><p>Bien choisir dès la création</p><p>Critère</p><p>Génération 1</p><p>Génération 2</p><p>Firmware</p><p>BIOS classique</p><p>UEFI</p><p>Démarrage sécurisé</p><p>Non supporté</p><p>Secure Boot activé par défaut</p><p>Disque système max.</p><p>2 To (MBR)</p><p>64 To (GPT)</p><p>Compatibilité OS anciens</p><p>Meilleure</p><p>Windows Server 2012+ uniquement</p><p>Recommandé pour AD1/AD2</p><p>—</p><p>✓ (choix du cours)</p><p>📌</p><p>Choix du cours</p><p>AD1 et AD2 seront créés en Génération 2 : firmware UEFI moderne, Secure Boot, et alignement avec les pratiques actuelles en entreprise.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>Mémoire et processeurs virtuels</h2><p>Combien allouer à AD1 et AD2 ?</p><p>💾</p><p>Mémoire de démarrage</p><p>2048 Mo recommandés pour un contrôleur de domaine en labo. La mémoire dynamique peut ajuster à la baisse une fois le service stable.</p><p>🧮</p><p>Processeurs virtuels</p><p>2 vCPU suffisent largement pour AD1/AD2 en environnement de test : inutile de sur-allouer sur un hôte partagé.</p><p>⚖️</p><p>Rappel du dimensionnement (Séance 2)</p><p>Avec 2 Go par DC, il reste une marge confortable sur les 16 Go recommandés pour l&#x27;hôte, même une fois SV1, SRVCore et CL10-01 ajoutés en Séance 4.</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Disques durs virtuels (VHDX)</h2><p>Taille fixe ou dynamique ?</p><p>📏</p><p>Taille fixe</p><p>Espace disque réservé intégralement dès la création. Performances légèrement supérieures, mais consomme tout l&#x27;espace immédiatement.</p><p>📈</p><p>Taille dynamique</p><p>Le fichier VHDX grossit au fur et à mesure des besoins réels. Idéal pour un bac à sable où l&#x27;espace disque de l&#x27;hôte est limité.</p><p>📌</p><p>Choix du cours</p><p>VHDX dynamique de 60 Go pour AD1 et AD2 : largement suffisant pour un contrôleur de domaine de labo, sans gaspiller l&#x27;espace disque de l&#x27;hôte.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>Monter l&#x27;ISO et démarrer la VM</h2><p>Préparer le premier démarrage</p><p>💿</p><p>Lecteur DVD virtuel</p><p>Dans les Paramètres de la VM, ajouter un lecteur de DVD et y monter l&#x27;image ISO de Windows Server 2022/2025.</p><p>🔢</p><p>Ordre de démarrage</p><p>Vérifier dans le microprogramme (firmware) que le lecteur DVD précède le disque dur dans l&#x27;ordre de démarrage.</p><p>▶️</p><p>Premier démarrage</p><p>Démarrer la VM : l&#x27;assistant d&#x27;installation de Windows Server doit apparaître automatiquement.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>L&#x27;assistant d&#x27;installation</h2><p>Les étapes clés à ne pas manquer</p><p>Étape 1</p><p>Langue et clavier</p><p>Sélectionner la langue d&#x27;installation et la disposition du clavier.</p><p>Étape 2</p><p>Édition</p><p>Choisir Standard ou Datacenter selon le rôle prévu (voir Séance 1).</p><p>Étape 3</p><p>Type d&#x27;installation</p><p>Server Core ou Desktop Experience : à décider selon le rôle de la VM.</p><p>Étape 4</p><p>Partitionnement</p><p>Étape 5</p><p>Copie des fichiers</p><p>L&#x27;installation copie les fichiers puis redémarre automatiquement plusieurs fois.</p><p>Étape 6</p><p>Mot de passe administrateur</p><p>Définir un mot de passe fort pour le compte Administrateur local.</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Desktop Experience ou Core pour AD1/AD2 ?</h2><p>Un choix pédagogique assumé</p><p>Pour cette maquette de cours, AD1 et AD2 seront installés en Desktop Experience : l&#x27;interface graphique facilite l&#x27;apprentissage des premières manipulations AD DS avant de pratiquer Server Core sur SRVCore (Séance 4).</p><p>🖥</p><p>AD1 et AD2</p><p>Desktop Experience — pour apprendre visuellement avant d&#x27;automatiser en PowerShell.</p><p>⌨</p><p>SRVCore (Séance 4)</p><p>Server Core — pour pratiquer l&#x27;administration sans interface graphique, une fois les bases acquises.</p><p>💡</p><p>À retenir</p><p>Le choix Core/Desktop Experience se fait à l&#x27;installation ; il est possible d&#x27;en changer après coup, mais cela demande une réinstallation ou une conversion avancée — mieux vaut bien choisir dès le départ.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Post-installation : renommer le serveur</h2><p>Sortir du nom générique WIN-XXXXX</p><p>🏷</p><p>Pourquoi renommer ?</p><p>Le nom généré automatiquement (WIN-XXXXXXX) n&#x27;est pas exploitable : AD1 et AD2 doivent porter leur nom définitif avant toute autre configuration.</p><p>🖱</p><p>Via l&#x27;interface graphique</p><p>Gestionnaire de serveur → Propriétés → Nom de l&#x27;ordinateur → Modifier, puis redémarrer pour appliquer le changement.</p><p>⌨</p><p>Via PowerShell</p><p>Rename-Computer -NewName &quot;AD1&quot; -Restart : plus rapide, reproductible, et utilisable aussi en Server Core.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>Post-installation : adresse IP statique</h2><p>Appliquer le plan d&#x27;adressage de la Séance 2</p><p>VM</p><p>Adresse IP</p><p>Masque</p><p>Passerelle</p><p>AD1</p><p>192.168.10.10</p><p>255.255.255.0</p><p>192.168.10.1</p><p>AD2</p><p>192.168.10.11</p><p>255.255.255.0</p><p>192.168.10.1</p><p>PowerShell — configurer l&#x27;IP statique d&#x27;AD1</p><p>New-NetIPAddress -InterfaceAlias &quot;Ethernet&quot; -IPAddress 192.168.10.10 `
+  -PrefixLength 24 -DefaultGateway 192.168.10.1</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Checkpoint avant la Séance 4</h2><p>Un état stable à conserver</p><p>✅</p><p>Ce qu&#x27;il faut valider avant le checkpoint</p><p>OS installé et à jour, nom final appliqué, adresse IP statique fonctionnelle, ping réussi entre AD1 et AD2.</p><p>💾</p><p>Pourquoi créer ce point de contrôle</p><p>AD1 et AD2 seront promus contrôleurs de domaine en Séance 7 : un point de retour propre facilite tout dépannage futur.</p><p>PowerShell — créer le checkpoint</p><p>Checkpoint-VM -Name &quot;AD1&quot; -SnapshotName &quot;OS-installe-post-config&quot;</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>Aperçu pratique</h2><p>Assistant Nouvelle machine virtuelle</p><p>Suivez chaque étape de l&#x27;assistant pour créer AD1</p><p>Gestionnaire Hyper-V → Actions → Nouveau → Machine virtuelle</p><p>Séance 3 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>Aperçu pratique</h2><p>Assistant d&#x27;installation de Windows Server</p><p>Séance 3 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Renommage et configuration IP post-installation</p><p>[ Screenshot ] Renommage et configuration IP post-installation</p><p>Localisez les paramètres réseau et le nom de l&#x27;ordinateur</p><p>Gestionnaire de serveur → Propriétés locales du serveur</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>Séance 3 — Aperçu pratique</p></div></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>Vocabulaire clé</h2><p>18 termes à maîtriser avant la Séance 4</p><p>Machine virtuelle</p><p>Instance de système d&#x27;exploitation isolée, exécutée par l&#x27;hyperviseur</p><p>Génération (VM)</p><p>Génération 1 (BIOS) ou 2 (UEFI) : détermine le firmware virtuel de la VM</p><p>UEFI</p><p>Firmware moderne remplaçant le BIOS, requis pour la Génération 2</p><p>Secure Boot</p><p>Vérification de l&#x27;intégrité du chargeur de démarrage à chaque démarrage</p><p>VHDX</p><p>Format de disque dur virtuel utilisé par Hyper-V</p><p>Taille fixe</p><p>VHDX dont l&#x27;espace disque est réservé intégralement dès la création</p><p>Taille dynamique</p><p>VHDX qui grossit progressivement selon les besoins réels</p><p>ISO</p><p>Image disque contenant les fichiers d&#x27;installation de l&#x27;OS</p><p>Ordre de démarrage</p><p>Séquence des périphériques que la VM tente de démarrer en premier</p><p>Server Core</p><p>Desktop Experience</p><p>Rename-Computer</p><p>Cmdlet PowerShell pour renommer un ordinateur</p><p>New-NetIPAddress</p><p>Cmdlet PowerShell pour attribuer une adresse IP statique</p><p>Passerelle par défaut</p><p>Adresse IP du routeur utilisée pour sortir du réseau local</p><p>Point de contrôle</p><p>Instantané réversible de l&#x27;état d&#x27;une VM (checkpoint)</p><p>Compte Administrateur</p><p>Compte local intégré avec tous les droits sur le serveur</p><p>Mémoire dynamique</p><p>Ajustement automatique de la RAM allouée à une VM</p><p>Post-installation</p><p>Ensemble des configurations effectuées juste après l&#x27;installation de l&#x27;OS</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>Mémo commandes</h2><p>PowerShell — création et post-installation</p><p>Créer une VM Génération 2</p><p>New-VM -Name &quot;AD1&quot; -MemoryStartupBytes 2GB -Generation 2 -SwitchName &quot;LAN-Labo&quot;</p><p>Créer un VHDX dynamique</p><p>New-VHD -Path &quot;D:\VMs\AD1\AD1.vhdx&quot; -SizeBytes 60GB -Dynamic</p><p>Monter l&#x27;ISO d&#x27;installation</p><p>Set-VMDvdDrive -VMName &quot;AD1&quot; -Path &quot;D:\ISO\WinServer2022.iso&quot;</p><p>Démarrer la VM</p><p>Start-VM -Name &quot;AD1&quot;</p><p>Renommer le serveur</p><p>Rename-Computer -NewName &quot;AD1&quot; -Restart</p><p>Configurer l&#x27;IP statique</p><p>New-NetIPAddress -InterfaceAlias &quot;Ethernet&quot; -IPAddress 192.168.10.10 -PrefixLength 24 -DefaultGateway 192.168.10.1</p><p>Séance 3 — Mémo commandes</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Cas pratiques</h2><p>3 mises en situation</p><p>Julien — Admin réseau junior</p><p>Julien crée AD1 mais oublie de choisir le bon commutateur virtuel. Comment corrige-t-il cela après coup, sans recréer la VM ?</p><p>Sophie — Technicienne support N2</p><p>Sophie doit décider entre taille fixe et dynamique pour le VHDX d&#x27;AD2, sachant que l&#x27;hôte a peu d&#x27;espace disque libre. Que lui conseillez-vous ?</p><p>Isabelle — Analyste sécurité</p><p>Isabelle recommande la Génération 2 avec Secure Boot pour AD1 et AD2. Pourquoi ce choix est-il pertinent du point de vue sécurité ?</p><p>Séance 3 — Cas pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>À vous de jouer</h2><p>4 exercices avant la Séance 4</p><p>Exercice 1</p><p>Créez AD1 et AD2</p><p>Créez les deux VMs en Génération 2, connectées au commutateur « LAN-Labo ».</p><p>Exercice 2</p><p>Installez Windows Server</p><p>Installez l&#x27;OS en Desktop Experience sur les deux VMs, avec un mot de passe fort.</p><p>Exercice 3</p><p>Renommez et configurez l&#x27;IP</p><p>Appliquez les noms finaux et le plan d&#x27;adressage IP de la Séance 2.</p><p>Exercice 4</p><p>Créez un checkpoint</p><p>Créez un point de contrôle sur AD1 et AD2 une fois la configuration validée.</p><p>Séance 3 — À vous de jouer</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Récapitulatif et checklist</h2><p>Avant de passer à la Séance 4</p><p>Ce que nous avons vu</p><p>✓</p><p>Création de VMs Hyper-V (assistant complet)</p><p>✓</p><p>Génération 1 vs Génération 2</p><p>✓</p><p>Mémoire, processeurs et VHDX</p><p>✓</p><p>✓</p><p>Renommage et IP statique post-installation</p><p>✓</p><p>Checkpoint avant la Séance 4</p><p>☑  CHECKLIST AVANT LA SÉANCE 4</p><p>AD1 créée en Génération 2, VHDX dynamique</p><p>AD2 créée en Génération 2, VHDX dynamique</p><p>Windows Server installé (Desktop Experience)</p><p>Noms AD1 / AD2 appliqués et redémarrage fait</p><p>Adresses IP statiques configurées et testées</p><p>Ping réussi entre AD1 et AD2</p><p>Checkpoint créé sur les deux VMs</p><p>Mots de passe administrateur notés en lieu sûr</p><p>Séance 3 — Récapitulatif</p></div>
+</body>
+</html>

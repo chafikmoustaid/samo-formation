@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 16 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Soutien Réseautique</h2><p>Administration
+Windows Server</p><p>Formateur — SAMO Formation</p><p>SÉANCE 1</p><p>Introduction à Windows Server
+2019 / 2022 / 2025</p><p>Éditions, licences et positionnement</p><p>⏱</p><p>4 heures — à distance (Teams)</p><p>🎯</p><p>Bloc Fondations — 1ʳᵉ séance sur 45</p><p>💻</p><p>Aucun prérequis technique</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Plus de 70 % des entreprises dans le monde s&#x27;appuient sur un serveur
+Windows Server pour gérer leurs identités, leurs fichiers et leur réseau.</h2><p>Pourquoi ce cours change votre trajectoire</p><p>🏢  Le socle de l&#x27;entreprise</p><p>Active Directory, DHCP, DNS, fichiers partagés : presque toutes les PME et grandes entreprises tournent sur Windows Server.</p><p>💼  Une compétence très demandée</p><p>L&#x27;administration Windows Server reste un pilier des offres d&#x27;emploi en support N2/N3 et infrastructure.</p><p>🔗  Un tremplin vers le cloud</p><p>★</p><p>Ce que vous saurez faire à la fin de la séance</p><p>Distinguer les trois versions supportées (2019, 2022, 2025), choisir l&#x27;édition et le modèle de licence adaptés à un contexte client, et identifier les prérequis techniques avant toute installation.</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Plan de la séance</h2><p>6 blocs pour poser les fondations du cours</p><p>1</p><p>2</p><p>Panorama des versions 2019 → 2022 → 2025</p><p>3</p><p>Éditions et modèle de licences</p><p>4</p><p>Prérequis techniques et options d&#x27;installation</p><p>5</p><p>Écosystème d&#x27;administration (WAC, Azure)</p><p>6</p><p>Ateliers et mise en pratique</p><p>Séance 1 — Plan de séance</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><div class="placeholder-box"><h3>📷 Qu&#x27;est-ce que Windows Server ?</h3><p>Un système d&#x27;exploitation pensé pour servir, pas pour être utilisé au quotidien</p><p>[ Screenshot ] Schéma : serveur au centre du réseau d&#x27;entreprise</p><p>Illustration à insérer</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>SERVEUR vs POSTE CLIENT</p><p>Utilisation</p><p>Continue, sans session ouverte</p><p>≠ Ponctuelle, session utilisateur</p><p>Rôle</p><p>Fournit des services réseau</p><p>≠ Consomme des services</p><p>Interface</p><p>Souvent minimale (Core)</p><p>≠ Complète (Desktop Experience)</p><p>Licence</p><p>Par cœurs + CAL</p><p>≠ Par poste / OEM</p></div></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Chronologie des versions supportées</h2><p>De 2019 à 2025 : trois générations actives en entreprise</p><p>Sortie : Octobre 2018</p><p>Support étendu jusqu&#x27;en janvier 2029</p><p>Sortie : Août 2021</p><p>Support étendu jusqu&#x27;en octobre 2031</p><p>Sortie : Novembre 2024</p><p>Support étendu jusqu&#x27;en 2034 (estimé)</p><p>⛔</p><p>Son support étendu s&#x27;achève en janvier 2027 et son architecture (pré-Server Core moderne, pas de Windows Admin Center natif) ne reflète plus les pratiques actuelles. Toutes les démonstrations utiliseront 2019, 2022 ou 2025.</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 6</div><h2>Tableau comparatif 2019 / 2022 / 2025</h2><table class="samo-table"><thead><tr><th>Critère</th><th>Windows Server 2019</th><th>Windows Server 2022</th><th>Windows Server 2025</th></tr></thead><tbody><tr><td>Support courant</td><td>Jan. 2024 (terminé)</td><td>Oct. 2026</td><td>Nov. 2029</td></tr><tr><td>Support étendu</td><td>Jan. 2029</td><td>Oct. 2031</td><td>Nov. 2034 (estimé)</td></tr><tr><td>Éditions</td><td>Standard, Datacenter</td><td>Standard, Datacenter,
+Datacenter: Azure Edition</td><td>Standard, Datacenter,
+Datacenter: Azure Edition</td></tr><tr><td>Sécurité par défaut</td><td>Credential Guard : optionnel</td><td>Secured-core server</td><td>Credential Guard activé
+par défaut</td></tr><tr><td>Réseau</td><td>SMB 3.1.1</td><td>SMB over QUIC
+(Azure Edition seul.)</td><td>SMB over QUIC
+dispo en Standard</td></tr><tr><td>Mises à jour</td><td>Redémarrage requis</td><td>Redémarrage requis</td><td>Hotpatching
+(sans redémarrage)</td></tr><tr><td>Gestion</td><td>Windows Admin Center
+(ajouté séparément)</td><td>WAC intégré</td><td>WAC revu, style Windows 11</td></tr></tbody></table><p>La référence à garder sous la main pendant tout le cours</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>Les éditions Windows Server</h2><p>Trois éditions, trois cas d&#x27;usage</p><p>STANDARD</p><p>PME, charges de travail physiques ou peu virtualisées</p><p>✓</p><p>2 VM incluses par licence</p><p>✓</p><p>Tous les rôles réseau standards</p><p>✓</p><p>Idéal : petit/moyen environnement</p><p>DATACENTER</p><p>Datacenters, virtualisation intensive</p><p>✓</p><p>VMs illimitées</p><p>✓</p><p>Storage Spaces Direct, Shielded VMs</p><p>✓</p><p>Idéal : gros environnements virtualisés</p><p>DATACENTER: AZURE EDITION</p><p>Uniquement sur Azure / Azure Stack HCI</p><p>✓</p><p>Hotpatching (2022+)</p><p>✓</p><p>SMB over QUIC natif</p><p>✓</p><p>Idéal : infra hybride Azure</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Le modèle de licence par cœurs</h2><p>Depuis 2016, Windows Server ne se licencie plus par processeur</p><p>Chaque licence de base couvre 16 cœurs (répartis sur 2 processeurs). Au-delà, des packs de cœurs supplémentaires doivent être ajoutés par tranche de 2.</p><p>EXEMPLE DE CALCUL</p><p>Serveur : 2 x CPU de 12 cœurs = 24 cœurs
+Licence de base couvre : 16 cœurs
+Cœurs supplémentaires requis : 8 → 4 packs de 2 cœurs</p><p>!</p><p>CAL (Client Access License)</p><p>Chaque utilisateur ou périphérique qui accède au serveur nécessite en plus une CAL (User CAL ou Device CAL) — indépendante de la licence serveur elle-même.</p><p>MINIMUMS À RETENIR</p><p>Cœurs minimum / serveur</p><p>8 cœurs</p><p>Cœurs minimum / processeur</p><p>4 cœurs</p><p>Taille de pack de cœurs</p><p>2 cœurs</p><p>VMs incluses (Standard)</p><p>2 machines virtuelles</p><p>VMs incluses (Datacenter)</p><p>Illimitées</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>Prérequis matériels</h2><p>Ce qu&#x27;il faut vérifier avant toute installation</p><p>🧠</p><p>Processeur</p><p>1.4 GHz 64 bits minimum,
+compatible NX et DEP</p><p>💾</p><p>Mémoire RAM</p><p>512 Mo minimum (2 Go recommandés)
+avec Desktop Experience</p><p>💽</p><p>Disque</p><p>32 Go minimum d&#x27;espace disque libre</p><p>🔒</p><p>TPM 2.0</p><p>Requis pour tirer parti du
+Credential Guard renforcé (2025)</p><p>🖧</p><p>Réseau</p><p>Adaptateur Gigabit Ethernet
+compatible PXE recommandé</p><p>🛡</p><p>UEFI + Secure Boot</p><p>Fortement recommandé,
+prérequis pour certaines features 2025</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><div class="placeholder-box"><h3>📷 Desktop Experience ou Server Core ?</h3><p>Un choix structurant, détaillé en Séance 12</p><p>🖥  Desktop Experience</p><p>• Interface graphique complète, plus simple pour débuter
+• Empreinte disque et surface d&#x27;attaque plus grandes
+• Utilisé pour AD1, AD2 et SV1 (labo principal)</p><p>[ Screenshot ] Bureau Windows Server (Desktop Experience)</p><p>Illustration à insérer</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>⌨  Server Core</p><p>• Pas d&#x27;interface graphique (CLI + PowerShell)
+• Empreinte disque réduite, moins de redémarrages
+• Utilisé pour SRVCore (dès S4, approfondi en S12)</p><p>[ Screenshot ] Invite de commandes Server Core au démarrage</p><p>Illustration à insérer</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p></div></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Windows Admin Center (WAC)</h2><p>La console moderne qui remplace peu à peu la gestion locale</p><p>Windows Admin Center est une console web légère, installable gratuitement, qui centralise l&#x27;administration de serveurs physiques, virtuels et de clusters — sans dépendre de MMC.
+
+Approfondi en Séance 12, elle sera notre principal point d&#x27;entrée pour la gestion à distance des serveurs Core à partir de la deuxième moitié du cours.</p><p>◆</p><p>Ce qui change selon la version</p><p>2019 : WAC s&#x27;installe séparément (outil distinct).
+2022 : intégration plus poussée, extensions Azure natives.
+2025 : interface repensée façon Windows 11, ajout de nouveaux tableaux de bord de santé.</p><p>CE QUE WAC PERMET DE GÉRER</p><p>▸</p><p>Rôles et fonctionnalités</p><p>▸</p><p>Stockage et espaces de stockage</p><p>▸</p><p>Machines virtuelles Hyper-V</p><p>▸</p><p>Pare-feu et mises à jour</p><p>▸</p><p>Clusters à basculement</p><p>▸</p><p>Certificats et sécurité</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>System Insights : la supervision prédictive</h2><p>Anticiper les pannes plutôt que les subir</p><p>System Insights est une fonctionnalité locale qui utilise des modèles d&#x27;apprentissage automatique embarqués pour prévoir, à partir des journaux du serveur, des problèmes avant qu&#x27;ils ne surviennent (saturation disque, dérive d&#x27;horloge, surcharge réseau...).</p><p>📉
+Capacité de stockage</p><p>Prévoit la date probable de saturation d&#x27;un volume</p><p>🌐
+Utilisation réseau</p><p>Détecte les tendances anormales de trafic</p><p>⏱
+Dérive d&#x27;horloge</p><p>Alerte avant une désynchronisation critique</p><p>🔥
+Utilisation CPU/mémoire</p><p>Anticipe la saturation des ressources</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>Nouveautés majeures de Windows Server 2025</h2><p>Ce qui distingue vraiment la dernière génération</p><p>🩹
+Hotpatching</p><p>Applique les correctifs de sécurité sans redémarrage du serveur — disponible aussi en Standard, plus seulement Azure Edition.</p><p>🛡
+Credential Guard par défaut</p><p>Isole les identifiants en mémoire virtualisée dès l&#x27;installation, sans configuration manuelle.</p><p>📡
+SMB over QUIC en Standard</p><p>Le partage de fichiers chiffré sur QUIC, auparavant réservé à l&#x27;Azure Edition, arrive en édition Standard.</p><p>🗄
+AD DS : bases élargies</p><p>Support d&#x27;une base de données AD élargie (pages de 32k) pour les très grands annuaires.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Le socle on-premises ne travaille plus seul</h2><p>Depuis 2019, Microsoft investit fortement dans les scénarios hybrides : un serveur on-premises peut être rattaché, sauvegardé, mis à jour et surveillé depuis Azure — sans migration complète vers le cloud.</p><p>1</p><p>Azure AD Connect</p><p>synchronise les identités locales vers le cloud</p><p>2</p><p>Azure Arc</p><p>projette les serveurs on-premises dans le portail Azure</p><p>3</p><p>Azure Backup / Update Mgmt</p><p>centralise sauvegardes et correctifs</p><p>APERÇU DU BLOC AZURE (S36-S44)</p><p>•  S36 : Introduction à Azure</p><p>•  S37-S38 : Azure AD, synchronisation</p><p>•  S39-S40 : MFA, Conditional Access, Hybrid Join</p><p>•  S41 : Azure Arc</p><p>•  S42 : Azure File Sync</p><p>•  S43 : Update Management &amp; Backup</p><p>•  S44 : Module Az PowerShell</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Premier lancement du Gestionnaire de serveur</p><p>[ Screenshot ] Gestionnaire de serveur — tableau de bord</p><p>Insérez ici une capture du tableau de bord au premier démarrage</p><p>Visible juste après l&#x27;installation, avant l&#x27;ajout de tout rôle</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p></div></div>
+<div class="slide"><div class="slide-number">Slide 16</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Tableau de bord Windows Admin Center</p><p>[ Screenshot ] Windows Admin Center — vue d&#x27;ensemble d&#x27;un serveur connecté</p><p>Insérez ici une capture du tableau de bord WAC d&#x27;un serveur ajouté</p><p>CPU, mémoire, disque et état des mises à jour visibles en un coup d&#x27;œil</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p></div></div>
+<div class="slide"><div class="slide-number">Slide 17</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Schéma de la maquette réseau du bac à sable (aperçu Séance 2)</p><p>[ Screenshot ] Schéma réseau : AD1, AD2, SV1, SRVCore, CL10-01</p><p>Insérez ici le</p><p>Détaillé en Séance 2 — hôte Hyper-V et topologie complète</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p></div></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>Vocabulaire clé</h2><p>18 termes à maîtriser avant la Séance 2</p><p>Rôle</p><p>Fonction serveur majeure (AD DS, DHCP, DNS...)</p><p>Fonctionnalité</p><p>Composant additionnel supportant un rôle</p><p>Core-based licensing</p><p>Modèle de licence basé sur le nombre de cœurs</p><p>CAL</p><p>Licence d&#x27;accès client (User ou Device)</p><p>Server Core</p><p>Installation sans interface graphique</p><p>Desktop Experience</p><p>Installation avec interface graphique complète</p><p>WAC</p><p>Windows Admin Center, console web de gestion</p><p>System Insights</p><p>Supervision prédictive intégrée</p><p>Datacenter: Azure Edition</p><p>Édition disponible uniquement sur Azure/Stack HCI</p><p>Hotpatching</p><p>Correctif appliqué sans redémarrage (2025)</p><p>Credential Guard</p><p>Isolation des identifiants en mémoire virtualisée</p><p>SMB over QUIC</p><p>Partage de fichiers chiffré sur le protocole QUIC</p><p>Support étendu</p><p>Période de correctifs de sécurité après le support courant</p><p>Secured-core server</p><p>Profil de sécurité matériel + firmware + OS</p><p>Azure Arc</p><p>Projection d&#x27;un serveur on-premises dans le portail Azure</p><p>TPM 2.0</p><p>Puce de sécurité matérielle pour le chiffrement</p><p>UEFI</p><p>Firmware moderne remplaçant le BIOS traditionnel</p><p>PowerShell</p><p>Interpréteur de commandes et langage de script d&#x27;administration</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>Mémo commandes</h2><p>Vos premiers réflexes pour inspecter un serveur</p><p>POWERSHELL / CMD — INFORMATIONS SYSTÈME</p><p>systeminfo                          # Vue d&#x27;ensemble OS, version, uptime
+winver                              # Boîte de dialogue &quot;À propos&quot;
+Get-ComputerInfo                    # Détails complets via PowerShell
+Get-ComputerInfo | Select WindowsProductName, OsHardwareAbstractionLayer
+Get-WindowsFeature                  # Liste des rôles/fonctionnalités installés
+slmgr /dlv                           # Détail de la licence et de l&#x27;activation
+msinfo32                             # Interface graphique d&#x27;informations système
+Get-CimInstance Win32_OperatingSystem | Select Caption, Version</p><p>Séance 1 — Mémo commandes</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Cas pratiques</h2><p>3 scénarios pour ancrer les concepts</p><p>Julien</p><p>Admin réseau junior</p><p>Une PME de 25 postes veut virtualiser 3 serveurs sur un seul hôte physique à 2 CPU de 8 cœurs. Quelle édition et combien de cœurs Julien doit-il licencier ?</p><p>Mathieu</p><p>Responsable infra PME</p><p>Mathieu hésite entre garder son Windows Server 2016 ou migrer. Aidez-le à lister 3 arguments techniques en faveur d&#x27;une migration vers 2022 ou 2025.</p><p>Isabelle</p><p>Analyste sécurité</p><p>Isabelle doit justifier en comité de sécurité pourquoi Windows Server 2025 réduit le risque de vol d&#x27;identifiants par rapport à 2019. Que doit-elle mettre en avant ?</p><p>Séance 1 — Cas pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>À vous de jouer</h2><p>4 exercices pour appliquer ce que vous venez de voir</p><p>1</p><p>Calcul de licence</p><p>Un serveur a 2 CPU de 10 cœurs chacun. Combien de packs de cœurs supplémentaires faut-il acheter en plus de la licence de base ?</p><p>2</p><p>Choix d&#x27;édition</p><p>Une entreprise veut héberger 12 machines virtuelles sur un seul hôte. Quelle édition recommandez-vous, et pourquoi ?</p><p>3</p><p>Repérer les nouveautés</p><p>Citez 2 fonctionnalités qui n&#x27;existent que depuis Windows Server 2025 et expliquez leur intérêt en une phrase chacune.</p><p>4</p><p>Server Core ou Desktop Experience ?</p><p>Un serveur de fichiers isolé dans une salle serveur sans écran : quelle installation choisir, et pourquoi ?</p><p>Séance 1 — Exercices pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Récapitulatif et checklist</h2><p>Avant de passer à la Séance 2</p><p>Ce que nous avons vu</p><p>✓</p><p>Rôle du serveur vs poste client</p><p>✓</p><p>3 versions actives : 2019, 2022, 2025 (2016 exclu)</p><p>✓</p><p>3 éditions et le modèle de licence par cœurs</p><p>✓</p><p>Prérequis matériels et Server Core vs Desktop Experience</p><p>✓</p><p>Windows Admin Center et System Insights</p><p>✓</p><p>Panorama des 45 séances et hybridation Azure</p><p>☑  CHECKLIST AVANT LA SÉANCE 2</p><p>Hyper-V activé sur votre poste hôte (si labo local)</p><p>8 Go de RAM libres minimum pour le bac à sable</p><p>Compte Microsoft/Azure créé (évaluation gratuite)</p><p>Lecture : documentation officielle des éditions</p><p>Réponses aux 4 exercices prêtes à partager</p><p>Questions en suspens notées pour le début de S2</p><p>Accès Teams et micro/caméra testés</p><p>Séance 1 — Récapitulatif</p></div>
+<div class="slide"><div class="slide-number">Slide 23</div><h2>Panorama des capacités couvertes dans ce cours</h2><p>Un aperçu des 45 séances à venir</p><p>Fondations</p><p>S1-S6</p><p>Bac à sable, Hyper-V</p><p>Identité</p><p>S7-S9, S13-S14</p><p>Active Directory, comptes</p><p>Sécurité</p><p>S10, S27-S28</p><p>Audit, certificats, LAPS</p><p>Administration</p><p>S12</p><p>Gestionnaire de serveur, WAC</p><p>Réseau</p><p>S15-S20</p><p>DHCP, IPv4/v6, DNS</p><p>Stockage</p><p>S21, S23-S24</p><p>NTFS, RAID, DFS</p><p>Politique</p><p>S25-S26</p><p>GPO</p><p>Déploiement</p><p>S29-S30</p><p>WDS, images</p><p>Supervision</p><p>S31-S32</p><p>Perfmon, journaux</p><p>Automatisation</p><p>S34-S35</p><p>PowerShell</p><p>Azure hybride</p><p>S36-S44</p><p>Azure AD, Arc, backup</p><p>Évaluations</p><p>S11, S22, S33, S45</p><p>4 examens intégrés</p></div>
+<div class="slide table-slide"><div class="slide-number">Slide 24</div><h2>Feuille de route du cours</h2><table class="samo-table"><thead><tr><th>S1</th><th>Intro WS 2019/2022/2025 — éditions, licences</th><th>S16</th><th>Haute dispo DHCP, IPAM, migration</th><th>S31</th><th>Gestionnaire des tâches, perfmon, WinRE</th></tr></thead><tbody><tr><td>S2</td><td>Bac à sable — hôte Hyper-V, maquette</td><td>S17</td><td>IPv4/IPv6 — modèle OSI, routage</td><td>S32</td><td>Observateur d&#x27;événements, pare-feu</td></tr><tr><td>S3</td><td>VMs AD1 &amp; AD2 — création, post-install</td><td>S18</td><td>Centre réseau, 802.11, Guard, NLB</td><td>S33</td><td>Examen 3 (S23-S32)</td></tr><tr><td>S4</td><td>VMs SV1/SRVCore/CL10-01, checkpoints</td><td>S19</td><td>DNS — présentation, installation, zones</td><td>S34</td><td>PowerShell — console, ISE, syntaxe</td></tr><tr><td>S5</td><td>Hyper-V — VMs, intégration, BPA</td><td>S20</td><td>Gestion DNS avancée, PowerShell</td><td>S35</td><td>PowerShell — boucles, variables v5</td></tr><tr><td>S6</td><td>Disques virtuels, checkpoints, réseaux</td><td>S21</td><td>NTFS, RAID, DAS vs SAN, stockage</td><td>S36</td><td>Introduction à Azure — portail</td></tr><tr><td>S7</td><td>AD DS — forêt, domaine, OU, partitions</td><td>S22</td><td>Examen 2 (S12-S21)</td><td>S37</td><td>Azure AD — fondamentaux, tenant</td></tr><tr><td>S8</td><td>FSMO, catalogue global, sites, réplication</td><td>S23</td><td>Partages, clichés, FSRM, impression</td><td>S38</td><td>Azure AD Connect — synchro, SSO</td></tr><tr><td>S9</td><td>Promotion, cycle de vie, clonage d&#x27;un DC</td><td>S24</td><td>DFS — espaces de noms, réplication</td><td>S39</td><td>Azure AD avancé — MFA, Conditional Access</td></tr><tr><td>S10</td><td>Sécurité AD — PingCastle, BitLocker</td><td>S25</td><td>GPO — intro, GPMC, CSE, boucle</td><td>S40</td><td>Hybrid Join, identités hybrides</td></tr><tr><td>S11</td><td>Examen 1 (S1-S10)</td><td>S26</td><td>Gestion et dépannage GPO, ADMX</td><td>S41</td><td>Azure Arc — gestion hybride</td></tr><tr><td>S12</td><td>Gestionnaire de serveur — Core, WAC</td><td>S27</td><td>Politique de sécurité — audit, UAC</td><td>S42</td><td>Azure File Sync — stockage cloud</td></tr><tr><td>S13</td><td>Comptes utilisateurs AD, PowerShell</td><td>S28</td><td>Certificats — EFS, ADCS, LAPS</td><td>S43</td><td>Azure Update Mgmt &amp; Azure Backup</td></tr><tr><td>S14</td><td>Groupes AD, comptes ordinateur, corbeille</td><td>S29</td><td>WDS — boot PXE, mise en place</td><td>S44</td><td>Module Az PowerShell, simulation</td></tr><tr><td>S15</td><td>DHCP — rôle, étendues, réservations</td><td>S30</td><td>Déploiement OS — capture, multicast</td><td>S45</td><td>Examen final (S1-S44)</td></tr></tbody></table><p>Les 45 séances d&#x27;Administration Windows Server — où nous en sommes</p><p>■</p><p>Séance du jour</p><p>■</p><p>Séance d&#x27;examen</p></div>
+</body>
+</html>

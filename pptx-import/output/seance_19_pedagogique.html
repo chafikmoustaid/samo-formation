@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 19 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>Soutien Réseautique</h2><p>Administration
+Windows Server</p><p>Formateur — SAMO Formation</p><p>SÉANCE 4</p><p>VMs SV1, SRVCore, CL10-01
+et points de contrôle</p><p>La maquette du cours est enfin complète</p><p>⏱</p><p>4 heures — à distance (Teams)</p><p>🎯</p><p>Bloc Fondations — 4ᵉ séance sur 45</p><p>💻</p><p>Prérequis : AD1 et AD2 créées et opérationnelles (Séance 3)</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Après AD1 et AD2, trois dernières VMs complètent la maquette : un serveur membre,
+un serveur Core et un poste client — la base de tout ce que vous administrerez ensuite.</h2><p>Pourquoi ces trois VMs précises ?</p><p>🖥</p><p>SV1 — Serveur membre</p><p>Représente un serveur applicatif classique en Desktop Experience, rattaché au futur domaine.</p><p>⌨</p><p>SRVCore — Sans interface</p><p>Pratiquer l&#x27;administration en ligne de commande, comme en environnement de production réel.</p><p>💻</p><p>CL10-01 — Poste client</p><p>Indispensable pour tester l&#x27;authentification, les GPO et l&#x27;expérience utilisateur finale.</p><p>Séance 4 — Introduction</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Plan de la séance</h2><p>6 blocs pour compléter la maquette</p><p>1</p><p>Rappel de la maquette</p><p>Les 3 dernières VMs à construire aujourd&#x27;hui</p><p>2</p><p>Créer SV1</p><p>3</p><p>Créer SRVCore</p><p>4</p><p>Créer CL10-01</p><p>Poste client Windows</p><p>5</p><p>Points de contrôle</p><p>Créer, appliquer, gérer les checkpoints</p><p>6</p><p>Vue d&#x27;ensemble finale</p><p>La maquette des 5 VMs, complète</p><p>Séance 4 — Plan de la séance</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>Où en est la maquette ?</h2><p>Trois VMs à construire aujourd&#x27;hui</p><p>🖥</p><p>AD1</p><p>Contrôleur de domaine</p><p>✓ Créée (S3)</p><p>🖥</p><p>AD2</p><p>Contrôleur de domaine</p><p>✓ Créée (S3)</p><p>🖥</p><p>SV1</p><p>★ Aujourd&#x27;hui</p><p>🖥</p><p>SRVCore</p><p>★ Aujourd&#x27;hui</p><p>🖥</p><p>CL10-01</p><p>Poste client</p><p>★ Aujourd&#x27;hui</p><p>🗓</p><p>À la fin de cette séance</p><p>La maquette des 5 VMs sera complète. Elle restera la base de toutes les manipulations jusqu&#x27;à la fin du cours (Séance 45).</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Créer SV1</h2><p>🆕</p><p>Même assistant que pour AD1/AD2</p><p>Génération 2, 2 Go de RAM, VHDX dynamique 60 Go, connectée au commutateur « LAN-Labo ».</p><p>💽</p><p>Installation Desktop Experience</p><p>Choisir l&#x27;édition Standard avec interface graphique complète lors de l&#x27;installation de Windows Server.</p><p>🏷</p><p>Post-installation identique</p><p>Renommer en « SV1 » et attribuer l&#x27;adresse IP 192.168.10.20, comme pour AD1 et AD2 en Séance 3.</p><p>PowerShell — créer SV1</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Créer SRVCore</h2><p>⚙️</p><p>Même création de VM</p><p>Génération 2, 1-2 Go de RAM (Server Core consomme moins), VHDX dynamique 60 Go.</p><p>⌨</p><p>Choix décisif à l&#x27;installation</p><p>À l&#x27;écran « Sélectionner le système d&#x27;exploitation à installer », choisir l&#x27;option SANS la mention « Desktop Experience ».</p><p>⚠️</p><p>Pas de retour en arrière simple</p><p>Convertir un Server Core en Desktop Experience (ou l&#x27;inverse) après installation est possible mais complexe : mieux vaut confirmer ce choix avant de lancer la copie des fichiers.</p><p>PowerShell — créer SRVCore</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>Premier démarrage de SRVCore</h2><p>sconfig, l&#x27;outil incontournable</p><p>Sans interface graphique, SRVCore démarre sur une invite de commandes. L&#x27;outil sconfig propose un menu texte pour les tâches de configuration courantes, sans avoir à mémoriser chaque commande PowerShell.</p><p>1</p><p>Nom de l&#x27;ordinateur</p><p>Renommer le serveur (option 2 du menu sconfig).</p><p>2</p><p>Configuration réseau</p><p>Définir l&#x27;adresse IP statique (option 8 du menu sconfig).</p><p>3</p><p>Mises à jour Windows</p><p>Configurer et lancer Windows Update (options 5 et 6).</p><p>À taper directement à l&#x27;invite de commandes</p><p>sconfig</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Créer CL10-01</h2><p>Le poste client de la maquette</p><p>💻</p><p>Une VM à part</p><p>CL10-01 exécute un OS client (Windows 10/11), pas Windows Server : c&#x27;est le seul poste de la maquette dans ce cas.</p><p>🔐</p><p>Génération 2 recommandée</p><p>Comme les autres VMs, Génération 2 avec Secure Boot activé — les OS clients récents le supportent nativement.</p><p>📌</p><p>Ressources recommandées</p><p>2 à 4 Go de RAM et un VHDX dynamique de 60-80 Go suffisent pour un poste client de test, sans usage intensif ni logiciels lourds.</p><p>PowerShell — créer CL10-01</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>Comparatif des ressources</h2><p>Les 5 VMs de la maquette, côte à côte</p><p>VM</p><p>Rôle</p><p>RAM</p><p>Génération</p><p>AD1</p><p>Contrôleur de domaine</p><p>2 Go</p><p>Génération 2</p><p>AD2</p><p>Contrôleur de domaine</p><p>2 Go</p><p>Génération 2</p><p>SV1</p><p>2 Go</p><p>Génération 2</p><p>SRVCore</p><p>1,5 Go</p><p>Génération 2</p><p>CL10-01</p><p>Poste client Windows</p><p>4 Go</p><p>Génération 2</p><p>📌</p><p>Total hôte</p><p>Environ 11,5 Go pour les 5 VMs : confortable sur un hôte de 16 Go de RAM, avec une marge pour le système hôte lui-même.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>Gérer les points de contrôle</h2><p>Créer, appliquer, supprimer</p><p>➕</p><p>Créer</p><p>Fige l&#x27;état complet de la VM (mémoire, disque, configuration) à un instant T, avant une manipulation risquée.</p><p>↩</p><p>Appliquer / restaurer</p><p>Ramène la VM exactement à l&#x27;état du checkpoint choisi : les modifications postérieures sont perdues.</p><p>🗑</p><p>Supprimer</p><p>Fusionne les données du checkpoint dans le disque courant : à faire une fois l&#x27;étape validée pour libérer l&#x27;espace.</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Checkpoints standards vs de production</h2><p>Une nuance importante sur les DC</p><p>Type</p><p>Fonctionnement</p><p>Recommandé pour</p><p>Standard</p><p>Capture l&#x27;état mémoire ET disque, comme une pause/reprise</p><p>VMs sans rôle sensible à l&#x27;horodatage</p><p>De production</p><p>Utilise VSS, sans capturer l&#x27;état mémoire (redémarrage propre au retour)</p><p>AD1, AD2 : évite la corruption de la base AD</p><p>⚠️</p><p>Important pour AD1/AD2</p><p>Restaurer un checkpoint standard sur un contrôleur de domaine déjà promu peut provoquer un « USN rollback » et corrompre la réplication AD : toujours utiliser les checkpoints de production sur les DC.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Bonnes pratiques des checkpoints</h2><p>Un outil puissant, à utiliser avec méthode</p><p>🏷</p><p>Nommage explicite</p><p>« Avant-install-ADDS » plutôt que « Checkpoint 1 » : le nom doit dire ce que l&#x27;on s&#x27;apprête à faire.</p><p>🧹</p><p>Purge régulière</p><p>Supprimer les checkpoints obsolètes : ils consomment de l&#x27;espace disque et peuvent ralentir la VM.</p><p>🚫</p><p>Jamais en production réelle</p><p>Les checkpoints standards sont un outil de labo/test : à éviter sur des serveurs de production sans précaution VSS.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>La maquette est complète</h2><p>5 VMs, prêtes pour la suite du cours</p><p>🖥</p><p>AD1</p><p>192.168.10.10</p><p>🖥</p><p>AD2</p><p>192.168.10.11</p><p>🖥</p><p>SV1</p><p>192.168.10.20</p><p>🖥</p><p>SRVCore</p><p>192.168.10.21</p><p>🖥</p><p>CL10-01</p><p>192.168.10.101</p><p>🚀</p><p>Et maintenant ?</p><p>À partir de la Séance 7, AD1 sera promu premier contrôleur de domaine de la forêt, puis AD2 rejoindra le domaine comme second DC. La maquette d&#x27;aujourd&#x27;hui devient l&#x27;infrastructure de tout le reste du cours.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Vérifications avant de clore</h2><p>Un dernier tour d&#x27;horizon</p><p>🔌</p><p>Connectivité</p><p>Chaque VM répond au ping des 4 autres, toutes connectées au commutateur « LAN-Labo ».</p><p>🏷</p><p>Nommage et IP</p><p>Les 5 noms et les 5 adresses IP correspondent exactement au plan établi en Séance 2.</p><p>💾</p><p>Checkpoints</p><p>Un point de contrôle « état initial » existe sur chacune des 5 VMs avant la Séance 5.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><h2>Aperçu pratique</h2><p>Écran d&#x27;installation — choix Server Core</p><p>Séance 4 — Aperçu pratique</p></div>
+<div class="slide"><div class="slide-number">Slide 16</div><h2>Vocabulaire clé</h2><p>18 termes à maîtriser avant la Séance 5</p><p>Serveur Windows rattaché à un domaine, sans rôle de contrôleur de domaine</p><p>Server Core</p><p>Installation de Windows Server sans interface graphique complète</p><p>sconfig</p><p>Menu texte de configuration rapide pour les serveurs Server Core</p><p>Poste client</p><p>Ordinateur exécutant un OS client (Windows 10/11), pas Windows Server</p><p>Point de contrôle</p><p>Instantané réversible de l&#x27;état d&#x27;une VM (checkpoint)</p><p>Checkpoint standard</p><p>Capture l&#x27;état mémoire et disque complet d&#x27;une VM</p><p>Checkpoint de production</p><p>Capture basée sur VSS, sans état mémoire, plus sûre pour les DC</p><p>VSS</p><p>Volume Shadow Copy Service, service de cliché instantané Windows</p><p>USN rollback</p><p>Corruption de réplication AD causée par la restauration d&#x27;un ancien état de DC</p><p>Appliquer un checkpoint</p><p>Restaurer une VM à l&#x27;état exact d&#x27;un point de contrôle donné</p><p>Fusionner un checkpoint</p><p>Intégrer les données d&#x27;un checkpoint supprimé dans le disque courant</p><p>Secure Boot</p><p>Vérification de l&#x27;intégrité du chargeur de démarrage au démarrage de la VM</p><p>Rename-Computer</p><p>Cmdlet PowerShell pour renommer un ordinateur</p><p>New-NetIPAddress</p><p>Cmdlet PowerShell pour attribuer une adresse IP statique</p><p>Desktop Experience</p><p>Installation de Windows Server avec interface graphique complète</p><p>Maquette</p><p>Ensemble des VMs représentant l&#x27;infrastructure simulée du cours</p><p>Commutateur Interne</p><p>Relie les VMs entre elles et à l&#x27;hôte, sans sortie externe</p><p>Checkpoint-VM</p><p>Cmdlet PowerShell pour créer un point de contrôle</p></div>
+<div class="slide"><div class="slide-number">Slide 17</div><h2>Mémo commandes</h2><p>PowerShell — VMs et points de contrôle</p><p>Créer SV1</p><p>Créer SRVCore</p><p>Créer CL10-01</p><p>Créer un checkpoint</p><p>Checkpoint-VM -Name &quot;SV1&quot; -SnapshotName &quot;Etat-initial&quot;</p><p>Lister les checkpoints</p><p>Get-VMSnapshot -VMName &quot;SV1&quot;</p><p>Restaurer un checkpoint</p><p>Restore-VMSnapshot -VMName &quot;SV1&quot; -Name &quot;Etat-initial&quot;</p><p>Séance 4 — Mémo commandes</p></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>Cas pratiques</h2><p>3 mises en situation</p><p>Julien — Admin réseau junior</p><p>Julien vient de créer SRVCore mais se retrouve face à une invite de commandes noire. Quelle commande lui permet d&#x27;ouvrir un menu de configuration simplifié ?</p><p>Sophie — Technicienne support N2</p><p>Sophie hésite entre un checkpoint standard et un checkpoint de production pour AD1. Que lui conseillez-vous, et pourquoi ?</p><p>Mario — Responsable infrastructure PME</p><p>Mario constate que plusieurs anciens checkpoints traînent sur SV1 et ralentissent la VM. Que doit-il faire, et pourquoi cela libère-t-il de l&#x27;espace ?</p><p>Séance 4 — Cas pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>À vous de jouer</h2><p>4 exercices avant la Séance 5</p><p>Exercice 1</p><p>Créez SV1</p><p>Créez la VM, installez Windows Server en Desktop Experience, renommez et configurez l&#x27;IP.</p><p>Exercice 2</p><p>Créez SRVCore</p><p>Créez la VM, installez en Server Core, puis utilisez sconfig pour le nom et l&#x27;IP.</p><p>Exercice 3</p><p>Créez CL10-01</p><p>Créez la VM cliente, installez un OS client, connectez-la au réseau de labo.</p><p>Exercice 4</p><p>Créez les checkpoints</p><p>Créez un point de contrôle « État initial » sur chacune des 5 VMs de la maquette.</p><p>Séance 4 — À vous de jouer</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Récapitulatif et checklist</h2><p>Avant de passer à la Séance 5</p><p>Ce que nous avons vu</p><p>✓</p><p>Création de SV1 (Desktop Experience)</p><p>✓</p><p>Création de SRVCore (Server Core) et sconfig</p><p>✓</p><p>Création de CL10-01 (poste client)</p><p>✓</p><p>Comparatif des ressources des 5 VMs</p><p>✓</p><p>Checkpoints standards vs de production</p><p>✓</p><p>Bonnes pratiques de gestion des checkpoints</p><p>☑  CHECKLIST AVANT LA SÉANCE 5</p><p>SV1 créée, installée et configurée</p><p>SRVCore créée, installée et configurée</p><p>CL10-01 créée, installée et configurée</p><p>Les 5 VMs répondent au ping entre elles</p><p>Noms et IP conformes au plan de Séance 2</p><p>Checkpoint « État initial » sur les 5 VMs</p><p>Espace disque de l&#x27;hôte vérifié</p><p>Notes de mots de passe à jour et sécurisées</p><p>Séance 4 — Récapitulatif</p></div>
+</body>
+</html>

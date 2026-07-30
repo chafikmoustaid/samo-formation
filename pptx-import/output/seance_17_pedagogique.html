@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Séance 17 — Pédagogique</title>
+<style>
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#1f2933;
+}
+.slide{
+    background:white;
+    max-width:900px;
+    margin:0 auto 30px auto;
+    padding:28px 32px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.slide h2{
+    margin-top:0;
+    color:#1b4332;
+}
+.slide-number{
+    font-size:12px;
+    color:#868e96;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+}
+.slide p{
+    line-height:1.5;
+}
+
+/* Timeline */
+.timeline .step{
+    margin:10px 0;
+    padding:14px 16px;
+    background:#eef7ee;
+    border-left:5px solid #2f9e44;
+    border-radius:4px;
+}
+.timeline .step .step-num{
+    display:inline-block;
+    background:#2f9e44;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    line-height:28px;
+    text-align:center;
+    margin-right:10px;
+}
+.timeline .step .step-label{
+    font-weight:bold;
+}
+.timeline .step .step-note{
+    color:#495057;
+    font-size:14px;
+    margin-top:4px;
+}
+
+/* Table */
+table.samo-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+table.samo-table th, table.samo-table td{
+    border:1px solid #dee2e6;
+    padding:8px 10px;
+    text-align:left;
+}
+table.samo-table th{
+    background:#e8f3ff;
+}
+table.samo-table tr:nth-child(even) td{
+    background:#f8f9fa;
+}
+
+/* Placeholder */
+.placeholder-box{
+    border:3px dashed #6CC24A;
+    border-radius:16px;
+    padding:24px;
+    background:#f7faf7;
+}
+.placeholder-box h3{
+    margin-top:0;
+}
+</style>
+</head>
+<body>
+<div class="slide"><div class="slide-number">Slide 1</div><h2>SOUTIEN RÉSEAUTIQUE</h2><p>Administration
+Windows Server</p><p>Formateur — SAMO Formation</p><p>SÉANCE 2</p><p>Bac à sable : hôte Hyper-V
+et schéma de la maquette</p><p>Préparer l&#x27;infrastructure de virtualisation avant les VMs</p><p>⏱</p><p>4 heures — à distance (Teams)</p><p>🎯</p><p>Bloc Fondations — 2ᵉ séance sur 45</p><p>💻</p><p>Prérequis : virtualisation activée au BIOS/UEFI</p></div>
+<div class="slide"><div class="slide-number">Slide 2</div><h2>Une seule maquette virtuelle peut simuler un site complet : contrôleurs de
+domaine, serveurs de rôle et poste client — sans acheter le moindre matériel.</h2><p>Pourquoi commencer par le bac à sable ?</p><p>🧪</p><p>Un labo, zéro risque</p><p>Toutes les erreurs sont réversibles : on peut casser, recommencer, tester sans jamais toucher un vrai serveur de production.</p><p>💰</p><p>Aucun matériel à acheter</p><p>Un seul hôte physique (ou même un poste puissant) suffit à héberger les 5 VMs de toute la maquette du cours.</p><p>🚀</p><p>Base de tout le reste du cours</p><p>AD1, AD2, SV1, SRVCore et CL10-01 seront créés dès la Séance 3 sur l&#x27;infrastructure préparée aujourd&#x27;hui.</p><p>Séance 2 — Introduction au bac à sable</p></div>
+<div class="slide"><div class="slide-number">Slide 3</div><h2>Plan de la séance</h2><p>6 blocs pour préparer le bac à sable</p><p>1</p><p>Hyper-V et prérequis</p><p>Rôle, virtualisation assistée, dimensionnement de l&#x27;hôte</p><p>2</p><p>Installation du rôle</p><p>Server Manager et PowerShell</p><p>3</p><p>Le Gestionnaire Hyper-V</p><p>Tour de l&#x27;interface et des paramètres de VM</p><p>4</p><p>Commutateurs virtuels</p><p>Externe, Interne, Privé</p><p>5</p><p>Schéma de la maquette</p><p>5 VMs, rôles et plan d&#x27;adressage IP</p><p>6</p><p>Bonnes pratiques</p><p>Nommage, organisation, points de contrôle</p><p>Séance 2 — Plan de la séance</p></div>
+<div class="slide"><div class="slide-number">Slide 4</div><h2>Qu&#x27;est-ce qu&#x27;Hyper-V ?</h2><p>Le rôle d&#x27;hyperviseur natif de Windows Server</p><p>Hyper-V est un hyperviseur intégré à Windows Server : il permet d&#x27;exécuter plusieurs machines virtuelles (chacune avec son propre OS) sur un même serveur physique, en partageant CPU, RAM et stockage.</p><p>🖥️</p><p>Hôte physique</p><p>Le serveur réel qui exécute Hyper-V et héberge toutes les VMs du bac à sable.</p><p>📦</p><p>Machines virtuelles</p><p>AD1, AD2, SV1, SRVCore, CL10-01 : chacune isolée, avec ses propres ressources.</p><p>🔌</p><p>Ressources partagées</p><p>CPU, RAM et disques de l&#x27;hôte sont répartis entre les VMs selon leur configuration.</p><p>💡</p><p>À retenir</p><p>Hyper-V est un hyperviseur de « type 1 » : il s&#x27;exécute directement au-dessus du matériel, Windows Server lui-même devenant une VM privilégiée (la « partition parente »).</p></div>
+<div class="slide"><div class="slide-number">Slide 5</div><h2>Pourquoi un bac à sable ?</h2><p>Les objectifs pédagogiques du labo virtuel</p><p>🔁</p><p>Réversibilité</p><p>Les points de contrôle (checkpoints) permettent de revenir en arrière après une manipulation ratée, sans conséquence.</p><p>🔒</p><p>Isolation</p><p>Le réseau de labo est isolé du reste du réseau de l&#x27;entreprise : aucun risque de perturber une infrastructure réelle.</p><p>📈</p><p>Montée en compétence progressive</p><p>Chaque séance ajoute une VM ou un rôle sur la même maquette, jusqu&#x27;à obtenir une infrastructure complète en fin de cours.</p></div>
+<div class="slide"><div class="slide-number">Slide 6</div><h2>Prérequis matériels</h2><p>Ce que l&#x27;hôte physique doit supporter</p><p>⚙️</p><p>Virtualisation assistée</p><p>Intel VT-x ou AMD-V : extensions du processeur permettant l&#x27;exécution accélérée des VMs.</p><p>🧩</p><p>SLAT</p><p>Second Level Address Translation : accélère la gestion mémoire des VMs (requis depuis longtemps par Hyper-V).</p><p>🔧</p><p>Activation BIOS/UEFI</p><p>Ces options sont souvent désactivées par défaut sur les postes : à vérifier et activer manuellement.</p><p>💾</p><p>RAM et disque</p><p>16 Go de RAM et un disque avec de l&#x27;espace libre confortable pour héberger les 5 VHDX de la maquette.</p></div>
+<div class="slide"><div class="slide-number">Slide 7</div><h2>Dimensionnement de l&#x27;hôte</h2><p>Combien de ressources pour 5 VMs ?</p><p>VM</p><p>Rôle</p><p>RAM recommandée</p><p>AD1</p><p>Contrôleur de domaine principal</p><p>2 Go</p><p>AD2</p><p>Contrôleur de domaine secondaire</p><p>2 Go</p><p>SV1</p><p>2 Go</p><p>SRVCore</p><p>1-2 Go</p><p>CL10-01</p><p>Poste client Windows</p><p>2-4 Go</p><p>📌</p><p>Total recommandé</p><p>Environ 9-12 Go pour les 5 VMs + une réserve pour l&#x27;hôte lui-même : viser 16 Go de RAM physique au minimum.</p></div>
+<div class="slide"><div class="slide-number">Slide 8</div><h2>Installation du rôle Hyper-V</h2><p>Deux méthodes, un même résultat</p><p>🖱️</p><p>Via le Gestionnaire de serveur</p><p>Ajouter des rôles et fonctionnalités → cocher Hyper-V → suivre l&#x27;assistant → redémarrer. Interface graphique, idéale pour une première installation guidée.</p><p>PowerShell (recommandé)</p><p>Install-WindowsFeature `
+  -Name Hyper-V `
+  -IncludeManagementTools `
+  -Restart</p><p>🔁</p><p>Redémarrage obligatoire</p><p>Le rôle Hyper-V modifie la couche de virtualisation du noyau : Windows doit redémarrer pour charger l&#x27;hyperviseur en dessous du système d&#x27;exploitation hôte.</p></div>
+<div class="slide"><div class="slide-number">Slide 9</div><h2>Le Gestionnaire Hyper-V</h2><p>Vue d&#x27;ensemble de la console de gestion</p><p>📋</p><p>Volet des VMs</p><p>Liste toutes les machines virtuelles de l&#x27;hôte, leur état (en cours, arrêtée) et leur utilisation CPU/RAM en temps réel.</p><p>🕐</p><p>Points de contrôle</p><p>Affiche l&#x27;arborescence des checkpoints d&#x27;une VM sélectionnée, pour revenir à un état antérieur.</p><p>⚙️</p><p>Panneau Actions</p><p>Accès rapide à Nouveau &gt; Machine virtuelle, Gestionnaire de commutateurs virtuels, Paramètres, etc.</p></div>
+<div class="slide"><div class="slide-number">Slide 10</div><h2>Les commutateurs virtuels</h2><p>Externe, Interne ou Privé : bien choisir</p><p>Type</p><p>VM ↔ VM</p><p>VM ↔ Hôte</p><p>VM ↔ Réseau physique</p><p>Externe</p><p>✓</p><p>✓</p><p>✓</p><p>Interne</p><p>✓</p><p>✓</p><p>✗</p><p>Privé</p><p>✓</p><p>✗</p><p>✗</p><p>🧪</p><p>Pour le bac à sable</p><p>Un commutateur Interne (« LAN-Labo ») pour le réseau isolé de la maquette, et un commutateur Externe (« Internet ») si les VMs doivent recevoir des mises à jour.</p></div>
+<div class="slide"><div class="slide-number">Slide 11</div><h2>Schéma de la maquette</h2><p>5 VMs pour tout le reste du cours</p><p>🖥</p><p>AD1</p><p>Contrôleur de domaine</p><p>🖥</p><p>AD2</p><p>Contrôleur de domaine</p><p>🖥</p><p>SV1</p><p>🖥</p><p>SRVCore</p><p>🖥</p><p>CL10-01</p><p>Poste client</p><p>Toutes reliées au commutateur virtuel « LAN-Labo »</p><p>🗓</p><p>Ordre de création</p><p>AD1 et AD2 seront créés en Séance 3, SV1/SRVCore/CL10-01 en Séance 4 : la maquette se construit progressivement, séance après séance.</p></div>
+<div class="slide"><div class="slide-number">Slide 12</div><h2>Plan d&#x27;adressage IP</h2><p>Des adresses fixes pour la maquette</p><p>VM</p><p>Adresse IP</p><p>Rôle réseau</p><p>AD1</p><p>192.168.10.10</p><p>DNS primaire / DC principal</p><p>AD2</p><p>192.168.10.11</p><p>DNS secondaire / DC réplique</p><p>SV1</p><p>192.168.10.20</p><p>SRVCore</p><p>192.168.10.21</p><p>CL10-01</p><p>192.168.10.101</p><p>Poste client (plage dynamique future : .150+)</p><p>📌</p><p>Pourquoi fixer les IP ?</p><p>DNS, réplication AD et configuration des clients exigent des adresses stables : le rôle DHCP ne sera administré comme service qu&#x27;en Séance 15-16, pas utilisé pour le réseau de gestion lui-même.</p></div>
+<div class="slide"><div class="slide-number">Slide 13</div><h2>Points de contrôle (checkpoints)</h2><p>Un filet de sécurité, pas une sauvegarde</p><p>✅</p><p>Ce qu&#x27;ils permettent</p><p>Revenir instantanément à un état antérieur de la VM avant une manipulation risquée (ex. avant de promouvoir un DC).</p><p>⚠️</p><p>Leurs limites</p><p>Stockés sur le même disque que la VM : aucune protection en cas de panne de l&#x27;hôte ou de suppression accidentelle.</p><p>💡</p><p>Bon réflexe en labo</p><p>Créer un checkpoint avant chaque manipulation importante (installation d&#x27;un rôle, modification GPO...), puis le supprimer une fois l&#x27;étape validée pour ne pas accumuler l&#x27;espace disque.</p></div>
+<div class="slide"><div class="slide-number">Slide 14</div><h2>Bonnes pratiques</h2><p>Nommage et organisation dès le départ</p><p>🏷</p><p>Nommage cohérent</p><p>VMs (AD1, AD2, SV1...), commutateurs (LAN-Labo, Internet) et VHDX nommés selon une convention claire, documentée dès aujourd&#x27;hui.</p><p>📁</p><p>Organisation des fichiers</p><p>Un dossier dédié par VM pour ses VHDX et fichiers de configuration, sur un volume avec suffisamment d&#x27;espace libre.</p><p>🔖</p><p>Documentation continue</p><p>Tenir à jour un schéma et un tableau d&#x27;adressage IP au fil des séances : indispensable pour le dépannage futur.</p></div>
+<div class="slide"><div class="slide-number">Slide 15</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Gestionnaire Hyper-V — vue d&#x27;ensemble</p><p>[ Screenshot ] Gestionnaire Hyper-V — vue d&#x27;ensemble</p><p>Ouvrez le Gestionnaire Hyper-V et repérez le volet des VMs</p><p>Menu Démarrer → Outils d&#x27;administration → Gestionnaire Hyper-V</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>Séance 2 — Aperçu pratique</p></div></div>
+<div class="slide"><div class="slide-number">Slide 16</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Gestionnaire des commutateurs virtuels</p><p>[ Screenshot ] Gestionnaire des commutateurs virtuels</p><p>Créez vos commutateurs Interne et Externe</p><p>Panneau Actions → Gestionnaire de commutateurs virtuels</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>Séance 2 — Aperçu pratique</p></div></div>
+<div class="slide"><div class="slide-number">Slide 17</div><div class="placeholder-box"><h3>📷 Aperçu pratique</h3><p>Paramètres d&#x27;une VM — mémoire et processeur</p><p>[ Screenshot ] Paramètres d&#x27;une VM — mémoire et processeur</p><p>Ajustez la RAM et le nombre de processeurs virtuels</p><p>Clic droit sur la VM → Paramètres → Mémoire / Processeur</p><p>Clic droit sur cette zone → Modifier l&#x27;image → choisir votre screenshot</p><p>Séance 2 — Aperçu pratique</p></div></div>
+<div class="slide"><div class="slide-number">Slide 18</div><h2>Vocabulaire clé</h2><p>18 termes à maîtriser avant la Séance 3</p><p>Hyperviseur</p><p>Logiciel qui crée et exécute des machines virtuelles</p><p>Hyper-V</p><p>Rôle d&#x27;hyperviseur natif de Windows Server</p><p>VM</p><p>Machine virtuelle, système d&#x27;exploitation isolé</p><p>Hôte</p><p>Serveur physique qui exécute Hyper-V</p><p>VT-x / AMD-V</p><p>Extensions de virtualisation assistée par matériel</p><p>SLAT</p><p>Second Level Address Translation, accélère la mémoire virtualisée</p><p>VHDX</p><p>Format de disque dur virtuel utilisé par Hyper-V</p><p>Élément réseau qui relie les VMs entre elles et/ou à l&#x27;extérieur</p><p>Relie les VMs au réseau physique de l&#x27;hôte</p><p>Relie les VMs entre elles et à l&#x27;hôte, sans sortie externe</p><p>Relie uniquement les VMs entre elles, même pas l&#x27;hôte</p><p>Point de contrôle</p><p>Instantané réversible de l&#x27;état d&#x27;une VM (checkpoint)</p><p>Partition parente</p><p>Instance de Windows Server qui héberge l&#x27;hyperviseur</p><p>Mémoire dynamique</p><p>Ajustement automatique de la RAM allouée à une VM</p><p>Bac à sable</p><p>Environnement de test isolé et sans conséquence sur la production</p><p>Maquette</p><p>Ensemble des VMs représentant l&#x27;infrastructure simulée du cours</p><p>Server Core</p><p>Installation de Windows Server sans interface graphique complète</p><p>Plan d&#x27;adressage IP</p><p>Répartition documentée des adresses IP entre les machines</p><p>Séance 2 — Vocabulaire clé</p></div>
+<div class="slide"><div class="slide-number">Slide 19</div><h2>Mémo commandes</h2><p>PowerShell Hyper-V essentiel</p><p>Installer le rôle</p><p>Install-WindowsFeature -Name Hyper-V -IncludeManagementTools -Restart</p><p>Lister les VMs</p><p>Get-VM</p><p>Créer un commutateur interne</p><p>New-VMSwitch -Name &quot;LAN-Labo&quot; -SwitchType Internal</p><p>Créer un commutateur externe</p><p>New-VMSwitch -Name &quot;Internet&quot; -NetAdapterName &quot;Ethernet&quot;</p><p>Créer un checkpoint</p><p>Checkpoint-VM -Name &quot;AD1&quot; -SnapshotName &quot;Avant-install-ADDS&quot;</p><p>Voir l&#x27;utilisation mémoire</p><p>Get-VM | Select Name, MemoryAssigned, State</p><p>Séance 2 — Mémo commandes</p></div>
+<div class="slide"><div class="slide-number">Slide 20</div><h2>Cas pratiques</h2><p>3 mises en situation</p><p>Julien — Admin réseau junior</p><p>Julien doit préparer l&#x27;hôte avant l&#x27;arrivée d&#x27;AD1 et AD2. Quelles vérifications matérielles effectue-t-il en priorité ?</p><p>Sophie — Technicienne support N2</p><p>Sophie remarque que ses VMs de test peuvent accéder à internet alors qu&#x27;elle voulait un réseau isolé. Quel type de commutateur a-t-elle probablement utilisé par erreur ?</p><p>Mario — Responsable infrastructure PME</p><p>Mario veut s&#x27;assurer que l&#x27;équipe peut revenir en arrière si une installation de rôle échoue sur AD1. Quelle fonctionnalité Hyper-V lui propose-t-on ?</p><p>Séance 2 — Cas pratiques</p></div>
+<div class="slide"><div class="slide-number">Slide 21</div><h2>À vous de jouer</h2><p>4 exercices avant la Séance 3</p><p>Exercice 1</p><p>Vérifiez les prérequis</p><p>Confirmez sur votre poste que la virtualisation assistée et le SLAT sont bien activés.</p><p>Exercice 2</p><p>Installez Hyper-V</p><p>Installez le rôle via PowerShell, puis redémarrez et ouvrez le Gestionnaire Hyper-V.</p><p>Exercice 3</p><p>Créez les commutateurs</p><p>Créez un commutateur Interne « LAN-Labo » et, si possible, un commutateur Externe « Internet ».</p><p>Exercice 4</p><p>Dessinez votre schéma</p><p>Représentez les 5 VMs de la maquette avec leur rôle et leur future adresse IP.</p><p>Séance 2 — À vous de jouer</p></div>
+<div class="slide"><div class="slide-number">Slide 22</div><h2>Récapitulatif et checklist</h2><p>Avant de passer à la Séance 3</p><p>Ce que nous avons vu</p><p>✓</p><p>Rôle Hyper-V et prérequis matériels</p><p>✓</p><p>Virtualisation assistée VT-x/AMD-V, SLAT</p><p>✓</p><p>Installation via Server Manager et PowerShell</p><p>✓</p><p>Le Gestionnaire Hyper-V et ses panneaux</p><p>✓</p><p>Commutateurs Externe, Interne, Privé</p><p>✓</p><p>Schéma de la maquette et plan d&#x27;adressage IP</p><p>☑  CHECKLIST AVANT LA SÉANCE 3</p><p>Virtualisation VT-x/AMD-V activée au BIOS</p><p>Rôle Hyper-V installé et opérationnel</p><p>Schéma des 5 VMs dessiné</p><p>Plan d&#x27;adressage IP documenté</p><p>16 Go de RAM disponibles confirmés</p><p>Espace disque suffisant vérifié</p><p>Séance 2 — Récapitulatif</p></div>
+</body>
+</html>
