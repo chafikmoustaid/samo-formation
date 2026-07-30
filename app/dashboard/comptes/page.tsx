@@ -960,7 +960,7 @@ export default function ComptesPage() {
                     <input
                       type="text"
                       defaultValue={f.nom}
-                      onClick={(e) => e.stopPropagation()}
+                      onFocus={() => setFormationChoisieId(f.id)}
                       onBlur={(e) => renommerFormationCatalogue(f.id, e.target.value)}
                       disabled={busyFormationCatalogue === f.id}
                       className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white"
