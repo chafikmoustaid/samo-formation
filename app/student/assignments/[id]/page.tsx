@@ -46,11 +46,20 @@ function decouperContenuTp(
 ): SegmentContenu[] | null {
   if (typeof document === "undefined" || questions.length === 0) return null;
 
-  const tables: string[] = [];
-  const sansTableaux = html.replace(/<table[\s\S]*?<\/table>/g, (m) => {
-    tables.push(m);
-    return `@@TABLE_${tables.length - 1}@@`;
-  });
+  // Les tableaux et les listes (<ol>/<ul>) sont des blocs qu'on ne découpe
+  // jamais : une question n'apparaît jamais à l'intérieur d'une liste, et
+  // isoler un <p> à l'intérieur d'un <li> laisserait des balises orphelines
+  // (le navigateur les réinterprète alors comme des puces vides).
+  const blocs: string[] = [];
+  const isoler = (regex: RegExp) => (source: string) =>
+    source.replace(regex, (m) => {
+      blocs.push(m);
+      return `@@BLOC_${blocs.length - 1}@@`;
+    });
+  let sansBlocs = html;
+  sansBlocs = isoler(/<table[\s\S]*?<\/table>/g)(sansBlocs);
+  sansBlocs = isoler(/<ol[\s\S]*?<\/ol>/g)(sansBlocs);
+  sansBlocs = isoler(/<ul[\s\S]*?<\/ul>/g)(sansBlocs);
 
   const brut: { html: string; estQuestion: boolean }[] = [];
   const regexP = /<p>[\s\S]*?<\/p>/g;
@@ -58,21 +67,21 @@ function decouperContenuTp(
   let match: RegExpExecArray | null;
   const div = document.createElement("div");
 
-  while ((match = regexP.exec(sansTableaux)) !== null) {
+  while ((match = regexP.exec(sansBlocs)) !== null) {
     if (match.index > lastIndex) {
-      brut.push({ html: sansTableaux.slice(lastIndex, match.index), estQuestion: false });
+      brut.push({ html: sansBlocs.slice(lastIndex, match.index), estQuestion: false });
     }
     div.innerHTML = match[0];
     const texte = (div.textContent || "").trim();
     brut.push({ html: match[0], estQuestion: texte.endsWith("?") });
     lastIndex = regexP.lastIndex;
   }
-  if (lastIndex < sansTableaux.length) {
-    brut.push({ html: sansTableaux.slice(lastIndex), estQuestion: false });
+  if (lastIndex < sansBlocs.length) {
+    brut.push({ html: sansBlocs.slice(lastIndex), estQuestion: false });
   }
 
-  const restaurerTableaux = (h: string) =>
-    h.replace(/@@TABLE_(\d+)@@/g, (_, i) => tables[Number(i)]);
+  const restaurerBlocs = (h: string) =>
+    h.replace(/@@BLOC_(\d+)@@/g, (_, i) => blocs[Number(i)]);
 
   const nbDetectees = brut.filter((s) => s.estQuestion).length;
   if (nbDetectees !== questions.length) {
@@ -84,9 +93,9 @@ function decouperContenuTp(
     if (s.estQuestion) {
       const question = questions[indexQuestion];
       indexQuestion += 1;
-      return { html: restaurerTableaux(s.html), question };
+      return { html: restaurerBlocs(s.html), question };
     }
-    return { html: restaurerTableaux(s.html) };
+    return { html: restaurerBlocs(s.html) };
   });
 }
 
