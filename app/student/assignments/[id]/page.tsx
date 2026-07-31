@@ -6,6 +6,20 @@ import { supabase } from "@/lib/supabase";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import SeanceNav from "@/components/student/SeanceNav";
+import { ACCEPT_TP_INPUT, extensionAutorisee } from "@/lib/fichiersTp";
+
+type Question = { id: number; ordre: number; enonce: string };
+type ReponseExistante = {
+  question_id: number;
+  reponse_texte: string | null;
+  fichier: string | null;
+  note: number | null;
+  commentaire: string | null;
+};
+
+function fichierUrl(chemin: string) {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/tp-submissions/${chemin}`;
+}
 
 export default function StudentAssignmentDetailPage() {
   const params = useParams<{ id: string }>();
@@ -17,6 +31,17 @@ export default function StudentAssignmentDetailPage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
   const [envoi, setEnvoi] = useState(false);
+
+  // Mode « TP structuré » : questions remplissables en ligne, comme un quiz,
+  // avec pièce jointe optionnelle par question.
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [reponsesExistantes, setReponsesExistantes] = useState<
+    Map<number, ReponseExistante>
+  >(new Map());
+  const [reponsesTexte, setReponsesTexte] = useState<Record<number, string>>({});
+  const [fichiersParQuestion, setFichiersParQuestion] = useState<
+    Record<number, File | null>
+  >({});
 
   useEffect(() => {
     if (courseId) chargerTp();
@@ -53,6 +78,12 @@ export default function StudentAssignmentDetailPage() {
     setAssignment(tp);
 
     if (tp) {
+      const { data: questionsData } = await supabase.rpc(
+        "assignment_questions_visibles",
+        { p_assignment_id: tp.id }
+      );
+      setQuestions((questionsData as Question[]) ?? []);
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -68,6 +99,24 @@ export default function StudentAssignmentDetailPage() {
           .maybeSingle();
 
         setSubmission(remise ?? null);
+
+        if (remise) {
+          const { data: reponses } = await supabase
+            .from("assignment_answers")
+            .select("question_id, reponse_texte, fichier, note, commentaire")
+            .eq("submission_id", remise.id);
+
+          setReponsesExistantes(
+            new Map(
+              ((reponses as ReponseExistante[]) ?? []).map((r) => [
+                r.question_id,
+                r,
+              ])
+            )
+          );
+        } else {
+          setReponsesExistantes(new Map());
+        }
       }
     }
 
@@ -79,6 +128,11 @@ export default function StudentAssignmentDetailPage() {
 
     if (!file) {
       alert("Choisissez un fichier");
+      return;
+    }
+
+    if (!extensionAutorisee(file.name)) {
+      alert("Ce type de fichier n'est pas accepté.");
       return;
     }
 
@@ -117,6 +171,88 @@ export default function StudentAssignmentDetailPage() {
     chargerTp();
   }
 
+  async function soumettreTpStructure() {
+    if (!assignment) return;
+
+    const manquantes = questions.filter(
+      (q) => !reponsesTexte[q.id]?.trim() && !fichiersParQuestion[q.id]
+    );
+    if (manquantes.length > 0) {
+      const confirmation = window.confirm(
+        `${manquantes.length} question(s) sans réponse ni pièce jointe. Soumettre quand même ?`
+      );
+      if (!confirmation) return;
+    }
+
+    for (const q of questions) {
+      const f = fichiersParQuestion[q.id];
+      if (f && !extensionAutorisee(f.name)) {
+        alert(`Le fichier joint à la question "${q.enonce}" n'a pas une extension acceptée.`);
+        return;
+      }
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Utilisateur non connecté");
+      return;
+    }
+
+    setEnvoi(true);
+
+    const { data: nouvelleSoumission, error: erreurSoumission } = await supabase
+      .from("assignment_submissions")
+      .insert({
+        assignment_id: assignment.id,
+        student_id: user.id,
+        student_email: user.email,
+      })
+      .select()
+      .single();
+
+    if (erreurSoumission || !nouvelleSoumission) {
+      alert(erreurSoumission?.message ?? "Erreur lors de la remise.");
+      setEnvoi(false);
+      return;
+    }
+
+    for (const q of questions) {
+      let cheminFichier: string | null = null;
+      const f = fichiersParQuestion[q.id];
+
+      if (f) {
+        const chemin = `${user.id}/${nouvelleSoumission.id}/${q.id}-${Date.now()}-${f.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("tp-submissions")
+          .upload(chemin, f);
+
+        if (uploadError) {
+          alert(
+            `Erreur lors de l'envoi de la pièce jointe pour "${q.enonce}" : ${uploadError.message}`
+          );
+          continue;
+        }
+        cheminFichier = chemin;
+      }
+
+      await supabase.from("assignment_answers").insert({
+        submission_id: nouvelleSoumission.id,
+        question_id: q.id,
+        reponse_texte: reponsesTexte[q.id]?.trim() || null,
+        fichier: cheminFichier,
+      });
+    }
+
+    alert("TP remis avec succès");
+    setEnvoi(false);
+    setReponsesTexte({});
+    setFichiersParQuestion({});
+    chargerTp();
+  }
+
   if (loading) {
     return <div className="p-8 text-gray-400">Chargement...</div>;
   }
@@ -134,6 +270,8 @@ export default function StudentAssignmentDetailPage() {
       </div>
     );
   }
+
+  const modeStructure = questions.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -194,17 +332,99 @@ export default function StudentAssignmentDetailPage() {
             <p className="mb-4 text-sm text-gray-500">Pas encore remis</p>
           )}
 
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="mb-4 text-sm"
-          />
+          {modeStructure ? (
+            <div className="space-y-6">
+              {questions.map((q, index) => {
+                const reponsePrecedente = reponsesExistantes.get(q.id);
+                return (
+                  <div
+                    key={q.id}
+                    className="border-b border-gray-100 pb-6 last:border-0 last:pb-0"
+                  >
+                    <h2 className="text-sm font-semibold text-gray-900 mb-2">
+                      Question {index + 1}
+                    </h2>
+                    <p className="text-sm text-gray-700 mb-3">{q.enonce}</p>
 
-          <div>
-            <Button onClick={deposerTravail} disabled={envoi}>
-              {envoi ? "Envoi..." : submission ? "Remettre à nouveau" : "Envoyer"}
-            </Button>
-          </div>
+                    {reponsePrecedente ? (
+                      <div className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <p className="whitespace-pre-wrap text-gray-800">
+                          {reponsePrecedente.reponse_texte || "(aucune réponse texte)"}
+                        </p>
+                        {reponsePrecedente.fichier && (
+                          <a
+                            href={fichierUrl(reponsePrecedente.fichier)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-700 hover:underline text-xs mt-2 inline-block"
+                          >
+                            Voir la pièce jointe
+                          </a>
+                        )}
+                        {reponsePrecedente.note !== null && (
+                          <p className="mt-2 text-xs text-gray-600">
+                            <strong>Note :</strong> {reponsePrecedente.note}
+                            {reponsePrecedente.commentaire &&
+                              ` — ${reponsePrecedente.commentaire}`}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <textarea
+                          value={reponsesTexte[q.id] ?? ""}
+                          onChange={(e) =>
+                            setReponsesTexte((prev) => ({
+                              ...prev,
+                              [q.id]: e.target.value,
+                            }))
+                          }
+                          rows={4}
+                          placeholder="Ta réponse…"
+                          className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2"
+                        />
+                        <input
+                          type="file"
+                          accept={ACCEPT_TP_INPUT}
+                          onChange={(e) =>
+                            setFichiersParQuestion((prev) => ({
+                              ...prev,
+                              [q.id]: e.target.files?.[0] ?? null,
+                            }))
+                          }
+                          className="text-xs text-gray-500"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">
+                          Pièce jointe optionnelle (capture d&apos;écran, document…).
+                        </p>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+
+              {!submission && (
+                <Button onClick={soumettreTpStructure} disabled={envoi}>
+                  {envoi ? "Envoi..." : "Soumettre le TP"}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <>
+              <input
+                type="file"
+                accept={ACCEPT_TP_INPUT}
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="mb-4 text-sm"
+              />
+
+              <div>
+                <Button onClick={deposerTravail} disabled={envoi}>
+                  {envoi ? "Envoi..." : submission ? "Remettre à nouveau" : "Envoyer"}
+                </Button>
+              </div>
+            </>
+          )}
         </Card>
       </div>
     </div>
