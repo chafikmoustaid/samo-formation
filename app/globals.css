@@ -26,6 +26,9 @@ body {
 }
 
 /* Contenu HTML des TP (énoncé + corrigé), importé depuis les .docx */
+.tp-content {
+  font-size: 16px;
+}
 .tp-content h2,
 .tp-content h3 {
   margin-top: 1.2em;
@@ -34,29 +37,75 @@ body {
   color: #1b4332;
 }
 .tp-content p {
-  margin: 0.5em 0;
-  line-height: 1.5;
+  margin: 0.6em 0;
+  line-height: 1.6;
+}
+/* Titre principal du TP (1er paragraphe en gras du contenu) */
+.tp-content > div:first-child > p:first-child strong,
+.tp-content > p:first-child strong {
+  font-size: 1.3em;
+}
+/* Paragraphes 100% en gras : ce sont les en-têtes de section (Étape,
+   Exercice, TP N ⭐, Grille d'évaluation, Objectifs...) et les questions.
+   On les distingue visuellement du texte courant avec un accent de
+   couleur et un peu d'air, façon "mini-titre". */
+.tp-content p:has(> strong:only-child) {
+  margin-top: 1.5em;
+  padding-top: 0.6em;
+  border-top: 2px solid #e6f0ea;
+  font-size: 1.08em;
+  color: #1b4332;
+}
+.tp-content p:has(> strong:only-child):first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.tp-content strong {
+  color: #14532d;
 }
 .tp-content ul,
 .tp-content ol {
-  margin: 0.5em 0 0.5em 1.5em;
+  margin: 0.6em 0 0.9em 1.6em;
+}
+.tp-content li {
+  margin: 0.35em 0;
+  line-height: 1.55;
+}
+.tp-content li > p {
+  margin: 0;
 }
 .tp-content table {
   border-collapse: collapse;
   width: 100%;
-  margin: 0.75em 0;
-  font-size: 14px;
+  margin: 1em 0;
+  font-size: 0.9em;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .tp-content table td,
 .tp-content table th {
   border: 1px solid #dee2e6;
-  padding: 8px 10px;
+  padding: 10px 12px;
   text-align: left;
   vertical-align: top;
 }
 .tp-content table tr:first-child {
   background: #e8f3ff;
   font-weight: bold;
+}
+/* Encadré "Contexte" / "Mise en situation" : un tableau à une seule
+   ligne, qu'on distingue du reste (grilles d'évaluation à plusieurs
+   lignes) avec un fond doux et une bordure gauche colorée. */
+.tp-content table:has(tbody > tr:only-child) {
+  background: #f4faf7;
+  box-shadow: none;
+}
+.tp-content table:has(tbody > tr:only-child) td {
+  border: none;
+  border-left: 4px solid #2f855a;
+  padding: 14px 18px;
 }
 .tp-content-corrige {
   background: #fff8e6;

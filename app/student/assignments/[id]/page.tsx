@@ -479,7 +479,7 @@ export default function StudentAssignmentDetailPage() {
         <Card>
           {assignment.contenu_html ? (
             segmentsContenu ? (
-              <div className="mb-4 tp-content text-sm text-gray-700">
+              <div className="mb-4 tp-content text-gray-700">
                 {segmentsContenu.map((seg, i) =>
                   seg.question ? (
                     <div key={i}>
