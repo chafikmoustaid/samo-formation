@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 import PageHeader from "@/components/ui/PageHeader";
@@ -21,10 +22,34 @@ const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
   refusee: "danger",
 };
 
+// Déduit la période (semaine) couverte par une fiche à partir des dates
+// renseignées dans ses lignes. C'est cette période — et non un total brut
+// sans contexte — qui rend le relevé exploitable pour justifier des heures
+// auprès de l'administration ou d'un organisme subventionnaire.
+function periodeFiche(fiche: any): string {
+  const lignes = Array.isArray(fiche.lignes) ? fiche.lignes : [];
+  const dates = lignes
+    .map((l: any) => l?.date)
+    .filter((d: any): d is string => !!d)
+    .sort();
+
+  if (dates.length === 0) {
+    return fiche.created_at
+      ? new Date(fiche.created_at).toLocaleDateString("fr-CA")
+      : "—";
+  }
+
+  const debut = new Date(dates[0]).toLocaleDateString("fr-CA");
+  const fin = new Date(dates[dates.length - 1]).toLocaleDateString("fr-CA");
+
+  return debut === fin ? debut : `${debut} au ${fin}`;
+}
+
 function exporterCsv(fiches: any[]) {
   const entetes = [
     "Étudiant",
     "Formateur",
+    "Semaine",
     "Formation (h)",
     "Pratique (h)",
     "Total (h)",
@@ -41,6 +66,7 @@ function exporterCsv(fiches: any[]) {
     [
       f.nom_etudiant,
       f.nom_formateur,
+      periodeFiche(f),
       f.total_formation ?? 0,
       f.total_pratique ?? 0,
       f.total_heures ?? 0,
@@ -61,14 +87,20 @@ function exporterCsv(fiches: any[]) {
   URL.revokeObjectURL(url);
 }
 
-export default function AttendanceHistory() {
+function AttendanceHistoryContent() {
+  const searchParams = useSearchParams();
+
   const [fiches, setFiches] = useState<any[]>([]);
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const [rechercheEtudiant, setRechercheEtudiant] = useState("");
+  const [rechercheEtudiant, setRechercheEtudiant] = useState(
+    () => searchParams.get("etudiant") ?? ""
+  );
   const [filtreFormateur, setFiltreFormateur] = useState("");
-  const [filtreStatut, setFiltreStatut] = useState("");
+  const [filtreStatut, setFiltreStatut] = useState(
+    () => searchParams.get("statut") ?? ""
+  );
   const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
 
@@ -346,6 +378,7 @@ export default function AttendanceHistory() {
                   <th className="p-4 font-medium w-10"></th>
                   <th className="p-4 font-medium">Étudiant</th>
                   <th className="p-4 font-medium">Formateur</th>
+                  <th className="p-4 font-medium">Semaine</th>
                   <th className="p-4 font-medium">Formation</th>
                   <th className="p-4 font-medium">Pratique</th>
                   <th className="p-4 font-medium">Total</th>
@@ -368,6 +401,9 @@ export default function AttendanceHistory() {
                     </td>
                     <td className="p-4">{fiche.nom_etudiant}</td>
                     <td className="p-4">{fiche.nom_formateur}</td>
+                    <td className="p-4 whitespace-nowrap text-gray-600">
+                      {periodeFiche(fiche)}
+                    </td>
                     <td className="p-4">{fiche.total_formation ?? 0} h</td>
                     <td className="p-4">{fiche.total_pratique ?? 0} h</td>
                     <td className="p-4">{fiche.total_heures} h</td>
@@ -395,5 +431,13 @@ export default function AttendanceHistory() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function AttendanceHistory() {
+  return (
+    <Suspense fallback={<div className="p-8 text-gray-400">Chargement...</div>}>
+      <AttendanceHistoryContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import DashboardChart from "@/components/DashboardChart";
 import { supabase } from "@/lib/supabase";
 import LinkButton from "@/components/ui/LinkButton";
@@ -8,29 +9,6 @@ import PageHeader from "@/components/ui/PageHeader";
 import StatCard from "@/components/ui/StatCard";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import Button from "@/components/ui/Button";
-
-function exporterHeuresCsv(
-  titre: string,
-  fichierSuffixe: string,
-  lignes: [string, number][]
-) {
-  const echapper = (valeur: unknown) => `"${String(valeur ?? "").replace(/"/g, '""')}"`;
-  const csv =
-    "﻿" +
-    [
-      [titre, "Heures validées"].map(echapper).join(","),
-      ...lignes.map(([nom, heures]) => [nom, heures].map(echapper).join(",")),
-    ].join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `heures-${fichierSuffixe}-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 const STATUT_TONE = {
   en_attente: "warning",
@@ -69,42 +47,44 @@ export default function Dashboard() {
   const validees = fiches.filter((f) => f.statut === "validee").length;
   const refusees = fiches.filter((f) => f.statut === "refusee").length;
 
-  const totalHeures = fiches.reduce(
-    (total, fiche) => total + Number(fiche.total_heures || 0),
-    0
-  );
-
   const profilsParId = new Map(profils.map((p) => [p.id, p]));
   const formationsParId = new Map(formations.map((f) => [f.id, f.nom]));
 
-  const heuresParEtudiant = new Map<string, number>();
-  const heuresParFormation = new Map<string, number>();
+  // Regroupe les fiches validées par étudiant, en gardant le détail de
+  // chaque semaine (fiche) pour permettre un relevé d'heures exploitable
+  // (l'admin doit pouvoir voir QUAND ces heures ont été faites, pas juste
+  // un total brut sans période).
+  const fichesParEtudiant = new Map<
+    string,
+    { nom: string; nbSemaines: number; totalHeures: number; formation: string }
+  >();
 
   for (const fiche of fiches) {
     if (fiche.statut !== "validee") continue;
 
-    const heures = Number(fiche.total_heures || 0);
     const nomEtudiant = fiche.nom_etudiant || "Étudiant inconnu";
-    heuresParEtudiant.set(
-      nomEtudiant,
-      (heuresParEtudiant.get(nomEtudiant) || 0) + heures
-    );
-
+    const heures = Number(fiche.total_heures || 0);
     const profil = profilsParId.get(fiche.user_id);
     const nomFormation = profil?.formation_id
       ? formationsParId.get(profil.formation_id) ?? "Formation inconnue"
       : "Formation non assignée";
-    heuresParFormation.set(
-      nomFormation,
-      (heuresParFormation.get(nomFormation) || 0) + heures
-    );
+
+    const existant = fichesParEtudiant.get(nomEtudiant);
+    if (existant) {
+      existant.nbSemaines += 1;
+      existant.totalHeures += heures;
+    } else {
+      fichesParEtudiant.set(nomEtudiant, {
+        nom: nomEtudiant,
+        nbSemaines: 1,
+        totalHeures: heures,
+        formation: nomFormation,
+      });
+    }
   }
 
-  const classementEtudiants = [...heuresParEtudiant.entries()].sort(
-    (a, b) => b[1] - a[1]
-  );
-  const classementFormations = [...heuresParFormation.entries()].sort(
-    (a, b) => b[1] - a[1]
+  const releveEtudiants = [...fichesParEtudiant.values()].sort((a, b) =>
+    a.nom.localeCompare(b.nom)
   );
 
   const maintenant = Date.now();
@@ -140,12 +120,26 @@ export default function Dashboard() {
           }
         />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <StatCard label="Total fiches" value={totalFiches} />
-          <StatCard label="En attente" value={enAttente} accent="orange" />
-          <StatCard label="Validées" value={validees} accent="green" />
-          <StatCard label="Refusées" value={refusees} accent="red" />
-          <StatCard label="Total heures" value={totalHeures} />
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard label="Total fiches" value={totalFiches} href="/attendance/history" />
+          <StatCard
+            label="En attente"
+            value={enAttente}
+            accent="orange"
+            href="/attendance/history?statut=en_attente"
+          />
+          <StatCard
+            label="Validées"
+            value={validees}
+            accent="green"
+            href="/attendance/history?statut=validee"
+          />
+          <StatCard
+            label="Refusées"
+            value={refusees}
+            accent="red"
+            href="/attendance/history?statut=refusee"
+          />
         </div>
 
         {fichesEnRetard.length > 0 && (
@@ -235,71 +229,48 @@ export default function Dashboard() {
           </table>
         </Card>
 
-        <div className="grid md:grid-cols-2 gap-6 mt-8">
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Heures cumulées par formation
-              </h2>
-              {classementFormations.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    exporterHeuresCsv("Formation", "par-formation", classementFormations)
-                  }
-                >
-                  Exporter
-                </Button>
-              )}
-            </div>
+        <Card className="mt-8">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Relevé d&apos;heures par étudiant
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              Clique sur un étudiant pour voir le détail de ses fiches validées, semaine par
+              semaine (nécessaire pour justifier les heures auprès d&apos;un organisme
+              subventionnaire).
+            </p>
+          </div>
 
-            {classementFormations.length === 0 ? (
-              <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
-            ) : (
-              <ul className="space-y-3">
-                {classementFormations.map(([nom, heures]) => (
-                  <li key={nom} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700">{nom}</span>
-                    <span className="font-semibold text-gray-900">{heures} h</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Heures cumulées par étudiant
-              </h2>
-              {classementEtudiants.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    exporterHeuresCsv("Étudiant", "par-etudiant", classementEtudiants)
-                  }
-                >
-                  Exporter
-                </Button>
-              )}
-            </div>
-
-            {classementEtudiants.length === 0 ? (
-              <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
-            ) : (
-              <ul className="space-y-3 max-h-72 overflow-y-auto">
-                {classementEtudiants.map(([nom, heures]) => (
-                  <li key={nom} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700">{nom}</span>
-                    <span className="font-semibold text-gray-900">{heures} h</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        </div>
+          {releveEtudiants.length === 0 ? (
+            <p className="text-sm text-gray-400">Aucune heure validée pour l&apos;instant.</p>
+          ) : (
+            <ul className="divide-y divide-gray-100">
+              {releveEtudiants.map((etu) => (
+                <li key={etu.nom}>
+                  <Link
+                    href={`/attendance/history?statut=validee&etudiant=${encodeURIComponent(
+                      etu.nom
+                    )}`}
+                    className="flex items-center justify-between py-3 px-2 -mx-2 rounded-lg hover:bg-gray-50 text-sm"
+                  >
+                    <div>
+                      <span className="text-gray-900 font-medium">{etu.nom}</span>
+                      <span className="text-gray-400 ml-2">{etu.formation}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-semibold text-gray-900">
+                        {etu.totalHeures} h
+                      </span>
+                      <span className="text-gray-400 ml-2">
+                        sur {etu.nbSemaines} semaine{etu.nbSemaines > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
       </div>
     </div>
   );
