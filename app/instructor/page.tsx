@@ -80,7 +80,11 @@ export default function InstructorPage() {
           </h2>
 
           <div className="flex flex-wrap gap-3">
-            <LinkButton href="/instructor/attendance" variant="primary">
+            <LinkButton href="/instructor/students" variant="primary">
+              Mes étudiants
+            </LinkButton>
+
+            <LinkButton href="/instructor/attendance" variant="outline">
               Fiches de présence à valider
             </LinkButton>
 
@@ -96,12 +100,8 @@ export default function InstructorPage() {
               Remises TP
             </LinkButton>
 
-            <LinkButton href="/instructor/results" variant="outline">
-              Résultats
-            </LinkButton>
-
             <LinkButton href="/instructor/progress" variant="outline">
-              Progression
+              Progression (classe)
             </LinkButton>
           </div>
         </Card>

@@ -54,7 +54,9 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-gray-100">
 
-        <Navbar />
+        <div className="no-print">
+          <Navbar />
+        </div>
 
         <main>
           {children}
