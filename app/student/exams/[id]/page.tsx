@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import SeanceNav from "@/components/student/SeanceNav";
 
 export default function StudentExamPage() {
   const params = useParams<{ id: string }>();
@@ -95,11 +95,8 @@ export default function StudentExamPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <PageHeader
-            title="Examen"
-            backHref="/student/exams"
-            backLabel="← Mes examens"
-          />
+          <SeanceNav sessionId={evaluation.session_id} current="exam" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">Examen</h1>
           <Card>Aucune question publiée pour cet examen pour le moment.</Card>
         </div>
       </div>
@@ -109,11 +106,10 @@ export default function StudentExamPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <PageHeader
-          title={evaluation.titre}
-          backHref="/student/exams"
-          backLabel="← Mes examens"
-        />
+        <SeanceNav sessionId={evaluation.session_id} current="exam" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          {evaluation.titre}
+        </h1>
 
         <Card>
           {questions.map((question, index) => (

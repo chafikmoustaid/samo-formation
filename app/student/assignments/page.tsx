@@ -16,20 +16,56 @@ export default function StudentAssignmentsPage() {
   }, []);
 
   async function chargerTP() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    let evaluationIds: number[] | null = null;
+
+    if (user) {
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("formation_id")
+        .eq("id", user.id)
+        .single();
+
+      if (profil?.formation_id) {
+        const { data: sessionsData } = await supabase
+          .from("sessions")
+          .select("id")
+          .eq("formation_id", profil.formation_id);
+
+        const sessionIds = (sessionsData ?? []).map((s) => s.id);
+
+        const { data: evaluationsData } = await supabase
+          .from("evaluations")
+          .select("id")
+          .eq("type", "tp")
+          .in("session_id", sessionIds.length > 0 ? sessionIds : [-1]);
+
+        evaluationIds = (evaluationsData ?? []).map((e) => e.id);
+      }
+    }
+
     // On exclut volontairement corrige_html : c'est le corrigé du TP, il
     // ne doit jamais transiter vers le navigateur d'un compte étudiant.
-    const { data } = await supabase
+    let assignmentsQuery = supabase
       .from("assignments")
       .select(
         "id, evaluation_id, titre, description, date_limite, created_at, contenu_html"
       )
       .order("date_limite");
 
-    setAssignments(data ?? []);
+    if (evaluationIds) {
+      assignmentsQuery = assignmentsQuery.in(
+        "evaluation_id",
+        evaluationIds.length > 0 ? evaluationIds : [-1]
+      );
+    }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data } = await assignmentsQuery;
+
+    setAssignments(data ?? []);
 
     if (!user) return;
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-type Onglet = "support" | "quiz" | "tp" | "resultats";
+type Onglet = "support" | "quiz" | "tp" | "resultats" | "exam";
 
 type Info = {
   matiereId: number | null;
@@ -25,9 +25,11 @@ type Info = {
 // pour ne jamais être obligé de repasser par "Mes cours".
 export default function SeanceNav({
   courseId,
+  sessionId,
   current,
 }: {
-  courseId: string | number;
+  courseId?: string | number;
+  sessionId?: string | number;
   current: Onglet;
 }) {
   const [info, setInfo] = useState<Info | null>(null);
@@ -36,11 +38,24 @@ export default function SeanceNav({
     let active = true;
 
     async function charger() {
-      const { data: course } = await supabase
-        .from("courses")
-        .select("id, session_id, titre")
-        .eq("id", Number(courseId))
-        .single();
+      let course: { id: number; session_id: number; titre: string } | null =
+        null;
+
+      if (courseId) {
+        const { data } = await supabase
+          .from("courses")
+          .select("id, session_id, titre")
+          .eq("id", Number(courseId))
+          .single();
+        course = data ?? null;
+      } else if (sessionId) {
+        const { data } = await supabase
+          .from("courses")
+          .select("id, session_id, titre")
+          .eq("session_id", Number(sessionId))
+          .maybeSingle();
+        course = data ?? { id: -1, session_id: Number(sessionId), titre: "" };
+      }
 
       if (!course || !active) return;
 
@@ -92,7 +107,7 @@ export default function SeanceNav({
         sessionId: course.session_id,
         numero: session?.numero ?? null,
         titre: course.titre,
-        courseId: course.id,
+        courseId: course.id > 0 ? course.id : null,
         hasSupport: !!lessonRes.data,
         hasQuiz: (quizRes.count ?? 0) > 0,
         tpEvaluationId: tpEvaluation?.id ?? null,
@@ -100,12 +115,12 @@ export default function SeanceNav({
       });
     }
 
-    if (courseId) charger();
+    if (courseId || sessionId) charger();
 
     return () => {
       active = false;
     };
-  }, [courseId]);
+  }, [courseId, sessionId]);
 
   if (!info) return null;
 
@@ -114,25 +129,31 @@ export default function SeanceNav({
       key: "support",
       label: "Support de cours",
       href: `/student/courses/${info.courseId}`,
-      actif: info.hasSupport,
+      actif: info.hasSupport && !!info.courseId,
     },
     {
       key: "quiz",
       label: "Quiz",
       href: `/student/quiz/${info.courseId}`,
-      actif: info.hasQuiz,
+      actif: info.hasQuiz && !!info.courseId,
     },
     {
       key: "tp",
       label: "TP / Test",
       href: `/student/assignments/${info.courseId}`,
-      actif: !!info.tpEvaluationId,
+      actif: !!info.tpEvaluationId && !!info.courseId,
+    },
+    {
+      key: "exam",
+      label: "Examen",
+      href: `/student/exams/${info.examEvaluationId}`,
+      actif: !!info.examEvaluationId,
     },
     {
       key: "resultats",
       label: "Mes résultats",
       href: `/student/results/${info.courseId}`,
-      actif: true,
+      actif: !!info.courseId,
     },
   ];
 
@@ -163,18 +184,6 @@ export default function SeanceNav({
           </Link>
         ) : (
           <span>Séance {info.numero}</span>
-        )}
-
-        {info.examEvaluationId && (
-          <>
-            <span>/</span>
-            <Link
-              href={`/student/exams/${info.examEvaluationId}`}
-              className="hover:underline"
-            >
-              Examen
-            </Link>
-          </>
         )}
       </div>
 
