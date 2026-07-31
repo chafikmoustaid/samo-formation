@@ -42,7 +42,7 @@ export default function StudentPage() {
 
       const profilRes = await supabase
         .from("profiles")
-        .select("formation_id, formations(nom, heures_attendues)")
+        .select("formation_id, formations!profiles_formation_id_fkey(nom, heures_attendues)")
         .eq("id", user.id)
         .single();
 
