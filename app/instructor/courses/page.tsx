@@ -51,6 +51,13 @@ export default function InstructorCoursesPage() {
         />
 
         <Card className="p-4">
+          {courses.length === 0 ? (
+            <p className="text-sm text-gray-400 p-2">
+              Aucune séance disponible. Cela signifie qu&apos;aucune formation ne
+              t&apos;est encore assignée — demande à l&apos;administration de
+              t&apos;assigner une formation depuis la Gestion des comptes.
+            </p>
+          ) : (
           <div className="space-y-3">
             {courses.map((course) => (
               <div
@@ -86,6 +93,7 @@ export default function InstructorCoursesPage() {
               </div>
             ))}
           </div>
+          )}
         </Card>
       </div>
     </div>
