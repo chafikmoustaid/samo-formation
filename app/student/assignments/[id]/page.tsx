@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 import SeanceNav from "@/components/student/SeanceNav";
 import { ACCEPT_TP_INPUT, extensionAutorisee } from "@/lib/fichiersTp";
 
-type Question = { id: number; ordre: number; enonce: string };
+type Question = { id: number; ordre: number; enonce: string; groupe: string | null };
 type ReponseExistante = {
   question_id: number;
   reponse_texte: string | null;
@@ -16,9 +16,36 @@ type ReponseExistante = {
   note: number | null;
   commentaire: string | null;
 };
+type RubricItem = {
+  id: number;
+  groupe: string | null;
+  critere: string;
+  points_max: number;
+  ordre: number;
+};
+type RubricScore = { rubric_item_id: number; points_obtenus: number | null };
 
 function fichierUrl(chemin: string) {
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/tp-submissions/${chemin}`;
+}
+
+// Regroupe une liste par sa propriété `groupe` (ou "Général" si absente),
+// en conservant l'ordre d'apparition des groupes et des items.
+function grouperPar<T extends { groupe: string | null }>(items: T[]) {
+  const groupes: { nom: string; items: T[] }[] = [];
+  const index = new Map<string, T[]>();
+
+  for (const item of items) {
+    const nom = item.groupe ?? "Général";
+    if (!index.has(nom)) {
+      const liste: T[] = [];
+      index.set(nom, liste);
+      groupes.push({ nom, items: liste });
+    }
+    index.get(nom)!.push(item);
+  }
+
+  return groupes;
 }
 
 export default function StudentAssignmentDetailPage() {
@@ -33,8 +60,14 @@ export default function StudentAssignmentDetailPage() {
   const [envoi, setEnvoi] = useState(false);
 
   // Mode « TP structuré » : questions remplissables en ligne, comme un quiz,
-  // avec pièce jointe optionnelle par question.
+  // avec pièce jointe optionnelle par question, groupées par section (le TP
+  // peut contenir plusieurs sous-TP, ex. "TP 1", "TP 2"), et une grille
+  // d'évaluation affichée à titre informatif pour chaque section.
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [rubrique, setRubrique] = useState<RubricItem[]>([]);
+  const [scoresRubrique, setScoresRubrique] = useState<Map<number, number | null>>(
+    new Map()
+  );
   const [reponsesExistantes, setReponsesExistantes] = useState<
     Map<number, ReponseExistante>
   >(new Map());
@@ -78,11 +111,17 @@ export default function StudentAssignmentDetailPage() {
     setAssignment(tp);
 
     if (tp) {
-      const { data: questionsData } = await supabase.rpc(
-        "assignment_questions_visibles",
-        { p_assignment_id: tp.id }
-      );
+      const [{ data: questionsData }, { data: rubriqueData }] = await Promise.all([
+        supabase.rpc("assignment_questions_visibles", { p_assignment_id: tp.id }),
+        supabase
+          .from("assignment_rubric_items")
+          .select("id, groupe, critere, points_max, ordre")
+          .eq("assignment_id", tp.id)
+          .order("ordre"),
+      ]);
+
       setQuestions((questionsData as Question[]) ?? []);
+      setRubrique((rubriqueData as RubricItem[]) ?? []);
 
       const {
         data: { user },
@@ -101,10 +140,16 @@ export default function StudentAssignmentDetailPage() {
         setSubmission(remise ?? null);
 
         if (remise) {
-          const { data: reponses } = await supabase
-            .from("assignment_answers")
-            .select("question_id, reponse_texte, fichier, note, commentaire")
-            .eq("submission_id", remise.id);
+          const [{ data: reponses }, { data: scores }] = await Promise.all([
+            supabase
+              .from("assignment_answers")
+              .select("question_id, reponse_texte, fichier, note, commentaire")
+              .eq("submission_id", remise.id),
+            supabase
+              .from("assignment_rubric_scores")
+              .select("rubric_item_id, points_obtenus")
+              .eq("submission_id", remise.id),
+          ]);
 
           setReponsesExistantes(
             new Map(
@@ -114,8 +159,17 @@ export default function StudentAssignmentDetailPage() {
               ])
             )
           );
+          setScoresRubrique(
+            new Map(
+              ((scores as RubricScore[]) ?? []).map((s) => [
+                s.rubric_item_id,
+                s.points_obtenus,
+              ])
+            )
+          );
         } else {
           setReponsesExistantes(new Map());
+          setScoresRubrique(new Map());
         }
       }
     }
@@ -272,6 +326,10 @@ export default function StudentAssignmentDetailPage() {
   }
 
   const modeStructure = questions.length > 0;
+  const groupesQuestions = grouperPar(questions);
+  const rubriqueParGroupe = new Map(
+    grouperPar(rubrique).map((g) => [g.nom, g.items])
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -306,7 +364,7 @@ export default function StudentAssignmentDetailPage() {
 
           {submission ? (
             <div
-              className={`mb-4 rounded-lg border px-4 py-3 text-sm ${
+              className={`mb-6 rounded-lg border px-4 py-3 text-sm ${
                 submission.note !== null && submission.note !== undefined
                   ? "bg-green-50 border-green-200 text-green-800"
                   : "bg-blue-50 border-blue-200 text-blue-800"
@@ -319,7 +377,7 @@ export default function StudentAssignmentDetailPage() {
 
               {submission.note !== null && submission.note !== undefined ? (
                 <p className="mt-1">
-                  <strong>Note :</strong> {submission.note}/20
+                  <strong>Note :</strong> {submission.note}
                   {submission.commentaire && (
                     <>{" — "}{submission.commentaire}</>
                   )}
@@ -329,87 +387,114 @@ export default function StudentAssignmentDetailPage() {
               )}
             </div>
           ) : (
-            <p className="mb-4 text-sm text-gray-500">Pas encore remis</p>
+            <p className="mb-6 text-sm text-gray-500">Pas encore remis</p>
           )}
 
-          {modeStructure ? (
-            <div className="space-y-6">
-              {questions.map((q, index) => {
-                const reponsePrecedente = reponsesExistantes.get(q.id);
-                return (
-                  <div
-                    key={q.id}
-                    className="border-b border-gray-100 pb-6 last:border-0 last:pb-0"
-                  >
-                    <h2 className="text-sm font-semibold text-gray-900 mb-2">
-                      Question {index + 1}
-                    </h2>
-                    <p className="text-sm text-gray-700 mb-3">{q.enonce}</p>
+          {modeStructure && (
+            <>
+              <h2 className="text-base font-bold text-gray-900 mb-4 pt-2 border-t border-gray-200">
+                Réponds ci-dessous
+              </h2>
 
-                    {reponsePrecedente ? (
-                      <div className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <p className="whitespace-pre-wrap text-gray-800">
-                          {reponsePrecedente.reponse_texte || "(aucune réponse texte)"}
-                        </p>
-                        {reponsePrecedente.fichier && (
-                          <a
-                            href={fichierUrl(reponsePrecedente.fichier)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-green-700 hover:underline text-xs mt-2 inline-block"
+              <div className="space-y-8">
+                {groupesQuestions.map((groupe) => (
+                  <div key={groupe.nom}>
+                    <h3 className="text-sm font-semibold text-green-800 mb-4">
+                      {groupe.nom}
+                    </h3>
+
+                    <div className="space-y-6">
+                      {groupe.items.map((q) => {
+                        const reponsePrecedente = reponsesExistantes.get(q.id);
+                        return (
+                          <div
+                            key={q.id}
+                            className="border-b border-gray-100 pb-6 last:border-0 last:pb-0"
                           >
-                            Voir la pièce jointe
-                          </a>
-                        )}
-                        {reponsePrecedente.note !== null && (
-                          <p className="mt-2 text-xs text-gray-600">
-                            <strong>Note :</strong> {reponsePrecedente.note}
-                            {reponsePrecedente.commentaire &&
-                              ` — ${reponsePrecedente.commentaire}`}
-                          </p>
-                        )}
+                            <p className="text-sm text-gray-700 mb-3">{q.enonce}</p>
+
+                            {reponsePrecedente ? (
+                              <div className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <p className="whitespace-pre-wrap text-gray-800">
+                                  {reponsePrecedente.reponse_texte ||
+                                    "(aucune réponse texte)"}
+                                </p>
+                                {reponsePrecedente.fichier && (
+                                  <a
+                                    href={fichierUrl(reponsePrecedente.fichier)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-green-700 hover:underline text-xs mt-2 inline-block"
+                                  >
+                                    Voir la pièce jointe
+                                  </a>
+                                )}
+                              </div>
+                            ) : (
+                              <>
+                                <textarea
+                                  value={reponsesTexte[q.id] ?? ""}
+                                  onChange={(e) =>
+                                    setReponsesTexte((prev) => ({
+                                      ...prev,
+                                      [q.id]: e.target.value,
+                                    }))
+                                  }
+                                  rows={3}
+                                  placeholder="Ta réponse…"
+                                  className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2"
+                                />
+                                <input
+                                  type="file"
+                                  accept={ACCEPT_TP_INPUT}
+                                  onChange={(e) =>
+                                    setFichiersParQuestion((prev) => ({
+                                      ...prev,
+                                      [q.id]: e.target.files?.[0] ?? null,
+                                    }))
+                                  }
+                                  className="text-xs text-gray-500"
+                                />
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {(rubriqueParGroupe.get(groupe.nom)?.length ?? 0) > 0 && (
+                      <div className="mt-4 bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-900">
+                        <p className="font-semibold mb-1">Tu seras évalué(e) sur :</p>
+                        <ul className="space-y-0.5">
+                          {rubriqueParGroupe.get(groupe.nom)!.map((r) => {
+                            const obtenu = scoresRubrique.get(r.id);
+                            return (
+                              <li key={r.id} className="flex justify-between gap-3">
+                                <span>{r.critere}</span>
+                                <span className="shrink-0">
+                                  {submission && obtenu !== undefined
+                                    ? `${obtenu ?? "—"} / ${r.points_max}`
+                                    : `/ ${r.points_max}`}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
-                    ) : (
-                      <>
-                        <textarea
-                          value={reponsesTexte[q.id] ?? ""}
-                          onChange={(e) =>
-                            setReponsesTexte((prev) => ({
-                              ...prev,
-                              [q.id]: e.target.value,
-                            }))
-                          }
-                          rows={4}
-                          placeholder="Ta réponse…"
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2"
-                        />
-                        <input
-                          type="file"
-                          accept={ACCEPT_TP_INPUT}
-                          onChange={(e) =>
-                            setFichiersParQuestion((prev) => ({
-                              ...prev,
-                              [q.id]: e.target.files?.[0] ?? null,
-                            }))
-                          }
-                          className="text-xs text-gray-500"
-                        />
-                        <p className="text-xs text-gray-400 mt-1">
-                          Pièce jointe optionnelle (capture d&apos;écran, document…).
-                        </p>
-                      </>
                     )}
                   </div>
-                );
-              })}
+                ))}
 
-              {!submission && (
-                <Button onClick={soumettreTpStructure} disabled={envoi}>
-                  {envoi ? "Envoi..." : "Soumettre le TP"}
-                </Button>
-              )}
-            </div>
-          ) : (
+                {!submission && (
+                  <Button onClick={soumettreTpStructure} disabled={envoi}>
+                    {envoi ? "Envoi..." : "Soumettre le TP"}
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+
+          {!modeStructure && (
             <>
               <input
                 type="file"
