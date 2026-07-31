@@ -115,9 +115,9 @@ export async function GET(
     ["Formation", colW.fDe + colW.fA + colW.fTot],
     ["Pratique", colW.pDe + colW.pA + colW.pTot],
   ];
-  pdf.setFillColor(...GRIS_ENTETE);
   pdf.setDrawColor(0, 0, 0);
   headerLabels1.forEach(([label, w]) => {
+    pdf.setFillColor(...GRIS_ENTETE);
     pdf.rect(x, y, w, h1, "FD");
     if (label) pdf.text(label, x + w / 2, y + h1 / 2 + 1.2, { align: "center" });
     x += w;
@@ -127,6 +127,7 @@ export async function GET(
   // En-tête ligne 2
   const h2 = 5;
   x = x0 + colW.jour + colW.date + colW.matiere + colW.lp;
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x0, y, colW.jour + colW.date + colW.matiere + colW.lp, h2, "FD");
   const subLabels: [string, number][] = [
     ["De", colW.fDe],
@@ -137,6 +138,7 @@ export async function GET(
     ["Total", colW.pTot],
   ];
   subLabels.forEach(([label, w]) => {
+    pdf.setFillColor(...GRIS_ENTETE);
     pdf.rect(x, y, w, h2, "FD");
     pdf.text(label, x + w / 2, y + h2 / 2 + 1, { align: "center" });
     x += w;
@@ -225,9 +227,9 @@ export async function GET(
 
   // Ligne TOTAL
   pdf.setFont("helvetica", "bold");
-  pdf.setFillColor(...GRIS_ENTETE);
   pdf.setDrawColor(0, 0, 0);
   x = x0;
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x, y, colW.jour + colW.date + colW.matiere + colW.lp, hRow, "FD");
   pdf.text(
     "TOTAL",
@@ -237,16 +239,20 @@ export async function GET(
   );
   x += colW.jour + colW.date + colW.matiere + colW.lp;
 
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x, y, colW.fDe + colW.fA, hRow, "FD");
   x += colW.fDe + colW.fA;
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x, y, colW.fTot, hRow, "FD");
   pdf.text(String(fiche.total_formation ?? 0), x + colW.fTot / 2, y + hRow / 2 + 1, {
     align: "center",
   });
   x += colW.fTot;
 
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x, y, colW.pDe + colW.pA, hRow, "FD");
   x += colW.pDe + colW.pA;
+  pdf.setFillColor(...GRIS_ENTETE);
   pdf.rect(x, y, colW.pTot, hRow, "FD");
   pdf.text(String(fiche.total_pratique ?? 0), x + colW.pTot / 2, y + hRow / 2 + 1, {
     align: "center",
