@@ -6,6 +6,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import LinkButton from "@/components/ui/LinkButton";
+import MultiFormationSelect from "@/components/ui/MultiFormationSelect";
 
 type Role = "admin" | "instructor" | "student";
 
@@ -60,6 +61,11 @@ export default function ComptesPage() {
   );
   const [toutesMatieres, setToutesMatieres] = useState<string[]>([]);
   const [formations, setFormations] = useState<Formation[]>([]);
+  const [formationsFormateurs, setFormationsFormateurs] = useState<
+    Map<string, number[]>
+  >(new Map());
+  const [savingFormateurFormationsId, setSavingFormateurFormationsId] =
+    useState<string | null>(null);
 
   const [formationChoisieId, setFormationChoisieId] = useState<number | null>(
     null
@@ -151,6 +157,47 @@ export default function ComptesPage() {
     if (liste.length > 0 && formationChoisieId === null) {
       setFormationChoisieId(liste[0].id);
     }
+  }
+
+  async function loadFormationsFormateurs() {
+    const { data } = await supabase
+      .from("instructor_formations")
+      .select("profil_id, formation_id");
+
+    const map = new Map<string, number[]>();
+    for (const row of (data as { profil_id: string; formation_id: number }[]) ?? []) {
+      const liste = map.get(row.profil_id) ?? [];
+      liste.push(row.formation_id);
+      map.set(row.profil_id, liste);
+    }
+    setFormationsFormateurs(map);
+  }
+
+  async function enregistrerFormationsFormateur(id: string, formationIds: number[]) {
+    setSavingFormateurFormationsId(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_set_instructor_formations", {
+      profil_id: id,
+      formation_ids: formationIds,
+    });
+
+    setSavingFormateurFormationsId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'assignation des formations : " + error.message,
+      });
+      return;
+    }
+
+    setFormationsFormateurs((prev) => {
+      const next = new Map(prev);
+      next.set(id, formationIds);
+      return next;
+    });
+    setMessage({ type: "succes", texte: "Formations du formateur mises à jour." });
   }
 
   async function loadMatieresFormation(formationId: number) {
@@ -254,6 +301,7 @@ export default function ComptesPage() {
     loadProfiles();
     loadMatieres();
     loadFormations();
+    loadFormationsFormateurs();
   }, []);
 
   async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
@@ -985,33 +1033,43 @@ export default function ComptesPage() {
                       />
                     </td>
                     <td className="p-2">
-                      <div className="flex flex-col gap-1 w-full">
-                        <select
-                          value={p.formation_id ?? ""}
-                          onChange={(e) =>
-                            enregistrerFormationEtudiant(
-                              p.id,
-                              Number(e.target.value)
-                            )
-                          }
-                          disabled={savingFormationId === p.id}
-                          className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
-                        >
-                          <option value="" disabled>
-                            Choisir une formation
-                          </option>
-                          {formations.map((f) => (
-                            <option key={f.id} value={f.id}>
-                              {f.nom}
+                      {p.role === "instructor" ? (
+                        <MultiFormationSelect
+                          formations={formations}
+                          selectionIds={formationsFormateurs.get(p.id) ?? []}
+                          onChange={(ids) => enregistrerFormationsFormateur(p.id, ids)}
+                          disabled={savingFormateurFormationsId === p.id}
+                          saving={savingFormateurFormationsId === p.id}
+                        />
+                      ) : (
+                        <div className="flex flex-col gap-1 w-full">
+                          <select
+                            value={p.formation_id ?? ""}
+                            onChange={(e) =>
+                              enregistrerFormationEtudiant(
+                                p.id,
+                                Number(e.target.value)
+                              )
+                            }
+                            disabled={savingFormationId === p.id}
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
+                          >
+                            <option value="" disabled>
+                              Choisir une formation
                             </option>
-                          ))}
-                        </select>
-                        {savingFormationId === p.id && (
-                          <span className="text-xs text-gray-400">
-                            Enregistrement…
-                          </span>
-                        )}
-                      </div>
+                            {formations.map((f) => (
+                              <option key={f.id} value={f.id}>
+                                {f.nom}
+                              </option>
+                            ))}
+                          </select>
+                          {savingFormationId === p.id && (
+                            <span className="text-xs text-gray-400">
+                              Enregistrement…
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="p-2 text-gray-500 truncate">
                       {new Date(p.created_at).toLocaleDateString("fr-CA")}
