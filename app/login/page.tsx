@@ -112,6 +112,7 @@ function LoginForm() {
       .single();
 
     if (!profil) {
+      await supabase.auth.signOut();
       setError(
         "Aucun profil associé à ce compte. Contacte l'administration."
       );
@@ -119,9 +120,20 @@ function LoginForm() {
       return;
     }
 
-    // La redirection suit toujours le vrai rôle enregistré en base,
-    // jamais la catégorie choisie sur la page d'accueil (qui n'affecte
-    // que le texte affiché ici).
+    // Le bouton choisi sur la page d'accueil (étudiant/formateur/admin)
+    // doit correspondre au vrai rôle du compte : sinon on refuse la
+    // connexion, même si l'email/mot de passe sont valides pour un autre
+    // rôle. Sans ce contrôle, n'importe quel compte pouvait se connecter
+    // depuis n'importe lequel des 3 boutons.
+    if (profil.role !== categorie) {
+      await supabase.auth.signOut();
+      setError(
+        "Ce compte ne correspond pas à cet espace de connexion. Utilise le bouton correspondant à ton rôle sur la page d'accueil."
+      );
+      setLoading(false);
+      return;
+    }
+
     const destination =
       profil.role === "admin"
         ? "/dashboard"
@@ -132,6 +144,7 @@ function LoginForm() {
         : null;
 
     if (!destination) {
+      await supabase.auth.signOut();
       setError("Rôle de compte inconnu. Contacte l'administration.");
       setLoading(false);
       return;
