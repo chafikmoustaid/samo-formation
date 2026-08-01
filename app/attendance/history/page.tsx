@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import * as XLSX from "xlsx";
 import { supabase } from "@/lib/supabase";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 import PageHeader from "@/components/ui/PageHeader";
@@ -45,46 +46,43 @@ function periodeFiche(fiche: any): string {
   return debut === fin ? debut : `${debut} au ${fin}`;
 }
 
-function exporterCsv(fiches: any[]) {
-  const entetes = [
-    "Étudiant",
-    "Formateur",
-    "Semaine",
-    "Formation (h)",
-    "Pratique (h)",
-    "Total (h)",
-    "Statut",
-    "Créée le",
+// Export en vrai classeur Excel (.xlsx) plutôt qu'en CSV : le CSV, ouvert
+// dans un Excel réglé en français, se fait mal découper en colonnes (Excel
+// FR attend un point-virgule, pas une virgule, comme séparateur) et affiche
+// les guillemets d'échappement en clair. Le .xlsx n'a pas ce problème — les
+// colonnes, types de nombres et largeurs sont corrects dès l'ouverture.
+function exporterExcel(fiches: any[]) {
+  const lignes = fiches.map((f) => ({
+    Étudiant: f.nom_etudiant ?? "",
+    Formateur: f.nom_formateur ?? "",
+    Semaine: periodeFiche(f),
+    "Formation (h)": Number(f.total_formation ?? 0),
+    "Pratique (h)": Number(f.total_pratique ?? 0),
+    "Total (h)": Number(f.total_heures ?? 0),
+    Statut: STATUT_LABELS[f.statut] ?? f.statut,
+    "Créée le": f.created_at
+      ? new Date(f.created_at).toLocaleDateString("fr-CA")
+      : "",
+  }));
+
+  const feuille = XLSX.utils.json_to_sheet(lignes);
+  feuille["!cols"] = [
+    { wch: 18 }, // Étudiant
+    { wch: 18 }, // Formateur
+    { wch: 22 }, // Semaine
+    { wch: 12 }, // Formation (h)
+    { wch: 12 }, // Pratique (h)
+    { wch: 10 }, // Total (h)
+    { wch: 12 }, // Statut
+    { wch: 12 }, // Créée le
   ];
 
-  const echapper = (valeur: unknown) => {
-    const texte = String(valeur ?? "");
-    return `"${texte.replace(/"/g, '""')}"`;
-  };
-
-  const lignes = fiches.map((f) =>
-    [
-      f.nom_etudiant,
-      f.nom_formateur,
-      periodeFiche(f),
-      f.total_formation ?? 0,
-      f.total_pratique ?? 0,
-      f.total_heures ?? 0,
-      STATUT_LABELS[f.statut] ?? f.statut,
-      f.created_at ? new Date(f.created_at).toLocaleDateString("fr-CA") : "",
-    ]
-      .map(echapper)
-      .join(",")
+  const classeur = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(classeur, feuille, "Fiches de présence");
+  XLSX.writeFile(
+    classeur,
+    `fiches-presence-${new Date().toISOString().slice(0, 10)}.xlsx`
   );
-
-  const csv = "﻿" + [entetes.map(echapper).join(","), ...lignes].join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `fiches-presence-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function AttendanceHistoryContent() {
@@ -281,10 +279,10 @@ function AttendanceHistoryContent() {
           action={
             <Button
               variant="outline"
-              onClick={() => exporterCsv(fichesFiltrees)}
+              onClick={() => exporterExcel(fichesFiltrees)}
               disabled={fichesFiltrees.length === 0}
             >
-              Exporter en CSV
+              Exporter en Excel
             </Button>
           }
         />
