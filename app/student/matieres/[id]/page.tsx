@@ -13,25 +13,6 @@ type Seance = {
   titre: string;
 };
 
-// Palette dégradée façon "feuille de route" : les séances sont réparties
-// en 4 paliers de couleur (du bleu foncé au orange) selon leur position,
-// quel que soit le nombre total de séances de la matière.
-const PALIER_COULEURS = [
-  { bandeau: "bg-blue-900", bouton: "bg-blue-900 hover:bg-blue-800" },
-  { bandeau: "bg-blue-600", bouton: "bg-blue-600 hover:bg-blue-500" },
-  { bandeau: "bg-teal-600", bouton: "bg-teal-600 hover:bg-teal-500" },
-  { bandeau: "bg-green-700", bouton: "bg-green-700 hover:bg-green-600" },
-  { bandeau: "bg-amber-600", bouton: "bg-amber-600 hover:bg-amber-500" },
-];
-
-function couleurPour(index: number, total: number) {
-  const palier = Math.min(
-    PALIER_COULEURS.length - 1,
-    Math.floor((index / total) * PALIER_COULEURS.length)
-  );
-  return PALIER_COULEURS[palier];
-}
-
 export default function MatiereSeancesPage() {
   const params = useParams<{ id: string }>();
   const matiereId = params.id;
@@ -131,9 +112,7 @@ export default function MatiereSeancesPage() {
           title={nomMatiere}
           subtitle={
             seances.length > 0
-              ? `Votre feuille de route complète — ${seances.length} séance${
-                  seances.length > 1 ? "s" : ""
-                }`
+              ? `${seances.length} séance${seances.length > 1 ? "s" : ""}`
               : undefined
           }
           backHref="/student"
@@ -154,61 +133,50 @@ export default function MatiereSeancesPage() {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
               {seances.map((s, i) => {
                 const complete = seancesCompletees.has(s.id);
                 const estActuelle = i === indexActuelle;
-                const couleur = couleurPour(i, seances.length);
 
                 return (
                   <Link
                     key={s.id}
                     href={`/student/matieres/${matiereId}/seances/${s.id}`}
-                    className={`group flex flex-col rounded-xl overflow-hidden border transition-shadow hover:shadow-md ${
-                      estActuelle
-                        ? "border-green-400 ring-2 ring-green-200"
-                        : "border-gray-100"
-                    } bg-white`}
+                    className={`flex flex-col rounded-lg border bg-white hover:border-green-600 transition-colors ${
+                      estActuelle ? "border-green-600" : "border-gray-200"
+                    }`}
                   >
-                    <div
-                      className={`${couleur.bandeau} text-white px-3 py-2 flex items-center justify-between`}
-                    >
-                      <span className="text-xs font-bold opacity-90">
-                        S{s.numero}
+                    <div className="border-b border-gray-200 px-3 py-2 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-gray-500">
+                        Séance {s.numero}
                       </span>
                       {complete && (
-                        <span className="text-xs font-bold">✓</span>
+                        <span className="text-xs font-semibold text-green-700">
+                          Fait
+                        </span>
                       )}
                     </div>
 
-                    <div className="flex-1 flex flex-col justify-between p-3">
-                      <div>
-                        {estActuelle && (
-                          <p className="text-[11px] font-semibold text-green-700 mb-1">
-                            ← Vous êtes ici
-                          </p>
-                        )}
-                        <p className="text-sm font-semibold text-gray-900 leading-snug">
-                          {s.titre}
+                    <div className="flex-1 p-3">
+                      {estActuelle && (
+                        <p className="text-[11px] font-semibold text-green-700 mb-1">
+                          Vous êtes ici
                         </p>
-                      </div>
-
-                      <div
-                        className={`mt-3 text-center text-white text-xs font-semibold rounded-lg py-2 ${couleur.bouton}`}
-                      >
-                        Séance {s.numero}
-                      </div>
+                      )}
+                      <p className="text-sm text-gray-900 leading-snug">
+                        {s.titre}
+                      </p>
                     </div>
                   </Link>
                 );
               })}
             </div>
 
-            <div className="rounded-xl bg-gray-900 text-gray-200 text-xs px-4 py-3 text-center">
-              {seances.length} séance{seances.length > 1 ? "s" : ""} ·{" "}
-              {nbCompletees} complétée{nbCompletees > 1 ? "s" : ""} · SAMO
-              Formation
-            </div>
+            <p className="text-xs text-gray-500">
+              {nbCompletees} / {seances.length} séance
+              {seances.length > 1 ? "s" : ""} complétée
+              {nbCompletees > 1 ? "s" : ""}
+            </p>
           </>
         )}
       </div>
