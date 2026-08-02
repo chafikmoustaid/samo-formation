@@ -371,6 +371,12 @@ function AttendanceHistoryContent() {
           backLabel="← Retour au tableau de bord"
           action={
             <div className="flex items-center gap-3">
+              {!voirCorbeille && (
+                <Link href="/attendance/payroll">
+                  <Button variant="primary">Période de paie</Button>
+                </Link>
+              )}
+
               <Button
                 variant="outline"
                 onClick={() => {

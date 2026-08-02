@@ -88,6 +88,10 @@ export default function InstructorPage() {
               Fiches de présence à valider
             </LinkButton>
 
+            <LinkButton href="/attendance/payroll" variant="outline">
+              Période de paie
+            </LinkButton>
+
             <LinkButton href="/instructor/import-support" variant="outline">
               Publier un support
             </LinkButton>
