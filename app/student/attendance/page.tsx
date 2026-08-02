@@ -42,6 +42,7 @@ export default function StudentAttendancePage() {
       .from("attendance")
       .select("*")
       .eq("user_id", user.id)
+      .is("supprime_le", null)
       .order("id", { ascending: false });
 
     setFiches(data ?? []);

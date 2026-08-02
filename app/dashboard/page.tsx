@@ -31,7 +31,11 @@ export default function Dashboard() {
   async function chargerDonnees() {
     const [{ data: fichesData }, { data: profilsData }, { data: formationsData }] =
       await Promise.all([
-        supabase.from("attendance").select("*").order("id", { ascending: false }),
+        supabase
+          .from("attendance")
+          .select("*")
+          .is("supprime_le", null)
+          .order("id", { ascending: false }),
         supabase.from("profiles").select("id, formation_id, nom_complet, email"),
         supabase.from("formations").select("id, nom"),
       ]);

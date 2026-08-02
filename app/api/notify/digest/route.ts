@@ -36,6 +36,7 @@ export async function GET(request: Request) {
       .from("attendance")
       .select("id, nom_etudiant, nom_formateur, created_at")
       .eq("statut", "en_attente")
+      .is("supprime_le", null)
       .lt("created_at", seuil.toISOString())
       .order("created_at", { ascending: true });
 

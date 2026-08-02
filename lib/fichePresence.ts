@@ -55,6 +55,24 @@ export function totalPratique(lignes: LigneFiche[]): number {
   );
 }
 
+// Plage de dates réellement travaillées d'une fiche, déduite des lignes.
+// À utiliser pour tout filtrage/export lié à la paie — la date de création
+// de la fiche (created_at) ne reflète PAS les jours travaillés dedans (une
+// fiche peut être créée/soumise plusieurs jours après la semaine couverte).
+export function datesTravaillees(
+  lignes: LigneFiche[]
+): { debut: Date; fin: Date } | null {
+  const dates = (lignes ?? [])
+    .map((l) => l?.date)
+    .filter((d): d is string => !!d)
+    .map((d) => new Date(d))
+    .filter((d) => !Number.isNaN(d.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  if (dates.length === 0) return null;
+  return { debut: dates[0], fin: dates[dates.length - 1] };
+}
+
 // Liste des heures sélectionnables (par demi-heure), utilisée pour les
 // menus déroulants "De" / "À" du tableau de présence.
 export const OPTIONS_HEURES: { value: string; label: string }[] = (() => {

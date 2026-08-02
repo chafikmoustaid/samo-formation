@@ -35,6 +35,7 @@ export default function InstructorAttendancePage() {
     const { data } = await supabase
       .from("attendance")
       .select("*")
+      .is("supprime_le", null)
       .order("id", { ascending: false });
 
     setFiches(data ?? []);

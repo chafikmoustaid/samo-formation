@@ -24,7 +24,7 @@ export default function InstructorPage() {
       const [coursesRes, submissionsRes, attendanceRes] = await Promise.all([
         supabase.from("courses").select("id"),
         supabase.from("assignment_submissions").select("id, note"),
-        supabase.from("attendance").select("id, statut"),
+        supabase.from("attendance").select("id, statut").is("supprime_le", null),
       ]);
 
       if (!active) return;

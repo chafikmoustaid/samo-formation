@@ -9,6 +9,7 @@ import {
   creerLignesVides,
   totalFormation,
   totalPratique,
+  datesTravaillees,
 } from "@/lib/fichePresence";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -148,11 +149,44 @@ export default function Attendance() {
       return;
     }
 
-    setEnregistrement(true);
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    const periodeNouvelle = datesTravaillees(lignes);
+
+    if (user && periodeNouvelle) {
+      const { data: fichesExistantes } = await supabase
+        .from("attendance")
+        .select("id, lignes, statut")
+        .eq("user_id", user.id)
+        .is("supprime_le", null);
+
+      const chevauchement = (fichesExistantes ?? []).find((f) => {
+        const periode = datesTravaillees(f.lignes);
+        if (!periode) return false;
+        return (
+          periodeNouvelle.debut <= periode.fin &&
+          periodeNouvelle.fin >= periode.debut
+        );
+      });
+
+      if (chevauchement) {
+        const periode = datesTravaillees(chevauchement.lignes)!;
+        const fmt = (d: Date) => d.toLocaleDateString("fr-CA");
+        const continuer = window.confirm(
+          `Attention : une fiche existe déjà pour la période du ${fmt(
+            periode.debut
+          )} au ${fmt(periode.fin)} (statut : ${chevauchement.statut}).\n\n` +
+            `Cette nouvelle fiche chevauche cette période. Veux-tu quand même l'envoyer ?`
+        );
+        if (!continuer) {
+          return;
+        }
+      }
+    }
+
+    setEnregistrement(true);
 
     const formateurChoisi = formateurs.find((f) => f.id === formateurId);
 

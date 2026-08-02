@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as XLSX from "xlsx";
 import { supabase } from "@/lib/supabase";
+import { datesTravaillees } from "@/lib/fichePresence";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -28,20 +29,16 @@ const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
 // sans contexte — qui rend le relevé exploitable pour justifier des heures
 // auprès de l'administration ou d'un organisme subventionnaire.
 function periodeFiche(fiche: any): string {
-  const lignes = Array.isArray(fiche.lignes) ? fiche.lignes : [];
-  const dates = lignes
-    .map((l: any) => l?.date)
-    .filter((d: any): d is string => !!d)
-    .sort();
+  const plage = datesTravaillees(Array.isArray(fiche.lignes) ? fiche.lignes : []);
 
-  if (dates.length === 0) {
+  if (!plage) {
     return fiche.created_at
       ? new Date(fiche.created_at).toLocaleDateString("fr-CA")
       : "—";
   }
 
-  const debut = new Date(dates[0]).toLocaleDateString("fr-CA");
-  const fin = new Date(dates[dates.length - 1]).toLocaleDateString("fr-CA");
+  const debut = plage.debut.toLocaleDateString("fr-CA");
+  const fin = plage.fin.toLocaleDateString("fr-CA");
 
   return debut === fin ? debut : `${debut} au ${fin}`;
 }
@@ -109,6 +106,10 @@ function AttendanceHistoryContent() {
   >(null);
   const [selectionnees, setSelectionnees] = useState<Set<number>>(new Set());
   const [validationEnCours, setValidationEnCours] = useState(false);
+  const [voirCorbeille, setVoirCorbeille] = useState(false);
+  const [restaurationEnCours, setRestaurationEnCours] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     chargerFiches();
@@ -156,6 +157,30 @@ function AttendanceHistoryContent() {
     );
   }
 
+  async function restaurer(id: number) {
+    setRestaurationEnCours(id);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch(`/api/attendance/${id}`, {
+      method: "PATCH",
+      headers: session
+        ? { Authorization: `Bearer ${session.access_token}` }
+        : {},
+    });
+
+    setRestaurationEnCours(null);
+
+    if (!response.ok) {
+      alert("Erreur lors de la restauration");
+      return;
+    }
+
+    chargerFiches();
+  }
+
   function toggleSelection(id: number) {
     setSelectionnees((prev) => {
       const next = new Set(prev);
@@ -185,14 +210,25 @@ function AttendanceHistoryContent() {
   async function validerSelection() {
     if (!signatureEnregistree || selectionnees.size === 0 || !userId) return;
 
+    // On liste explicitement qui va être validé — un simple compte de
+    // fiches ne permet pas de repérer une erreur de sélection avant de
+    // signer en lot, ce qui serait risqué pour des données utilisées en
+    // paie.
+    const ids = Array.from(selectionnees);
+    const recap = ids
+      .map((id) => {
+        const fiche = fiches.find((f) => f.id === id);
+        if (!fiche) return `Fiche #${id}`;
+        return `• ${fiche.nom_etudiant} — ${periodeFiche(fiche)} (${fiche.total_heures ?? 0} h)`;
+      })
+      .join("\n");
+
     const confirmation = window.confirm(
-      `Valider ${selectionnees.size} fiche(s) avec ta signature enregistrée ?`
+      `Tu es sur le point de valider ${ids.length} fiche(s) avec ta signature enregistrée :\n\n${recap}\n\nConfirmer ?`
     );
     if (!confirmation) return;
 
     setValidationEnCours(true);
-
-    const ids = Array.from(selectionnees);
 
     await Promise.all(
       ids.map(async (id) => {
@@ -225,8 +261,21 @@ function AttendanceHistoryContent() {
     [fiches]
   );
 
+  const nbCorbeille = useMemo(
+    () => fiches.filter((f) => f.supprime_le).length,
+    [fiches]
+  );
+
   const fichesFiltrees = useMemo(() => {
     return fiches.filter((f) => {
+      // Vue normale = fiches actives seulement. Vue corbeille = uniquement
+      // celles mises à la corbeille, pour pouvoir les restaurer.
+      if (voirCorbeille) {
+        if (!f.supprime_le) return false;
+      } else if (f.supprime_le) {
+        return false;
+      }
+
       if (
         rechercheEtudiant.trim() &&
         !String(f.nom_etudiant ?? "")
@@ -239,19 +288,42 @@ function AttendanceHistoryContent() {
       if (filtreFormateur && f.nom_formateur !== filtreFormateur) return false;
       if (filtreStatut && f.statut !== filtreStatut) return false;
 
-      if (dateDebut && f.created_at) {
-        if (new Date(f.created_at) < new Date(dateDebut)) return false;
-      }
+      if (dateDebut || dateFin) {
+        // Important pour la paie : on filtre sur les jours réellement
+        // travaillés (déduits des lignes de la fiche), pas sur la date de
+        // création/soumission — une fiche soumise en retard doit quand
+        // même apparaître dans la période où le travail a eu lieu. Si la
+        // fiche n'a aucune date exploitable dans ses lignes, on retombe
+        // sur la date de création à défaut de mieux.
+        const plage = datesTravaillees(
+          Array.isArray(f.lignes) ? f.lignes : []
+        );
+        const debutFiche = plage?.debut ?? (f.created_at ? new Date(f.created_at) : null);
+        const finFiche = plage?.fin ?? (f.created_at ? new Date(f.created_at) : null);
 
-      if (dateFin && f.created_at) {
-        const fin = new Date(dateFin);
-        fin.setHours(23, 59, 59, 999);
-        if (new Date(f.created_at) > fin) return false;
+        if (dateDebut) {
+          const debutFiltre = new Date(dateDebut);
+          if (!finFiche || finFiche < debutFiltre) return false;
+        }
+
+        if (dateFin) {
+          const finFiltre = new Date(dateFin);
+          finFiltre.setHours(23, 59, 59, 999);
+          if (!debutFiche || debutFiche > finFiltre) return false;
+        }
       }
 
       return true;
     });
-  }, [fiches, rechercheEtudiant, filtreFormateur, filtreStatut, dateDebut, dateFin]);
+  }, [
+    fiches,
+    voirCorbeille,
+    rechercheEtudiant,
+    filtreFormateur,
+    filtreStatut,
+    dateDebut,
+    dateFin,
+  ]);
 
   if (loading) {
     return <div className="p-8 text-gray-400">Chargement...</div>;
@@ -273,17 +345,33 @@ function AttendanceHistoryContent() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <PageHeader
-          title="Historique des fiches de présence"
+          title={voirCorbeille ? "Corbeille" : "Historique des fiches de présence"}
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"
           action={
-            <Button
-              variant="outline"
-              onClick={() => exporterExcel(fichesFiltrees)}
-              disabled={fichesFiltrees.length === 0}
-            >
-              Exporter en Excel
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setVoirCorbeille((v) => !v);
+                  setSelectionnees(new Set());
+                }}
+              >
+                {voirCorbeille
+                  ? "← Retour à l'historique"
+                  : `Voir la corbeille${nbCorbeille > 0 ? ` (${nbCorbeille})` : ""}`}
+              </Button>
+
+              {!voirCorbeille && (
+                <Button
+                  variant="outline"
+                  onClick={() => exporterExcel(fichesFiltrees)}
+                  disabled={fichesFiltrees.length === 0}
+                >
+                  Exporter en Excel
+                </Button>
+              )}
+            </div>
           }
         />
 
@@ -322,7 +410,7 @@ function AttendanceHistoryContent() {
             </select>
 
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-500">Du</label>
+              <label className="text-sm text-gray-500">Travaillé du</label>
               <input
                 type="date"
                 value={dateDebut}
@@ -332,7 +420,7 @@ function AttendanceHistoryContent() {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-500">Au</label>
+              <label className="text-sm text-gray-500">au</label>
               <input
                 type="date"
                 value={dateFin}
@@ -341,6 +429,10 @@ function AttendanceHistoryContent() {
               />
             </div>
           </div>
+          <p className="text-xs text-gray-400 mt-2">
+            Ce filtre porte sur les journées réellement travaillées inscrites
+            sur la fiche — pas sur sa date de soumission.
+          </p>
         </Card>
 
         {selectionnees.size > 0 && (
@@ -389,7 +481,7 @@ function AttendanceHistoryContent() {
                 {fichesFiltrees.map((fiche) => (
                   <tr key={fiche.id} className="border-t border-gray-100 hover:bg-gray-50">
                     <td className="p-4">
-                      {peutValider(fiche) && (
+                      {!voirCorbeille && peutValider(fiche) && (
                         <input
                           type="checkbox"
                           checked={selectionnees.has(fiche.id)}
@@ -412,14 +504,28 @@ function AttendanceHistoryContent() {
                     </td>
 
                     <td className="p-4 space-x-2 whitespace-nowrap">
-                      <Link
-                        href={`/attendance/${fiche.id}`}
-                        className="text-green-700 hover:underline"
-                      >
-                        Voir
-                      </Link>
+                      {voirCorbeille ? (
+                        <Button
+                          size="sm"
+                          onClick={() => restaurer(fiche.id)}
+                          disabled={restaurationEnCours === fiche.id}
+                        >
+                          {restaurationEnCours === fiche.id
+                            ? "Restauration…"
+                            : "Restaurer"}
+                        </Button>
+                      ) : (
+                        <>
+                          <Link
+                            href={`/attendance/${fiche.id}`}
+                            className="text-green-700 hover:underline"
+                          >
+                            Voir
+                          </Link>
 
-                      <DeleteAttendanceButton id={fiche.id} />
+                          <DeleteAttendanceButton id={fiche.id} />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

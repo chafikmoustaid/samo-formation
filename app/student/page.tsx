@@ -43,7 +43,8 @@ export default function StudentPage() {
         supabase
           .from("attendance")
           .select("total_heures, statut")
-          .eq("user_id", user.id),
+          .eq("user_id", user.id)
+          .is("supprime_le", null),
         formationId
           ? supabase
               .from("formation_matieres")

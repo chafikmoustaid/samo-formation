@@ -33,7 +33,8 @@ export default function InstructorProgressPage() {
     const { data: fiches } = await supabase
       .from("attendance")
       .select("nom_etudiant, total_heures, statut, created_at")
-      .eq("formateur_id", user.id);
+      .eq("formateur_id", user.id)
+      .is("supprime_le", null);
 
     const parEtudiant = new Map<string, EtudiantConsolide>();
 

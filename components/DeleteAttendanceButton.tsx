@@ -9,7 +9,7 @@ export default function DeleteAttendanceButton({
 }) {
   async function supprimer() {
     const confirmation = confirm(
-      "Voulez-vous vraiment supprimer cette fiche ?"
+      "Mettre cette fiche à la corbeille ? Tu pourras la restaurer ensuite depuis \"Voir la corbeille\"."
     );
 
     if (!confirmation) return;
