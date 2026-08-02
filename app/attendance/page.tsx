@@ -217,32 +217,50 @@ export default function Attendance() {
       return;
     }
 
+    let avertissementNotification = "";
     if (ficheCreee?.id) {
-      notifier(ficheCreee.id, "creee");
+      const notifOk = await notifier(ficheCreee.id, "creee");
+      if (!notifOk) {
+        avertissementNotification =
+          " Le courriel d'avis au formateur n'a pas pu être envoyé — pense à le prévenir autrement.";
+      }
     }
 
     setMessage({
       type: "succes",
-      texte: "Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur.",
+      texte:
+        "Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur." +
+        avertissementNotification,
     });
   }
 
-  async function notifier(ficheId: number, type: "creee" | "validee" | "refusee") {
+  // Renvoie true si le courriel de notification a bien été envoyé (ou
+  // volontairement ignoré, ex. aucun formateur assigné), false en cas
+  // d'échec réel — pour pouvoir avertir l'utilisateur sans jamais bloquer
+  // l'enregistrement de la fiche elle-même.
+  async function notifier(
+    ficheId: number,
+    type: "creee" | "validee" | "refusee"
+  ): Promise<boolean> {
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    fetch("/api/notify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
-      body: JSON.stringify({ ficheId, type }),
-    }).catch(() => {
-      // La notification par courriel est non bloquante : un échec ici ne
-      // doit pas empêcher l'enregistrement de la fiche.
-    });
+    try {
+      const reponse = await fetch("/api/notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ ficheId, type }),
+      });
+
+      const resultat = await reponse.json().catch(() => null);
+      return Boolean(resultat?.success);
+    } catch {
+      return false;
+    }
   }
 
   return (

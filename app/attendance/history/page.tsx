@@ -190,21 +190,29 @@ function AttendanceHistoryContent() {
     });
   }
 
-  async function notifier(ficheId: number, type: "validee") {
+  // Renvoie true si le courriel a bien été envoyé (ou volontairement
+  // ignoré), false en cas d'échec réel. L'échec n'empêche jamais la
+  // validation de la fiche, seulement l'avis par courriel à l'étudiant(e).
+  async function notifier(ficheId: number, type: "validee"): Promise<boolean> {
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    fetch("/api/notify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
-      body: JSON.stringify({ ficheId, type }),
-    }).catch(() => {
-      // La notification par courriel est non bloquante.
-    });
+    try {
+      const reponse = await fetch("/api/notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ ficheId, type }),
+      });
+
+      const resultat = await reponse.json().catch(() => null);
+      return Boolean(resultat?.success);
+    } catch {
+      return false;
+    }
   }
 
   async function validerSelection() {
@@ -230,6 +238,8 @@ function AttendanceHistoryContent() {
 
     setValidationEnCours(true);
 
+    const echecsNotification: string[] = [];
+
     await Promise.all(
       ids.map(async (id) => {
         const fiche = fiches.find((f) => f.id === id);
@@ -244,13 +254,24 @@ function AttendanceHistoryContent() {
           })
           .eq("id", id);
 
-        if (!error) notifier(id, "validee");
+        if (!error) {
+          const ok = await notifier(id, "validee");
+          if (!ok) echecsNotification.push(fiche?.nom_etudiant || `Fiche #${id}`);
+        }
       })
     );
 
     setValidationEnCours(false);
     setSelectionnees(new Set());
     chargerFiches();
+
+    if (echecsNotification.length > 0) {
+      window.alert(
+        `Fiche(s) validée(s), mais le courriel d'avis n'a pas pu être envoyé pour : ${echecsNotification.join(
+          ", "
+        )}. Pense à prévenir ces étudiant(e)s autrement.`
+      );
+    }
   }
 
   const formateurs = useMemo(

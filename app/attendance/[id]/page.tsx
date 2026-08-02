@@ -46,6 +46,7 @@ export default function AttendanceDetail() {
   const [motif, setMotif] = useState("");
 
   const [telechargement, setTelechargement] = useState(false);
+  const [avertissement, setAvertissement] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) chargerFiche();
@@ -117,25 +118,41 @@ export default function AttendanceDetail() {
       return;
     }
 
-    notifier(id, "validee");
+    const ok = await notifier(id, "validee");
+    setAvertissement(
+      ok
+        ? null
+        : "L'étudiant(e) n'a pas pu être avisé(e) par courriel de la validation — pense à le/la prévenir autrement."
+    );
     chargerFiche();
   }
 
-  async function notifier(ficheId: string, type: "creee" | "validee" | "refusee") {
+  // Renvoie true si le courriel a bien été envoyé (ou volontairement
+  // ignoré), false en cas d'échec réel — l'échec n'empêche jamais la
+  // validation/le refus de la fiche elle-même, seulement l'avis par courriel.
+  async function notifier(
+    ficheId: string,
+    type: "creee" | "validee" | "refusee"
+  ): Promise<boolean> {
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    fetch("/api/notify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
-      body: JSON.stringify({ ficheId, type }),
-    }).catch(() => {
-      // La notification par courriel est non bloquante.
-    });
+    try {
+      const reponse = await fetch("/api/notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ ficheId, type }),
+      });
+
+      const resultat = await reponse.json().catch(() => null);
+      return Boolean(resultat?.success);
+    } catch {
+      return false;
+    }
   }
 
   async function refuserFiche() {
@@ -162,7 +179,12 @@ export default function AttendanceDetail() {
       return;
     }
 
-    notifier(id, "refusee");
+    const ok = await notifier(id, "refusee");
+    setAvertissement(
+      ok
+        ? null
+        : "L'étudiant(e) n'a pas pu être avisé(e) par courriel du refus — pense à le/la prévenir autrement."
+    );
     chargerFiche();
   }
 
@@ -219,6 +241,12 @@ export default function AttendanceDetail() {
             </Badge>
           }
         />
+
+        {avertissement && (
+          <div className="mb-6 text-sm rounded-lg px-4 py-3 border bg-orange-50 border-orange-100 text-orange-700">
+            {avertissement}
+          </div>
+        )}
 
         <Card>
           <div className="mb-6">
