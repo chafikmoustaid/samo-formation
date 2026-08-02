@@ -87,6 +87,14 @@ export default function NouvelleFicheDeveloppement() {
   async function enregistrerFiche() {
     setMessage(null);
 
+    if (!nomFormateur.trim()) {
+      setMessage({
+        type: "erreur",
+        texte: "Le nom du(de la) formateur(trice) est obligatoire.",
+      });
+      return;
+    }
+
     if (!sujet.trim()) {
       setMessage({ type: "erreur", texte: "Précise le sujet du développement." });
       return;
@@ -94,6 +102,30 @@ export default function NouvelleFicheDeveloppement() {
 
     if (!approuvePar) {
       setMessage({ type: "erreur", texte: "Sélectionne le nom de la personne qui a approuvé." });
+      return;
+    }
+
+    if (!heuresAutorisees.trim()) {
+      setMessage({
+        type: "erreur",
+        texte: "Le nombre d'heures autorisées est obligatoire.",
+      });
+      return;
+    }
+
+    if (!heuresRealisees.trim()) {
+      setMessage({
+        type: "erreur",
+        texte: "Le détail des heures réalisées à ce jour est obligatoire.",
+      });
+      return;
+    }
+
+    if (!dateRemise) {
+      setMessage({
+        type: "erreur",
+        texte: "La date de remise des travaux est obligatoire.",
+      });
       return;
     }
 
@@ -201,15 +233,20 @@ export default function NouvelleFicheDeveloppement() {
               À remplir pour chaque période autorisée d&apos;heures de
               développement.
             </p>
+            <p className="text-sm text-red-600 mt-1">
+              * Champ obligatoire — la fiche ne peut pas être enregistrée ni
+              transférée si un champ obligatoire est manquant.
+            </p>
           </div>
 
           <div className="space-y-6">
             <div>
               <label className="block text-base font-semibold text-green-800 mb-1">
-                Nom du(de la) formateur(trice)
+                Nom du(de la) formateur(trice) <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
+                required
                 value={nomFormateur}
                 onChange={(e) => setNomFormateur(e.target.value)}
                 className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
@@ -218,9 +255,10 @@ export default function NouvelleFicheDeveloppement() {
 
             <div>
               <label className="block text-base font-semibold text-green-800 mb-1">
-                Sujet du développement
+                Sujet du développement <span className="text-red-600">*</span>
               </label>
               <textarea
+                required
                 value={sujet}
                 onChange={(e) => setSujet(e.target.value)}
                 rows={3}
@@ -230,9 +268,10 @@ export default function NouvelleFicheDeveloppement() {
 
             <div>
               <label className="block text-base font-semibold text-green-800 mb-1">
-                Approuvé par
+                Approuvé par <span className="text-red-600">*</span>
               </label>
               <select
+                required
                 value={approuvePar}
                 onChange={(e) => setApprouvePar(e.target.value)}
                 className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg bg-white"
@@ -249,10 +288,11 @@ export default function NouvelleFicheDeveloppement() {
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-base font-semibold text-green-800 mb-1">
-                  Nombre d&apos;heures autorisées
+                  Nombre d&apos;heures autorisées <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="number"
+                  required
                   min="0"
                   step="0.5"
                   value={heuresAutorisees}
@@ -263,10 +303,11 @@ export default function NouvelleFicheDeveloppement() {
 
               <div>
                 <label className="block text-base font-semibold text-green-800 mb-1">
-                  Détail des heures réalisées à ce jour
+                  Détail des heures réalisées à ce jour <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
+                  required
                   placeholder="Ex. : 4 sur 12"
                   value={heuresRealisees}
                   onChange={(e) => setHeuresRealisees(e.target.value)}
@@ -278,7 +319,7 @@ export default function NouvelleFicheDeveloppement() {
             <div className="border-2 border-green-200 rounded-lg overflow-hidden">
               <div className="bg-green-50 px-4 py-3 flex items-center justify-between border-b-2 border-green-200">
                 <h3 className="text-base font-semibold text-green-800">
-                  Journée(s) travaillée(s)
+                  Journée(s) travaillée(s) <span className="text-red-600">*</span>
                 </h3>
                 <p className="text-sm text-green-700">
                   Ajoute une ligne par journée — toutes de la même semaine.
@@ -301,6 +342,7 @@ export default function NouvelleFicheDeveloppement() {
                       <td className="p-3">
                         <input
                           type="date"
+                          required
                           value={ligne.date}
                           onChange={(e) =>
                             modifierLigne(index, "date", e.target.value)
@@ -310,6 +352,7 @@ export default function NouvelleFicheDeveloppement() {
                       </td>
                       <td className="p-3">
                         <select
+                          required
                           value={ligne.heureDebut}
                           onChange={(e) =>
                             modifierLigne(index, "heureDebut", e.target.value)
@@ -326,6 +369,7 @@ export default function NouvelleFicheDeveloppement() {
                       </td>
                       <td className="p-3">
                         <select
+                          required
                           value={ligne.heureFin}
                           onChange={(e) =>
                             modifierLigne(index, "heureFin", e.target.value)
@@ -371,10 +415,11 @@ export default function NouvelleFicheDeveloppement() {
 
             <div>
               <label className="block text-base font-semibold text-green-800 mb-1">
-                Date de remise des travaux
+                Date de remise des travaux <span className="text-red-600">*</span>
               </label>
               <input
                 type="date"
+                required
                 value={dateRemise}
                 onChange={(e) => setDateRemise(e.target.value)}
                 className="border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
@@ -384,7 +429,7 @@ export default function NouvelleFicheDeveloppement() {
 
           <div className="mt-8">
             <h3 className="text-lg font-semibold text-green-800 mb-2">
-              Signature
+              Signature <span className="text-red-600">*</span>
             </h3>
 
             <SignaturePad
