@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 
 type Seance = {
@@ -18,10 +17,12 @@ export default function MatiereSeancesPage() {
   const matiereId = params.id;
 
   const [nomMatiere, setNomMatiere] = useState("");
+  const [nomFormation, setNomFormation] = useState("");
   const [seances, setSeances] = useState<Seance[]>([]);
   const [seancesCompletees, setSeancesCompletees] = useState<Set<number>>(
     new Set()
   );
+  const [seancesExamen, setSeancesExamen] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [erreur, setErreur] = useState<string | null>(null);
 
@@ -53,9 +54,11 @@ export default function MatiereSeancesPage() {
 
     const { data: profil } = await supabase
       .from("profiles")
-      .select("formation_id")
+      .select("formation_id, formations!profiles_formation_id_fkey(nom)")
       .eq("id", user.id)
       .single();
+
+    setNomFormation((profil as any)?.formations?.nom ?? "");
 
     if (!profil?.formation_id) {
       setErreur("Aucune formation n'est assignée à ton compte.");
@@ -79,20 +82,29 @@ export default function MatiereSeancesPage() {
 
     setSeances(sessionsData ?? []);
 
-    // Une séance est considérée "complétée" si l'étudiant a un résultat de
-    // quiz enregistré pour elle — sert à afficher la progression et à
-    // repérer automatiquement "Vous êtes ici" (la première non complétée).
     const idsSeances = (sessionsData ?? []).map((s) => s.id);
+
     if (idsSeances.length > 0) {
-      const { data: quizResults } = await supabase
-        .from("quiz_results")
-        .select("session_id")
-        .eq("user_id", user.id)
-        .in("session_id", idsSeances);
+      // Une séance est considérée "complétée" si l'étudiant a un résultat de
+      // quiz enregistré pour elle — sert à afficher la progression et à
+      // repérer automatiquement "Vous êtes ici" (la première non complétée).
+      const [{ data: quizResults }, { data: evaluations }] = await Promise.all([
+        supabase
+          .from("quiz_results")
+          .select("session_id")
+          .eq("user_id", user.id)
+          .in("session_id", idsSeances),
+        supabase
+          .from("evaluations")
+          .select("session_id, titre")
+          .in("session_id", idsSeances)
+          .ilike("titre", "%examen%"),
+      ]);
 
       setSeancesCompletees(
         new Set((quizResults ?? []).map((q) => q.session_id))
       );
+      setSeancesExamen(new Set((evaluations ?? []).map((e) => e.session_id)));
     }
 
     setLoading(false);
@@ -108,16 +120,28 @@ export default function MatiereSeancesPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
-        <PageHeader
-          title={nomMatiere}
-          subtitle={
-            seances.length > 0
-              ? `${seances.length} séance${seances.length > 1 ? "s" : ""}`
-              : undefined
-          }
-          backHref="/student"
-          backLabel="← Portail étudiant"
-        />
+        <Link
+          href="/student"
+          className="inline-block text-sm text-gray-500 hover:text-gray-700 mb-4"
+        >
+          ← Portail étudiant
+        </Link>
+
+        <div className="rounded-xl overflow-hidden mb-6 shadow-sm">
+          <div className="bg-gradient-to-r from-green-700 to-emerald-600 px-6 py-5">
+            <p className="text-emerald-100 text-xs font-semibold uppercase tracking-wide mb-1">
+              Feuille de route du cours
+            </p>
+            <h1 className="text-2xl font-bold text-white">{nomMatiere}</h1>
+            {seances.length > 0 && (
+              <p className="text-emerald-50 text-sm mt-1">
+                Les {seances.length} séances{nomFormation ? ` de ${nomFormation}` : ""}{" "}
+                — {nbCompletees} / {seances.length} complétée
+                {nbCompletees > 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
+        </div>
 
         {loading ? (
           <p className="text-sm text-gray-400">Chargement…</p>
@@ -133,50 +157,75 @@ export default function MatiereSeancesPage() {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 mb-4">
               {seances.map((s, i) => {
                 const complete = seancesCompletees.has(s.id);
                 const estActuelle = i === indexActuelle;
+                const estExamen = seancesExamen.has(s.id);
+
+                const styleCellule = estActuelle
+                  ? "bg-green-600 border-green-700 text-white"
+                  : estExamen
+                  ? "bg-red-50 border-red-300 text-red-800"
+                  : "bg-amber-50 border-amber-200 text-gray-800";
 
                 return (
                   <Link
                     key={s.id}
                     href={`/student/matieres/${matiereId}/seances/${s.id}`}
-                    className={`flex flex-col rounded-lg border bg-white hover:border-green-600 transition-colors ${
-                      estActuelle ? "border-green-600" : "border-gray-200"
-                    }`}
+                    className={`flex flex-col rounded-lg border px-3 py-2 hover:shadow-md transition-shadow ${styleCellule}`}
                   >
-                    <div className="border-b border-gray-200 px-3 py-2 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-gray-500">
-                        Séance {s.numero}
+                    <div className="flex items-center justify-between mb-1">
+                      <span
+                        className={`text-xs font-bold ${
+                          estActuelle
+                            ? "text-white"
+                            : estExamen
+                            ? "text-red-700"
+                            : "text-amber-700"
+                        }`}
+                      >
+                        S{s.numero}
                       </span>
                       {complete && (
-                        <span className="text-xs font-semibold text-green-700">
-                          Fait
+                        <span
+                          className={`text-[10px] font-semibold ${
+                            estActuelle ? "text-white" : "text-green-700"
+                          }`}
+                        >
+                          ✓ Fait
                         </span>
                       )}
                     </div>
 
-                    <div className="flex-1 p-3">
-                      {estActuelle && (
-                        <p className="text-[11px] font-semibold text-green-700 mb-1">
-                          Vous êtes ici
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-900 leading-snug">
-                        {s.titre}
+                    {estActuelle && (
+                      <p className="text-[10px] font-semibold text-white mb-0.5">
+                        Vous êtes ici
                       </p>
-                    </div>
+                    )}
+
+                    <p className="text-xs leading-snug line-clamp-3">
+                      {s.titre}
+                    </p>
                   </Link>
                 );
               })}
             </div>
 
-            <p className="text-xs text-gray-500">
-              {nbCompletees} / {seances.length} séance
-              {seances.length > 1 ? "s" : ""} complétée
-              {nbCompletees > 1 ? "s" : ""}
-            </p>
+            <div className="flex flex-wrap gap-5 text-xs text-gray-600 border-t border-gray-200 pt-3">
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-green-600 inline-block" />
+                Séance du jour
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-red-50 border border-red-300 inline-block" />
+                Séance d&apos;examen
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-amber-50 border border-amber-200 inline-block" />
+                Séance régulière
+              </span>
+            </div>
           </>
         )}
       </div>
