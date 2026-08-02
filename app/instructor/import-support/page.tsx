@@ -83,6 +83,21 @@ export default function ImportSupportPage() {
           Uploade ensuite les 3 fichiers générés ci-dessous.
         </p>
 
+        <div className="mb-8 text-sm bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-900">
+          <p className="font-semibold mb-1">
+            Couleur de la carte dans la feuille de route
+          </p>
+          <p>
+            Si <code>audits/seance_N_audit.json</code> contient une clé{" "}
+            <code>&quot;couleur_theme&quot;: &quot;#1F4E79&quot;</code> (code
+            hexadécimal du thème du PowerPoint), cette couleur sera reprise
+            automatiquement pour la carte de la séance côté étudiant et
+            formateur. Sans cette clé, la carte garde la couleur neutre par
+            défaut — demande-moi si tu veux le script Python qui extrait
+            cette couleur du fichier .pptx.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block font-medium mb-1">

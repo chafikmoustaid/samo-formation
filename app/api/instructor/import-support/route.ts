@@ -31,6 +31,9 @@ export async function POST(request: Request) {
 
   let auditReport: unknown = null;
   let integrityScore: number | null = null;
+  let couleurAccent: string | null = null;
+
+  const HEX_COULEUR = /^#[0-9a-fA-F]{6}$/;
 
   if (auditFile instanceof File && auditFile.size > 0) {
     try {
@@ -46,6 +49,21 @@ export async function POST(request: Request) {
           .integrity_score;
         integrityScore =
           typeof rawScore === "number" ? rawScore : Number(rawScore) || null;
+      }
+
+      // Couleur extraite du thème du PowerPoint (clé "couleur_theme" dans
+      // audit_report.json, ajoutée côté pipeline Python) — sert à colorer la
+      // carte de cette séance dans la feuille de route (étudiant/formateur).
+      if (
+        auditReport &&
+        typeof auditReport === "object" &&
+        "couleur_theme" in auditReport
+      ) {
+        const rawCouleur = (auditReport as Record<string, unknown>)
+          .couleur_theme;
+        if (typeof rawCouleur === "string" && HEX_COULEUR.test(rawCouleur)) {
+          couleurAccent = rawCouleur;
+        }
       }
     } catch {
       return NextResponse.json(
@@ -65,6 +83,9 @@ export async function POST(request: Request) {
   }
   if (integrityScore !== null) {
     updatePayload.integrity_score = integrityScore;
+  }
+  if (couleurAccent !== null) {
+    updatePayload.couleur_accent = couleurAccent;
   }
 
   const { data, error } = await supabase
