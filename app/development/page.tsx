@@ -11,6 +11,7 @@ import {
   totalHeuresDeveloppement,
   lignesDansLaMemeSemaine,
   OPTIONS_HEURES_DEV,
+  APPROBATEURS_DEVELOPPEMENT,
 } from "@/lib/ficheDeveloppement";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -88,6 +89,11 @@ export default function NouvelleFicheDeveloppement() {
 
     if (!sujet.trim()) {
       setMessage({ type: "erreur", texte: "Précise le sujet du développement." });
+      return;
+    }
+
+    if (!approuvePar) {
+      setMessage({ type: "erreur", texte: "Sélectionne le nom de la personne qui a approuvé." });
       return;
     }
 
@@ -230,12 +236,18 @@ export default function NouvelleFicheDeveloppement() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Approuvé par
               </label>
-              <input
-                type="text"
+              <select
                 value={approuvePar}
                 onChange={(e) => setApprouvePar(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base"
-              />
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base bg-white"
+              >
+                <option value="">Sélectionnez le nom</option>
+                {APPROBATEURS_DEVELOPPEMENT.map((nom) => (
+                  <option key={nom} value={nom}>
+                    {nom}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-5">

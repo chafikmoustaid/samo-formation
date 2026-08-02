@@ -1,3 +1,13 @@
+// Liste fixe des personnes habilitées à approuver une période de
+// développement (reprend le menu déroulant du formulaire papier d'origine).
+export const APPROBATEURS_DEVELOPPEMENT = [
+  "Anis Soussi",
+  "Denis Gauthier",
+  "Jacqueline Bell",
+  "Marie-Michèle",
+  "Véronique Bell",
+] as const;
+
 export type LigneDeveloppement = {
   date: string;
   heureDebut: string;
