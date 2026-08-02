@@ -86,19 +86,19 @@ export default function Navbar() {
     : "admin";
 
   return (
-    <nav className="bg-green-700 text-white shadow">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-5 flex-wrap">
+    <nav className="bg-green-700 text-white shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between gap-6 flex-wrap">
+        <div className="flex items-center gap-6 flex-wrap">
           <Link
             href="/"
-            className="flex items-center shrink-0 bg-white rounded-lg px-3 py-1.5 shadow-sm"
+            className="flex items-center shrink-0 bg-white rounded-lg px-3.5 py-2 shadow-sm"
           >
             <Image
               src="/logo-samo.png"
               alt="Formation SAMO"
-              width={160}
-              height={49}
-              className="h-9 w-auto"
+              width={190}
+              height={58}
+              className="h-11 w-auto"
             />
           </Link>
 
@@ -106,25 +106,25 @@ export default function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Dashboard
               </Link>
               <Link
                 href="/attendance"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Nouvelle fiche
               </Link>
               <Link
                 href="/attendance/history"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Historique
               </Link>
               <Link
                 href="/development/history"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Fiches de développement
               </Link>
@@ -136,19 +136,19 @@ export default function Navbar() {
             <>
               <Link
                 href="/instructor"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Portail formateur
               </Link>
               <Link
                 href="/instructor/attendance"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Fiches de présence
               </Link>
               <Link
                 href="/development"
-                className="text-sm font-medium hover:text-white/80 transition-colors"
+                className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Fiche de développement
               </Link>
@@ -158,7 +158,7 @@ export default function Navbar() {
           {role === "student" && (
             <Link
               href="/student"
-              className="text-sm font-medium hover:text-white/80 transition-colors"
+              className="text-base font-bold hover:text-white/80 transition-colors"
             >
               Mon espace
             </Link>
@@ -167,20 +167,20 @@ export default function Navbar() {
           {role === "admin" && section === "student" && (
             <Link
               href="/student"
-              className="text-sm font-medium hover:text-white/80 transition-colors"
+              className="text-base font-bold hover:text-white/80 transition-colors"
             >
               Portail étudiant
             </Link>
           )}
         </div>
 
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex items-center gap-4 text-base">
           {email && (
             <>
-              <span className="opacity-90 hidden sm:inline">{email}</span>
+              <span className="opacity-90 hidden sm:inline font-medium">{email}</span>
               <button
                 onClick={logout}
-                className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors"
+                className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg font-bold transition-colors"
               >
                 Déconnexion
               </button>

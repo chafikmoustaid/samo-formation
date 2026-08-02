@@ -1,16 +1,18 @@
 // Palette de couleurs partagée pour les tuiles colorées (matières, boutons
 // d'accès rapide, cartes de séance) — garde un rendu cohérent sur tous les
 // portails (étudiant, formateur, administration) plutôt qu'une couleur
-// choisie au cas par cas sur chaque page.
+// choisie au cas par cas sur chaque page. Tons volontairement soutenus mais
+// désaturés (registre "corporate") plutôt que des couleurs vives, pour un
+// rendu professionnel plutôt que criard.
 export const PALETTE_ACCUEIL = [
-  "#2563eb", // bleu
-  "#7c3aed", // violet
-  "#0d9488", // sarcelle
-  "#4f46e5", // indigo
-  "#db2777", // rose
-  "#ea580c", // orange
-  "#0891b2", // cyan
-  "#65a30d", // vert olive
+  "#1e3a5f", // bleu marine
+  "#2f6690", // bleu acier
+  "#0f6b5c", // sarcelle profond
+  "#5b3a70", // prune
+  "#8c4a2f", // terre cuite
+  "#3d5a80", // bleu ardoise
+  "#4a5759", // gris-vert graphite
+  "#6b7a3f", // vert olive
 ];
 
 export function couleurPalette(index: number): string {

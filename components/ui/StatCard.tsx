@@ -2,13 +2,13 @@ import Link from "next/link";
 
 // Tuiles pleines et colorées (fond uni, texte blanc) — chaque accent garde
 // un sens (bleu = neutre/total, vert = validé, orange = action requise,
-// rouge = refusé), mais le rendu est maintenant coloré et affirmé plutôt
-// que blanc avec juste le chiffre en couleur.
+// rouge = refusé). Tons soutenus mais désaturés, dans le même registre
+// professionnel que PALETTE_ACCUEIL, plutôt que des couleurs vives.
 const ACCENT_COULEURS = {
-  neutral: "#2563eb",
-  green: "#16a34a",
-  orange: "#ea580c",
-  red: "#dc2626",
+  neutral: "#2f6690",
+  green: "#2d6a4f",
+  orange: "#a05a2c",
+  red: "#9d3b3b",
 } as const;
 
 export default function StatCard({
