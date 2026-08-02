@@ -119,9 +119,6 @@ export default function Dashboard() {
               <ColorLinkButton href="/dashboard/comptes" color={couleurPalette(0)}>
                 Gestion des comptes
               </ColorLinkButton>
-              <ColorLinkButton href="/development/history" color={couleurPalette(3)}>
-                Fiches de développement
-              </ColorLinkButton>
               <ColorLinkButton href="/dashboard/securite" color={couleurPalette(5)}>
                 Sécurité
               </ColorLinkButton>
