@@ -197,49 +197,48 @@ export default function NouvelleFicheDeveloppement() {
           </div>
 
           <div className="max-w-lg mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 tracking-wide mb-1">
+            <h2 className="text-2xl font-bold text-green-700 tracking-wide mb-1">
               DÉVELOPPEMENT
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-base text-gray-600">
               À remplir pour chaque période autorisée d&apos;heures de
-              développement (absence ou annulation de cours, ou mandat
-              spécifique).
+              développement.
             </p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-base font-semibold text-green-800 mb-1">
                 Nom du(de la) formateur(trice)
               </label>
               <input
                 type="text"
                 value={nomFormateur}
                 onChange={(e) => setNomFormateur(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base"
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-base font-semibold text-green-800 mb-1">
                 Sujet du développement
               </label>
               <textarea
                 value={sujet}
                 onChange={(e) => setSujet(e.target.value)}
                 rows={3}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base"
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-base font-semibold text-green-800 mb-1">
                 Approuvé par
               </label>
               <select
                 value={approuvePar}
                 onChange={(e) => setApprouvePar(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base bg-white"
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg bg-white"
               >
                 <option value="">Sélectionnez le nom</option>
                 {APPROBATEURS_DEVELOPPEMENT.map((nom) => (
@@ -252,7 +251,7 @@ export default function NouvelleFicheDeveloppement() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-base font-semibold text-green-800 mb-1">
                   Nombre d&apos;heures autorisées
                 </label>
                 <input
@@ -261,12 +260,12 @@ export default function NouvelleFicheDeveloppement() {
                   step="0.5"
                   value={heuresAutorisees}
                   onChange={(e) => setHeuresAutorisees(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base"
+                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-base font-semibold text-green-800 mb-1">
                   Détail des heures réalisées à ce jour
                 </label>
                 <input
@@ -274,24 +273,24 @@ export default function NouvelleFicheDeveloppement() {
                   placeholder="Ex. : 4 sur 12"
                   value={heuresRealisees}
                   onChange={(e) => setHeuresRealisees(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base"
+                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
                 />
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 px-4 py-3 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-900">
+            <div className="border-2 border-green-200 rounded-lg overflow-hidden">
+              <div className="bg-green-50 px-4 py-3 flex items-center justify-between border-b-2 border-green-200">
+                <h3 className="text-base font-semibold text-green-800">
                   Journée(s) travaillée(s)
                 </h3>
-                <p className="text-xs text-gray-400">
+                <p className="text-sm text-green-700">
                   Ajoute une ligne par journée — toutes de la même semaine.
                 </p>
               </div>
 
-              <table className="w-full text-sm">
+              <table className="w-full text-base">
                 <thead>
-                  <tr className="text-left text-gray-500 border-b">
+                  <tr className="text-left text-gray-500 border-b bg-gray-50">
                     <th className="p-3 font-medium">Date</th>
                     <th className="p-3 font-medium">Heure de début</th>
                     <th className="p-3 font-medium">Heure de fin</th>
@@ -309,7 +308,7 @@ export default function NouvelleFicheDeveloppement() {
                           onChange={(e) =>
                             modifierLigne(index, "date", e.target.value)
                           }
-                          className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                          className="border border-gray-300 rounded-lg px-2 py-1.5 text-base"
                         />
                       </td>
                       <td className="p-3">
@@ -318,7 +317,7 @@ export default function NouvelleFicheDeveloppement() {
                           onChange={(e) =>
                             modifierLigne(index, "heureDebut", e.target.value)
                           }
-                          className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                          className="border border-gray-300 rounded-lg px-2 py-1.5 text-base"
                         >
                           <option value="">—</option>
                           {OPTIONS_HEURES_DEV.map((o) => (
@@ -334,7 +333,7 @@ export default function NouvelleFicheDeveloppement() {
                           onChange={(e) =>
                             modifierLigne(index, "heureFin", e.target.value)
                           }
-                          className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                          className="border border-gray-300 rounded-lg px-2 py-1.5 text-base"
                         >
                           <option value="">—</option>
                           {OPTIONS_HEURES_DEV.map((o) => (
@@ -344,7 +343,7 @@ export default function NouvelleFicheDeveloppement() {
                           ))}
                         </select>
                       </td>
-                      <td className="p-3 font-medium text-gray-900">
+                      <td className="p-3 font-semibold text-green-700">
                         {calculHeuresLigne(ligne) || 0} h
                       </td>
                       <td className="p-3">
@@ -352,7 +351,7 @@ export default function NouvelleFicheDeveloppement() {
                           <button
                             type="button"
                             onClick={() => retirerJournee(index)}
-                            className="text-red-500 hover:text-red-700 text-sm"
+                            className="text-red-500 hover:text-red-700 text-base"
                           >
                             ✕
                           </button>
@@ -363,31 +362,31 @@ export default function NouvelleFicheDeveloppement() {
                 </tbody>
               </table>
 
-              <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+              <div className="px-4 py-3 border-t-2 border-green-200 bg-green-50 flex items-center justify-between">
                 <Button variant="ghost" onClick={ajouterJournee}>
                   + Ajouter une journée
                 </Button>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-base font-semibold text-green-800">
                   Nombre total des heures : {total} h
                 </p>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-base font-semibold text-green-800 mb-1">
                 Date de remise des travaux
               </label>
               <input
                 type="date"
                 value={dateRemise}
                 onChange={(e) => setDateRemise(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-base"
+                className="border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 text-lg"
               />
             </div>
           </div>
 
           <div className="mt-8">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">
               Signature
             </h3>
 
@@ -399,7 +398,7 @@ export default function NouvelleFicheDeveloppement() {
             />
 
             {signature && (
-              <p className="mt-2 text-sm text-green-700">
+              <p className="mt-2 text-base text-green-700 font-medium">
                 Signature enregistrée, prête à être envoyée.
               </p>
             )}
@@ -407,10 +406,10 @@ export default function NouvelleFicheDeveloppement() {
 
           {message && (
             <div
-              className={`mt-6 text-sm rounded-lg px-4 py-3 border ${
+              className={`mt-6 text-base rounded-lg px-4 py-3 border-2 ${
                 message.type === "erreur"
-                  ? "bg-red-50 border-red-100 text-red-700"
-                  : "bg-green-50 border-green-100 text-green-700"
+                  ? "bg-red-50 border-red-200 text-red-700"
+                  : "bg-green-50 border-green-200 text-green-800"
               }`}
             >
               {message.texte}
