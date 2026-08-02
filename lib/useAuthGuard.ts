@@ -8,6 +8,24 @@ export type Role = "admin" | "instructor" | "student";
 
 type GuardStatus = "loading" | "ok";
 
+// Devine le portail (pour le ?role= de /login) depuis le chemin courant,
+// pour que la redirection après déconnexion/expiration affiche le bon
+// écran (formateur, étudiant ou admin) plutôt que de retomber par défaut
+// sur "Connexion étudiant" quel que soit le rôle réel de la personne.
+function roleDepuisChemin(pathname: string): Role | null {
+  if (pathname.startsWith("/instructor")) return "instructor";
+  if (pathname.startsWith("/student")) return "student";
+  if (pathname.startsWith("/dashboard")) return "admin";
+  return null;
+}
+
+function urlLogin(role: Role | null, params?: Record<string, string>) {
+  const query = new URLSearchParams(params);
+  if (role) query.set("role", role);
+  const qs = query.toString();
+  return qs ? `/login?${qs}` : "/login";
+}
+
 type Profile = {
   id: string;
   email: string;
@@ -49,7 +67,7 @@ export function useAuthGuard(allowedRoles: Role[]) {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace("/login");
+        router.replace(urlLogin(roleDepuisChemin(window.location.pathname)));
         return;
       }
 
@@ -64,7 +82,7 @@ export function useAuthGuard(allowedRoles: Role[]) {
       const role = profil?.role as Role | undefined;
 
       if (!role || !rolesKey.split(",").includes(role)) {
-        router.replace("/login");
+        router.replace(urlLogin(role ?? roleDepuisChemin(window.location.pathname)));
         return;
       }
 
@@ -110,7 +128,11 @@ export function useAuthGuard(allowedRoles: Role[]) {
 
     function deconnecterPourInactivite() {
       supabase.auth.signOut().finally(() => {
-        router.replace("/login?session=expiree");
+        router.replace(
+          urlLogin(profile?.role ?? roleDepuisChemin(window.location.pathname), {
+            session: "expiree",
+          })
+        );
       });
     }
 

@@ -68,8 +68,11 @@ export default function Navbar() {
   }
 
   async function logout() {
+    const roleAvantDeconnexion = role;
     await supabase.auth.signOut();
-    router.replace("/login");
+    router.replace(
+      roleAvantDeconnexion ? `/login?role=${roleAvantDeconnexion}` : "/login"
+    );
   }
 
   // Espace dans lequel on se trouve actuellement. Étudiants et formateurs
