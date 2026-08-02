@@ -152,53 +152,31 @@ export default function InstructorMatiereSeancesPage() {
                       const estExamen = seancesExamen.has(s.id);
 
                       return (
-                        <div
+                        <Link
                           key={s.id}
-                          className={`flex flex-col rounded-lg border overflow-hidden hover:shadow-md transition-shadow ${
+                          href={`/instructor/matieres/${matiereId}/seances/${s.id}`}
+                          className={`flex flex-col rounded-lg border px-3 py-2 hover:shadow-md transition-shadow ${
                             estExamen
                               ? "bg-red-50 border-red-300"
                               : "bg-amber-50 border-amber-200"
                           }`}
                         >
-                          <div className="px-3 pt-2 pb-1">
-                            <span
-                              className={`text-xs font-bold ${
-                                estExamen ? "text-red-700" : "text-amber-700"
-                              }`}
-                            >
-                              S{s.numero}
-                            </span>
-                          </div>
+                          <span
+                            className={`text-xs font-bold mb-1 ${
+                              estExamen ? "text-red-700" : "text-amber-700"
+                            }`}
+                          >
+                            S{s.numero}
+                          </span>
 
                           <p
-                            className={`px-3 pb-2 text-xs leading-snug line-clamp-3 flex-1 ${
+                            className={`text-xs leading-snug line-clamp-3 ${
                               estExamen ? "text-red-900" : "text-gray-800"
                             }`}
                           >
                             {s.titre}
                           </p>
-
-                          <div
-                            className={`flex border-t divide-x ${
-                              estExamen
-                                ? "border-red-300 divide-red-300"
-                                : "border-amber-200 divide-amber-200"
-                            }`}
-                          >
-                            <Link
-                              href={`/instructor/supports/${s.id}`}
-                              className="flex-1 text-center text-xs py-1.5 font-medium text-green-700 hover:bg-white/60 transition-colors"
-                            >
-                              Support
-                            </Link>
-                            <Link
-                              href={`/instructor/tp/${s.id}`}
-                              className="flex-1 text-center text-xs py-1.5 font-medium text-green-700 hover:bg-white/60 transition-colors"
-                            >
-                              TP
-                            </Link>
-                          </div>
-                        </div>
+                        </Link>
                       );
                     })}
                 </div>
