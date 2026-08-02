@@ -12,36 +12,32 @@ type Seance = {
   titre: string;
 };
 
-// Couleurs (hex) extraites du thème PowerPoint de chaque séance, quand
-// disponibles — voir course_lessons.couleur_accent. Sert à distinguer
-// visuellement les séances les unes des autres, en plus des indicateurs
-// "séance du jour" / "examen".
-function couleursSeance(couleur: string | null | undefined, estExamen: boolean) {
-  if (estExamen) {
-    return {
-      style: couleur ? { backgroundColor: `${couleur}14` } : undefined,
-      classeFond: couleur ? "" : "bg-red-50",
-      classeBordure: "border-red-400",
-      classeTexteCode: "text-red-700",
-    };
-  }
+// Palette utilisée tant qu'une séance n'a pas de couleur_accent propre
+// (extraite de son PowerPoint) — évite que toute la grille reste dans un
+// seul ton pâle en attendant que chaque support ait sa couleur dédiée.
+const PALETTE_SEANCES = [
+  "#2563eb", // bleu
+  "#7c3aed", // violet
+  "#0d9488", // sarcelle
+  "#4f46e5", // indigo
+  "#db2777", // rose
+  "#ea580c", // orange
+  "#0891b2", // cyan
+  "#65a30d", // vert olive
+];
 
-  if (couleur) {
-    return {
-      style: { backgroundColor: `${couleur}1f`, borderColor: `${couleur}80` },
-      classeFond: "",
-      classeBordure: "",
-      classeTexteCode: "",
-      styleTexteCode: { color: couleur },
-    };
-  }
-
-  return {
-    style: undefined,
-    classeFond: "bg-amber-50",
-    classeBordure: "border-amber-200",
-    classeTexteCode: "text-amber-700",
-  };
+// Couleur de fond pleine (hex) d'une carte de séance : rouge soutenu pour un
+// examen (prioritaire sur toute autre couleur), sinon la couleur extraite du
+// PowerPoint de la séance si disponible, sinon une couleur de la palette
+// tournante ci-dessus pour garder une grille bien colorée.
+function couleurCellule(
+  couleur: string | null | undefined,
+  estExamen: boolean,
+  index: number
+): string {
+  if (estExamen) return "#dc2626";
+  if (couleur) return couleur;
+  return PALETTE_SEANCES[index % PALETTE_SEANCES.length];
 }
 
 export default function MatiereSeancesPage() {
@@ -203,64 +199,38 @@ export default function MatiereSeancesPage() {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
               {seances.map((s, i) => {
                 const complete = seancesCompletees.has(s.id);
                 const estActuelle = i === indexActuelle;
                 const estExamen = seancesExamen.has(s.id);
-                const couleur = couleursSeances[s.id];
-
-                if (estActuelle) {
-                  return (
-                    <Link
-                      key={s.id}
-                      href={`/student/matieres/${matiereId}/seances/${s.id}`}
-                      className="flex flex-col rounded-lg border px-3 py-2 hover:shadow-md transition-shadow bg-green-600 border-green-700 text-white"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-white">
-                          S{s.numero}
-                        </span>
-                        {complete && (
-                          <span className="text-[10px] font-semibold text-white">
-                            ✓ Fait
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[10px] font-semibold text-white mb-0.5">
-                        Vous êtes ici
-                      </p>
-                      <p className="text-xs leading-snug line-clamp-3">
-                        {s.titre}
-                      </p>
-                    </Link>
-                  );
-                }
-
-                const c = couleursSeance(couleur, estExamen);
+                const couleur = estActuelle
+                  ? "#16a34a"
+                  : couleurCellule(couleursSeances[s.id], estExamen, i);
 
                 return (
                   <Link
                     key={s.id}
                     href={`/student/matieres/${matiereId}/seances/${s.id}`}
-                    style={c.style}
-                    className={`flex flex-col rounded-lg border px-3 py-2 hover:shadow-md transition-shadow text-gray-800 ${c.classeFond} ${c.classeBordure}`}
+                    style={{ backgroundColor: couleur }}
+                    className="flex flex-col min-h-[100px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span
-                        className={`text-xs font-bold ${c.classeTexteCode}`}
-                        style={c.styleTexteCode}
-                      >
-                        S{s.numero}
-                      </span>
+                      <span className="text-sm font-bold">S{s.numero}</span>
                       {complete && (
-                        <span className="text-[10px] font-semibold text-green-700">
+                        <span className="text-[11px] font-semibold bg-white/20 rounded px-1.5 py-0.5">
                           ✓ Fait
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs leading-snug line-clamp-3">
+                    {estActuelle && (
+                      <p className="text-[11px] font-semibold text-white/90 mb-0.5">
+                        Vous êtes ici
+                      </p>
+                    )}
+
+                    <p className="text-sm leading-snug line-clamp-3 text-white/95">
                       {s.titre}
                     </p>
                   </Link>
@@ -268,21 +238,19 @@ export default function MatiereSeancesPage() {
               })}
             </div>
 
-            <div className="flex flex-wrap gap-5 text-xs text-gray-600 border-t border-gray-200 pt-3">
+            <div className="flex flex-wrap gap-5 text-sm text-gray-600 border-t border-gray-200 pt-3">
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-green-600 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-sm bg-green-600 inline-block" />
                 Séance du jour
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-red-50 border border-red-300 inline-block" />
+                <span className="w-3.5 h-3.5 rounded-sm bg-red-600 inline-block" />
                 Séance d&apos;examen
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-amber-50 border border-amber-200 inline-block" />
-                Séance régulière
-              </span>
               <span className="text-gray-400">
-                (les autres couleurs reprennent le thème du PowerPoint de chaque séance, quand disponible)
+                Les autres couleurs reprennent le thème du PowerPoint de
+                chaque séance quand il est disponible, ou une couleur de la
+                palette sinon.
               </span>
             </div>
           </>
