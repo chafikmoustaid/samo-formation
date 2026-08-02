@@ -247,11 +247,6 @@ export default function MatiereSeancesPage() {
                 <span className="w-3.5 h-3.5 rounded-sm bg-red-600 inline-block" />
                 Séance d&apos;examen
               </span>
-              <span className="text-gray-400">
-                Les autres couleurs reprennent le thème du PowerPoint de
-                chaque séance quand il est disponible, ou une couleur de la
-                palette sinon.
-              </span>
             </div>
           </>
         )}
