@@ -15,11 +15,16 @@ export default function StatCard({
   label,
   value,
   accent = "neutral",
+  color,
   href,
 }: {
   label: string;
   value: React.ReactNode;
   accent?: keyof typeof ACCENT_COULEURS;
+  /** Couleur (hex) qui prend le dessus sur `accent`, pour distinguer des
+   * cartes qui n'ont pas de sens sémantique commun (ex. plusieurs cartes
+   * "action requise" qui doivent quand même être visuellement différentes). */
+  color?: string;
   href?: string;
 }) {
   const contenu = (
@@ -29,7 +34,7 @@ export default function StatCard({
     </>
   );
 
-  const style = { backgroundColor: ACCENT_COULEURS[accent] };
+  const style = { backgroundColor: color ?? ACCENT_COULEURS[accent] };
 
   if (href) {
     return (

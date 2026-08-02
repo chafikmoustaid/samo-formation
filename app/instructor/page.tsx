@@ -98,23 +98,25 @@ export default function InstructorPage() {
           <StatCard
             label="Séances publiées"
             value={stats ? stats.totalSeances : "…"}
+            color={couleurPalette(0)}
             href="#matieres"
           />
           <StatCard
             label="Fiches à valider"
             value={stats ? stats.fichesAttente : "…"}
-            accent="orange"
+            color={couleurPalette(5)}
             href="/instructor/attendance"
           />
           <StatCard
             label="Remises à corriger"
             value={stats ? stats.remisesAttente : "…"}
-            accent="orange"
+            color={couleurPalette(4)}
             href="/instructor/assignments"
           />
           <StatCard
             label="Total remises TP"
             value={stats ? stats.totalRemises : "…"}
+            color={couleurPalette(1)}
             href="/instructor/assignments"
           />
         </div>
