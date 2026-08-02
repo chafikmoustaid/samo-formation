@@ -113,12 +113,14 @@ export default function InstructorPage() {
 
         <div id="matieres" className="scroll-mt-8">
           <Card className="mt-8">
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Mes matières
-            </h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Choisis une matière pour accéder à ses séances (supports et TP).
-            </p>
+            <div className="border-l-4 border-green-700 pl-4 mb-5">
+              <h2 className="text-2xl font-extrabold text-gray-900">
+                Mes matières
+              </h2>
+              <p className="text-base text-gray-600 mt-1">
+                Choisis une matière pour accéder à ses séances (supports et TP).
+              </p>
+            </div>
 
             {!matieresChargees ? (
               <p className="text-sm text-gray-400">Chargement…</p>

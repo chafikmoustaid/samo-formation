@@ -132,12 +132,14 @@ export default function StudentPage() {
 
         {matieres.length > 0 && (
           <Card className="mb-6">
-            <h2 className="text-sm font-semibold text-gray-900 mb-1">
-              Mes matières
-            </h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Choisis une matière pour voir ses séances.
-            </p>
+            <div className="border-l-4 border-green-700 pl-4 mb-5">
+              <h2 className="text-2xl font-extrabold text-gray-900">
+                Mes matières
+              </h2>
+              <p className="text-base text-gray-600 mt-1">
+                Choisis une matière pour voir ses séances.
+              </p>
+            </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {matieres.map((m, i) => (
