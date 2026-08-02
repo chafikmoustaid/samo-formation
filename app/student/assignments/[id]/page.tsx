@@ -424,7 +424,7 @@ export default function StudentAssignmentDetailPage() {
         {reponsePrecedente && !resoumission ? (
           <div className="text-sm bg-white border border-gray-200 rounded-lg p-3">
             <p className="whitespace-pre-wrap text-gray-800">
-              {reponsePrecedente.reponse_texte || "(aucune réponse texte)"}
+              {reponsePrecedente.reponse_texte || "Aucune réponse texte"}
             </p>
             {reponsePrecedente.fichier && (
               <a

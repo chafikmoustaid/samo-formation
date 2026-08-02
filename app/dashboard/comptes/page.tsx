@@ -468,7 +468,7 @@ export default function ComptesPage() {
 
   async function supprimerFormationCatalogue(id: number, nom: string) {
     const confirmation = window.confirm(
-      `Supprimer la formation "${nom}" ? Les étudiants qui y sont inscrits seront détachés (formation à réassigner).`
+      `Supprimer la formation "${nom}" ? Les étudiants qui y sont inscrits seront détachés.`
     );
     if (!confirmation) return;
 
@@ -510,7 +510,7 @@ export default function ComptesPage() {
     if (formationsARenommer.size !== 1) {
       setMessage({
         type: "erreur",
-        texte: "Coche exactement une formation (colonne Renommer) à renommer.",
+        texte: "Coche exactement une formation à renommer.",
       });
       return;
     }
@@ -534,7 +534,7 @@ export default function ComptesPage() {
     const confirmation = window.confirm(
       `Supprimer ${noms.length > 1 ? "les formations" : "la formation"} "${noms.join(
         '", "'
-      )}" ? Les étudiants qui y sont inscrits seront détachés (formation à réassigner).`
+      )}" ? Les étudiants qui y sont inscrits seront détachés.`
     );
     if (!confirmation) return;
 
@@ -564,7 +564,7 @@ export default function ComptesPage() {
     if (matieresARenommer.size !== 1) {
       setMessage({
         type: "erreur",
-        texte: "Coche exactement une matière (colonne Renommer) à renommer.",
+        texte: "Coche exactement une matière à renommer.",
       });
       return;
     }
@@ -1275,11 +1275,7 @@ export default function ComptesPage() {
                 type="text"
                 value={nouvelleMatiere}
                 onChange={(e) => setNouvelleMatiere(e.target.value)}
-                placeholder={
-                  formationChoisieId !== null && filtrerMatieresParFormation
-                    ? "Nouvelle matière (créée + assignée ici)"
-                    : "Nouvelle matière"
-                }
+                placeholder="Nouvelle matière"
                 disabled={ajoutMatiereEnCours}
                 className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
               />

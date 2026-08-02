@@ -65,7 +65,7 @@ export default function SupportCompare({
           disabled={!htmlFidele}
           onClick={() => setMode("fidele")}
         >
-          Version originale (identique au PPT)
+          Version originale
         </TabButton>
 
         <TabButton
@@ -81,7 +81,7 @@ export default function SupportCompare({
           disabled={!auditReport}
           onClick={() => setMode("audit")}
         >
-          Audit ({auditReport?.issues?.length ?? 0} slides spéciales)
+          Audit — {auditReport?.issues?.length ?? 0} slides spéciales
         </TabButton>
       </div>
 
@@ -103,7 +103,7 @@ export default function SupportCompare({
 
       {mode === "fidele" && htmlFidele && (
         <p className="text-xs text-gray-400 mt-3">
-          Vue protégée (clic droit et copie désactivés). Une capture d&apos;écran reste
+          Vue protégée — clic droit et copie désactivés. Une capture d&apos;écran reste
           toujours techniquement possible — aucun outil web ne peut l&apos;empêcher
           totalement.
         </p>

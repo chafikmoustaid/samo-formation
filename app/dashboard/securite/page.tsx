@@ -154,10 +154,9 @@ export default function SecuritePage() {
             Authentification à deux facteurs
           </h2>
           <p className="text-sm text-gray-500 mb-6">
-            Ajoute une étape de vérification (code à 6 chiffres) à la
-            connexion, en plus de ton mot de passe. Recommandé pour les
-            comptes administrateurs, qui ont accès à tous les comptes et
-            données de la plateforme.
+            Ajoute une étape de vérification à la connexion, en plus de ton
+            mot de passe. Recommandé pour les comptes administrateurs, qui
+            ont accès à tous les comptes et données de la plateforme.
           </p>
 
           {loading ? (
@@ -181,9 +180,8 @@ export default function SecuritePage() {
           ) : enrolement ? (
             <form onSubmit={confirmerEnrolement} className="space-y-4">
               <p className="text-sm text-gray-700">
-                Scanne ce code avec une application comme Google
-                Authenticator, Authy ou Microsoft Authenticator, puis entre le
-                code généré.
+                Scanne ce code avec une application d&apos;authentification,
+                puis entre le code généré.
               </p>
 
               <div className="border border-gray-200 rounded-lg p-4 w-fit bg-white">

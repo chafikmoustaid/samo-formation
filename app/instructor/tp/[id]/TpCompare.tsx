@@ -30,7 +30,7 @@ export default function TpCompare({
               : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
           }`}
         >
-          Énoncé (vu par l&apos;étudiant)
+          Énoncé
         </button>
 
         <button
@@ -41,7 +41,7 @@ export default function TpCompare({
               : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
           }`}
         >
-          Corrigé (réservé au formateur)
+          Corrigé
         </button>
       </div>
 

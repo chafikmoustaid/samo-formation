@@ -163,7 +163,7 @@ export default function InstructorProgressPage() {
 
         <Card className="p-4 overflow-x-auto">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Progression cours (tous étudiants)
+            Progression cours
           </h2>
 
           <table className="w-full text-sm">

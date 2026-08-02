@@ -127,7 +127,7 @@ export default function ImportSupportPage() {
 
           <div>
             <label className="block font-medium mb-1">
-              Audit (optionnel) — <code>audits/seance_N_audit.json</code>
+              Audit — <code>audits/seance_N_audit.json</code>
             </label>
             <input
               type="file"

@@ -336,7 +336,7 @@ export default function AssignmentCorrectionPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Commentaire global (optionnel)
+                  Commentaire global
                 </label>
                 <textarea
                   value={commentaire}
@@ -352,8 +352,7 @@ export default function AssignmentCorrectionPage() {
 
               <p className="text-xs text-gray-400">
                 Note globale actuelle : {note || "—"}
-                {pointsMaxTotal > 0 &&
-                  ` / ${pointsMaxTotal} (calculée automatiquement en additionnant la grille, une fois tous les critères notés)`}
+                {pointsMaxTotal > 0 && ` / ${pointsMaxTotal}`}
               </p>
             </div>
           </Card>

@@ -240,8 +240,7 @@ export default function Dashboard() {
             </h2>
             <p className="text-sm text-gray-500 mt-1">
               Clique sur un étudiant pour voir le détail de ses fiches validées, semaine par
-              semaine (nécessaire pour justifier les heures auprès d&apos;un organisme
-              subventionnaire).
+              semaine.
             </p>
           </div>
 

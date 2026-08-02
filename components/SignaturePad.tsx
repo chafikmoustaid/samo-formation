@@ -154,8 +154,7 @@ export default function SignaturePad({
               width: 500,
               height: 180,
               className: "border border-gray-300 rounded-lg bg-white",
-              "aria-label":
-                "Zone de dessin de la signature (souris ou écran tactile requis)",
+              "aria-label": "Zone de dessin de la signature",
               role: "img",
             }}
           />

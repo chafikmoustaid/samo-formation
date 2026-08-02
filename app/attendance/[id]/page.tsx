@@ -297,7 +297,7 @@ export default function AttendanceDetail() {
           {fiche.motif_heures && (
             <div className="mt-4 bg-gray-50 border border-gray-200 rounded p-3 text-sm">
               <span className="font-semibold text-gray-900">
-                Motif (écart d&apos;heures) :{" "}
+                Motif :{" "}
               </span>
               {fiche.motif_heures}
             </div>
