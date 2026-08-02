@@ -26,12 +26,43 @@ export default function InstructorStudentsPage() {
   }, []);
 
   async function charger() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data: profil } = user
+      ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+      : { data: null };
+
+    // Un admin voit tous les étudiants. Un formateur ne voit que les
+    // étudiants des formations qui lui sont explicitement assignées (table
+    // instructor_formations — c'est aussi ce que la RLS applique déjà côté
+    // base de données ; on reproduit le même filtre ici pour que le message
+    // "aucun étudiant" affiché soit cohérent avec ce qui est réellement
+    // renvoyé).
+    let formationIds: number[] | null = null;
+
+    if (profil?.role !== "admin") {
+      const { data: assignations } = await supabase
+        .from("instructor_formations")
+        .select("formation_id")
+        .eq("profil_id", user?.id ?? "");
+
+      formationIds = (assignations ?? []).map((a) => a.formation_id);
+    }
+
+    let requete = supabase
+      .from("profiles")
+      .select("id, email, nom_complet, formation_id")
+      .eq("role", "student")
+      .order("nom_complet", { ascending: true });
+
+    if (formationIds !== null) {
+      requete = requete.in("formation_id", formationIds);
+    }
+
     const [{ data: students }, { data: formations }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id, email, nom_complet, formation_id")
-        .eq("role", "student")
-        .order("nom_complet", { ascending: true }),
+      requete,
       supabase.from("formations").select("id, nom"),
     ]);
 

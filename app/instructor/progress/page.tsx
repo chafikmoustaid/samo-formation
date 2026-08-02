@@ -71,10 +71,35 @@ export default function InstructorProgressPage() {
   }
 
   async function chargerDonnees() {
-    const { data: students } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("role", "student");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data: profil } = user
+      ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+      : { data: null };
+
+    // Un admin voit la progression de tous les étudiants. Un formateur ne
+    // voit que ceux des formations qui lui sont assignées (instructor_formations
+    // — même source que la RLS sur profiles, pour rester cohérent).
+    let formationIds: number[] | null = null;
+
+    if (profil?.role !== "admin") {
+      const { data: assignations } = await supabase
+        .from("instructor_formations")
+        .select("formation_id")
+        .eq("profil_id", user?.id ?? "");
+
+      formationIds = (assignations ?? []).map((a) => a.formation_id);
+    }
+
+    let requeteEtudiants = supabase.from("profiles").select("*").eq("role", "student");
+
+    if (formationIds !== null) {
+      requeteEtudiants = requeteEtudiants.in("formation_id", formationIds);
+    }
+
+    const { data: students } = await requeteEtudiants;
 
     const { data: quizs } = await supabase.from("quiz_results").select("*");
 
@@ -166,6 +191,11 @@ export default function InstructorProgressPage() {
             Progression cours
           </h2>
 
+          {rows.length === 0 ? (
+            <p className="text-sm text-gray-400">
+              Aucun étudiant dans les formations qui te sont assignées.
+            </p>
+          ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left text-gray-500">
@@ -187,6 +217,7 @@ export default function InstructorProgressPage() {
               ))}
             </tbody>
           </table>
+          )}
         </Card>
       </div>
     </div>
