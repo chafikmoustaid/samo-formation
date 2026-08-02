@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import Card from "@/components/ui/Card";
-import LinkButton from "@/components/ui/LinkButton";
+import ColorLinkButton from "@/components/ui/ColorLinkButton";
+import { couleurPalette } from "@/lib/paletteCouleurs";
 
 type Progression = {
   nomFormation: string;
@@ -138,12 +139,13 @@ export default function StudentPage() {
               Choisis une matière pour voir ses séances.
             </p>
 
-            <div className="flex flex-col divide-y divide-gray-100 border border-gray-200 rounded">
-              {matieres.map((m) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {matieres.map((m, i) => (
                 <Link
                   key={m.id}
                   href={`/student/matieres/${m.id}`}
-                  className="px-4 py-3 text-sm text-gray-800 hover:bg-gray-50"
+                  style={{ backgroundColor: couleurPalette(i) }}
+                  className="flex items-center rounded-lg px-4 py-3.5 text-white font-bold text-base shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                 >
                   {m.nom}
                 </Link>
@@ -158,17 +160,17 @@ export default function StudentPage() {
           </h2>
 
           <div className="flex gap-3 flex-wrap">
-            <LinkButton href="/attendance" variant="primary">
+            <ColorLinkButton href="/attendance" color={couleurPalette(0)}>
               + Nouvelle fiche de présence
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/student/attendance" variant="outline">
+            <ColorLinkButton href="/student/attendance" color={couleurPalette(5)}>
               Historique de mes présences
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/student/exams" variant="outline">
+            <ColorLinkButton href="/student/exams" color={couleurPalette(1)}>
               Mes examens
-            </LinkButton>
+            </ColorLinkButton>
           </div>
         </Card>
       </div>

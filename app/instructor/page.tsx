@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import StatCard from "@/components/ui/StatCard";
 import Card from "@/components/ui/Card";
-import LinkButton from "@/components/ui/LinkButton";
+import ColorLinkButton from "@/components/ui/ColorLinkButton";
+import { couleurPalette } from "@/lib/paletteCouleurs";
 
 type Stats = {
   totalSeances: number;
@@ -137,11 +138,12 @@ export default function InstructorPage() {
               </p>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {matieres.map((m) => (
+                {matieres.map((m, i) => (
                   <Link
                     key={m.id}
                     href={`/instructor/matieres/${m.id}`}
-                    className="block rounded-lg border border-gray-200 bg-white px-4 py-3 hover:border-green-600 transition-colors text-sm font-medium text-gray-900"
+                    style={{ backgroundColor: couleurPalette(i) }}
+                    className="flex items-center rounded-lg px-4 py-3.5 text-white font-bold text-base shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
                     {m.nom}
                   </Link>
@@ -157,33 +159,33 @@ export default function InstructorPage() {
           </h2>
 
           <div className="flex flex-wrap gap-3">
-            <LinkButton href="/instructor/students" variant="primary">
+            <ColorLinkButton href="/instructor/students" color={couleurPalette(0)}>
               Mes étudiants
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/instructor/attendance" variant="outline">
+            <ColorLinkButton href="/instructor/attendance" color={couleurPalette(5)}>
               Fiches de présence à valider
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/development" variant="outline">
+            <ColorLinkButton href="/development" color={couleurPalette(2)}>
               Nouvelle fiche de développement
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/development/history" variant="outline">
+            <ColorLinkButton href="/development/history" color={couleurPalette(3)}>
               Mes fiches de développement
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/instructor/import-support" variant="outline">
+            <ColorLinkButton href="/instructor/import-support" color={couleurPalette(1)}>
               Publier un support
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/instructor/assignments" variant="outline">
+            <ColorLinkButton href="/instructor/assignments" color={couleurPalette(4)}>
               Remises TP
-            </LinkButton>
+            </ColorLinkButton>
 
-            <LinkButton href="/instructor/progress" variant="outline">
+            <ColorLinkButton href="/instructor/progress" color={couleurPalette(6)}>
               Progression (classe)
-            </LinkButton>
+            </ColorLinkButton>
           </div>
         </Card>
       </div>

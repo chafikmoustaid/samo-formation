@@ -1,13 +1,14 @@
 import Link from "next/link";
 
-// Style plat et sobre (un seul accent, le vert de marque, sur "orange"
-// gardé uniquement pour signaler une action requise) — pas de dégradés,
-// pas d'ombres, pas de palette arc-en-ciel.
-const ACCENT_CLASSES = {
-  neutral: "text-gray-900",
-  green: "text-green-700",
-  orange: "text-orange-600",
-  red: "text-red-600",
+// Tuiles pleines et colorées (fond uni, texte blanc) — chaque accent garde
+// un sens (bleu = neutre/total, vert = validé, orange = action requise,
+// rouge = refusé), mais le rendu est maintenant coloré et affirmé plutôt
+// que blanc avec juste le chiffre en couleur.
+const ACCENT_COULEURS = {
+  neutral: "#2563eb",
+  green: "#16a34a",
+  orange: "#ea580c",
+  red: "#dc2626",
 } as const;
 
 export default function StatCard({
@@ -18,23 +19,24 @@ export default function StatCard({
 }: {
   label: string;
   value: React.ReactNode;
-  accent?: keyof typeof ACCENT_CLASSES;
+  accent?: keyof typeof ACCENT_COULEURS;
   href?: string;
 }) {
   const contenu = (
     <>
-      <div className="text-sm text-gray-500">{label}</div>
-      <div className={`text-3xl font-bold mt-2 ${ACCENT_CLASSES[accent]}`}>
-        {value}
-      </div>
+      <div className="text-sm font-semibold text-white/80">{label}</div>
+      <div className="text-4xl font-extrabold mt-2 text-white">{value}</div>
     </>
   );
+
+  const style = { backgroundColor: ACCENT_COULEURS[accent] };
 
   if (href) {
     return (
       <Link
         href={href}
-        className="block bg-white rounded-lg border border-gray-200 p-6 hover:border-green-600 transition-colors"
+        style={style}
+        className="block rounded-xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
       >
         {contenu}
       </Link>
@@ -42,7 +44,7 @@ export default function StatCard({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div style={style} className="rounded-xl p-6 shadow-sm">
       {contenu}
     </div>
   );
