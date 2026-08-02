@@ -153,9 +153,6 @@ export default function InstructorMatiereSeancesPage() {
 
         <div className="rounded-xl overflow-hidden mb-6 shadow-sm">
           <div className="bg-gradient-to-r from-green-700 to-emerald-600 px-6 py-5">
-            <p className="text-emerald-100 text-xs font-semibold uppercase tracking-wide mb-1">
-              Feuille de route du cours
-            </p>
             <h1 className="text-2xl font-bold text-white">{nomMatiere}</h1>
             {seances.length > 0 && (
               <p className="text-emerald-50 text-sm mt-1">
@@ -200,13 +197,13 @@ export default function InstructorMatiereSeancesPage() {
                           key={s.id}
                           href={`/instructor/matieres/${matiereId}/seances/${s.id}`}
                           style={{ backgroundColor: couleur }}
-                          className="flex flex-col min-h-[90px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                          className="flex flex-col min-h-[100px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
                         >
-                          <span className="text-sm font-bold mb-1">
+                          <span className="text-base font-extrabold mb-1">
                             S{s.numero}
                           </span>
 
-                          <p className="text-sm leading-snug line-clamp-3 text-white/95">
+                          <p className="text-base font-bold leading-snug line-clamp-3 text-white">
                             {s.titre}
                           </p>
                         </Link>

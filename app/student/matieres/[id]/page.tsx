@@ -171,9 +171,6 @@ export default function MatiereSeancesPage() {
 
         <div className="rounded-xl overflow-hidden mb-6 shadow-sm">
           <div className="bg-gradient-to-r from-green-700 to-emerald-600 px-6 py-5">
-            <p className="text-emerald-100 text-xs font-semibold uppercase tracking-wide mb-1">
-              Feuille de route du cours
-            </p>
             <h1 className="text-2xl font-bold text-white">{nomMatiere}</h1>
             {seances.length > 0 && (
               <p className="text-emerald-50 text-sm mt-1">
@@ -213,24 +210,24 @@ export default function MatiereSeancesPage() {
                     key={s.id}
                     href={`/student/matieres/${matiereId}/seances/${s.id}`}
                     style={{ backgroundColor: couleur }}
-                    className="flex flex-col min-h-[100px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                    className="flex flex-col min-h-[112px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-bold">S{s.numero}</span>
+                      <span className="text-base font-extrabold">S{s.numero}</span>
                       {complete && (
-                        <span className="text-[11px] font-semibold bg-white/20 rounded px-1.5 py-0.5">
+                        <span className="text-xs font-bold bg-white/20 rounded px-1.5 py-0.5">
                           ✓ Fait
                         </span>
                       )}
                     </div>
 
                     {estActuelle && (
-                      <p className="text-[11px] font-semibold text-white/90 mb-0.5">
+                      <p className="text-xs font-bold text-white/90 mb-0.5">
                         Vous êtes ici
                       </p>
                     )}
 
-                    <p className="text-sm leading-snug line-clamp-3 text-white/95">
+                    <p className="text-base font-bold leading-snug line-clamp-3 text-white">
                       {s.titre}
                     </p>
                   </Link>
