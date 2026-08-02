@@ -104,23 +104,19 @@ export default function Navbar() {
 
           {role === "admin" && section === "admin" && (
             <>
-              <Link
-                href="/dashboard"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/attendance"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Nouvelle fiche
-              </Link>
+              {pathname !== "/dashboard" && (
+                <Link
+                  href="/dashboard"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
               <Link
                 href="/attendance/history"
                 className="text-base font-bold hover:text-white/80 transition-colors"
               >
-                Historique
+                Fiches de présence
               </Link>
               <Link
                 href="/development/history"
