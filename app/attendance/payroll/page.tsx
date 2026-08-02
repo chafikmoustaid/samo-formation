@@ -244,9 +244,9 @@ export default function PeriodePaiePage() {
             </p>
           ) : (
             <>
-              <table className="w-full text-sm">
+              <table className="w-full text-base">
                 <thead>
-                  <tr className="border-b text-left text-gray-500">
+                  <tr className="border-b text-left text-gray-500 text-sm">
                     <th className="p-3 font-medium">Étudiant(e)</th>
                     <th className="p-3 font-medium">Heures validées</th>
                     <th className="p-3 font-medium">Fiches validées</th>
@@ -256,7 +256,7 @@ export default function PeriodePaiePage() {
                 <tbody>
                   {parEtudiant.map((l) => (
                     <tr key={l.nom} className="border-b last:border-0">
-                      <td className="p-3">{l.nom}</td>
+                      <td className="p-3 font-medium text-gray-900">{l.nom}</td>
                       <td className="p-3 font-semibold text-gray-900">
                         {l.heuresValidees} h
                       </td>

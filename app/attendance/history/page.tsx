@@ -107,6 +107,7 @@ function AttendanceHistoryContent() {
   const [selectionnees, setSelectionnees] = useState<Set<number>>(new Set());
   const [validationEnCours, setValidationEnCours] = useState(false);
   const [voirCorbeille, setVoirCorbeille] = useState(false);
+  const [filtresOuverts, setFiltresOuverts] = useState(false);
   const [restaurationEnCours, setRestaurationEnCours] = useState<number | null>(
     null
   );
@@ -402,64 +403,98 @@ function AttendanceHistoryContent() {
           }
         />
 
+        <p className="text-sm text-gray-500 mb-4">
+          Toutes les fiches de présence envoyées par les étudiant(e)s
+          apparaissent ici. Utilise la recherche pour trouver rapidement
+          quelqu&apos;un, ou ouvre les filtres pour affiner par formateur,
+          statut ou période.
+        </p>
+
         <Card className="mb-6">
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"
               value={rechercheEtudiant}
               onChange={(e) => setRechercheEtudiant(e.target.value)}
               placeholder="Rechercher un étudiant…"
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px]"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-base flex-1 min-w-[220px]"
             />
 
-            <select
-              value={filtreFormateur}
-              onChange={(e) => setFiltreFormateur(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            <Button
+              variant="ghost"
+              onClick={() => setFiltresOuverts((v) => !v)}
             >
-              <option value="">Tous les formateurs</option>
-              {formateurs.map((f) => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={filtreStatut}
-              onChange={(e) => setFiltreStatut(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-            >
-              <option value="">Tous les statuts</option>
-              <option value="en_attente">En attente</option>
-              <option value="validee">Validée</option>
-              <option value="refusee">Refusée</option>
-            </select>
-
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-500">Travaillé du</label>
-              <input
-                type="date"
-                value={dateDebut}
-                onChange={(e) => setDateDebut(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-500">au</label>
-              <input
-                type="date"
-                value={dateFin}
-                onChange={(e) => setDateFin(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
+              {filtresOuverts ? "Masquer les filtres" : "Plus de filtres"}
+            </Button>
           </div>
-          <p className="text-xs text-gray-400 mt-2">
-            Ce filtre porte sur les journées réellement travaillées inscrites
-            sur la fiche — pas sur sa date de soumission.
-          </p>
+
+          {filtresOuverts && (
+            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+              <select
+                value={filtreFormateur}
+                onChange={(e) => setFiltreFormateur(e.target.value)}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              >
+                <option value="">Tous les formateurs</option>
+                {formateurs.map((f) => (
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={filtreStatut}
+                onChange={(e) => setFiltreStatut(e.target.value)}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              >
+                <option value="">Tous les statuts</option>
+                <option value="en_attente">En attente</option>
+                <option value="validee">Validée</option>
+                <option value="refusee">Refusée</option>
+              </select>
+
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-500">Travaillé du</label>
+                <input
+                  type="date"
+                  value={dateDebut}
+                  onChange={(e) => setDateDebut(e.target.value)}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-500">au</label>
+                <input
+                  type="date"
+                  value={dateFin}
+                  onChange={(e) => setDateFin(e.target.value)}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+
+              {(filtreFormateur || filtreStatut || dateDebut || dateFin) && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setFiltreFormateur("");
+                    setFiltreStatut("");
+                    setDateDebut("");
+                    setDateFin("");
+                  }}
+                >
+                  Réinitialiser
+                </Button>
+              )}
+
+              <p className="w-full text-xs text-gray-400">
+                Le filtre de dates porte sur les journées réellement
+                travaillées inscrites sur la fiche — pas sur sa date de
+                soumission.
+              </p>
+            </div>
+          )}
         </Card>
 
         {selectionnees.size > 0 && (
@@ -489,9 +524,9 @@ function AttendanceHistoryContent() {
               Aucune fiche ne correspond à ces critères.
             </p>
           ) : (
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
-                <tr className="bg-gray-50 text-left text-gray-500">
+                <tr className="bg-gray-50 text-left text-gray-500 text-sm">
                   <th className="p-4 font-medium w-10"></th>
                   <th className="p-4 font-medium">Étudiant</th>
                   <th className="p-4 font-medium">Formateur</th>
@@ -513,17 +548,18 @@ function AttendanceHistoryContent() {
                           type="checkbox"
                           checked={selectionnees.has(fiche.id)}
                           onChange={() => toggleSelection(fiche.id)}
+                          className="h-4 w-4"
                         />
                       )}
                     </td>
-                    <td className="p-4">{fiche.nom_etudiant}</td>
+                    <td className="p-4 font-medium text-gray-900">{fiche.nom_etudiant}</td>
                     <td className="p-4">{fiche.nom_formateur}</td>
                     <td className="p-4 whitespace-nowrap text-gray-600">
                       {periodeFiche(fiche)}
                     </td>
                     <td className="p-4">{fiche.total_formation ?? 0} h</td>
                     <td className="p-4">{fiche.total_pratique ?? 0} h</td>
-                    <td className="p-4">{fiche.total_heures} h</td>
+                    <td className="p-4 font-semibold">{fiche.total_heures} h</td>
                     <td className="p-4">
                       <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
                         {STATUT_LABELS[fiche.statut] ?? fiche.statut}
