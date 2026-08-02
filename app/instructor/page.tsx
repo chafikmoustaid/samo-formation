@@ -99,7 +99,6 @@ export default function InstructorPage() {
             label="Séances publiées"
             value={stats ? stats.totalSeances : "…"}
             color={couleurPalette(0)}
-            href="#matieres"
           />
           <StatCard
             label="Fiches à valider"
@@ -111,7 +110,7 @@ export default function InstructorPage() {
             label="Remises à corriger"
             value={stats ? stats.remisesAttente : "…"}
             color={couleurPalette(4)}
-            href="/instructor/assignments"
+            href="/instructor/assignments?filtre=a_corriger"
           />
           <StatCard
             label="Total remises TP"
