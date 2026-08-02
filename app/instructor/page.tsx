@@ -10,7 +10,7 @@ import ColorLinkButton from "@/components/ui/ColorLinkButton";
 import { couleurPalette } from "@/lib/paletteCouleurs";
 
 type Stats = {
-  remisesAttente: number;
+  totalQuizRemis: number;
   totalRemises: number;
   fichesAttente: number;
 };
@@ -26,22 +26,21 @@ export default function InstructorPage() {
     let active = true;
 
     async function load() {
-      const [submissionsRes, attendanceRes] = await Promise.all([
-        supabase.from("assignment_submissions").select("id, note"),
+      const [submissionsRes, attendanceRes, quizRes] = await Promise.all([
+        supabase.from("assignment_submissions").select("id"),
         supabase.from("attendance").select("id, statut").is("supprime_le", null),
+        supabase.from("quiz_results").select("id"),
       ]);
 
       if (!active) return;
 
       const totalRemises = submissionsRes.data?.length ?? 0;
-      const remisesAttente = (submissionsRes.data ?? []).filter(
-        (s) => s.note === null
-      ).length;
+      const totalQuizRemis = quizRes.data?.length ?? 0;
       const fichesAttente = (attendanceRes.data ?? []).filter(
         (f) => f.statut === "en_attente"
       ).length;
 
-      setStats({ remisesAttente, totalRemises, fichesAttente });
+      setStats({ totalQuizRemis, totalRemises, fichesAttente });
     }
 
     async function chargerMatieres() {
@@ -99,13 +98,13 @@ export default function InstructorPage() {
             href="/instructor/attendance"
           />
           <StatCard
-            label="Remises à corriger"
-            value={stats ? stats.remisesAttente : "…"}
+            label="Quiz remis"
+            value={stats ? stats.totalQuizRemis : "…"}
             color={couleurPalette(4)}
-            href="/instructor/assignments?filtre=a_corriger"
+            href="/instructor/results"
           />
           <StatCard
-            label="Total remises TP"
+            label="TP remis"
             value={stats ? stats.totalRemises : "…"}
             color={couleurPalette(1)}
             href="/instructor/assignments"

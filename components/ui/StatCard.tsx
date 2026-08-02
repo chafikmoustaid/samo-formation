@@ -29,8 +29,8 @@ export default function StatCard({
 }) {
   const contenu = (
     <>
-      <div className="text-sm font-semibold text-white/80">{label}</div>
-      <div className="text-4xl font-extrabold mt-2 text-white">{value}</div>
+      <div className="text-lg font-bold text-white/90">{label}</div>
+      <div className="text-5xl font-extrabold mt-2 text-white">{value}</div>
     </>
   );
 
