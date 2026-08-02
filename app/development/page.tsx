@@ -197,9 +197,6 @@ export default function NouvelleFicheDeveloppement() {
           </div>
 
           <div className="max-w-lg mb-6">
-            <h2 className="text-2xl font-bold text-green-700 tracking-wide mb-1">
-              DÉVELOPPEMENT
-            </h2>
             <p className="text-base text-gray-600">
               À remplir pour chaque période autorisée d&apos;heures de
               développement.
