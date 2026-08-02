@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import StatCard from "@/components/ui/StatCard";
@@ -14,8 +15,12 @@ type Stats = {
   fichesAttente: number;
 };
 
+type Matiere = { id: number; nom: string };
+
 export default function InstructorPage() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [matieres, setMatieres] = useState<Matiere[]>([]);
+  const [matieresChargees, setMatieresChargees] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -41,7 +46,42 @@ export default function InstructorPage() {
       setStats({ totalSeances, remisesAttente, totalRemises, fichesAttente });
     }
 
+    async function chargerMatieres() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setMatieresChargees(true);
+        return;
+      }
+
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("matieres")
+        .eq("id", user.id)
+        .single();
+
+      const nomsMatieres = (profil?.matieres as string[]) ?? [];
+
+      if (nomsMatieres.length === 0) {
+        setMatieresChargees(true);
+        return;
+      }
+
+      const { data: matieresData } = await supabase
+        .from("matieres")
+        .select("id, nom")
+        .in("nom", nomsMatieres)
+        .order("nom");
+
+      if (!active) return;
+      setMatieres(matieresData ?? []);
+      setMatieresChargees(true);
+    }
+
     load();
+    chargerMatieres();
 
     return () => {
       active = false;
@@ -57,21 +97,58 @@ export default function InstructorPage() {
           <StatCard
             label="Séances publiées"
             value={stats ? stats.totalSeances : "…"}
+            href="#matieres"
           />
           <StatCard
             label="Fiches à valider"
             value={stats ? stats.fichesAttente : "…"}
             accent="orange"
+            href="/instructor/attendance"
           />
           <StatCard
             label="Remises à corriger"
             value={stats ? stats.remisesAttente : "…"}
             accent="orange"
+            href="/instructor/assignments"
           />
           <StatCard
             label="Total remises TP"
             value={stats ? stats.totalRemises : "…"}
+            href="/instructor/assignments"
           />
+        </div>
+
+        <div id="matieres" className="scroll-mt-8">
+          <Card className="mt-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Mes matières
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Choisis une matière pour accéder à ses séances (supports et TP).
+            </p>
+
+            {!matieresChargees ? (
+              <p className="text-sm text-gray-400">Chargement…</p>
+            ) : matieres.length === 0 ? (
+              <p className="text-sm text-gray-500">
+                Aucune matière ne t&apos;est encore assignée — demande à
+                l&apos;administration de t&apos;en assigner depuis la Gestion
+                des comptes.
+              </p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {matieres.map((m) => (
+                  <Link
+                    key={m.id}
+                    href={`/instructor/matieres/${m.id}`}
+                    className="block rounded-lg border border-gray-200 bg-white px-4 py-3 hover:border-green-600 transition-colors text-sm font-medium text-gray-900"
+                  >
+                    {m.nom}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </Card>
         </div>
 
         <Card className="mt-8">
@@ -88,12 +165,8 @@ export default function InstructorPage() {
               Fiches de présence à valider
             </LinkButton>
 
-            <LinkButton href="/attendance/payroll" variant="outline">
-              Période de paie
-            </LinkButton>
-
             <LinkButton href="/development" variant="outline">
-              Fiche de développement
+              Nouvelle fiche de développement
             </LinkButton>
 
             <LinkButton href="/development/history" variant="outline">
@@ -102,10 +175,6 @@ export default function InstructorPage() {
 
             <LinkButton href="/instructor/import-support" variant="outline">
               Publier un support
-            </LinkButton>
-
-            <LinkButton href="/instructor/courses" variant="outline">
-              Supports & TP par séance
             </LinkButton>
 
             <LinkButton href="/instructor/assignments" variant="outline">
