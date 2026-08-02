@@ -180,8 +180,9 @@ export default function SecuritePage() {
           ) : enrolement ? (
             <form onSubmit={confirmerEnrolement} className="space-y-4">
               <p className="text-sm text-gray-700">
-                Scanne ce code avec une application d&apos;authentification,
-                puis entre le code généré.
+                Scanne ce code avec une application comme Google
+                Authenticator, Authy ou Microsoft Authenticator, puis entre le
+                code généré.
               </p>
 
               <div className="border border-gray-200 rounded-lg p-4 w-fit bg-white">
