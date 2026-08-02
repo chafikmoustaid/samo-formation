@@ -10,7 +10,6 @@ import ColorLinkButton from "@/components/ui/ColorLinkButton";
 import { couleurPalette } from "@/lib/paletteCouleurs";
 
 type Stats = {
-  totalSeances: number;
   remisesAttente: number;
   totalRemises: number;
   fichesAttente: number;
@@ -27,15 +26,13 @@ export default function InstructorPage() {
     let active = true;
 
     async function load() {
-      const [coursesRes, submissionsRes, attendanceRes] = await Promise.all([
-        supabase.from("courses").select("id"),
+      const [submissionsRes, attendanceRes] = await Promise.all([
         supabase.from("assignment_submissions").select("id, note"),
         supabase.from("attendance").select("id, statut").is("supprime_le", null),
       ]);
 
       if (!active) return;
 
-      const totalSeances = coursesRes.data?.length ?? 0;
       const totalRemises = submissionsRes.data?.length ?? 0;
       const remisesAttente = (submissionsRes.data ?? []).filter(
         (s) => s.note === null
@@ -44,7 +41,7 @@ export default function InstructorPage() {
         (f) => f.statut === "en_attente"
       ).length;
 
-      setStats({ totalSeances, remisesAttente, totalRemises, fichesAttente });
+      setStats({ remisesAttente, totalRemises, fichesAttente });
     }
 
     async function chargerMatieres() {
@@ -94,12 +91,7 @@ export default function InstructorPage() {
       <div className="max-w-7xl mx-auto">
         <PageHeader title="Portail Formateur" />
 
-        <div className="grid md:grid-cols-4 gap-6">
-          <StatCard
-            label="Séances publiées"
-            value={stats ? stats.totalSeances : "…"}
-            color={couleurPalette(0)}
-          />
+        <div className="grid md:grid-cols-3 gap-6">
           <StatCard
             label="Fiches à valider"
             value={stats ? stats.fichesAttente : "…"}
