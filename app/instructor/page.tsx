@@ -92,6 +92,14 @@ export default function InstructorPage() {
               Période de paie
             </LinkButton>
 
+            <LinkButton href="/development" variant="outline">
+              Fiche de développement
+            </LinkButton>
+
+            <LinkButton href="/development/history" variant="outline">
+              Mes fiches de développement
+            </LinkButton>
+
             <LinkButton href="/instructor/import-support" variant="outline">
               Publier un support
             </LinkButton>

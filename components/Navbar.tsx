@@ -122,6 +122,12 @@ export default function Navbar() {
               >
                 Historique
               </Link>
+              <Link
+                href="/development/history"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
+              >
+                Fiches de développement
+              </Link>
             </>
           )}
 
@@ -139,6 +145,12 @@ export default function Navbar() {
                 className="text-sm font-medium hover:text-white/80 transition-colors"
               >
                 Fiches de présence
+              </Link>
+              <Link
+                href="/development"
+                className="text-sm font-medium hover:text-white/80 transition-colors"
+              >
+                Fiche de développement
               </Link>
             </>
           )}
