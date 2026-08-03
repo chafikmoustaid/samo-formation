@@ -29,7 +29,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-DPI = 130  # qualité d'image ; 130 = net à l'écran sans être trop lourd
+DPI = 110  # qualité d'image ; assez net à l'écran, tout en restant sous
+           # la limite de taille de charge utile des fonctions Vercel (~4.5 Mo)
 
 
 def session_number(pptx_path):
@@ -72,6 +73,7 @@ def pdf_to_images(pdf_path, tmp_dir):
         [
             "pdftoppm",
             "-jpeg",
+            "-jpegopt", "quality=80,optimize=y",
             "-r", str(DPI),
             str(pdf_path),
             str(prefix),
