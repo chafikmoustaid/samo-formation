@@ -187,10 +187,14 @@ export default function Dashboard() {
 
         <Card className="mt-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Fiches à traiter
+            Répartition des statuts
           </h2>
 
-          <DashboardChart enAttente={enAttente} refusees={refusees} />
+          <DashboardChart
+            enAttente={enAttente}
+            validees={validees}
+            refusees={refusees}
+          />
         </Card>
 
         <Card className="mt-8">

@@ -9,10 +9,12 @@ import {
   Tooltip,
 } from "recharts";
 
-// Mêmes couleurs que les cartes "En attente" / "Refusées" plus haut sur la
-// page (StatCard, ACCENT_COULEURS), pour rester cohérent visuellement.
+// Mêmes couleurs que les cartes "En attente" / "Validées" / "Refusées" plus
+// haut sur la page (StatCard, ACCENT_COULEURS), pour rester cohérent
+// visuellement.
 const SERIES = [
   { key: "enAttente", name: "En attente", color: "#a05a2c" },
+  { key: "validees", name: "Validées", color: "#2d6a4f" },
   { key: "refusees", name: "Refusées", color: "#9d3b3b" },
 ] as const;
 
@@ -48,13 +50,15 @@ function CustomTooltip({
 
 export default function DashboardChart({
   enAttente,
+  validees,
   refusees,
 }: {
   enAttente: number;
+  validees: number;
   refusees: number;
 }) {
-  const values = { enAttente, refusees };
-  const total = enAttente + refusees;
+  const values = { enAttente, validees, refusees };
+  const total = enAttente + validees + refusees;
 
   const data = SERIES.map((s) => ({
     name: s.name,
@@ -65,7 +69,7 @@ export default function DashboardChart({
   if (total === 0) {
     return (
       <div className="h-80 flex items-center justify-center text-gray-400 text-sm">
-        Aucune fiche en attente ou refusée.
+        Aucune fiche pour le moment.
       </div>
     );
   }
