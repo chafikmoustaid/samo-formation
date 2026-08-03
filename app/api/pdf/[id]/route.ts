@@ -76,7 +76,7 @@ export async function GET(
   pdf.setFontSize(9);
   const instructions =
     "Cette fiche devra être complétée et signée par l'étudiant(e) et remise au formateur(trice) à la fin de la semaine ou à la fin de la matière. " +
-    "Cette fiche devra ensuite être acheminée et signée par le formateur(trice) à l'administration au plus tard le lundi suivant la semaine en cours.";
+    "Cette fiche devra ensuite être signée et acheminée par le formateur(trice) à l'administration au plus tard le lundi suivant la semaine en cours.";
   // Largeur de texte réduite (176 au lieu de 180) pour tenir compte de la
   // marge de 2mm de chaque côté à l'intérieur du rectangle (17 à 193) —
   // sinon le texte le plus long ("...lundi suivant") déborde du cadre.
