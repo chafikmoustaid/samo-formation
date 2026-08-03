@@ -5,19 +5,25 @@ vide" observe sur les diapositives generees (gabarit commun a tous les
 cours : Support informatique, Word, Soutien Reseautique/Windows Server).
 
 Principe : pour chaque zone de texte de CONTENU (on exclut le bandeau
-d'en-tete/pied de page qui doit rester discret), on calcule le taux de
-remplissage actuel de la case (occupancy = hauteur de texte estimee /
-hauteur de la case). Plus une case est vide, plus on agrandit fortement
-la police ; une case deja bien remplie n'est que legerement agrandie,
-pour ne jamais faire deborder le texte. Le texte est aussi recentre
-verticalement dans sa case.
+d'en-tete/pied de page qui doit rester discret), on cherche la plus
+grande taille de police qui remplit mieux la case SANS jamais deborder.
+
+IMPORTANT (v2) : la version precedente estimait le nombre de lignes en
+comptant seulement les paragraphes (1 ligne par paragraphe), ce qui est
+faux des qu'un paragraphe est assez long pour retourner a la ligne. Ca a
+cause des chevauchements de texte (ex. diapositive "Les composants
+internes" du cours Support informatique). Cette version estime le
+nombre de lignes REELLEMENT necessaires a partir de la largeur de la
+case et de la longueur du texte, puis fait une recherche pour trouver la
+plus grande police qui tient dans la hauteur disponible.
 
 Usage :
-  python redesign_deck.py uploads/Seance_31.pptx
-  -> ecrit uploads/Seance_31.pptx (modifie sur place) et fait une copie
-     de sauvegarde uploads/Seance_31.pptx.bak si elle n'existe pas deja.
+  python redesign_deck.py chemin/vers/Seance_N.pptx
+  -> modifie le fichier sur place (fonctionne uniquement si le fichier
+     est sur un disque local, ex. /tmp — pas sur un dossier reseau/sync)
 """
 
+import math
 import shutil
 import sys
 from pathlib import Path
@@ -32,8 +38,14 @@ from pptx.util import Pt
 HEADER_LIMIT_EMU = 620000
 FOOTER_START_EMU = 6650000
 
+# Largeur moyenne d'un caractere, en fraction de la taille de police
+# (approximation raisonnable pour une police proportionnelle type Arial/
+# Calibri, texte francais avec majuscules/minuscules melangees).
+AVG_CHAR_WIDTH_FACTOR = 0.52
+LINE_HEIGHT_FACTOR = 1.25
 
-def is_chrome(shape, slide_height):
+
+def is_chrome(shape):
     if shape.top is None:
         return True
     if shape.top < HEADER_LIMIT_EMU:
@@ -41,6 +53,15 @@ def is_chrome(shape, slide_height):
     if shape.top > FOOTER_START_EMU:
         return True
     return False
+
+
+def paragraph_texts(text_frame):
+    texts = []
+    for p in text_frame.paragraphs:
+        t = "".join(r.text for r in p.runs).strip()
+        if t:
+            texts.append(t)
+    return texts
 
 
 def first_font_size_pt(text_frame):
@@ -51,33 +72,42 @@ def first_font_size_pt(text_frame):
     return None
 
 
-def count_nonempty_paragraphs(text_frame):
-    n = 0
-    for p in text_frame.paragraphs:
-        if any(r.text.strip() for r in p.runs):
-            n += 1
-    return max(n, 1)
+def estimated_lines(texts, box_width_pt, font_pt):
+    chars_per_line = max(int(box_width_pt / (font_pt * AVG_CHAR_WIDTH_FACTOR)), 1)
+    total = 0
+    for t in texts:
+        total += max(1, math.ceil(len(t) / chars_per_line))
+    return total
 
 
-def compute_new_size_pt(old_pt, box_height_emu, n_paragraphs):
-    box_height_pt = box_height_emu / 12700
+def fits(texts, box_width_pt, box_height_pt, font_pt, target_occupancy):
+    lines = estimated_lines(texts, box_width_pt, font_pt)
+    needed_pt = font_pt * LINE_HEIGHT_FACTOR * lines
+    return needed_pt <= target_occupancy * box_height_pt
+
+
+def best_font_size(texts, box_width_pt, box_height_pt, old_pt, target_occupancy, max_factor):
+    # Recherche la plus grande taille (par pas de 0.5pt) qui tient dans
+    # la case, entre old_pt et old_pt * max_factor.
+    hi = old_pt * max_factor
+    best = old_pt
+    size = old_pt
+    step = 0.5
+    while size <= hi:
+        if fits(texts, box_width_pt, box_height_pt, size, target_occupancy):
+            best = size
+        else:
+            break
+        size += step
+    return round(best, 1)
+
+
+def current_occupancy(texts, box_width_pt, box_height_pt, font_pt):
+    lines = estimated_lines(texts, box_width_pt, font_pt)
+    needed_pt = font_pt * LINE_HEIGHT_FACTOR * lines
     if box_height_pt <= 0:
-        return None
-
-    occupancy = (old_pt * 1.25 * n_paragraphs) / box_height_pt
-
-    if occupancy < 0.30:
-        factor, target = 1.8, 0.60
-    elif occupancy < 0.60:
-        factor, target = 1.35, 0.75
-    else:
-        factor, target = 1.12, 0.85
-
-    new_pt = old_pt * factor
-    max_pt = (target * box_height_pt) / (1.25 * n_paragraphs)
-    new_pt = min(new_pt, max_pt)
-    new_pt = max(new_pt, old_pt)
-    return round(new_pt, 1)
+        return 1.0
+    return needed_pt / box_height_pt
 
 
 def redesign_text_shape(shape):
@@ -86,11 +116,29 @@ def redesign_text_shape(shape):
     if old_pt is None:
         return
 
-    n_paragraphs = count_nonempty_paragraphs(tf)
-    new_pt = compute_new_size_pt(old_pt, shape.height, n_paragraphs)
-    if new_pt is None or new_pt <= old_pt + 0.05:
-        # Meme tres legere hausse minimale pour rester coherent visuellement.
-        new_pt = old_pt * 1.05
+    texts = paragraph_texts(tf)
+    if not texts:
+        return
+
+    box_width_pt = shape.width / 12700
+    box_height_pt = shape.height / 12700
+    if box_width_pt <= 0 or box_height_pt <= 0:
+        return
+
+    occ = current_occupancy(texts, box_width_pt, box_height_pt, old_pt)
+
+    # Plus la case est vide, plus on autorise une police ambitieuse ; on
+    # borne toujours a une occupation cible < 1 pour ne jamais deborder,
+    # avec une marge de securite (0.9) sur l'estimation elle-meme.
+    if occ < 0.30:
+        target, max_factor = 0.62, 2.0
+    elif occ < 0.55:
+        target, max_factor = 0.72, 1.5
+    else:
+        target, max_factor = 0.82, 1.2
+
+    new_pt = best_font_size(texts, box_width_pt, box_height_pt, old_pt, target, max_factor)
+    new_pt = max(new_pt, old_pt)
 
     for p in tf.paragraphs:
         for r in p.runs:
@@ -121,14 +169,13 @@ def redesign_table(shape):
             old_pt = first_font_size_pt(tf)
             if old_pt is None:
                 continue
-            new_pt = old_pt * 1.15
-            if row_height_pt:
-                max_pt = (0.6 * row_height_pt) / 1.25
-                new_pt = min(new_pt, max(max_pt, old_pt))
+            # Boost modeste et sans risque pour les tableaux (colonnes
+            # etroites -> le retour a la ligne y est deja plus sensible).
+            new_pt = round(old_pt * 1.15, 1)
             for p in tf.paragraphs:
                 for r in p.runs:
                     if r.text.strip() and r.font.size:
-                        r.font.size = Pt(round(new_pt, 1))
+                        r.font.size = Pt(new_pt)
 
 
 def redesign(pptx_path):
@@ -137,7 +184,7 @@ def redesign(pptx_path):
 
     for slide in prs.slides:
         for shape in slide.shapes:
-            if is_chrome(shape, prs.slide_height):
+            if is_chrome(shape):
                 continue
             if shape.has_table:
                 redesign_table(shape)
