@@ -188,21 +188,26 @@ export async function GET(
 
     const texteX = x0 + imageW + 2;
     const texteW = sigW - imageW - 4;
-    pdf.setDrawColor(210, 210, 210);
-    pdf.line(x0 + imageW, y + 2, x0 + imageW, y + sigH - 2);
 
-    pdf.setTextColor(90, 90, 90);
-    pdf.setFont("helvetica", "normal");
+    // Même encadré mis en valeur que sur la fiche de présence : fond
+    // teinté + bordure verte, pour que l'information soit facile à
+    // repérer et vérifier par les clients (organismes).
+    const VERT_SAMO: [number, number, number] = [45, 106, 79];
+    pdf.setFillColor(240, 247, 243);
+    pdf.setDrawColor(...VERT_SAMO);
+    pdf.roundedRect(x0 + imageW + 1, y + 1.5, sigW - imageW - 2, sigH - 3, 1, 1, "FD");
+
+    pdf.setTextColor(...VERT_SAMO);
+    pdf.setFont("helvetica", "bold");
     pdf.setFontSize(7.5);
-    let ligneY = y + 7;
-    pdf.text("Signature numérique de", texteX, ligneY);
+    let ligneY = y + 7.5;
+    pdf.text(pdf.splitTextToSize("Signature numérique vérifiée", texteW - 3), texteX + 1.5, ligneY);
     ligneY += 5.5;
 
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8);
+    pdf.setFontSize(9);
     pdf.text(
-      pdf.splitTextToSize(String(fiche.nom_formateur ?? ""), texteW),
-      texteX,
+      pdf.splitTextToSize(String(fiche.nom_formateur ?? ""), texteW - 3),
+      texteX + 1.5,
       ligneY
     );
     ligneY += 7;
@@ -218,8 +223,9 @@ export async function GET(
           minute: "2-digit",
         })
       : "-";
-    pdf.text(`Date : ${dateTexte}`, texteX, ligneY);
+    pdf.text(`Date : ${dateTexte}`, texteX + 1.5, ligneY);
     pdf.setTextColor(0, 0, 0);
+    pdf.setDrawColor(0, 0, 0);
   }
 
   y += sigH + 10;

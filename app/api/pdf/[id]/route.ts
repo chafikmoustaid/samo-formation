@@ -336,24 +336,36 @@ export async function GET(
       // signature invalide, on l'ignore
     }
 
-    pdf.setDrawColor(210, 210, 210);
-    pdf.line(x + imageW, y + 2, x + imageW, y + sigH - 2);
+    // Encadré mis en valeur (fond teinté + bordure verte) autour des
+    // informations de signature numérique : c'est l'élément que les clients
+    // (organismes) doivent pouvoir repérer et vérifier facilement.
+    const VERT_SAMO: [number, number, number] = [45, 106, 79];
+    pdf.setFillColor(240, 247, 243);
+    pdf.setDrawColor(...VERT_SAMO);
+    pdf.roundedRect(
+      x + imageW + 1,
+      y + 1.5,
+      largeur - imageW - 2,
+      sigH - 3,
+      1,
+      1,
+      "FD"
+    );
 
-    pdf.setTextColor(90, 90, 90);
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(6.5);
-
-    let ligneY = y + 6;
-    pdf.text(pdf.splitTextToSize("Signature numérique de", texteW), texteX, ligneY);
-    ligneY += 4.5;
-
+    pdf.setTextColor(...VERT_SAMO);
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(7);
-    pdf.text(pdf.splitTextToSize(nom ?? "", texteW), texteX, ligneY);
-    ligneY += 6;
+
+    let ligneY = y + 6.5;
+    pdf.text(pdf.splitTextToSize("Signature numérique vérifiée", texteW - 3), texteX + 1.5, ligneY);
+    ligneY += 5;
+
+    pdf.setFontSize(8.5);
+    pdf.text(pdf.splitTextToSize(nom ?? "", texteW - 3), texteX + 1.5, ligneY);
+    ligneY += 6.5;
 
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(6.5);
+    pdf.setFontSize(7);
     const dateTexte = dateIso
       ? new Date(dateIso).toLocaleString("fr-CA", {
           year: "numeric",
@@ -363,9 +375,10 @@ export async function GET(
           minute: "2-digit",
         })
       : "-";
-    pdf.text(pdf.splitTextToSize(`Date : ${dateTexte}`, texteW), texteX, ligneY);
+    pdf.text(pdf.splitTextToSize(`Date : ${dateTexte}`, texteW - 3), texteX + 1.5, ligneY);
 
     pdf.setTextColor(0, 0, 0);
+    pdf.setDrawColor(0, 0, 0);
   }
 
   dessinerSignature(
