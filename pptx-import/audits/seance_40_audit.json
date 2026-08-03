@@ -1,0 +1,47 @@
+{
+  "file": "Seance_40.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Les modes d'affichage"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Les marges du document"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Affichage, impression\net mise en page"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Orientation du papier"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "La page de garde"
+    },
+    {
+      "slide": 15,
+      "type": "TABLE",
+      "title": "Bonnes pratiques de mise en page professionnelle"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Affichage, impression\net mise en page"
+    }
+  ],
+  "integrity_score": 72
+}

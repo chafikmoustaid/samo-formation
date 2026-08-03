@@ -1,0 +1,47 @@
+{
+  "file": "Seance_42.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "L'unité de mesure"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "Les types de tabulations"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Tabulation avec point de suite"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Tabulations, en-tête\net pied de page"
+    },
+    {
+      "slide": 11,
+      "type": "TABLE",
+      "title": "Numérotation des pages"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "En-tête et pied de page avec saut de section"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Tabulations, en-tête\net pied de page"
+    }
+  ],
+  "integrity_score": 72
+}

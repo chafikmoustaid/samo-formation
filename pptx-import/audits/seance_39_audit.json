@@ -1,0 +1,37 @@
+{
+  "file": "Seance_39.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Attributs de police de base"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Empattement — polices avec et sans serif"
+    },
+    {
+      "slide": 7,
+      "type": "TABLE",
+      "title": "Espacement des caractères"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "Rechercher une mise en forme similaire"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "Combinaisons de polices recommandées"
+    }
+  ],
+  "integrity_score": 88
+}

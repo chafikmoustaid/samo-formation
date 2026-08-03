@@ -1,0 +1,37 @@
+{
+  "file": "Seance_37.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Se déplacer dans un document"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "Insérer un saut de page"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Imprimer un document"
+    },
+    {
+      "slide": 11,
+      "type": "TABLE",
+      "title": "Espace et trait d'union insécables"
+    },
+    {
+      "slide": 15,
+      "type": "TABLE",
+      "title": "Bonnes pratiques de gestion documentaire"
+    }
+  ],
+  "integrity_score": 88
+}

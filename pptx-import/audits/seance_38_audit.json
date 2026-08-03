@@ -1,0 +1,37 @@
+{
+  "file": "Seance_38.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Passer d'un document à l'autre"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "Conversion des majuscules et minuscules"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Enregistrer avec protection par mot de passe"
+    },
+    {
+      "slide": 11,
+      "type": "TABLE",
+      "title": "Copier, couper et coller"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "Le volet Presse-papiers Office"
+    }
+  ],
+  "integrity_score": 88
+}

@@ -1,0 +1,37 @@
+{
+  "file": "Seance_47.pptx",
+  "slides": 12,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TABLE",
+      "title": "Format de l'examen"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "Section A — Interface et navigation (20 points)"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Section B — Mise en forme (25 points)"
+    },
+    {
+      "slide": 7,
+      "type": "TABLE",
+      "title": "Section C — Structure de document (30 points)"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Section D — Éléments visuels et tableaux (25 points)"
+    },
+    {
+      "slide": 9,
+      "type": "TABLE",
+      "title": "Grille de correction — seuils de réussite"
+    }
+  ],
+  "integrity_score": 88
+}

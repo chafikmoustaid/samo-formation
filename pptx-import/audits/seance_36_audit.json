@@ -1,0 +1,27 @@
+{
+  "file": "Seance_36.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "La souris — les actions de base"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Touches spéciales du clavier québécois"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "Créer un dossier — notions de base"
+    }
+  ],
+  "integrity_score": 92
+}

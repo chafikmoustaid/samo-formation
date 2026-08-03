@@ -1,0 +1,47 @@
+{
+  "file": "Seance_41.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Comprendre les sections"
+    },
+    {
+      "slide": 5,
+      "type": "TABLE",
+      "title": "Les différents types de sauts de section"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Sections et table\ndes matières"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Style 4 et plus — niveaux de titres avancés"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "Dépannage — table des matières vide ou incorrecte"
+    },
+    {
+      "slide": 15,
+      "type": "TABLE",
+      "title": "Bonnes pratiques pour documents longs"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Sections et table\ndes matières"
+    }
+  ],
+  "integrity_score": 72
+}

@@ -1,0 +1,47 @@
+{
+  "file": "Seance_45.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Recherche simple"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Recherche avec caractères génériques"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Créer des étiquettes"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Recherche, enveloppes,\nindex et modèles de lettres"
+    },
+    {
+      "slide": 12,
+      "type": "TABLE",
+      "title": "Supprimer un index"
+    },
+    {
+      "slide": 15,
+      "type": "TABLE",
+      "title": "Bonnes pratiques publipostage et index"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Recherche, enveloppes,\nindex et modèles de lettres"
+    }
+  ],
+  "integrity_score": 72
+}

@@ -1,0 +1,47 @@
+{
+  "file": "Seance_46.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Insérer un tableau"
+    },
+    {
+      "slide": 6,
+      "type": "TABLE",
+      "title": "Mise en forme et styles de tableau"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Trier des données dans un tableau"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Tableaux et synthèse\ngénérale du cours"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Formules simples dans un tableau"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "Préparation à l'examen final"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Tableaux et synthèse\ngénérale du cours"
+    }
+  ],
+  "integrity_score": 72
+}

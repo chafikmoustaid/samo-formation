@@ -1,0 +1,47 @@
+{
+  "file": "Seance_43.pptx",
+  "slides": 22,
+  "issues": [
+    {
+      "slide": 3,
+      "type": "TIMELINE",
+      "title": "Plan de la séance"
+    },
+    {
+      "slide": 4,
+      "type": "TABLE",
+      "title": "Création de listes simples"
+    },
+    {
+      "slide": 8,
+      "type": "TABLE",
+      "title": "Texte avant numérotation"
+    },
+    {
+      "slide": 9,
+      "type": "PLACEHOLDER",
+      "title": "Numérotation, listes à puces\net mise en forme des paragraphes"
+    },
+    {
+      "slide": 10,
+      "type": "TABLE",
+      "title": "Les retraits de paragraphe"
+    },
+    {
+      "slide": 11,
+      "type": "TABLE",
+      "title": "Les interlignes"
+    },
+    {
+      "slide": 14,
+      "type": "TABLE",
+      "title": "Bonnes pratiques listes et paragraphes"
+    },
+    {
+      "slide": 18,
+      "type": "PLACEHOLDER",
+      "title": "Numérotation, listes à puces\net mise en forme des paragraphes"
+    }
+  ],
+  "integrity_score": 72
+}
