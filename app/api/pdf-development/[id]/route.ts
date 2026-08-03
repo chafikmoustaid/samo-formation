@@ -5,6 +5,18 @@ import { jsPDF } from "jspdf";
 import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
 import { LigneDeveloppement, calculHeuresLigne } from "@/lib/ficheDeveloppement";
 
+// Format compact "jj/mm/aaaa hh:mm" — évite le format fr-CA par défaut
+// ("... 07 h 14") dont l'espace avant le "h" provoque un retour à la
+// ligne indésirable dans les encadrés PDF étroits.
+function formatDateHeure(dateIso: string | null): string {
+  if (!dateIso) return "-";
+  const d = new Date(dateIso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
+}
+
 export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> }
@@ -179,7 +191,7 @@ export async function GET(
   pdf.rect(x0, y, sigW, sigH);
 
   if (fiche.signature_formateur) {
-    const imageW = sigW * 0.4;
+    const imageW = sigW * 0.32;
     try {
       pdf.addImage(fiche.signature_formateur, "PNG", x0 + 2, y + 2, imageW - 4, sigH - 4);
     } catch {
@@ -190,40 +202,34 @@ export async function GET(
     const texteW = sigW - imageW - 4;
 
     // Même encadré mis en valeur que sur la fiche de présence : fond
-    // teinté + bordure verte, pour que l'information soit facile à
-    // repérer et vérifier par les clients (organismes).
+    // teinté + bordure verte, avec un espacement de lignes calculé
+    // dynamiquement pour éviter tout chevauchement de texte.
     const VERT_SAMO: [number, number, number] = [45, 106, 79];
     pdf.setFillColor(240, 247, 243);
     pdf.setDrawColor(...VERT_SAMO);
     pdf.roundedRect(x0 + imageW + 1, y + 1.5, sigW - imageW - 2, sigH - 3, 1, 1, "FD");
 
     pdf.setTextColor(...VERT_SAMO);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7.5);
-    let ligneY = y + 7.5;
-    pdf.text(pdf.splitTextToSize("Signature numérique vérifiée", texteW - 3), texteX + 1.5, ligneY);
-    ligneY += 5.5;
+    const marge = texteX + 1.5;
+    const largeurTexte = texteW - 3;
+    const lineH = 3.5;
+    let ligneY = y + 6.5;
 
-    pdf.setFontSize(9);
-    pdf.text(
-      pdf.splitTextToSize(String(fiche.nom_formateur ?? ""), texteW - 3),
-      texteX + 1.5,
-      ligneY
-    );
-    ligneY += 7;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7);
+    const titreLignes = pdf.splitTextToSize("Signature numérique vérifiée", largeurTexte);
+    pdf.text(titreLignes, marge, ligneY);
+    ligneY += titreLignes.length * lineH + 1.5;
+
+    pdf.setFontSize(8.5);
+    const nomLignes = pdf.splitTextToSize(String(fiche.nom_formateur ?? ""), largeurTexte);
+    pdf.text(nomLignes, marge, ligneY);
+    ligneY += nomLignes.length * lineH + 1.5;
 
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(7.5);
-    const dateTexte = fiche.date_signature_formateur
-      ? new Date(fiche.date_signature_formateur).toLocaleString("fr-CA", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      : "-";
-    pdf.text(`Date : ${dateTexte}`, texteX + 1.5, ligneY);
+    pdf.setFontSize(7);
+    pdf.text(`Date : ${formatDateHeure(fiche.date_signature_formateur)}`, marge, ligneY);
+
     pdf.setTextColor(0, 0, 0);
     pdf.setDrawColor(0, 0, 0);
   }
