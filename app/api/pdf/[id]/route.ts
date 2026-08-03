@@ -381,6 +381,36 @@ export async function GET(
     fiche.date_signature_formateur ?? null
   );
 
+  // Motif du refus (visible sur la fiche à l'écran mais absent du PDF
+  // jusqu'ici — l'administration a besoin de le voir sur le document
+  // imprimé/archivé).
+  if (fiche.statut === "refusee") {
+    y += sigH + 8;
+
+    pdf.setDrawColor(180, 30, 30);
+    pdf.setFillColor(253, 242, 242);
+    const motifH = 16;
+    pdf.rect(x0, y, tableWidth, motifH, "FD");
+
+    pdf.setTextColor(180, 30, 30);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    pdf.text("Motif du refus :", x0 + 2, y + 5);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.text(
+      pdf.splitTextToSize(
+        String(fiche.motif || "Aucun motif renseigné."),
+        tableWidth - 4
+      ),
+      x0 + 2,
+      y + 10
+    );
+
+    pdf.setTextColor(0, 0, 0);
+    pdf.setDrawColor(0, 0, 0);
+  }
+
   const buffer = pdf.output("arraybuffer");
 
   return new NextResponse(buffer, {

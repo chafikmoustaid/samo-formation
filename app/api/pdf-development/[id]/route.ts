@@ -237,6 +237,34 @@ export async function GET(
     y
   );
 
+  if (fiche.statut === "refusee") {
+    y += 6;
+
+    const tableWidthDev = 180;
+    const motifH = 16;
+    pdf.setDrawColor(180, 30, 30);
+    pdf.setFillColor(253, 242, 242);
+    pdf.rect(x0, y, tableWidthDev, motifH, "FD");
+
+    pdf.setTextColor(180, 30, 30);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    pdf.text("Motif du refus :", x0 + 2, y + 5);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.text(
+      pdf.splitTextToSize(
+        String(fiche.motif || "Aucun motif renseigné."),
+        tableWidthDev - 4
+      ),
+      x0 + 2,
+      y + 10
+    );
+
+    pdf.setTextColor(0, 0, 0);
+    pdf.setDrawColor(0, 0, 0);
+  }
+
   const buffer = pdf.output("arraybuffer");
 
   return new NextResponse(buffer, {
