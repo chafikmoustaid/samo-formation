@@ -9,9 +9,11 @@ import {
   Tooltip,
 } from "recharts";
 
+// Mêmes couleurs que les cartes "En attente" / "Refusées" plus haut sur la
+// page (StatCard, ACCENT_COULEURS), pour rester cohérent visuellement.
 const SERIES = [
-  { key: "enAttente", name: "En attente", color: "#f59e0b" },
-  { key: "refusees", name: "Refusées", color: "#dc2626" },
+  { key: "enAttente", name: "En attente", color: "#a05a2c" },
+  { key: "refusees", name: "Refusées", color: "#9d3b3b" },
 ] as const;
 
 function CustomTooltip({
