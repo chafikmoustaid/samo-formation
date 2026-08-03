@@ -11,7 +11,6 @@ import {
 
 const SERIES = [
   { key: "enAttente", name: "En attente", color: "#f59e0b" },
-  { key: "validees", name: "Validées", color: "#16a34a" },
   { key: "refusees", name: "Refusées", color: "#dc2626" },
 ] as const;
 
@@ -47,15 +46,13 @@ function CustomTooltip({
 
 export default function DashboardChart({
   enAttente,
-  validees,
   refusees,
 }: {
   enAttente: number;
-  validees: number;
   refusees: number;
 }) {
-  const values = { enAttente, validees, refusees };
-  const total = enAttente + validees + refusees;
+  const values = { enAttente, refusees };
+  const total = enAttente + refusees;
 
   const data = SERIES.map((s) => ({
     name: s.name,
@@ -66,7 +63,7 @@ export default function DashboardChart({
   if (total === 0) {
     return (
       <div className="h-80 flex items-center justify-center text-gray-400 text-sm">
-        Aucune fiche pour le moment.
+        Aucune fiche en attente ou refusée.
       </div>
     );
   }
