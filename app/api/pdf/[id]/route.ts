@@ -77,7 +77,10 @@ export async function GET(
   const instructions =
     "Cette fiche devra être complétée et signée par l'étudiant(e) et remise au formateur(trice) à la fin de la semaine ou à la fin de la matière. " +
     "Cette fiche devra ensuite être acheminée et signée par le formateur(trice) à l'administration au plus tard le lundi suivant la semaine en cours.";
-  const wrapped = pdf.splitTextToSize(instructions, 180);
+  // Largeur de texte réduite (176 au lieu de 180) pour tenir compte de la
+  // marge de 2mm de chaque côté à l'intérieur du rectangle (17 à 193) —
+  // sinon le texte le plus long ("...lundi suivant") déborde du cadre.
+  const wrapped = pdf.splitTextToSize(instructions, 176);
   pdf.rect(15, 55, 180, 16);
   pdf.text(wrapped, 17, 60.5);
 
