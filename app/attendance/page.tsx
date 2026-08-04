@@ -32,14 +32,22 @@ export default function Attendance() {
     type: "succes" | "erreur";
   } | null>(null);
   const [enregistrement, setEnregistrement] = useState(false);
+  const [enregistrementBrouillon, setEnregistrementBrouillon] = useState(false);
   const [signatureEnregistree, setSignatureEnregistree] = useState<string | null>(
     null
   );
   const [matieresDisponibles, setMatieresDisponibles] = useState<string[]>([]);
 
+  // Id de la fiche "brouillon" en cours (celle que l'étudiant remplit jour
+  // après jour, sans engagement, avant de la signer et de la soumettre).
+  // null tant qu'aucune heure n'a encore été enregistrée cette semaine-ci.
+  const [ficheId, setFicheId] = useState<number | null>(null);
+  const [brouillonDepuis, setBrouillonDepuis] = useState<string | null>(null);
+
   useEffect(() => {
     chargerSignatureEnregistree();
     chargerMatieresDisponibles();
+    chargerBrouillonExistant();
   }, []);
 
   async function chargerMatieresDisponibles() {
@@ -104,6 +112,42 @@ export default function Attendance() {
     setSignatureEnregistree(data?.signature_enregistree ?? null);
   }
 
+  // Reprend le brouillon le plus récent de l'étudiant, s'il en existe un —
+  // pour qu'il puisse continuer à saisir ses heures là où il s'était arrêté
+  // au lieu de repartir d'une fiche vide à chaque visite.
+  async function chargerBrouillonExistant() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("attendance")
+      .select(
+        "id, nom_etudiant, formateur_id, lignes, motif_heures, created_at"
+      )
+      .eq("user_id", user.id)
+      .eq("statut", "brouillon")
+      .is("supprime_le", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!data) return;
+
+    setFicheId(data.id);
+    setNomEtudiant(data.nom_etudiant ?? "");
+    setFormateurId(data.formateur_id ?? "");
+    setLignes(
+      Array.isArray(data.lignes) && data.lignes.length > 0
+        ? data.lignes
+        : creerLignesVides()
+    );
+    setMotifHeures(data.motif_heures ?? "");
+    setBrouillonDepuis(data.created_at);
+  }
+
   async function memoriserSignature(signature: string) {
     await supabase.rpc("update_own_signature", {
       nouvelle_signature: signature,
@@ -122,6 +166,75 @@ export default function Attendance() {
     setLignes((prev) =>
       prev.map((l, i) => (i === index ? { ...l, [champ]: valeur } : l))
     );
+  }
+
+  // Enregistre les heures saisies jusqu'ici SANS exiger de confirmation ni
+  // de signature — l'étudiant peut faire ça chaque jour de la semaine et y
+  // revenir autant de fois qu'il veut avant de signer et soumettre.
+  async function enregistrerBrouillon() {
+    setMessage(null);
+
+    if (!nomEtudiant.trim()) {
+      setMessage({ type: "erreur", texte: "Veuillez saisir le nom de l'étudiant." });
+      return;
+    }
+
+    setEnregistrementBrouillon(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const formateurChoisi = formateurs.find((f) => f.id === formateurId);
+
+    const payload = {
+      user_id: user?.id,
+      nom_etudiant: nomEtudiant,
+      nom_formateur: formateurChoisi?.nom ?? "",
+      formateur_id: formateurId || null,
+      lignes,
+      total_formation: totalF,
+      total_pratique: totalP,
+      total_heures: totalF + totalP,
+      motif_heures: motifHeures || null,
+      statut: "brouillon",
+    };
+
+    if (ficheId) {
+      const { error } = await supabase
+        .from("attendance")
+        .update(payload)
+        .eq("id", ficheId);
+
+      setEnregistrementBrouillon(false);
+
+      if (error) {
+        setMessage({ type: "erreur", texte: error.message });
+        return;
+      }
+    } else {
+      const { data: ficheCreee, error } = await supabase
+        .from("attendance")
+        .insert(payload)
+        .select("id, created_at")
+        .single();
+
+      setEnregistrementBrouillon(false);
+
+      if (error) {
+        setMessage({ type: "erreur", texte: error.message });
+        return;
+      }
+
+      setFicheId(ficheCreee.id);
+      setBrouillonDepuis(ficheCreee.created_at);
+    }
+
+    setMessage({
+      type: "succes",
+      texte:
+        "Heures enregistrées. Tu peux fermer la page et revenir n'importe quel jour pour continuer — rien n'est encore envoyé au formateur.",
+    });
   }
 
   async function enregistrerFiche() {
@@ -160,16 +273,19 @@ export default function Attendance() {
         .from("attendance")
         .select("id, lignes, statut")
         .eq("user_id", user.id)
-        .is("supprime_le", null);
+        .is("supprime_le", null)
+        .neq("statut", "brouillon");
 
-      const chevauchement = (fichesExistantes ?? []).find((f) => {
-        const periode = datesTravaillees(f.lignes);
-        if (!periode) return false;
-        return (
-          periodeNouvelle.debut <= periode.fin &&
-          periodeNouvelle.fin >= periode.debut
-        );
-      });
+      const chevauchement = (fichesExistantes ?? [])
+        .filter((f) => f.id !== ficheId)
+        .find((f) => {
+          const periode = datesTravaillees(f.lignes);
+          if (!periode) return false;
+          return (
+            periodeNouvelle.debut <= periode.fin &&
+            periodeNouvelle.fin >= periode.debut
+          );
+        });
 
       if (chevauchement) {
         const periode = datesTravaillees(chevauchement.lignes)!;
@@ -190,25 +306,34 @@ export default function Attendance() {
 
     const formateurChoisi = formateurs.find((f) => f.id === formateurId);
 
-    const { data: ficheCreee, error } = await supabase
-      .from("attendance")
-      .insert({
-        user_id: user?.id,
-        nom_etudiant: nomEtudiant,
-        nom_formateur: formateurChoisi?.nom ?? "",
-        formateur_id: formateurId || null,
-        lignes,
-        total_formation: totalF,
-        total_pratique: totalP,
-        total_heures: totalF + totalP,
-        motif_heures: motifHeures || null,
-        confirmation,
-        signature_etudiant: signatureEtudiant,
-        date_signature_etudiant: dateSignatureEtudiant,
-        statut: "en_attente",
-      })
-      .select("id")
-      .single();
+    const payload = {
+      user_id: user?.id,
+      nom_etudiant: nomEtudiant,
+      nom_formateur: formateurChoisi?.nom ?? "",
+      formateur_id: formateurId || null,
+      lignes,
+      total_formation: totalF,
+      total_pratique: totalP,
+      total_heures: totalF + totalP,
+      motif_heures: motifHeures || null,
+      confirmation,
+      signature_etudiant: signatureEtudiant,
+      date_signature_etudiant: dateSignatureEtudiant,
+      statut: "en_attente",
+    };
+
+    const { data: ficheCreee, error } = ficheId
+      ? await supabase
+          .from("attendance")
+          .update(payload)
+          .eq("id", ficheId)
+          .select("id")
+          .single()
+      : await supabase
+          .from("attendance")
+          .insert(payload)
+          .select("id")
+          .single();
 
     setEnregistrement(false);
 
@@ -232,6 +357,17 @@ export default function Attendance() {
         "Fiche enregistrée avec succès. Elle attend maintenant la validation du formateur." +
         avertissementNotification,
     });
+
+    // On repart sur une fiche vide pour la prochaine semaine : la fiche qui
+    // vient d'être soumise n'est plus un brouillon, donc on ne veut plus la
+    // recharger automatiquement à la prochaine visite.
+    setFicheId(null);
+    setBrouillonDepuis(null);
+    setLignes(creerLignesVides());
+    setMotifHeures("");
+    setConfirmation(false);
+    setSignatureEtudiant("");
+    setDateSignatureEtudiant("");
   }
 
   // Renvoie true si le courriel de notification a bien été envoyé (ou
@@ -321,12 +457,22 @@ export default function Attendance() {
             </div>
           </div>
 
+          {brouillonDepuis && (
+            <div className="border border-blue-200 bg-blue-50 text-blue-800 text-sm rounded p-3 mb-6">
+              Brouillon en cours depuis le{" "}
+              {new Date(brouillonDepuis).toLocaleDateString("fr-CA")}. Continue à
+              entrer tes heures chaque jour, puis signe et soumets la fiche
+              quand elle est complète.
+            </div>
+          )}
+
           <div className="border border-black p-3 text-sm italic text-gray-800 mb-6">
-            Cette fiche devra être complétée et signée par l&apos;étudiant(e) et
-            remise au formateur(trice) à la fin de la semaine ou à la fin de la
-            matière. Cette fiche devra ensuite être acheminée et signée par le
-            formateur(trice) à l&apos;administration au plus tard le lundi
-            suivant la semaine en cours.
+            Entre tes heures et clique sur « Enregistrer mes heures » chaque
+            jour de la semaine — rien n&apos;est envoyé au formateur(trice) à
+            cette étape, tu peux revenir modifier la fiche autant de fois que
+            nécessaire. Une fois la semaine complétée (le vendredi ou plus
+            tard), signe la fiche et clique sur « Signer et soumettre » pour
+            l&apos;envoyer au formateur(trice) et à l&apos;administration.
           </div>
 
           <div className="overflow-x-auto">
@@ -336,6 +482,17 @@ export default function Attendance() {
               onChange={modifierLigne}
               matieresDisponibles={matieresDisponibles}
             />
+          </div>
+
+          <div className="mt-4">
+            <Button
+              onClick={enregistrerBrouillon}
+              disabled={enregistrementBrouillon}
+            >
+              {enregistrementBrouillon
+                ? "Enregistrement..."
+                : "Enregistrer mes heures"}
+            </Button>
           </div>
 
           <div className="mt-6 border border-black">
@@ -350,53 +507,69 @@ export default function Attendance() {
             />
           </div>
 
-          <label className="mt-4 flex items-start gap-2 text-sm text-red-700">
-            <input
-              type="checkbox"
-              checked={confirmation}
-              onChange={(e) => setConfirmation(e.target.checked)}
-              className="mt-1"
-            />
-            Je confirme avoir vérifié quotidiennement l&apos;exactitude des
-            informations inscrites sur cette fiche de présence avant sa
-            signature et son envoi.
-          </label>
-
-          <div className="mt-8">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">
-              Signature de l&apos;étudiant(e)
+          <div className="mt-8 border-t border-gray-200 pt-6">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">
+              Étape finale — signer et soumettre la fiche complète
             </h3>
 
-            <SignaturePad
-              onSave={(signature) => {
-                setSignatureEtudiant(signature);
-                setDateSignatureEtudiant(new Date().toISOString());
-              }}
-              nomParDefaut={nomEtudiant}
-              signatureEnregistree={signatureEnregistree}
-              onEnregistrerPreference={memoriserSignature}
-            />
+            <label className="flex items-start gap-2 text-sm text-red-700">
+              <input
+                type="checkbox"
+                checked={confirmation}
+                onChange={(e) => setConfirmation(e.target.checked)}
+                className="mt-1"
+              />
+              Je confirme avoir vérifié quotidiennement l&apos;exactitude des
+              informations inscrites sur cette fiche de présence avant sa
+              signature et son envoi.
+            </label>
 
-            {signatureEtudiant && (
-              <p className="mt-2 text-sm text-green-700">
-                Signature enregistrée, prête à être envoyée.
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                Signature de l&apos;étudiant(e)
+              </h3>
+
+              <SignaturePad
+                onSave={(signature) => {
+                  setSignatureEtudiant(signature);
+                  setDateSignatureEtudiant(new Date().toISOString());
+                }}
+                nomParDefaut={nomEtudiant}
+                signatureEnregistree={signatureEnregistree}
+                onEnregistrerPreference={memoriserSignature}
+              />
+
+              {signatureEtudiant && (
+                <p className="mt-2 text-sm text-green-700">
+                  Signature enregistrée, prête à être envoyée.
+                </p>
+              )}
+
+              <p className="mt-3 text-xs text-gray-400">
+                En signant, tu consens à la collecte et à la conservation de
+                ta signature électronique aux fins de validation de cette
+                fiche de présence. Voir notre{" "}
+                <a
+                  href="/confidentialite"
+                  target="_blank"
+                  className="underline hover:text-gray-600"
+                >
+                  politique de confidentialité
+                </a>
+                .
               </p>
-            )}
+            </div>
 
-            <p className="mt-3 text-xs text-gray-400">
-              En signant, tu consens à la collecte et à la conservation de ta
-              signature électronique aux fins de validation de cette fiche
-              de présence. Voir notre{" "}
-              <a href="/confidentialite" target="_blank" className="underline hover:text-gray-600">
-                politique de confidentialité
-              </a>
-              .
-            </p>
-          </div>
+            <div className="mt-6 border border-dashed border-gray-300 rounded p-4 text-sm text-gray-500">
+              Signature du formateur(trice) : sera ajoutée lors de la
+              validation de cette fiche, dans le portail formateur.
+            </div>
 
-          <div className="mt-6 border border-dashed border-gray-300 rounded p-4 text-sm text-gray-500">
-            Signature du formateur(trice) : sera ajoutée lors de la validation
-            de cette fiche, dans le portail formateur.
+            <div className="mt-6">
+              <Button onClick={enregistrerFiche} disabled={enregistrement}>
+                {enregistrement ? "Envoi..." : "Signer et soumettre"}
+              </Button>
+            </div>
           </div>
 
           {message && (
@@ -410,12 +583,6 @@ export default function Attendance() {
               {message.texte}
             </div>
           )}
-
-          <div className="mt-6">
-            <Button onClick={enregistrerFiche} disabled={enregistrement}>
-              {enregistrement ? "Enregistrement..." : "Enregistrer la fiche"}
-            </Button>
-          </div>
         </Card>
       </div>
     </div>
