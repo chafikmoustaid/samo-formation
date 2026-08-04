@@ -119,7 +119,7 @@ export default function SignaturePad({
         <div
           role="tablist"
           aria-label="Mode de signature"
-          className="relative inline-flex w-72 max-w-full bg-gray-100 rounded-lg p-1"
+          className="relative inline-flex w-72 max-w-full bg-gray-200 border border-gray-300 rounded-lg p-1"
         >
           <div
             aria-hidden="true"
@@ -139,8 +139,10 @@ export default function SignaturePad({
                 setMode(onglet.valeur);
                 setEnregistre(false);
               }}
-              className={`relative z-10 flex-1 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
-                mode === onglet.valeur ? "text-white" : "text-gray-700"
+              className={`relative z-10 flex-1 px-4 py-2 rounded-md text-sm font-semibold cursor-pointer transition-colors ${
+                mode === onglet.valeur
+                  ? "text-white"
+                  : "text-gray-700 hover:bg-white/70 hover:text-gray-900"
               }`}
             >
               {onglet.label}
