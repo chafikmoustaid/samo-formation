@@ -581,7 +581,7 @@ function AttendanceHistoryContent() {
                         <>
                           <Link
                             href={`/attendance/${fiche.id}`}
-                            className="text-green-700 hover:underline"
+                            className="inline-flex items-center justify-center bg-white hover:bg-green-50 text-green-700 border border-green-600 px-3 py-2 rounded font-medium"
                           >
                             Voir
                           </Link>
