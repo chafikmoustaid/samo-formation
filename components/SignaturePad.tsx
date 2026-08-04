@@ -17,8 +17,10 @@ export default function SignaturePad({
   signatureEnregistree = null,
   onEnregistrerPreference,
 }: SignaturePadProps) {
+  // "texte" (écrire son nom) est maintenant le mode de départ par défaut —
+  // plus simple et plus accessible que de dessiner à la souris/au doigt.
   const [mode, setMode] = useState<"enregistree" | "dessiner" | "texte">(
-    signatureEnregistree ? "enregistree" : "dessiner"
+    signatureEnregistree ? "enregistree" : "texte"
   );
   const [nomTape, setNomTape] = useState(nomParDefaut);
   const [enregistre, setEnregistre] = useState(false);
@@ -80,42 +82,71 @@ export default function SignaturePad({
     }
   }
 
-  const onglets: { valeur: typeof mode; label: string }[] = [
-    ...(signatureEnregistree
-      ? [{ valeur: "enregistree" as const, label: "Signature enregistrée" }]
-      : []),
-    { valeur: "dessiner" as const, label: "Dessiner" },
-    { valeur: "texte" as const, label: "Écrire mon nom" },
+  // Les deux façons de signer ("Écrire mon nom" en premier, "Dessiner" en
+  // second) sont regroupées dans un seul interrupteur à glissière — plus
+  // besoin de deux boutons séparés. "Signature enregistrée" reste à part :
+  // ce n'est proposé que si l'étudiant en a déjà mémorisé une.
+  const modesBascule: { valeur: "texte" | "dessiner"; label: string }[] = [
+    { valeur: "texte", label: "Écrire mon nom" },
+    { valeur: "dessiner", label: "Dessiner" },
   ];
+  const indexBascule = modesBascule.findIndex((m) => m.valeur === mode);
+  const indexActif = indexBascule === -1 ? 0 : indexBascule;
 
   return (
     <div>
-      <div
-        role="tablist"
-        aria-label="Mode de signature"
-        className="inline-flex gap-2 mb-4"
-      >
-        {onglets.map((onglet) => (
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        {signatureEnregistree && (
           <button
-            key={onglet.valeur}
+            key="enregistree"
             type="button"
             role="tab"
-            aria-selected={mode === onglet.valeur}
-            aria-controls={`${idBase}-panel-${onglet.valeur}`}
-            id={`${idBase}-tab-${onglet.valeur}`}
+            aria-selected={mode === "enregistree"}
             onClick={() => {
-              setMode(onglet.valeur);
+              setMode("enregistree");
               setEnregistre(false);
             }}
             className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${
-              mode === onglet.valeur
+              mode === "enregistree"
                 ? "bg-green-700 text-white border-green-700 shadow-sm"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
             }`}
           >
-            {onglet.label}
+            Signature enregistrée
           </button>
-        ))}
+        )}
+
+        <div
+          role="tablist"
+          aria-label="Mode de signature"
+          className="relative inline-flex w-72 max-w-full bg-gray-100 rounded-lg p-1"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-md bg-green-700 shadow-sm transition-transform duration-200 ease-out"
+            style={{ transform: `translateX(${indexActif * 100}%)` }}
+          />
+
+          {modesBascule.map((onglet) => (
+            <button
+              key={onglet.valeur}
+              type="button"
+              role="tab"
+              aria-selected={mode === onglet.valeur}
+              aria-controls={`${idBase}-panel-${onglet.valeur}`}
+              id={`${idBase}-tab-${onglet.valeur}`}
+              onClick={() => {
+                setMode(onglet.valeur);
+                setEnregistre(false);
+              }}
+              className={`relative z-10 flex-1 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                mode === onglet.valeur ? "text-white" : "text-gray-700"
+              }`}
+            >
+              {onglet.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {mode === "enregistree" && signatureEnregistree ? (
@@ -143,7 +174,7 @@ export default function SignaturePad({
         >
           <p className="text-xs text-gray-500 mb-2">
             Cette zone se dessine à la souris ou au doigt. Si tu utilises le
-            clavier ou un lecteur d&apos;écran, utilise plutôt l&apos;onglet
+            clavier ou un lecteur d&apos;écran, utilise plutôt l&apos;option
             « Écrire mon nom ».
           </p>
 
