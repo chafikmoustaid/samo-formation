@@ -24,10 +24,6 @@ const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
   refusee: "danger",
 };
 
-// Déduit la période (semaine) couverte par une fiche à partir des dates
-// renseignées dans ses lignes. C'est cette période — et non un total brut
-// sans contexte — qui rend le relevé exploitable pour justifier des heures
-// auprès de l'administration ou d'un organisme subventionnaire.
 function periodeFiche(fiche: any): string {
   const plage = datesTravaillees(Array.isArray(fiche.lignes) ? fiche.lignes : []);
 
@@ -43,11 +39,6 @@ function periodeFiche(fiche: any): string {
   return debut === fin ? debut : `${debut} au ${fin}`;
 }
 
-// Export en vrai classeur Excel (.xlsx) plutôt qu'en CSV : le CSV, ouvert
-// dans un Excel réglé en français, se fait mal découper en colonnes (Excel
-// FR attend un point-virgule, pas une virgule, comme séparateur) et affiche
-// les guillemets d'échappement en clair. Le .xlsx n'a pas ce problème — les
-// colonnes, types de nombres et largeurs sont corrects dès l'ouverture.
 function exporterExcel(fiches: any[]) {
   const lignes = fiches.map((f) => ({
     Étudiant: f.nom_etudiant ?? "",
@@ -64,14 +55,14 @@ function exporterExcel(fiches: any[]) {
 
   const feuille = XLSX.utils.json_to_sheet(lignes);
   feuille["!cols"] = [
-    { wch: 18 }, // Étudiant
-    { wch: 18 }, // Formateur
-    { wch: 22 }, // Semaine
-    { wch: 12 }, // Formation (h)
-    { wch: 12 }, // Pratique (h)
-    { wch: 10 }, // Total (h)
-    { wch: 12 }, // Statut
-    { wch: 12 }, // Créée le
+    { wch: 18 },
+    { wch: 18 },
+    { wch: 22 },
+    { wch: 12 },
+    { wch: 12 },
+    { wch: 10 },
+    { wch: 12 },
+    { wch: 12 },
   ];
 
   const classeur = XLSX.utils.book_new();
@@ -101,7 +92,7 @@ function AttendanceHistoryContent() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [estAdmin, setEstAdmin] = useState(false);
-  const [signatureEnregistree, setSignatureEnregistree] = useState<
+  const [signatureEnregistree, setSignatureEnregistree] = useState
     string | null
   >(null);
   const [selectionnees, setSelectionnees] = useState<Set<number>>(new Set());
@@ -191,9 +182,6 @@ function AttendanceHistoryContent() {
     });
   }
 
-  // Renvoie true si le courriel a bien été envoyé (ou volontairement
-  // ignoré), false en cas d'échec réel. L'échec n'empêche jamais la
-  // validation de la fiche, seulement l'avis par courriel à l'étudiant(e).
   async function notifier(ficheId: number, type: "validee"): Promise<boolean> {
     const {
       data: { session },
@@ -219,10 +207,6 @@ function AttendanceHistoryContent() {
   async function validerSelection() {
     if (!signatureEnregistree || selectionnees.size === 0 || !userId) return;
 
-    // On liste explicitement qui va être validé — un simple compte de
-    // fiches ne permet pas de repérer une erreur de sélection avant de
-    // signer en lot, ce qui serait risqué pour des données utilisées en
-    // paie.
     const ids = Array.from(selectionnees);
     const recap = ids
       .map((id) => {
@@ -290,8 +274,6 @@ function AttendanceHistoryContent() {
 
   const fichesFiltrees = useMemo(() => {
     return fiches.filter((f) => {
-      // Vue normale = fiches actives seulement. Vue corbeille = uniquement
-      // celles mises à la corbeille, pour pouvoir les restaurer.
       if (voirCorbeille) {
         if (!f.supprime_le) return false;
       } else if (f.supprime_le) {
@@ -311,12 +293,6 @@ function AttendanceHistoryContent() {
       if (filtreStatut && f.statut !== filtreStatut) return false;
 
       if (dateDebut || dateFin) {
-        // Important pour la paie : on filtre sur les jours réellement
-        // travaillés (déduits des lignes de la fiche), pas sur la date de
-        // création/soumission — une fiche soumise en retard doit quand
-        // même apparaître dans la période où le travail a eu lieu. Si la
-        // fiche n'a aucune date exploitable dans ses lignes, on retombe
-        // sur la date de création à défaut de mieux.
         const plage = datesTravaillees(
           Array.isArray(f.lignes) ? f.lignes : []
         );
