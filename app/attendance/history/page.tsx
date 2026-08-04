@@ -92,7 +92,7 @@ function AttendanceHistoryContent() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [estAdmin, setEstAdmin] = useState(false);
-  const [signatureEnregistree, setSignatureEnregistree] = useState
+  const [signatureEnregistree, setSignatureEnregistree] = useState<
     string | null
   >(null);
   const [selectionnees, setSelectionnees] = useState<Set<number>>(new Set());
