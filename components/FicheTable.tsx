@@ -60,9 +60,9 @@ export default function FicheTable({
       style={{ tableLayout: "fixed", width: "100%" }}
     >
       <colgroup>
-        <col style={{ width: "7%" }} />
-        <col style={{ width: "11%" }} />
-        <col style={{ width: "25%" }} />
+        <col style={{ width: "6%" }} />
+        <col style={{ width: "15%" }} />
+        <col style={{ width: "22%" }} />
         <col style={{ width: "6%" }} />
         <col style={{ width: "8.5%" }} />
         <col style={{ width: "8.5%" }} />
