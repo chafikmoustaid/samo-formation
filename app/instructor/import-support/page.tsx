@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import AuthGuard from "@/components/AuthGuard";
 
 type Status =
   | { kind: "idle" }
@@ -14,6 +15,14 @@ type Status =
   | { kind: "error"; message: string };
 
 export default function ImportSupportPage() {
+  return (
+    <AuthGuard allowedRoles={["admin"]}>
+      <ImportSupportForm />
+    </AuthGuard>
+  );
+}
+
+function ImportSupportForm() {
   const [sessionId, setSessionId] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 

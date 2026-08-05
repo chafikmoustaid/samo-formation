@@ -21,6 +21,7 @@ export default function InstructorPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [matieres, setMatieres] = useState<Matiere[]>([]);
   const [matieresChargees, setMatieresChargees] = useState(false);
+  const [estAdmin, setEstAdmin] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -77,8 +78,26 @@ export default function InstructorPage() {
       setMatieresChargees(true);
     }
 
+    async function chargerRole() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (!active) return;
+      setEstAdmin(profil?.role === "admin");
+    }
+
     load();
     chargerMatieres();
+    chargerRole();
 
     return () => {
       active = false;
@@ -169,9 +188,11 @@ export default function InstructorPage() {
               Mes fiches de développement
             </ColorLinkButton>
 
-            <ColorLinkButton href="/instructor/import-support" color={couleurPalette(1)}>
-              Publier un support
-            </ColorLinkButton>
+            {estAdmin && (
+              <ColorLinkButton href="/instructor/import-support" color={couleurPalette(1)}>
+                Publier un support
+              </ColorLinkButton>
+            )}
 
             <ColorLinkButton href="/instructor/assignments" color={couleurPalette(4)}>
               Remises TP

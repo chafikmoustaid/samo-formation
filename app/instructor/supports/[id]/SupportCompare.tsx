@@ -16,49 +16,24 @@ type AuditReport = {
 };
 
 type Props = {
-  titre: string;
   htmlFidele: string | null;
   htmlPedagogique: string | null;
-  integrityScore: number | null;
   auditReport: AuditReport | null;
 };
 
 type Mode = "pedagogique" | "fidele" | "audit";
 
 export default function SupportCompare({
-  titre,
   htmlFidele,
   htmlPedagogique,
-  integrityScore,
   auditReport,
 }: Props) {
   const [mode, setMode] = useState<Mode>(
     htmlFidele ? "fidele" : "pedagogique"
   );
 
-  const scoreColor =
-    integrityScore === null
-      ? "bg-gray-200 text-gray-700"
-      : integrityScore >= 90
-      ? "bg-green-100 text-green-800"
-      : integrityScore >= 75
-      ? "bg-yellow-100 text-yellow-800"
-      : "bg-red-100 text-red-800";
-
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <h1 className="text-3xl font-bold text-green-700">
-          {titre}
-        </h1>
-
-        <span
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold ${scoreColor}`}
-        >
-          Intégrité : {integrityScore ?? "—"}/100
-        </span>
-      </div>
-
       <div className="flex gap-2 mb-6 border-b">
         <TabButton
           active={mode === "fidele"}

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SupportCompare from "./SupportCompare";
 import PageHeader from "@/components/ui/PageHeader";
@@ -54,21 +53,11 @@ export default function InstructorSupportPage() {
           title={lesson.titre ?? `Séance ${id}`}
           backHref="/instructor"
           backLabel="← Portail formateur"
-          action={
-            <Link
-              href="/instructor/import-support"
-              className="text-sm text-green-700 hover:underline"
-            >
-              Publier / mettre à jour un support →
-            </Link>
-          }
         />
 
         <SupportCompare
-          titre={lesson.titre ?? `Séance ${id}`}
           htmlFidele={lesson.html_fidele ?? null}
           htmlPedagogique={lesson.html_pedagogique ?? null}
-          integrityScore={lesson.integrity_score ?? null}
           auditReport={lesson.audit_report ?? null}
         />
       </div>
