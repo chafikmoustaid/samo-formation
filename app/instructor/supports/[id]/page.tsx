@@ -6,12 +6,19 @@ import { supabase } from "@/lib/supabase";
 import SupportCompare from "./SupportCompare";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
+import ColorLinkButton from "@/components/ui/ColorLinkButton";
+import { couleurPalette } from "@/lib/paletteCouleurs";
 
 export default function InstructorSupportPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
 
   const [lesson, setLesson] = useState<any>(null);
+  const [session, setSession] = useState<{
+    matiereId: number | null;
+    hasQuiz: boolean;
+    tpEvaluation: { id: number; type: string } | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,13 +29,38 @@ export default function InstructorSupportPage() {
   async function chargerSupport() {
     setLoading(true);
 
-    const { data } = await supabase
-      .from("course_lessons")
-      .select("*")
-      .eq("session_id", Number(id))
-      .single();
+    const [lessonRes, sessionRes, quizRes, evalRes] = await Promise.all([
+      supabase
+        .from("course_lessons")
+        .select("*")
+        .eq("session_id", Number(id))
+        .single(),
+      supabase
+        .from("sessions")
+        .select("matiere_id")
+        .eq("id", Number(id))
+        .single(),
+      supabase
+        .from("quiz_questions")
+        .select("id", { count: "exact", head: true })
+        .eq("session_id", Number(id)),
+      supabase
+        .from("evaluations")
+        .select("id, type")
+        .eq("session_id", Number(id))
+        .eq("actif", true),
+    ]);
 
-    setLesson(data ?? null);
+    const evaluationsSeance = evalRes.data ?? [];
+    const tpEvaluation =
+      evaluationsSeance.find((e: any) => e.type === "tp") ?? null;
+
+    setLesson(lessonRes.data ?? null);
+    setSession({
+      matiereId: (sessionRes.data as any)?.matiere_id ?? null,
+      hasQuiz: (quizRes.count ?? 0) > 0,
+      tpEvaluation,
+    });
     setLoading(false);
   }
 
@@ -46,14 +78,43 @@ export default function InstructorSupportPage() {
     );
   }
 
+  const backHref =
+    session?.matiereId != null
+      ? `/instructor/matieres/${session.matiereId}/seances/${id}`
+      : "/instructor";
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
           title={lesson.titre ?? `Séance ${id}`}
-          backHref="/instructor"
-          backLabel="← Portail formateur"
+          backHref={backHref}
+          backLabel="← Retour à la séance"
         />
+
+        <div className="flex flex-wrap gap-3 mb-6">
+          {session?.hasQuiz && (
+            <ColorLinkButton
+              href={`/instructor/results?session=${id}`}
+              color={couleurPalette(0)}
+            >
+              Résultats du quiz
+            </ColorLinkButton>
+          )}
+
+          <ColorLinkButton href={`/instructor/tp/${id}`} color={couleurPalette(1)}>
+            TP
+          </ColorLinkButton>
+
+          {session?.tpEvaluation && (
+            <ColorLinkButton
+              href="/instructor/assignments"
+              color={couleurPalette(2)}
+            >
+              Corriger les remises
+            </ColorLinkButton>
+          )}
+        </div>
 
         <SupportCompare
           htmlFidele={lesson.html_fidele ?? null}
