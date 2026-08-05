@@ -21,11 +21,14 @@ type Matiere = {
 export default function StudentPage() {
   const [progression, setProgression] = useState<Progression | null>(null);
   const [matieres, setMatieres] = useState<Matiere[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
 
     async function load() {
+      if (active) setLoading(true);
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -74,12 +77,34 @@ export default function StudentPage() {
           heuresAttendues: formation.heures_attendues,
         });
       }
+
+      if (active) setLoading(false);
     }
 
     load();
 
+    // Le navigateur peut restaurer cette page depuis son cache
+    // (retour arrière) sans ré-exécuter ce useEffect. On force alors
+    // un nouveau chargement pour éviter un affichage figé sur "…".
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        load();
+      }
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        load();
+      }
+    }
+
+    window.addEventListener("pageshow", handlePageShow);
+    document.addEventListener("visibilitychange", handleVisibility);
+
     return () => {
       active = false;
+      window.removeEventListener("pageshow", handlePageShow);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
@@ -94,7 +119,7 @@ export default function StudentPage() {
             Portail étudiant
           </p>
           <h1 className="text-3xl font-bold text-gray-900">
-            {progression ? progression.nomFormation : "…"}
+            {progression ? progression.nomFormation : loading ? "…" : "Portail étudiant"}
           </h1>
         </div>
 
