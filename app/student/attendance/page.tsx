@@ -9,12 +9,14 @@ import LinkButton from "@/components/ui/LinkButton";
 import Badge from "@/components/ui/Badge";
 
 const STATUT_TONE = {
+  brouillon: "neutral",
   en_attente: "warning",
   validee: "success",
   refusee: "danger",
 } as const;
 
 const STATUT_LABEL: Record<string, string> = {
+  brouillon: "Brouillon",
   en_attente: "En attente",
   validee: "Validée",
   refusee: "Refusée",
@@ -98,12 +100,21 @@ export default function StudentAttendancePage() {
                       </Badge>
                     </td>
                     <td className="p-4 text-right">
-                      <Link
-                        href={`/attendance/${fiche.id}`}
-                        className="text-green-700 hover:underline text-sm"
-                      >
-                        Voir
-                      </Link>
+                      {fiche.statut === "brouillon" ? (
+                        <Link
+                          href="/attendance"
+                          className="text-green-700 hover:underline text-sm font-medium"
+                        >
+                          Modifier
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/attendance/${fiche.id}`}
+                          className="text-green-700 hover:underline text-sm"
+                        >
+                          Voir
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 ))}
