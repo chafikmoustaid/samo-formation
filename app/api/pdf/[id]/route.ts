@@ -8,13 +8,30 @@ import { calculHeures, LigneFiche } from "@/lib/fichePresence";
 // Format compact "jj/mm/aaaa hh:mm" — évite le format fr-CA par défaut
 // ("... 07 h 14") dont l'espace avant le "h" provoque un retour à la
 // ligne indésirable dans les encadrés PDF étroits.
+//
+// Important : le serveur qui génère le PDF tourne en UTC, alors que
+// l'affichage à l'écran (toLocaleString côté navigateur) montre l'heure
+// locale de l'étudiant/formateur (Québec, America/Toronto). Sans forcer
+// explicitement ce fuseau ici, getHours()/getMinutes() lisaient l'heure
+// UTC brute et le PDF affichait une heure décalée (ex. 4h de moins en
+// été) par rapport à la page web.
 function formatDateHeure(dateIso: string | null): string {
   if (!dateIso) return "-";
   const d = new Date(dateIso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(
-    d.getHours()
-  )}:${pad(d.getMinutes())}`;
+  const parts = new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(d);
+  const valeur = (type: string) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return `${valeur("day")}/${valeur("month")}/${valeur("year")} ${valeur(
+    "hour"
+  )}:${valeur("minute")}`;
 }
 
 export async function GET(
