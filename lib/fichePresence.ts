@@ -73,6 +73,22 @@ export function datesTravaillees(
   return { debut: dates[0], fin: dates[dates.length - 1] };
 }
 
+// Formate une date issue de datesTravaillees() en "AAAA-MM-JJ". Ces dates
+// viennent d'un simple champ <input type="date"> ("2026-08-03", sans heure
+// ni fuseau) : JS les interprète comme minuit UTC. Les afficher avec
+// toLocaleDateString() sans préciser de fuseau les fait retomber sur le
+// fuseau local du navigateur (America/Toronto), ce qui les fait reculer
+// d'un jour en été — le 3 août s'affichait comme le 2 août. On force donc
+// explicitement le fuseau UTC ici pour retrouver la date telle que saisie.
+export function formaterDateCalendrier(d: Date): string {
+  return new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "UTC",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
+
 // Liste des heures sélectionnables (par demi-heure), utilisée pour les
 // menus déroulants "De" / "À" du tableau de présence.
 export const OPTIONS_HEURES: { value: string; label: string }[] = (() => {

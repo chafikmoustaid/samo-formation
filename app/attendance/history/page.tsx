@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as XLSX from "xlsx";
 import { supabase } from "@/lib/supabase";
-import { datesTravaillees } from "@/lib/fichePresence";
+import { datesTravaillees, formaterDateCalendrier } from "@/lib/fichePresence";
 import DeleteAttendanceButton from "@/components/DeleteAttendanceButton";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -33,8 +33,8 @@ function periodeFiche(fiche: any): string {
       : "—";
   }
 
-  const debut = plage.debut.toLocaleDateString("fr-CA");
-  const fin = plage.fin.toLocaleDateString("fr-CA");
+  const debut = formaterDateCalendrier(plage.debut);
+  const fin = formaterDateCalendrier(plage.fin);
 
   return debut === fin ? debut : `${debut} au ${fin}`;
 }
