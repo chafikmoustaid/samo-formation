@@ -33,6 +33,7 @@ function LoginForm() {
 
   const { titre, sousTitre } = CATEGORIES[categorie];
   const sessionExpiree = searchParams.get("session") === "expiree";
+  const compteDesactive = searchParams.get("compte") === "desactive";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -107,7 +108,7 @@ function LoginForm() {
 
     const { data: profil } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, desactive_le")
       .eq("id", userId)
       .single();
 
@@ -115,6 +116,15 @@ function LoginForm() {
       await supabase.auth.signOut();
       setError(
         "Aucun profil associé à ce compte. Contacte l'administration."
+      );
+      setLoading(false);
+      return;
+    }
+
+    if (profil.desactive_le) {
+      await supabase.auth.signOut();
+      setError(
+        "Ce compte a été désactivé. Contacte l'administration si tu penses qu'il s'agit d'une erreur."
       );
       setLoading(false);
       return;
@@ -203,6 +213,13 @@ function LoginForm() {
           {sessionExpiree && !error && (
             <div className="mb-4 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
               Ta session a expiré après une période d&apos;inactivité. Reconnecte-toi.
+            </div>
+          )}
+
+          {compteDesactive && !error && (
+            <div className="mb-4 text-sm text-red-700 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              Ce compte a été désactivé. Contacte l&apos;administration si tu
+              penses qu&apos;il s&apos;agit d&apos;une erreur.
             </div>
           )}
 

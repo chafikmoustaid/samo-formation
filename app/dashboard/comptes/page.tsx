@@ -18,6 +18,7 @@ type Profile = {
   matieres: string[] | null;
   formation_id: number | null;
   nom_complet: string | null;
+  desactive_le: string | null;
 };
 
 type Formation = {
@@ -34,6 +35,12 @@ export default function ComptesPage() {
     type: "succes" | "erreur";
   } | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [monId, setMonId] = useState<string | null>(null);
+  const [voirCorbeille, setVoirCorbeille] = useState(false);
+  const [busyArchiveId, setBusyArchiveId] = useState<string | null>(null);
+  const [busySuppressionId, setBusySuppressionId] = useState<string | null>(
+    null
+  );
 
   const [generatedPassword, setGeneratedPassword] = useState<{
     email: string;
@@ -109,7 +116,9 @@ export default function ComptesPage() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("id, email, role, created_at, matieres, formation_id, nom_complet")
+      .select(
+        "id, email, role, created_at, matieres, formation_id, nom_complet, desactive_le"
+      )
       .order("created_at", { ascending: true });
     setProfiles((data as Profile[]) ?? []);
     setLoading(false);
@@ -302,7 +311,116 @@ export default function ComptesPage() {
     loadMatieres();
     loadFormations();
     loadFormationsFormateurs();
+    supabase.auth.getUser().then(({ data }) => setMonId(data.user?.id ?? null));
   }, []);
+
+  async function archiverCompte(id: string, email: string) {
+    const confirmation = window.confirm(
+      `Archiver le compte ${email} ? La personne ne pourra plus se connecter, mais rien n'est perdu — tu peux restaurer le compte à tout moment depuis "Voir la corbeille".`
+    );
+    if (!confirmation) return;
+
+    setBusyArchiveId(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_archiver_compte", {
+      profil_id: id,
+    });
+
+    setBusyArchiveId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de l'archivage : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Compte archivé." });
+    loadProfiles();
+  }
+
+  async function restaurerCompte(id: string) {
+    setBusyArchiveId(id);
+    setMessage(null);
+
+    const { error } = await supabase.rpc("admin_restaurer_compte", {
+      profil_id: id,
+    });
+
+    setBusyArchiveId(null);
+
+    if (error) {
+      setMessage({
+        type: "erreur",
+        texte: "Erreur lors de la restauration : " + error.message,
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Compte restauré." });
+    loadProfiles();
+  }
+
+  async function supprimerCompteDefinitivement(id: string, email: string) {
+    const confirmation = window.confirm(
+      `Supprimer DÉFINITIVEMENT le compte ${email} ? Cette action est irréversible : le compte et sa connexion seront détruits (l'historique des fiches de présence, lui, reste intact). Si tu n'es pas certain, préfère "Archiver".`
+    );
+    if (!confirmation) return;
+
+    setBusySuppressionId(id);
+    setMessage(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    let result: { error?: string; success?: boolean } = {};
+
+    try {
+      const response = await fetch("/api/admin/delete-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
+        body: JSON.stringify({ userId: id }),
+      });
+
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
+
+      setBusySuppressionId(null);
+
+      if (!response.ok) {
+        setMessage({
+          type: "erreur",
+          texte:
+            "Erreur lors de la suppression : " +
+            (result.error ?? `réponse serveur invalide (code ${response.status})`),
+        });
+        return;
+      }
+    } catch (err) {
+      setBusySuppressionId(null);
+      setMessage({
+        type: "erreur",
+        texte:
+          "Erreur réseau lors de la suppression : " +
+          (err instanceof Error ? err.message : "erreur inconnue"),
+      });
+      return;
+    }
+
+    setMessage({ type: "succes", texte: "Compte supprimé définitivement." });
+    loadProfiles();
+  }
 
   async function renommerMatiereCatalogue(ancienNom: string, nouveauNom: string) {
     const nom = nouveauNom.trim();
@@ -619,7 +737,15 @@ export default function ComptesPage() {
     setMatieresARenommer(new Set());
   }
 
+  const nbArchives = profiles.filter((p) => p.desactive_le).length;
+
   const profilesFiltres = profiles.filter((p) => {
+    if (voirCorbeille) {
+      if (!p.desactive_le) return false;
+    } else if (p.desactive_le) {
+      return false;
+    }
+
     if (filtreRole && p.role !== filtreRole) return false;
     if (filtreFormationId && String(p.formation_id ?? "") !== filtreFormationId)
       return false;
@@ -810,9 +936,19 @@ export default function ComptesPage() {
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"
           action={
-            <LinkButton href="/dashboard/comptes/historique" variant="outline">
-              Historique des changements
-            </LinkButton>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setVoirCorbeille((v) => !v)}
+              >
+                {voirCorbeille
+                  ? "← Retour aux comptes"
+                  : `Voir la corbeille${nbArchives > 0 ? ` (${nbArchives})` : ""}`}
+              </Button>
+              <LinkButton href="/dashboard/comptes/historique" variant="outline">
+                Historique des changements
+              </LinkButton>
+            </div>
           }
         />
 
@@ -953,7 +1089,9 @@ export default function ComptesPage() {
         </div>
 
         <Card className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Comptes existants</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {voirCorbeille ? "Comptes archivés" : "Comptes existants"}
+          </h2>
 
           <div className="flex flex-wrap gap-3 mb-4">
             <input
@@ -990,17 +1128,22 @@ export default function ComptesPage() {
           {loading ? (
             <div className="text-gray-500 text-sm">Chargement…</div>
           ) : profilesFiltres.length === 0 ? (
-            <p className="text-sm text-gray-400">Aucun compte ne correspond à ces critères.</p>
+            <p className="text-sm text-gray-400">
+              {voirCorbeille
+                ? "Aucun compte archivé."
+                : "Aucun compte ne correspond à ces critères."}
+            </p>
           ) : (
             <div className="w-full overflow-hidden">
             <table className="w-full text-sm table-fixed border-collapse">
               <colgroup>
-                <col className="w-[20%]" />
-                <col className="w-[17%]" />
-                <col className="w-[25%]" />
-                <col className="w-[8%]" />
-                <col className="w-[10%]" />
-                <col className="w-[20%]" />
+                <col className="w-[18%]" />
+                <col className="w-[15%]" />
+                <col className="w-[22%]" />
+                <col className="w-[7%]" />
+                <col className="w-[9%]" />
+                <col className="w-[13%]" />
+                <col className="w-[16%]" />
               </colgroup>
               <thead>
                 <tr className="border-b text-left text-gray-500">
@@ -1012,6 +1155,7 @@ export default function ComptesPage() {
                   <th className="p-2 pl-3 border-l border-gray-200 text-red-600 truncate">
                     Rôle
                   </th>
+                  <th className="p-2 truncate">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1028,8 +1172,8 @@ export default function ComptesPage() {
                             enregistrerNomComplet(p.id, e.target.value);
                           }
                         }}
-                        disabled={savingNomId === p.id}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
+                        disabled={savingNomId === p.id || Boolean(p.desactive_le)}
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border disabled:bg-gray-50 disabled:text-gray-400"
                       />
                     </td>
                     <td className="p-2">
@@ -1038,7 +1182,10 @@ export default function ComptesPage() {
                           formations={formations}
                           selectionIds={formationsFormateurs.get(p.id) ?? []}
                           onChange={(ids) => enregistrerFormationsFormateur(p.id, ids)}
-                          disabled={savingFormateurFormationsId === p.id}
+                          disabled={
+                            savingFormateurFormationsId === p.id ||
+                            Boolean(p.desactive_le)
+                          }
                           saving={savingFormateurFormationsId === p.id}
                         />
                       ) : (
@@ -1051,8 +1198,10 @@ export default function ComptesPage() {
                                 Number(e.target.value)
                               )
                             }
-                            disabled={savingFormationId === p.id}
-                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border"
+                            disabled={
+                              savingFormationId === p.id || Boolean(p.desactive_le)
+                            }
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-sm w-full box-border disabled:bg-gray-50 disabled:text-gray-400"
                           >
                             <option value="" disabled>
                               Choisir une formation
@@ -1077,7 +1226,7 @@ export default function ComptesPage() {
                     <td className="p-2 truncate">
                       <button
                         onClick={() => definirMotDePasse(p.id, p.email)}
-                        disabled={settingPasswordId === p.id}
+                        disabled={settingPasswordId === p.id || Boolean(p.desactive_le)}
                         className="text-blue-600 hover:underline disabled:opacity-50"
                       >
                         {settingPasswordId === p.id ? "Génération…" : "Regénérer"}
@@ -1086,16 +1235,58 @@ export default function ComptesPage() {
                     <td className="p-2 pl-3 border-l border-gray-200">
                       <select
                         value={p.role}
-                        disabled={busyId === p.id}
+                        disabled={busyId === p.id || Boolean(p.desactive_le)}
                         onChange={(e) =>
                           changeRole(p.id, e.target.value as Role, p.email)
                         }
-                        className="border border-gray-200 rounded-lg px-2 py-1 w-full box-border"
+                        className="border border-gray-200 rounded-lg px-2 py-1 w-full box-border disabled:bg-gray-50 disabled:text-gray-400"
                       >
                         <option value="student">Étudiant</option>
                         <option value="instructor">Formateur</option>
                         <option value="admin">Administration</option>
                       </select>
+                    </td>
+                    <td className="p-2 space-y-1">
+                      {p.id === monId ? (
+                        <span className="text-xs text-gray-400">
+                          Ton propre compte
+                        </span>
+                      ) : (
+                        <div className="flex flex-col gap-1 items-start">
+                          {p.desactive_le ? (
+                            <button
+                              onClick={() => restaurerCompte(p.id)}
+                              disabled={busyArchiveId === p.id}
+                              className="text-green-700 hover:underline disabled:opacity-50"
+                            >
+                              {busyArchiveId === p.id
+                                ? "Restauration…"
+                                : "Restaurer"}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => archiverCompte(p.id, p.email)}
+                              disabled={busyArchiveId === p.id}
+                              className="text-amber-700 hover:underline disabled:opacity-50"
+                            >
+                              {busyArchiveId === p.id
+                                ? "Archivage…"
+                                : "Archiver"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() =>
+                              supprimerCompteDefinitivement(p.id, p.email)
+                            }
+                            disabled={busySuppressionId === p.id}
+                            className="text-red-600 hover:underline disabled:opacity-50"
+                          >
+                            {busySuppressionId === p.id
+                              ? "Suppression…"
+                              : "Supprimer"}
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

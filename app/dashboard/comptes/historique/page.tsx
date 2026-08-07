@@ -33,10 +33,15 @@ const ACTION_LABELS: Record<string, string> = {
   cours_renomme: "Cours renommé",
   cours_supprime: "Cours supprimé",
   formation_cours_change: "Cours d'une formation modifiés",
+  compte_archive: "Compte archivé",
+  compte_restaure: "Compte restauré",
+  compte_supprime: "Compte supprimé définitivement",
 };
 
 const ACTION_TONE: Record<string, "warning" | "neutral"> = {
   role_change: "warning",
+  compte_archive: "warning",
+  compte_supprime: "warning",
 };
 
 function decrireDetails(entree: EntreeAudit): string {
@@ -81,6 +86,12 @@ function decrireDetails(entree: EntreeAudit): string {
       return `${d.nom ?? "?"}`;
     case "formation_cours_change":
       return `nouveaux cours : ${(d.nouveaux_cours ?? []).join(", ") || "aucun"}`;
+    case "compte_archive":
+      return "compte désactivé (connexion bloquée)";
+    case "compte_restaure":
+      return "compte réactivé";
+    case "compte_supprime":
+      return "compte et connexion supprimés définitivement";
     default:
       return JSON.stringify(d);
   }

@@ -77,13 +77,26 @@ export function useAuthGuard(allowedRoles: Role[]) {
 
       const { data: profil } = await supabase
         .from("profiles")
-        .select("role, email, must_change_password")
+        .select("role, email, must_change_password, desactive_le")
         .eq("id", user.id)
         .single();
 
       if (!active) return;
 
       const role = profil?.role as Role | undefined;
+
+      // Le compte a été archivé (désactivé) par un admin depuis une autre
+      // session : on force la déconnexion immédiatement, même si la session
+      // en cours est encore techniquement valide côté Supabase Auth.
+      if (profil?.desactive_le) {
+        await supabase.auth.signOut();
+        router.replace(
+          urlLogin(role ?? roleDepuisChemin(window.location.pathname), {
+            compte: "desactive",
+          })
+        );
+        return;
+      }
 
       if (!role || !rolesKey.split(",").includes(role)) {
         router.replace(urlLogin(role ?? roleDepuisChemin(window.location.pathname)));
