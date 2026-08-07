@@ -3,7 +3,7 @@ import path from "path";
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
-import { calculHeures, datesTravaillees, LigneFiche } from "@/lib/fichePresence";
+import { calculHeures, LigneFiche } from "@/lib/fichePresence";
 
 // Format compact "jj/mm/aaaa hh:mm" — évite le format fr-CA par défaut
 // ("... 07 h 14") dont l'espace avant le "h" provoque un retour à la
@@ -61,14 +61,46 @@ function matierePrincipale(lignes: LigneFiche[]): string {
   return meilleure;
 }
 
+// Les dates des lignes de la fiche ("2026-08-03") sont de simples dates de
+// calendrier saisies via un <input type="date">, sans heure ni fuseau. En
+// les affichant avec le fuseau America/Toronto (comme les heures de
+// signature plus haut), le minuit UTC implicite recule d'une journée en
+// été (ex. le 3 août devient le 2) — d'où le décalage constaté. On les
+// formate donc en UTC pour retrouver exactement la date saisie.
 function partieDate(d: Date, type: "day" | "month" | "year"): string {
   const parts = new Intl.DateTimeFormat("fr-CA", {
-    timeZone: "America/Toronto",
+    timeZone: "UTC",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).formatToParts(d);
   return parts.find((p) => p.type === type)?.value ?? "";
+}
+
+// Une fiche couvre toujours une semaine de travail du lundi au vendredi
+// (voir JOURS dans lib/fichePresence.ts) : la période affichée dans le nom
+// de fichier doit donc toujours être lundi-vendredi de cette semaine-là,
+// même si l'étudiant n'a pas encore rempli tous les jours.
+function semaineLundiVendredi(
+  dates: string[]
+): { debut: Date; fin: Date } | null {
+  const premiere = dates.find(Boolean);
+  if (!premiere) return null;
+
+  const [annee, mois, jour] = premiere.split("-").map(Number);
+  if (!annee || !mois || !jour) return null;
+
+  const reference = new Date(Date.UTC(annee, mois - 1, jour));
+  const jourSemaine = reference.getUTCDay(); // 0 = dimanche … 6 = samedi
+  const decalageLundi = jourSemaine === 0 ? -6 : 1 - jourSemaine;
+
+  const lundi = new Date(reference);
+  lundi.setUTCDate(lundi.getUTCDate() + decalageLundi);
+
+  const vendredi = new Date(lundi);
+  vendredi.setUTCDate(vendredi.getUTCDate() + 4);
+
+  return { debut: lundi, fin: vendredi };
 }
 
 function formaterPeriode(debut: Date, fin: Date): string {
@@ -103,7 +135,7 @@ function construireNomFichier(
 ): string {
   const matiere = matierePrincipale(lignes);
   const etudiant = String(fiche.nom_etudiant ?? "").trim();
-  const plage = datesTravaillees(lignes);
+  const plage = semaineLundiVendredi(lignes.map((l) => l.date));
 
   const segments = ["Fiche de présence"];
   if (matiere) segments.push(matiere);
