@@ -395,8 +395,17 @@ export default function AttendanceDetail() {
                     avant l'envoi à la paie — pas seulement sur les fiches
                     encore "en attente". */}
                 {isAdmin && (
-                  <div className="mt-4">
-                    <Button variant="outline" onClick={() => setModeRefus(true)}>
+                  <div className="mt-5 border-2 border-red-200 bg-red-50 rounded-lg p-4">
+                    <p className="text-sm text-red-800 font-semibold mb-3">
+                      Une erreur sur cette fiche déjà validée ? Tu peux
+                      encore la refuser avant qu&apos;elle ne parte à la
+                      paie.
+                    </p>
+                    <Button
+                      variant="danger"
+                      className="w-full sm:w-auto font-bold"
+                      onClick={() => setModeRefus(true)}
+                    >
                       Refuser cette fiche (annuler la validation)
                     </Button>
                   </div>
