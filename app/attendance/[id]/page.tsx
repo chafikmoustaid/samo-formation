@@ -357,7 +357,7 @@ export default function AttendanceDetail() {
               Validation du formateur
             </h2>
 
-            {fiche.statut === "validee" && (
+            {fiche.statut === "validee" && !modeRefus && (
               <>
                 {fiche.signature_formateur ? (
                   <img
@@ -379,6 +379,19 @@ export default function AttendanceDetail() {
                       )
                     : "-"}
                 </div>
+
+                {/* Seule l'administration fait la validation finale avant
+                    la paie : elle doit donc pouvoir revenir sur une fiche
+                    déjà validée par un formateur si elle repère un problème
+                    avant l'envoi à la paie — pas seulement sur les fiches
+                    encore "en attente". */}
+                {isAdmin && (
+                  <div className="mt-4">
+                    <Button variant="outline" onClick={() => setModeRefus(true)}>
+                      Refuser cette fiche (annuler la validation)
+                    </Button>
+                  </div>
+                )}
               </>
             )}
 
@@ -442,11 +455,22 @@ export default function AttendanceDetail() {
               </div>
             )}
 
-            {fiche.statut === "en_attente" && peutValider && modeRefus && (
+            {((fiche.statut === "en_attente" && peutValider) ||
+              (fiche.statut === "validee" && isAdmin)) &&
+              modeRefus && (
               <div className="space-y-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Motif du refus
                 </label>
+
+                {fiche.statut === "validee" && (
+                  <p className="text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                    Cette fiche avait déjà été validée par{" "}
+                    {fiche.nom_formateur || "le formateur(trice)"}. La
+                    refuser maintenant annule cette validation avant l&apos;envoi
+                    à la paie.
+                  </p>
+                )}
 
                 <textarea
                   value={motif}
