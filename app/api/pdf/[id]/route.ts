@@ -3,7 +3,7 @@ import path from "path";
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
-import { calculHeures, LigneFiche } from "@/lib/fichePresence";
+import { calculHeures, datesTravaillees, LigneFiche } from "@/lib/fichePresence";
 
 // Format compact "jj/mm/aaaa hh:mm" — évite le format fr-CA par défaut
 // ("... 07 h 14") dont l'espace avant le "h" provoque un retour à la
@@ -32,6 +32,89 @@ function formatDateHeure(dateIso: string | null): string {
   return `${valeur("day")}/${valeur("month")}/${valeur("year")} ${valeur(
     "hour"
   )}:${valeur("minute")}`;
+}
+
+// Reconstruit le nom de fichier attendu par l'administration à partir du
+// contenu de la fiche : "Fiche de présence - <matière> - <étudiant> <jours
+// travaillés>", ex. "Fiche de présence - Soutien Réseau - Julien Desrosiers
+// 22 au 26 juillet 2026". La matière retenue est celle qui revient le plus
+// souvent sur les lignes de la fiche (une fiche couvre normalement une
+// seule matière par semaine).
+function matierePrincipale(lignes: LigneFiche[]): string {
+  const compte = new Map<string, number>();
+
+  for (const ligne of lignes) {
+    const nom = (ligne.matiere ?? "").trim();
+    if (!nom) continue;
+    compte.set(nom, (compte.get(nom) ?? 0) + 1);
+  }
+
+  let meilleure = "";
+  let max = 0;
+  for (const [nom, n] of compte) {
+    if (n > max) {
+      max = n;
+      meilleure = nom;
+    }
+  }
+
+  return meilleure;
+}
+
+function partieDate(d: Date, type: "day" | "month" | "year"): string {
+  const parts = new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "America/Toronto",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).formatToParts(d);
+  return parts.find((p) => p.type === type)?.value ?? "";
+}
+
+function formaterPeriode(debut: Date, fin: Date): string {
+  const jourD = partieDate(debut, "day");
+  const moisD = partieDate(debut, "month");
+  const anneeD = partieDate(debut, "year");
+  const jourF = partieDate(fin, "day");
+  const moisF = partieDate(fin, "month");
+  const anneeF = partieDate(fin, "year");
+
+  if (anneeD === anneeF && moisD === moisF && jourD === jourF) {
+    return `${jourD} ${moisD} ${anneeD}`;
+  }
+  if (anneeD === anneeF && moisD === moisF) {
+    return `${jourD} au ${jourF} ${moisD} ${anneeD}`;
+  }
+  if (anneeD === anneeF) {
+    return `${jourD} ${moisD} au ${jourF} ${moisF} ${anneeD}`;
+  }
+  return `${jourD} ${moisD} ${anneeD} au ${jourF} ${moisF} ${anneeF}`;
+}
+
+// Retire les caractères invalides dans un nom de fichier (Windows/macOS) et
+// réduit les espaces multiples, sans toucher aux accents.
+function nettoyerNomFichier(nom: string): string {
+  return nom.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function construireNomFichier(
+  fiche: { id: number | string; nom_etudiant?: string | null },
+  lignes: LigneFiche[]
+): string {
+  const matiere = matierePrincipale(lignes);
+  const etudiant = String(fiche.nom_etudiant ?? "").trim();
+  const plage = datesTravaillees(lignes);
+
+  const segments = ["Fiche de présence"];
+  if (matiere) segments.push(matiere);
+
+  const dernierSegment = [etudiant, plage ? formaterPeriode(plage.debut, plage.fin) : ""]
+    .filter(Boolean)
+    .join(" ");
+  if (dernierSegment) segments.push(dernierSegment);
+
+  const nom = nettoyerNomFichier(segments.join(" - "));
+  return nom || `fiche-${fiche.id}`;
 }
 
 export async function GET(
@@ -456,10 +539,18 @@ export async function GET(
 
   const buffer = pdf.output("arraybuffer");
 
+  const nomFichier = construireNomFichier(fiche, lignes);
+  // ASCII de repli pour les clients qui ne comprennent pas filename* (RFC
+  // 5987), + version encodée en UTF-8 pour les accents (é, à…) dans les
+  // navigateurs modernes.
+  const nomAscii = nomFichier.replace(/[^\x20-\x7E]/g, "_");
+
   return new NextResponse(buffer, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="fiche-${id}.pdf"`,
+      "Content-Disposition": `attachment; filename="${nomAscii}.pdf"; filename*=UTF-8''${encodeURIComponent(
+        nomFichier
+      )}.pdf`,
     },
   });
 }
