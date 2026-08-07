@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -9,6 +9,13 @@ import LinkButton from "@/components/ui/LinkButton";
 import MultiFormationSelect from "@/components/ui/MultiFormationSelect";
 
 type Role = "admin" | "instructor" | "student";
+
+// Largeurs (en px) des colonnes du tableau "Comptes existants", dans
+// l'ordre Email / Nom complet / Formation / Créé le / Mot de passe / Rôle /
+// Actions. L'admin peut les ajuster en glissant le bord droit d'un
+// en-tête ; le résultat est mémorisé pour les prochaines visites.
+const LARGEURS_COLONNES_PAR_DEFAUT = [216, 180, 264, 84, 108, 156, 192];
+const CLE_LARGEURS_COLONNES = "samo_dashboard_comptes_largeurs_colonnes";
 
 type Profile = {
   id: string;
@@ -41,6 +48,15 @@ export default function ComptesPage() {
   const [busySuppressionId, setBusySuppressionId] = useState<string | null>(
     null
   );
+
+  const [largeursColonnes, setLargeursColonnes] = useState<number[]>(
+    LARGEURS_COLONNES_PAR_DEFAUT
+  );
+  const redimensionnementRef = useRef<{
+    index: number;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
 
   const [generatedPassword, setGeneratedPassword] = useState<{
     email: string;
@@ -313,6 +329,73 @@ export default function ComptesPage() {
     loadFormationsFormateurs();
     supabase.auth.getUser().then(({ data }) => setMonId(data.user?.id ?? null));
   }, []);
+
+  useEffect(() => {
+    try {
+      const sauvegarde = window.localStorage.getItem(CLE_LARGEURS_COLONNES);
+      if (!sauvegarde) return;
+      const valeurs = JSON.parse(sauvegarde);
+      if (
+        Array.isArray(valeurs) &&
+        valeurs.length === LARGEURS_COLONNES_PAR_DEFAUT.length &&
+        valeurs.every((v) => typeof v === "number" && v > 0)
+      ) {
+        // Volontaire : on ne peut pas lire localStorage pendant le rendu
+        // serveur (SSR), donc l'état démarre avec les largeurs par défaut
+        // (identiques des deux côtés, pas de decalage d'hydratation) et
+        // n'est ajusté qu'ici, une fois côté client.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLargeursColonnes(valeurs);
+      }
+    } catch {
+      // stockage indisponible ou corrompu — on garde les largeurs par défaut
+    }
+  }, []);
+
+  useEffect(() => {
+    function onMouseMove(e: MouseEvent) {
+      const etat = redimensionnementRef.current;
+      if (!etat) return;
+      const delta = e.clientX - etat.startX;
+      setLargeursColonnes((prev) => {
+        const next = [...prev];
+        next[etat.index] = Math.max(60, etat.startWidth + delta);
+        return next;
+      });
+    }
+
+    function onMouseUp() {
+      if (!redimensionnementRef.current) return;
+      redimensionnementRef.current = null;
+      setLargeursColonnes((actuelles) => {
+        try {
+          window.localStorage.setItem(
+            CLE_LARGEURS_COLONNES,
+            JSON.stringify(actuelles)
+          );
+        } catch {
+          // navigation privée ou stockage plein — pas bloquant
+        }
+        return actuelles;
+      });
+    }
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
+
+  function demarrerRedimensionnement(index: number, e: React.MouseEvent) {
+    e.preventDefault();
+    redimensionnementRef.current = {
+      index,
+      startX: e.clientX,
+      startWidth: largeursColonnes[index],
+    };
+  }
 
   async function archiverCompte(id: string, email: string) {
     const confirmation = window.confirm(
@@ -1134,28 +1217,64 @@ export default function ComptesPage() {
                 : "Aucun compte ne correspond à ces critères."}
             </p>
           ) : (
-            <div className="w-full overflow-hidden">
-            <table className="w-full text-sm table-fixed border-collapse">
+            <div className="w-full overflow-x-auto">
+            <table className="text-sm table-fixed border-collapse">
               <colgroup>
-                <col className="w-[18%]" />
-                <col className="w-[15%]" />
-                <col className="w-[22%]" />
-                <col className="w-[7%]" />
-                <col className="w-[9%]" />
-                <col className="w-[13%]" />
-                <col className="w-[16%]" />
+                {largeursColonnes.map((largeur, i) => (
+                  <col key={i} style={{ width: `${largeur}px` }} />
+                ))}
               </colgroup>
               <thead>
                 <tr className="border-b text-left text-gray-500">
-                  <th className="p-2 truncate">Email</th>
-                  <th className="p-2 truncate">Nom complet</th>
-                  <th className="p-2 truncate">Formation</th>
-                  <th className="p-2 truncate">Créé le</th>
-                  <th className="p-2 truncate">Mot de passe</th>
-                  <th className="p-2 pl-3 border-l border-gray-200 text-red-600 truncate">
-                    Rôle
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Email
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(0, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
                   </th>
-                  <th className="p-2 truncate">Actions</th>
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Nom complet
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(1, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Formation
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(2, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Créé le
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(3, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Mot de passe
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(4, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
+                  <th className="p-2 pl-3 pr-3 border-l border-gray-200 text-red-600 truncate relative select-none">
+                    Rôle
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(5, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
+                  <th className="p-2 pr-3 truncate relative select-none">
+                    Actions
+                    <span
+                      onMouseDown={(e) => demarrerRedimensionnement(6, e)}
+                      className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
+                    />
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -1177,7 +1296,11 @@ export default function ComptesPage() {
                       />
                     </td>
                     <td className="p-2">
-                      {p.role === "instructor" ? (
+                      {p.role === "admin" ? (
+                        <span className="text-sm text-gray-400 italic">
+                          Non applicable
+                        </span>
+                      ) : p.role === "instructor" ? (
                         <MultiFormationSelect
                           formations={formations}
                           selectionIds={formationsFormateurs.get(p.id) ?? []}
