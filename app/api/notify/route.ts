@@ -3,7 +3,7 @@ import { supabaseFromRequest } from "@/lib/supabaseFromRequest";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getResendClient, RESEND_FROM_EMAIL } from "@/lib/resend";
 
-type NotificationType = "creee" | "validee" | "refusee";
+type NotificationType = "creee" | "validee" | "refusee" | "validation_annulee";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -122,6 +122,37 @@ export async function POST(request: Request) {
             <p><a href="${lienFiche}">Consulter la fiche</a></p>
             <p>— Formation SAMO</p>
           `,
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
+    if (type === "validation_annulee") {
+      if (!fiche.formateur_id) {
+        return NextResponse.json({ success: true, skipped: true });
+      }
+
+      const { data: formateur } = await admin
+        .from("profiles")
+        .select("email")
+        .eq("id", fiche.formateur_id)
+        .single();
+
+      if (!formateur?.email) {
+        return NextResponse.json({ success: true, skipped: true });
+      }
+
+      await resend.emails.send({
+        from: RESEND_FROM_EMAIL,
+        to: formateur.email,
+        subject: `Validation annulée par l'administration — ${fiche.nom_etudiant}`,
+        html: `
+          <p>Bonjour,</p>
+          <p>La fiche de présence de <strong>${fiche.nom_etudiant}</strong> que vous aviez validée a été refusée par l'administration avant l'envoi à la paie.</p>
+          ${fiche.motif ? `<p><strong>Motif :</strong> ${fiche.motif}</p>` : ""}
+          <p><a href="${lienFiche}">Consulter la fiche</a></p>
+          <p>— Formation SAMO</p>
+        `,
       });
 
       return NextResponse.json({ success: true });

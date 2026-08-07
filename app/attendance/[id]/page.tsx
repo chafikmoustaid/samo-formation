@@ -132,7 +132,7 @@ export default function AttendanceDetail() {
   // validation/le refus de la fiche elle-même, seulement l'avis par courriel.
   async function notifier(
     ficheId: string,
-    type: "creee" | "validee" | "refusee"
+    type: "creee" | "validee" | "refusee" | "validation_annulee"
   ): Promise<boolean> {
     const {
       data: { session },
@@ -161,6 +161,13 @@ export default function AttendanceDetail() {
       return;
     }
 
+    // On garde une trace de l'état avant la mise à jour : si l'admin refuse
+    // une fiche déjà validée, c'est la validation du formateur qu'on
+    // annule — c'est donc lui/elle qu'on avise, pas l'étudiant(e) (qui n'a
+    // rien à faire de plus, la fiche redevient simplement en attente
+    // d'un nouvel examen).
+    const etaitValidee = fiche.statut === "validee";
+
     setEnregistrement(true);
 
     const { error } = await supabase
@@ -179,10 +186,12 @@ export default function AttendanceDetail() {
       return;
     }
 
-    const ok = await notifier(id, "refusee");
+    const ok = await notifier(id, etaitValidee ? "validation_annulee" : "refusee");
     setAvertissement(
       ok
         ? null
+        : etaitValidee
+        ? "Le formateur(trice) n'a pas pu être avisé(e) par courriel de l'annulation — pense à le/la prévenir autrement."
         : "L'étudiant(e) n'a pas pu être avisé(e) par courriel du refus — pense à le/la prévenir autrement."
     );
     chargerFiche();
