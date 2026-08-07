@@ -395,7 +395,7 @@ export default function AttendanceDetail() {
                     avant l'envoi à la paie — pas seulement sur les fiches
                     encore "en attente". */}
                 {isAdmin && (
-                  <div className="mt-5 border-2 border-red-200 bg-red-50 rounded-lg p-4">
+                  <div className="mt-5">
                     <Button
                       variant="danger"
                       className="w-full sm:w-auto font-bold"
