@@ -67,7 +67,11 @@ export function useAuthGuard(allowedRoles: Role[]) {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace(urlLogin(roleDepuisChemin(window.location.pathname)));
+        router.replace(
+          urlLogin(roleDepuisChemin(window.location.pathname), {
+            next: window.location.pathname + window.location.search,
+          })
+        );
         return;
       }
 
@@ -127,10 +131,16 @@ export function useAuthGuard(allowedRoles: Role[]) {
     if (status !== "ok") return;
 
     function deconnecterPourInactivite() {
+      // On garde la page où l'utilisateur se trouvait (via ?next=) pour
+      // pouvoir l'y ramener directement après reconnexion, plutôt que de
+      // le renvoyer systématiquement à l'accueil de son portail.
+      const next = window.location.pathname + window.location.search;
+
       supabase.auth.signOut().finally(() => {
         router.replace(
           urlLogin(profile?.role ?? roleDepuisChemin(window.location.pathname), {
             session: "expiree",
+            next,
           })
         );
       });

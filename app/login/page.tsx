@@ -150,17 +150,31 @@ function LoginForm() {
       return;
     }
 
+    // Si on arrive ici après une déconnexion (expiration de session,
+    // inactivité), ?next= contient la page où la personne se trouvait.
+    // On ne l'utilise que si elle appartient bien à l'espace de son rôle
+    // (ex. un formateur ne peut pas être renvoyé dans /dashboard), pour
+    // éviter tout détournement de redirection.
+    const nextParam = searchParams.get("next");
+    const cible =
+      nextParam &&
+      nextParam.startsWith("/") &&
+      !nextParam.startsWith("//") &&
+      nextParam.startsWith(destination)
+        ? nextParam
+        : destination;
+
     // Si le compte a activé la vérification en deux étapes, la connexion
     // par mot de passe seul n'est qu'au niveau aal1 : on redirige vers le
     // défi MFA avant d'accéder à l'espace protégé.
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
 
     if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
-      window.location.href = `/mfa-challenge?next=${encodeURIComponent(destination)}`;
+      window.location.href = `/mfa-challenge?next=${encodeURIComponent(cible)}`;
       return;
     }
 
-    window.location.href = destination;
+    window.location.href = cible;
   }
 
   return (
