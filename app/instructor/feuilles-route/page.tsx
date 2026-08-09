@@ -22,6 +22,8 @@ type Seance = {
   matiere_id: number | null;
 };
 
+type Matiere = { id: number; nom: string };
+
 type FeuilleRoute = {
   id: number;
   student_id: string;
@@ -43,11 +45,15 @@ export default function FeuillesDeRoutePage() {
   const [etudiants, setEtudiants] = useState<Etudiant[]>([]);
   const [formations, setFormations] = useState<Map<number, string>>(new Map());
   const [seances, setSeances] = useState<Seance[]>([]);
+  const [matieres, setMatieres] = useState<Matiere[]>([]);
+  const [matieresParFormation, setMatieresParFormation] = useState<Map<number, number[]>>(new Map());
+  const [matieresDuFormateur, setMatieresDuFormateur] = useState<Set<number>>(new Set());
   const [feuilles, setFeuilles] = useState<FeuilleRoute[]>([]);
   const [instructorId, setInstructorId] = useState<string | null>(null);
 
   // Formulaire de création
   const [etudiantId, setEtudiantId] = useState("");
+  const [matiereId, setMatiereId] = useState("");
   const [seanceId, setSeanceId] = useState("");
   const [dateSeance, setDateSeance] = useState("");
   const [heureDebut, setHeureDebut] = useState("");
@@ -111,25 +117,59 @@ export default function FeuillesDeRoutePage() {
       requeteSeances = requeteSeances.in("formation_id", formationIds);
     }
 
-    const [{ data: etudiantsData }, { data: formationsData }, { data: seancesData }, { data: feuillesData }] =
-      await Promise.all([
-        requeteEtudiants,
-        supabase.from("formations").select("id, nom"),
-        requeteSeances,
-        supabase
-          .from("road_maps")
-          .select(
-            "id, student_id, session_id, formation_id, matiere_id, date_seance, heure_debut, heure_fin, theorie_donnee, pratiques_exercices, evaluations_notees, notes, created_at"
-          )
-          .eq("instructor_id", user.id)
-          .is("supprime_le", null)
-          .order("date_seance", { ascending: false }),
-      ]);
+    const [
+      { data: etudiantsData },
+      { data: formationsData },
+      { data: seancesData },
+      { data: feuillesData },
+      { data: matieresData },
+      { data: formationMatieresData },
+      { data: profilFormateur },
+    ] = await Promise.all([
+      requeteEtudiants,
+      supabase.from("formations").select("id, nom"),
+      requeteSeances,
+      supabase
+        .from("road_maps")
+        .select(
+          "id, student_id, session_id, formation_id, matiere_id, date_seance, heure_debut, heure_fin, theorie_donnee, pratiques_exercices, evaluations_notees, notes, created_at"
+        )
+        .eq("instructor_id", user.id)
+        .is("supprime_le", null)
+        .order("date_seance", { ascending: false }),
+      supabase.from("matieres").select("id, nom").order("nom", { ascending: true }),
+      supabase.from("formation_matieres").select("formation_id, matiere_id"),
+      supabase.from("profiles").select("matieres, role").eq("id", user.id).single(),
+    ]);
 
     setEtudiants((etudiantsData as Etudiant[]) ?? []);
     setFormations(new Map((formationsData ?? []).map((f) => [f.id, f.nom])));
     setSeances((seancesData as Seance[]) ?? []);
     setFeuilles((feuillesData as FeuilleRoute[]) ?? []);
+
+    const toutesMatieres = (matieresData as Matiere[]) ?? [];
+    setMatieres(toutesMatieres);
+
+    const parFormation = new Map<number, number[]>();
+    (formationMatieresData ?? []).forEach((fm) => {
+      const liste = parFormation.get(fm.formation_id) ?? [];
+      liste.push(fm.matiere_id);
+      parFormation.set(fm.formation_id, liste);
+    });
+    setMatieresParFormation(parFormation);
+
+    // Un admin voit toutes les matières d'une formation ; un formateur ne
+    // voit que celles qu'il enseigne réellement (profiles.matieres, la même
+    // source que le portail formateur utilise déjà pour "Mes matières").
+    if (profilFormateur?.role === "admin") {
+      setMatieresDuFormateur(new Set(toutesMatieres.map((m) => m.id)));
+    } else {
+      const nomsFormateur = new Set<string>(profilFormateur?.matieres ?? []);
+      setMatieresDuFormateur(
+        new Set(toutesMatieres.filter((m) => nomsFormateur.has(m.nom)).map((m) => m.id))
+      );
+    }
+
     setChargement(false);
   }
 
@@ -138,10 +178,22 @@ export default function FeuillesDeRoutePage() {
     [etudiants, etudiantId]
   );
 
-  const seancesDeLaFormation = useMemo(() => {
+  const matieresDisponibles = useMemo(() => {
     if (!etudiantChoisi?.formation_id) return [];
-    return seances.filter((s) => s.formation_id === etudiantChoisi.formation_id);
-  }, [seances, etudiantChoisi]);
+    const idsFormation = matieresParFormation.get(etudiantChoisi.formation_id) ?? [];
+    return matieres.filter(
+      (m) => idsFormation.includes(m.id) && matieresDuFormateur.has(m.id)
+    );
+  }, [etudiantChoisi, matieresParFormation, matieres, matieresDuFormateur]);
+
+  const seancesDeLaMatiere = useMemo(() => {
+    if (!etudiantChoisi?.formation_id || !matiereId) return [];
+    return seances.filter(
+      (s) =>
+        s.formation_id === etudiantChoisi.formation_id &&
+        s.matiere_id === Number(matiereId)
+    );
+  }, [seances, etudiantChoisi, matiereId]);
 
   async function enregistrer() {
     setMessage(null);
@@ -171,7 +223,7 @@ export default function FeuillesDeRoutePage() {
       student_id: etudiantId,
       session_id: seanceChoisie?.id ?? null,
       formation_id: etudiantChoisi?.formation_id ?? seanceChoisie?.formation_id ?? null,
-      matiere_id: seanceChoisie?.matiere_id ?? null,
+      matiere_id: matiereId ? Number(matiereId) : seanceChoisie?.matiere_id ?? null,
       date_seance: dateSeance,
       heure_debut: heureDebut || null,
       heure_fin: heureFin || null,
@@ -189,6 +241,7 @@ export default function FeuillesDeRoutePage() {
     }
 
     setMessage({ type: "succes", texte: "Feuille de route enregistrée." });
+    setMatiereId("");
     setSeanceId("");
     setDateSeance("");
     setHeureDebut("");
@@ -242,6 +295,7 @@ export default function FeuillesDeRoutePage() {
                   value={etudiantId}
                   onChange={(e) => {
                     setEtudiantId(e.target.value);
+                    setMatiereId("");
                     setSeanceId("");
                   }}
                   className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white"
@@ -258,16 +312,40 @@ export default function FeuillesDeRoutePage() {
 
               <div>
                 <label className="block text-sm font-semibold text-green-800 mb-1">
+                  Cours / matière
+                </label>
+                <select
+                  value={matiereId}
+                  onChange={(e) => {
+                    setMatiereId(e.target.value);
+                    setSeanceId("");
+                  }}
+                  disabled={!etudiantChoisi}
+                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
+                >
+                  <option value="">Sélectionnez un cours</option>
+                  {matieresDisponibles.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.nom}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-semibold text-green-800 mb-1">
                   Séance (facultatif)
                 </label>
                 <select
                   value={seanceId}
                   onChange={(e) => setSeanceId(e.target.value)}
-                  disabled={!etudiantChoisi}
+                  disabled={!matiereId}
                   className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
                 >
                   <option value="">— aucune séance liée —</option>
-                  {seancesDeLaFormation.map((s) => (
+                  {seancesDeLaMatiere.map((s) => (
                     <option key={s.id} value={s.id}>
                       Séance {s.numero} — {s.titre}
                     </option>
