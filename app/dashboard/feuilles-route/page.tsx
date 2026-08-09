@@ -5,6 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
+import DossierTabs from "@/components/instructor/DossierTabs";
 
 type FeuilleRoute = {
   id: number;
@@ -76,11 +77,13 @@ export default function AdminFeuillesDeRoutePage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Feuilles de route"
+          title="Dossier de formation"
           subtitle="Consultation en lecture seule — la création et la modification se font par le formateur."
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"
         />
+
+        <DossierTabs admin />
 
         <Card>
           <div className="flex flex-wrap gap-3 mb-5">

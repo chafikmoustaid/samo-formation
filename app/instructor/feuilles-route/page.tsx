@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import DossierTabs from "@/components/instructor/DossierTabs";
 
 type Etudiant = {
   id: string;
@@ -269,11 +270,13 @@ export default function FeuillesDeRoutePage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Feuilles de route"
-          subtitle="Suivi détaillé, séance par séance, pour chaque étudiant."
+          title="Dossier de formation"
+          subtitle="Feuilles de route, page de note, relevé de notes et compte rendu, par étudiant."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"
         />
+
+        <DossierTabs />
 
         <Card className="mb-8">
           <h2 className="text-lg font-semibold text-green-800 mb-1">

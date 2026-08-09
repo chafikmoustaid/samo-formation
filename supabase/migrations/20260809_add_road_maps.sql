@@ -73,3 +73,5 @@ with check (instructor_id = auth.uid());
 
 create policy "road_maps_delete_own" on public.road_maps
 for delete using (instructor_id = auth.uid());
+
+-- (Voir aussi 20260809b_add_grade_pages_transcripts_reports.sql)

@@ -128,7 +128,7 @@ export default function Navbar() {
                 href="/dashboard/feuilles-route"
                 className="text-base font-bold hover:text-white/80 transition-colors"
               >
-                Feuilles de route
+                Dossier de formation
               </Link>
             </>
           )}
@@ -158,7 +158,7 @@ export default function Navbar() {
                 href="/instructor/feuilles-route"
                 className="text-base font-bold hover:text-white/80 transition-colors"
               >
-                Feuilles de route
+                Dossier de formation
               </Link>
             </>
           )}
