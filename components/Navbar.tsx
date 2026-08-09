@@ -112,58 +112,72 @@ export default function Navbar() {
                   Dashboard
                 </Link>
               )}
-              <Link
-                href="/attendance/history"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Fiches de présence
-              </Link>
-              <Link
-                href="/development/history"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Fiches de développement
-              </Link>
-              <Link
-                href="/dashboard/feuilles-route"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Dossier de formation
-              </Link>
+              {pathname !== "/attendance/history" && (
+                <Link
+                  href="/attendance/history"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Fiches de présence
+                </Link>
+              )}
+              {pathname !== "/development/history" && (
+                <Link
+                  href="/development/history"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Fiches de développement
+                </Link>
+              )}
+              {pathname !== "/dashboard/feuilles-route" && (
+                <Link
+                  href="/dashboard/feuilles-route"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Dossier de formation
+                </Link>
+              )}
             </>
           )}
 
           {(role === "instructor" ||
             (role === "admin" && section === "instructor")) && (
             <>
-              <Link
-                href="/instructor"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Portail formateur
-              </Link>
-              <Link
-                href="/instructor/attendance"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Fiches de présence
-              </Link>
-              <Link
-                href="/development"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Fiche de développement
-              </Link>
-              <Link
-                href="/instructor/feuilles-route"
-                className="text-base font-bold hover:text-white/80 transition-colors"
-              >
-                Dossier de formation
-              </Link>
+              {pathname !== "/instructor" && (
+                <Link
+                  href="/instructor"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Portail formateur
+                </Link>
+              )}
+              {pathname !== "/instructor/attendance" && (
+                <Link
+                  href="/instructor/attendance"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Fiches de présence
+                </Link>
+              )}
+              {pathname !== "/development" && (
+                <Link
+                  href="/development"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Fiche de développement
+                </Link>
+              )}
+              {pathname !== "/instructor/feuilles-route" && (
+                <Link
+                  href="/instructor/feuilles-route"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Dossier de formation
+                </Link>
+              )}
             </>
           )}
 
-          {role === "student" && (
+          {role === "student" && pathname !== "/student" && (
             <Link
               href="/student"
               className="text-base font-bold hover:text-white/80 transition-colors"
@@ -172,7 +186,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          {role === "admin" && section === "student" && (
+          {role === "admin" && section === "student" && pathname !== "/student" && (
             <Link
               href="/student"
               className="text-base font-bold hover:text-white/80 transition-colors"
