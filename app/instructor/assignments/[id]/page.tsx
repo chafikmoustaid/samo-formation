@@ -251,7 +251,7 @@ export default function AssignmentCorrectionPage() {
                       const reponse = reponses.get(q.id);
                       return (
                         <div key={q.id} className="border-b border-gray-100 pb-5 last:border-0">
-                          <p className="text-sm text-gray-700 mb-2">{q.enonce}</p>
+                          <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">{q.enonce}</p>
 
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>

@@ -573,7 +573,7 @@ export default function StudentAssignmentDetailPage() {
                                 <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-700 text-white text-xs font-bold">
                                   {index + 1}
                                 </span>
-                                <span>{q.enonce}</span>
+                                <span className="whitespace-pre-wrap">{q.enonce}</span>
                               </p>
                               {zoneReponse(q)}
                             </div>
