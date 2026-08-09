@@ -168,6 +168,9 @@ export default function ReleveDeNotesPage() {
     return ev + ex;
   }, [evalNote, examenNote]);
 
+  const evalDepasse = evalNote !== "" && evalSur !== "" && Number(evalNote) > Number(evalSur);
+  const examenDepasse = examenNote !== "" && examenSur !== "" && Number(examenNote) > Number(examenSur);
+
   function reinitialiser() {
     setIdEnEdition(null);
     setEtudiantId("");
@@ -202,6 +205,13 @@ export default function ReleveDeNotesPage() {
     }
     if (!matiereId) {
       setMessage({ type: "erreur", texte: "Sélectionne le cours." });
+      return;
+    }
+    if (evalDepasse || examenDepasse) {
+      setMessage({
+        type: "erreur",
+        texte: "Une note ne peut pas dépasser le barème (la valeur « Sur »).",
+      });
       return;
     }
     if (!signature) {
@@ -329,49 +339,73 @@ export default function ReleveDeNotesPage() {
             </div>
 
             <div className="grid sm:grid-cols-2 gap-5">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-semibold text-green-800 mb-1">
-                    Évaluations notées
-                  </label>
-                  <input
-                    type="number"
-                    value={evalNote}
-                    onChange={(e) => setEvalNote(e.target.value)}
-                    className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                  />
+              <div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-semibold text-green-800 mb-1">
+                      Évaluations notées
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max={evalSur || undefined}
+                      value={evalNote}
+                      onChange={(e) => setEvalNote(e.target.value)}
+                      className={`w-full border-2 rounded-lg px-3 py-2.5 ${
+                        evalDepasse ? "border-red-400 focus:border-red-500" : "border-green-200 focus:border-green-500"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-green-800 mb-1">Sur</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={evalSur}
+                      onChange={(e) => setEvalSur(e.target.value)}
+                      className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-green-800 mb-1">Sur</label>
-                  <input
-                    type="number"
-                    value={evalSur}
-                    onChange={(e) => setEvalSur(e.target.value)}
-                    className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                  />
-                </div>
+                {evalDepasse && (
+                  <p className="text-xs text-red-600 mt-1">
+                    La note ne peut pas dépasser le barème ({evalSur}).
+                  </p>
+                )}
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-semibold text-green-800 mb-1">
-                    Examen final
-                  </label>
-                  <input
-                    type="number"
-                    value={examenNote}
-                    onChange={(e) => setExamenNote(e.target.value)}
-                    className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                  />
+              <div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-semibold text-green-800 mb-1">
+                      Examen final
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max={examenSur || undefined}
+                      value={examenNote}
+                      onChange={(e) => setExamenNote(e.target.value)}
+                      className={`w-full border-2 rounded-lg px-3 py-2.5 ${
+                        examenDepasse ? "border-red-400 focus:border-red-500" : "border-green-200 focus:border-green-500"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-green-800 mb-1">Sur</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={examenSur}
+                      onChange={(e) => setExamenSur(e.target.value)}
+                      className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-green-800 mb-1">Sur</label>
-                  <input
-                    type="number"
-                    value={examenSur}
-                    onChange={(e) => setExamenSur(e.target.value)}
-                    className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                  />
-                </div>
+                {examenDepasse && (
+                  <p className="text-xs text-red-600 mt-1">
+                    La note ne peut pas dépasser le barème ({examenSur}).
+                  </p>
+                )}
               </div>
             </div>
 
@@ -422,7 +456,7 @@ export default function ReleveDeNotesPage() {
           )}
 
           <div className="mt-6 flex items-center gap-3">
-            <Button onClick={enregistrer} disabled={enregistrement}>
+            <Button onClick={enregistrer} disabled={enregistrement || evalDepasse || examenDepasse}>
               {enregistrement ? "Enregistrement..." : idEnEdition ? "Enregistrer les modifications" : "Enregistrer le relevé de notes"}
             </Button>
             {idEnEdition && (

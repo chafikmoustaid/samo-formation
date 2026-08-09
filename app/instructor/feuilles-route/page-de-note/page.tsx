@@ -190,6 +190,12 @@ export default function PageDeNotePage() {
     return Math.round((tpSur60 + efSur40) * 10) / 10;
   }, [travauxPratiquesTotal, travauxPratiquesSur, examenFinalNote, examenFinalSur]);
 
+  const examenFinalDepasse =
+    examenFinalNote !== "" && examenFinalSur !== "" && Number(examenFinalNote) > Number(examenFinalSur);
+  const lignesDepassent = lignes.some(
+    (l) => l.sur !== "" && l.note !== "" && Number(l.note) > Number(l.sur)
+  );
+
   function reinitialiser() {
     setIdEnEdition(null);
     setEtudiantId("");
@@ -224,6 +230,13 @@ export default function PageDeNotePage() {
     }
     if (!matiereId) {
       setMessage({ type: "erreur", texte: "Sélectionne le cours." });
+      return;
+    }
+    if (examenFinalDepasse || lignesDepassent) {
+      setMessage({
+        type: "erreur",
+        texte: "Une note ne peut pas dépasser le barème (la valeur « Sur »).",
+      });
       return;
     }
 
@@ -414,14 +427,21 @@ export default function PageDeNotePage() {
                       <td className="p-3">
                         <input
                           type="number"
+                          min="0"
+                          max={l.sur || undefined}
                           value={l.note}
                           onChange={(e) => modifierLigne(i, "note", e.target.value)}
-                          className="w-24 border border-gray-300 rounded-lg px-2 py-1.5"
+                          className={`w-24 border rounded-lg px-2 py-1.5 ${
+                            l.sur !== "" && l.note !== "" && Number(l.note) > Number(l.sur)
+                              ? "border-red-400"
+                              : "border-gray-300"
+                          }`}
                         />
                       </td>
                       <td className="p-3">
                         <input
                           type="number"
+                          min="0"
                           value={l.sur}
                           onChange={(e) => modifierLigne(i, "sur", e.target.value)}
                           className="w-24 border border-gray-300 rounded-lg px-2 py-1.5"
@@ -452,29 +472,46 @@ export default function PageDeNotePage() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Examen final — note
-                </label>
-                <input
-                  type="number"
-                  value={examenFinalNote}
-                  onChange={(e) => setExamenFinalNote(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                />
+            <div>
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-green-800 mb-1">
+                    Examen final — note
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max={examenFinalSur || undefined}
+                    value={examenFinalNote}
+                    onChange={(e) => setExamenFinalNote(e.target.value)}
+                    className={`w-full border-2 rounded-lg px-3 py-2.5 ${
+                      examenFinalDepasse ? "border-red-400 focus:border-red-500" : "border-green-200 focus:border-green-500"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-green-800 mb-1">
+                    Examen final — sur
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={examenFinalSur}
+                    onChange={(e) => setExamenFinalSur(e.target.value)}
+                    className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Examen final — sur
-                </label>
-                <input
-                  type="number"
-                  value={examenFinalSur}
-                  onChange={(e) => setExamenFinalSur(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                />
-              </div>
+              {examenFinalDepasse && (
+                <p className="text-xs text-red-600 mt-1">
+                  La note ne peut pas dépasser le barème ({examenFinalSur}).
+                </p>
+              )}
+              {lignesDepassent && (
+                <p className="text-xs text-red-600 mt-1">
+                  Au moins une évaluation de chapitre dépasse son barème — corrige-la avant d&apos;enregistrer.
+                </p>
+              )}
             </div>
 
             <div className="bg-gray-50 border-2 border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between">
@@ -496,7 +533,7 @@ export default function PageDeNotePage() {
           )}
 
           <div className="mt-6 flex items-center gap-3">
-            <Button onClick={enregistrer} disabled={enregistrement}>
+            <Button onClick={enregistrer} disabled={enregistrement || examenFinalDepasse || lignesDepassent}>
               {enregistrement ? "Enregistrement..." : idEnEdition ? "Enregistrer les modifications" : "Enregistrer la page de note"}
             </Button>
             {idEnEdition && (
