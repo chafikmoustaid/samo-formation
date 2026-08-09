@@ -201,6 +201,10 @@ export default function InstructorPage() {
             <ColorLinkButton href="/instructor/progress" color={couleurPalette(6)}>
               Progression (classe)
             </ColorLinkButton>
+
+            <ColorLinkButton href="/instructor/feuilles-route" color={couleurPalette(2)}>
+              Feuilles de route
+            </ColorLinkButton>
           </div>
         </Card>
       </div>

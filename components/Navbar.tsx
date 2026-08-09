@@ -124,6 +124,12 @@ export default function Navbar() {
               >
                 Fiches de développement
               </Link>
+              <Link
+                href="/dashboard/feuilles-route"
+                className="text-base font-bold hover:text-white/80 transition-colors"
+              >
+                Feuilles de route
+              </Link>
             </>
           )}
 
@@ -147,6 +153,12 @@ export default function Navbar() {
                 className="text-base font-bold hover:text-white/80 transition-colors"
               >
                 Fiche de développement
+              </Link>
+              <Link
+                href="/instructor/feuilles-route"
+                className="text-base font-bold hover:text-white/80 transition-colors"
+              >
+                Feuilles de route
               </Link>
             </>
           )}
