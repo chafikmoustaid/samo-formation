@@ -17,6 +17,106 @@ function formatDateHeure(dateIso: string | null): string {
   )}:${pad(d.getMinutes())}`;
 }
 
+// Reconstruit le nom de fichier attendu par l'administration à partir du
+// contenu de la fiche : "Fiche de développement <formateur> <date>", ex.
+// "Fiche de développement Chafik Moustaid 6 juillet 2026" pour une fiche
+// d'une seule journée, ou "Fiche de développement Chafik Moustaid 22 au 26
+// juillet 2026" pour une fiche qui couvre plusieurs journées — même logique
+// de « date de la semaine » (lundi à vendredi) que pour les fiches de
+// présence (voir app/api/pdf/[id]/route.ts), sauf que la fiche de
+// développement peut ne couvrir qu'une seule journée, auquel cas on garde
+// simplement cette date-là plutôt que d'étendre à toute la semaine.
+function partieDate(d: Date, type: "day" | "month" | "year"): string {
+  const parts = new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "UTC",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).formatToParts(d);
+  return parts.find((p) => p.type === type)?.value ?? "";
+}
+
+function dateCalendrierUtc(dateStr: string): Date | null {
+  const [annee, mois, jour] = dateStr.split("-").map(Number);
+  if (!annee || !mois || !jour) return null;
+  return new Date(Date.UTC(annee, mois - 1, jour));
+}
+
+function formaterJour(d: Date): string {
+  return `${partieDate(d, "day")} ${partieDate(d, "month")} ${partieDate(d, "year")}`;
+}
+
+function semaineLundiVendredi(
+  dates: string[]
+): { debut: Date; fin: Date } | null {
+  const premiere = dates.find(Boolean);
+  if (!premiere) return null;
+
+  const reference = dateCalendrierUtc(premiere);
+  if (!reference) return null;
+
+  const jourSemaine = reference.getUTCDay(); // 0 = dimanche … 6 = samedi
+  const decalageLundi = jourSemaine === 0 ? -6 : 1 - jourSemaine;
+
+  const lundi = new Date(reference);
+  lundi.setUTCDate(lundi.getUTCDate() + decalageLundi);
+
+  const vendredi = new Date(lundi);
+  vendredi.setUTCDate(vendredi.getUTCDate() + 4);
+
+  return { debut: lundi, fin: vendredi };
+}
+
+function formaterPeriode(debut: Date, fin: Date): string {
+  const jourD = partieDate(debut, "day");
+  const moisD = partieDate(debut, "month");
+  const anneeD = partieDate(debut, "year");
+  const jourF = partieDate(fin, "day");
+  const moisF = partieDate(fin, "month");
+  const anneeF = partieDate(fin, "year");
+
+  if (anneeD === anneeF && moisD === moisF && jourD === jourF) {
+    return `${jourD} ${moisD} ${anneeD}`;
+  }
+  if (anneeD === anneeF && moisD === moisF) {
+    return `${jourD} au ${jourF} ${moisD} ${anneeD}`;
+  }
+  if (anneeD === anneeF) {
+    return `${jourD} ${moisD} au ${jourF} ${moisF} ${anneeD}`;
+  }
+  return `${jourD} ${moisD} ${anneeD} au ${jourF} ${moisF} ${anneeF}`;
+}
+
+// Retire les caractères invalides dans un nom de fichier (Windows/macOS) et
+// réduit les espaces multiples, sans toucher aux accents.
+function nettoyerNomFichier(nom: string): string {
+  return nom.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function construireNomFichier(
+  fiche: { id: number | string; nom_formateur?: string | null },
+  lignes: LigneDeveloppement[]
+): string {
+  const formateur = String(fiche.nom_formateur ?? "").trim();
+  const dates = lignes.map((l) => l.date).filter((d): d is string => !!d);
+
+  let periode = "";
+  if (dates.length === 1) {
+    const jour = dateCalendrierUtc(dates[0]);
+    if (jour) periode = formaterJour(jour);
+  } else if (dates.length >= 2) {
+    const plage = semaineLundiVendredi(dates);
+    if (plage) periode = formaterPeriode(plage.debut, plage.fin);
+  }
+
+  const dernierSegment = [formateur, periode].filter(Boolean).join(" ");
+  const segments = ["Fiche de développement"];
+  if (dernierSegment) segments.push(dernierSegment);
+
+  const nom = nettoyerNomFichier(segments.join(" "));
+  return nom || `fiche-developpement-${fiche.id}`;
+}
+
 export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> }
@@ -279,10 +379,18 @@ export async function GET(
 
   const buffer = pdf.output("arraybuffer");
 
+  const nomFichier = construireNomFichier(fiche, lignes);
+  // ASCII de repli pour les clients qui ne comprennent pas filename* (RFC
+  // 5987), + version encodée en UTF-8 pour les accents (é, à…) dans les
+  // navigateurs modernes.
+  const nomAscii = nomFichier.replace(/[^\x20-\x7E]/g, "_");
+
   return new NextResponse(buffer, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="fiche-developpement-${id}.pdf"`,
+      "Content-Disposition": `attachment; filename="${nomAscii}.pdf"; filename*=UTF-8''${encodeURIComponent(
+        nomFichier
+      )}.pdf`,
     },
   });
 }

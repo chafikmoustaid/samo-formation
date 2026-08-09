@@ -139,9 +139,32 @@ export default function DevelopmentDetail() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `fiche-developpement-${id}.pdf`;
+    a.download = nomFichierDepuisReponse(response, `fiche-developpement-${id}.pdf`);
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // Lit le nom de fichier choisi côté serveur (Content-Disposition), pour
+  // que le PDF téléchargé porte le même nom que l'en-tête du document —
+  // ex. "Fiche de développement Chafik Moustaid 6 juillet 2026.pdf" —
+  // plutôt qu'un identifiant technique "fiche-developpement-34.pdf" (même
+  // logique que pour les fiches de présence, voir app/attendance/[id]/page.tsx).
+  function nomFichierDepuisReponse(reponse: Response, repli: string): string {
+    const entete = reponse.headers.get("Content-Disposition") ?? "";
+
+    const utf8 = entete.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8) {
+      try {
+        return decodeURIComponent(utf8[1]);
+      } catch {
+        // ignore, on tente le repli ASCII ci-dessous
+      }
+    }
+
+    const ascii = entete.match(/filename="([^"]+)"/i);
+    if (ascii) return ascii[1];
+
+    return repli;
   }
 
   if (loading) {
