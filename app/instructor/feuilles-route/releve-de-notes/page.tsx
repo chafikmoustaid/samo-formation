@@ -15,10 +15,13 @@ type Etudiant = {
   formation_id: number | null;
 };
 
+type Matiere = { id: number; nom: string };
+
 type Releve = {
   id: number;
   student_id: string;
   formation_id: number | null;
+  matiere_id: number | null;
   titre_cours: string | null;
   evaluations_notees_note: number | null;
   evaluations_notees_sur: number;
@@ -36,11 +39,14 @@ export default function ReleveDeNotesPage() {
   const [signatureEnregistree, setSignatureEnregistree] = useState<string | null>(null);
   const [etudiants, setEtudiants] = useState<Etudiant[]>([]);
   const [formations, setFormations] = useState<Map<number, string>>(new Map());
+  const [matieres, setMatieres] = useState<Matiere[]>([]);
+  const [matieresParFormation, setMatieresParFormation] = useState<Map<number, number[]>>(new Map());
+  const [matieresDuFormateur, setMatieresDuFormateur] = useState<Set<number>>(new Set());
   const [releves, setReleves] = useState<Releve[]>([]);
 
   const [idEnEdition, setIdEnEdition] = useState<number | null>(null);
   const [etudiantId, setEtudiantId] = useState("");
-  const [titreCours, setTitreCours] = useState("");
+  const [matiereId, setMatiereId] = useState("");
   const [evalNote, setEvalNote] = useState("");
   const [evalSur, setEvalSur] = useState("60");
   const [examenNote, setExamenNote] = useState("");
@@ -68,7 +74,7 @@ export default function ReleveDeNotesPage() {
 
     const { data: profil } = await supabase
       .from("profiles")
-      .select("role, nom_complet, signature_enregistree")
+      .select("role, nom_complet, signature_enregistree, matieres")
       .eq("id", user.id)
       .single();
     setNomFormateur(profil?.nom_complet ?? "");
@@ -90,24 +96,66 @@ export default function ReleveDeNotesPage() {
       .order("nom_complet", { ascending: true });
     if (formationIds !== null) requeteEtudiants = requeteEtudiants.in("formation_id", formationIds);
 
-    const [{ data: etudiantsData }, { data: formationsData }, { data: relevesData }] = await Promise.all([
+    const [
+      { data: etudiantsData },
+      { data: formationsData },
+      { data: relevesData },
+      { data: matieresData },
+      { data: formationMatieresData },
+    ] = await Promise.all([
       requeteEtudiants,
       supabase.from("formations").select("id, nom"),
       supabase
         .from("grade_transcripts")
         .select(
-          "id, student_id, formation_id, titre_cours, evaluations_notees_note, evaluations_notees_sur, examen_final_note, examen_final_sur, total, signature_formateur, date_signature"
+          "id, student_id, formation_id, matiere_id, titre_cours, evaluations_notees_note, evaluations_notees_sur, examen_final_note, examen_final_sur, total, signature_formateur, date_signature"
         )
         .eq("instructor_id", user.id)
         .is("supprime_le", null)
         .order("date_signature", { ascending: false }),
+      supabase.from("matieres").select("id, nom").order("nom", { ascending: true }),
+      supabase.from("formation_matieres").select("formation_id, matiere_id"),
     ]);
 
     setEtudiants((etudiantsData as Etudiant[]) ?? []);
     setFormations(new Map((formationsData ?? []).map((f) => [f.id, f.nom])));
     setReleves((relevesData as Releve[]) ?? []);
+
+    const toutesMatieres = (matieresData as Matiere[]) ?? [];
+    setMatieres(toutesMatieres);
+
+    const parFormation = new Map<number, number[]>();
+    (formationMatieresData ?? []).forEach((fm) => {
+      const liste = parFormation.get(fm.formation_id) ?? [];
+      liste.push(fm.matiere_id);
+      parFormation.set(fm.formation_id, liste);
+    });
+    setMatieresParFormation(parFormation);
+
+    if (profil?.role === "admin") {
+      setMatieresDuFormateur(new Set(toutesMatieres.map((m) => m.id)));
+    } else {
+      const nomsFormateur = new Set<string>(profil?.matieres ?? []);
+      setMatieresDuFormateur(
+        new Set(toutesMatieres.filter((m) => nomsFormateur.has(m.nom)).map((m) => m.id))
+      );
+    }
+
     setChargement(false);
   }
+
+  const etudiantChoisi = useMemo(
+    () => etudiants.find((e) => e.id === etudiantId) ?? null,
+    [etudiants, etudiantId]
+  );
+
+  const matieresDisponibles = useMemo(() => {
+    if (!etudiantChoisi?.formation_id) return [];
+    const idsFormation = matieresParFormation.get(etudiantChoisi.formation_id) ?? [];
+    return matieres.filter(
+      (m) => idsFormation.includes(m.id) && matieresDuFormateur.has(m.id)
+    );
+  }, [etudiantChoisi, matieresParFormation, matieres, matieresDuFormateur]);
 
   async function memoriserSignature(sig: string) {
     await supabase.rpc("update_own_signature", { nouvelle_signature: sig });
@@ -123,7 +171,7 @@ export default function ReleveDeNotesPage() {
   function reinitialiser() {
     setIdEnEdition(null);
     setEtudiantId("");
-    setTitreCours("");
+    setMatiereId("");
     setEvalNote("");
     setEvalSur("60");
     setExamenNote("");
@@ -135,7 +183,7 @@ export default function ReleveDeNotesPage() {
   function chargerPourEdition(r: Releve) {
     setIdEnEdition(r.id);
     setEtudiantId(r.student_id);
-    setTitreCours(r.titre_cours ?? "");
+    setMatiereId(r.matiere_id ? String(r.matiere_id) : "");
     setEvalNote(r.evaluations_notees_note != null ? String(r.evaluations_notees_note) : "");
     setEvalSur(String(r.evaluations_notees_sur ?? 60));
     setExamenNote(r.examen_final_note != null ? String(r.examen_final_note) : "");
@@ -152,8 +200,8 @@ export default function ReleveDeNotesPage() {
       setMessage({ type: "erreur", texte: "Sélectionne un étudiant." });
       return;
     }
-    if (!titreCours.trim()) {
-      setMessage({ type: "erreur", texte: "Le titre du cours est obligatoire." });
+    if (!matiereId) {
+      setMessage({ type: "erreur", texte: "Sélectionne le cours." });
       return;
     }
     if (!signature) {
@@ -162,13 +210,15 @@ export default function ReleveDeNotesPage() {
     }
 
     const etudiant = etudiants.find((e) => e.id === etudiantId);
+    const matiere = matieres.find((m) => m.id === Number(matiereId));
     setEnregistrement(true);
 
     const payload = {
       instructor_id: instructorId,
       student_id: etudiantId,
       formation_id: etudiant?.formation_id ?? null,
-      titre_cours: titreCours,
+      matiere_id: matiereId ? Number(matiereId) : null,
+      titre_cours: matiere?.nom ?? null,
       evaluations_notees_note: evalNote ? Number(evalNote) : null,
       evaluations_notees_sur: evalSur ? Number(evalSur) : 60,
       examen_final_note: examenNote ? Number(examenNote) : null,
@@ -237,7 +287,10 @@ export default function ReleveDeNotesPage() {
               </label>
               <select
                 value={etudiantId}
-                onChange={(e) => setEtudiantId(e.target.value)}
+                onChange={(e) => {
+                  setEtudiantId(e.target.value);
+                  setMatiereId("");
+                }}
                 className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white"
               >
                 <option value="">Sélectionnez un étudiant</option>
@@ -253,12 +306,26 @@ export default function ReleveDeNotesPage() {
               <label className="block text-sm font-semibold text-green-800 mb-1">
                 Titre du cours <span className="text-red-600">*</span>
               </label>
-              <input
-                type="text"
-                value={titreCours}
-                onChange={(e) => setTitreCours(e.target.value)}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-              />
+              <select
+                value={matiereId}
+                onChange={(e) => setMatiereId(e.target.value)}
+                disabled={!etudiantChoisi}
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
+              >
+                <option value="">
+                  {etudiantChoisi ? "Sélectionnez le cours" : "Choisissez d'abord un étudiant"}
+                </option>
+                {matieresDisponibles.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nom}
+                  </option>
+                ))}
+              </select>
+              {etudiantChoisi && matieresDisponibles.length === 0 && (
+                <p className="text-xs text-amber-700 mt-1">
+                  Aucun cours de la formation de cet étudiant ne vous est assigné.
+                </p>
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 gap-5">
