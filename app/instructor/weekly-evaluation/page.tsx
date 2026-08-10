@@ -363,7 +363,7 @@ export default function EvaluationHebdomadairePage() {
         <DossierTabs />
 
         <Card className="mb-8">
-          <h2 className="text-lg font-semibold text-green-800 mb-1">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
             {idEnEdition ? "Modifier l'évaluation" : "Nouvelle évaluation"}
           </h2>
           <p className="text-sm text-gray-500 mb-5">
@@ -372,13 +372,13 @@ export default function EvaluationHebdomadairePage() {
           </p>
 
           <div className="space-y-5">
-            <h3 className="text-sm font-bold text-green-800 uppercase tracking-wide">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide">
               Identification
             </h3>
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Étudiant(e) <span className="text-red-600">*</span>
                 </label>
                 <select
@@ -387,7 +387,7 @@ export default function EvaluationHebdomadairePage() {
                     setEtudiantId(e.target.value);
                     setMatiereId("");
                   }}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white"
+                  className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5 bg-white"
                 >
                   <option value="">Sélectionnez un étudiant</option>
                   {etudiants.map((e) => (
@@ -400,14 +400,14 @@ export default function EvaluationHebdomadairePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Cours / matière <span className="text-red-600">*</span>
                 </label>
                 <select
                   value={matiereId}
                   onChange={(e) => setMatiereId(e.target.value)}
                   disabled={!etudiantChoisi}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
+                  className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
                 >
                   <option value="">Sélectionnez un cours</option>
                   {matieresDisponibles.map((m) => (
@@ -421,46 +421,46 @@ export default function EvaluationHebdomadairePage() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Date <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="date"
                   value={dateEvaluation}
                   onChange={(e) => setDateEvaluation(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                  className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">Séance</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Séance</label>
                 <input
                   type="text"
                   value={seance}
                   onChange={(e) => setSeance(e.target.value)}
                   placeholder="Exemple : 6 sur 25"
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                  className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
                 />
               </div>
             </div>
 
-            <h3 className="text-sm font-bold text-green-800 uppercase tracking-wide pt-2">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide pt-2">
               Évaluation et commentaires
             </h3>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que votre étudiant a eu des absences ? Si oui, nommez les raisons.
               </label>
               <textarea
                 value={absences}
                 onChange={(e) => setAbsences(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que l&apos;étudiant a eu des retards ou a dû quitter plus tôt ? Si oui,
                 nommez les raisons.
               </label>
@@ -468,24 +468,24 @@ export default function EvaluationHebdomadairePage() {
                 value={retards}
                 onChange={(e) => setRetards(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que votre étudiant a démontré une bonne attitude face à la formation ?
               </label>
               <textarea
                 value={bonneAttitude}
                 onChange={(e) => setBonneAttitude(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que votre étudiant semble vivre une situation difficile personnelle ou
                 avoir un problème de santé ?
               </label>
@@ -493,24 +493,24 @@ export default function EvaluationHebdomadairePage() {
                 value={situationDifficile}
                 onChange={(e) => setSituationDifficile(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Votre étudiant fait-il des remarques par rapport au matériel scolaire ?
               </label>
               <textarea
                 value={remarquesMateriel}
                 onChange={(e) => setRemarquesMateriel(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que votre étudiant rencontre des difficultés académiques ou
                 d&apos;organisation ?
               </label>
@@ -518,12 +518,12 @@ export default function EvaluationHebdomadairePage() {
                 value={difficultesAcademiques}
                 onChange={(e) => setDifficultesAcademiques(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Est-ce que votre étudiant est actuellement en voie de réussite ? Veuillez le
                 situer dans le barème de performance suivant : <span className="text-red-600">*</span>
               </label>
@@ -543,19 +543,19 @@ export default function EvaluationHebdomadairePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Est-ce que le rythme de l&apos;étudiant suit l&apos;échéancier de la formation ?
               </label>
               <textarea
                 value={rythmeEcheancier}
                 onChange={(e) => setRythmeEcheancier(e.target.value)}
                 rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
+                className="w-full border border-gray-300 focus:border-green-600 rounded-lg px-3 py-2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-green-800 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Aimeriez-vous discuter d&apos;une situation particulière avec la direction ?{" "}
                 <span className="text-red-600">*</span>
               </label>
@@ -617,7 +617,7 @@ export default function EvaluationHebdomadairePage() {
         </Card>
 
         <Card>
-          <h2 className="text-lg font-semibold text-green-800 mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Mes évaluations hebdomadaires ({evaluations.length})
           </h2>
 
