@@ -58,6 +58,7 @@ export default function FeuilleDeRouteDetailPage() {
     null
   );
   const [proprietaire, setProprietaire] = useState(false);
+  const [pliageGlobal, setPliageGlobal] = useState<"ouvert" | "ferme" | null>(null);
 
   useEffect(() => {
     if (id) charger();
@@ -178,6 +179,7 @@ export default function FeuilleDeRouteDetailPage() {
 
   function toutDeplierOuReplier(ouvrir: boolean) {
     setEntrees((prev) => prev.map((e) => ({ ...e, ouverte: ouvrir })));
+    setPliageGlobal(ouvrir ? "ouvert" : "ferme");
   }
 
   async function retirerEntree(entree: Entree) {
@@ -398,16 +400,25 @@ export default function FeuilleDeRouteDetailPage() {
               <p className="text-sm text-gray-500">
                 {entrees.length} séance{entrees.length > 1 ? "s" : ""}
               </p>
-              <div className="flex gap-4">
+              <div className="relative inline-flex w-56 items-center rounded-full bg-gray-100 p-1 text-sm font-medium select-none">
+                <span
+                  className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-full bg-green-700 shadow-sm transition-transform duration-300 ease-out ${
+                    pliageGlobal === "ferme" ? "translate-x-full" : "translate-x-0"
+                  }`}
+                />
                 <button
                   onClick={() => toutDeplierOuReplier(true)}
-                  className="text-sm text-green-700 hover:text-green-900 font-medium"
+                  className={`relative z-10 flex-1 rounded-full py-1.5 text-center transition-colors ${
+                    pliageGlobal === "ferme" ? "text-gray-600" : "text-white"
+                  }`}
                 >
                   Tout déplier
                 </button>
                 <button
                   onClick={() => toutDeplierOuReplier(false)}
-                  className="text-sm text-green-700 hover:text-green-900 font-medium"
+                  className={`relative z-10 flex-1 rounded-full py-1.5 text-center transition-colors ${
+                    pliageGlobal === "ferme" ? "text-white" : "text-gray-600"
+                  }`}
                 >
                   Tout replier
                 </button>
