@@ -17,14 +17,14 @@ type Seance = {
 // (extraite de son PowerPoint) — évite que toute la grille reste dans un
 // seul ton pâle en attendant que chaque support ait sa couleur dédiée.
 const PALETTE_SEANCES = [
-  "#2563eb", // bleu
-  "#7c3aed", // violet
-  "#0d9488", // sarcelle
-  "#4f46e5", // indigo
-  "#db2777", // rose
-  "#ea580c", // orange
-  "#0891b2", // cyan
-  "#65a30d", // vert olive
+  "#1E3A5F", // marine profond
+  "#2C5F8A", // bleu acier
+  "#3F5B66", // bleu-gris ardoise
+  "#205072", // bleu pétrole
+  "#2F5D50", // vert forêt sombre
+  "#4B5563", // gris anthracite
+  "#374151", // gris gunmetal
+  "#5B6B79", // gris bleuté
 ];
 
 // Couleur de fond pleine (hex) d'une carte de séance : rouge soutenu pour un
@@ -197,13 +197,13 @@ export default function InstructorMatiereSeancesPage() {
                           key={s.id}
                           href={`/instructor/matieres/${matiereId}/seances/${s.id}`}
                           style={{ backgroundColor: couleur }}
-                          className="flex flex-col min-h-[100px] rounded-xl px-3.5 py-3 text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                          className="flex flex-col min-h-[100px] rounded-lg px-3.5 py-3 text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                         >
-                          <span className="text-base font-extrabold mb-1">
-                            S{s.numero}
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-white/80 mb-1.5">
+                            Séance {s.numero}
                           </span>
 
-                          <p className="text-base font-bold leading-snug line-clamp-3 text-white">
+                          <p className="text-sm font-medium leading-snug line-clamp-3 text-white">
                             {s.titre}
                           </p>
                         </Link>
