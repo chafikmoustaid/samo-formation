@@ -11,14 +11,19 @@ type FeuilleRoute = {
   id: number;
   instructor_id: string;
   student_id: string;
+  matiere_id: number;
   formation_id: number | null;
-  date_seance: string;
+  updated_at: string;
+  nb_seances?: number;
 };
+
+type Matiere = { id: number; nom: string };
 
 export default function AdminFeuillesDeRoutePage() {
   const [feuilles, setFeuilles] = useState<FeuilleRoute[]>([]);
   const [profils, setProfils] = useState<Map<string, string>>(new Map());
   const [formations, setFormations] = useState<Map<number, string>>(new Map());
+  const [matieres, setMatieres] = useState<Map<number, string>>(new Map());
   const [chargement, setChargement] = useState(true);
 
   const [filtreEtudiant, setFiltreEtudiant] = useState("");
@@ -32,24 +37,41 @@ export default function AdminFeuillesDeRoutePage() {
   async function charger() {
     setChargement(true);
 
-    const [{ data: feuillesData }, { data: profilsData }, { data: formationsData }] =
-      await Promise.all([
-        supabase
-          .from("road_maps")
-          .select("id, instructor_id, student_id, formation_id, date_seance")
-          .is("supprime_le", null)
-          .order("date_seance", { ascending: false }),
-        supabase.from("profiles").select("id, nom_complet, email"),
-        supabase.from("formations").select("id, nom"),
-      ]);
+    const [
+      { data: feuillesData },
+      { data: profilsData },
+      { data: formationsData },
+      { data: matieresData },
+      { data: entreesData },
+    ] = await Promise.all([
+      supabase
+        .from("road_maps")
+        .select("id, instructor_id, student_id, matiere_id, formation_id, updated_at")
+        .order("updated_at", { ascending: false }),
+      supabase.from("profiles").select("id, nom_complet, email"),
+      supabase.from("formations").select("id, nom"),
+      supabase.from("matieres").select("id, nom"),
+      supabase.from("road_map_entries").select("road_map_id"),
+    ]);
 
-    setFeuilles((feuillesData as FeuilleRoute[]) ?? []);
+    const comptes = new Map<number, number>();
+    (entreesData ?? []).forEach((e) => {
+      comptes.set(e.road_map_id, (comptes.get(e.road_map_id) ?? 0) + 1);
+    });
+
+    setFeuilles(
+      ((feuillesData as FeuilleRoute[]) ?? []).map((f) => ({
+        ...f,
+        nb_seances: comptes.get(f.id) ?? 0,
+      }))
+    );
     setProfils(
       new Map(
         (profilsData ?? []).map((p) => [p.id as string, (p.nom_complet as string) ?? (p.email as string)])
       )
     );
     setFormations(new Map((formationsData ?? []).map((f) => [f.id, f.nom])));
+    setMatieres(new Map((matieresData as Matiere[] ?? []).map((m) => [m.id, m.nom])));
     setChargement(false);
   }
 
@@ -143,10 +165,12 @@ export default function AdminFeuillesDeRoutePage() {
                 >
                   <div>
                     <p className="font-medium text-gray-900">
-                      {profils.get(f.student_id) ?? "Étudiant"}
+                      {profils.get(f.student_id) ?? "Étudiant"} —{" "}
+                      {matieres.get(f.matiere_id) ?? "Matière"}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {f.date_seance} — formateur : {profils.get(f.instructor_id) ?? "—"}
+                      {f.nb_seances ?? 0} séance{(f.nb_seances ?? 0) > 1 ? "s" : ""} — formateur :{" "}
+                      {profils.get(f.instructor_id) ?? "—"}
                       {f.formation_id ? ` — ${formations.get(f.formation_id) ?? ""}` : ""}
                     </p>
                   </div>

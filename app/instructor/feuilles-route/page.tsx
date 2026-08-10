@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
@@ -15,37 +16,23 @@ type Etudiant = {
   formation_id: number | null;
 };
 
-type Seance = {
-  id: number;
-  numero: number;
-  titre: string;
-  formation_id: number;
-  matiere_id: number | null;
-};
-
 type Matiere = { id: number; nom: string };
 
 type FeuilleRoute = {
   id: number;
   student_id: string;
-  session_id: number | null;
+  matiere_id: number;
   formation_id: number | null;
-  matiere_id: number | null;
-  date_seance: string;
-  heure_debut: string | null;
-  heure_fin: string | null;
-  theorie_donnee: string | null;
-  pratiques_exercices: string | null;
-  evaluations_notees: string | null;
-  notes: string | null;
-  created_at: string;
+  instructor_id: string;
+  updated_at: string;
+  nb_seances?: number;
 };
 
 export default function FeuillesDeRoutePage() {
+  const router = useRouter();
   const [chargement, setChargement] = useState(true);
   const [etudiants, setEtudiants] = useState<Etudiant[]>([]);
   const [formations, setFormations] = useState<Map<number, string>>(new Map());
-  const [seances, setSeances] = useState<Seance[]>([]);
   const [matieres, setMatieres] = useState<Matiere[]>([]);
   const [matieresParFormation, setMatieresParFormation] = useState<Map<number, number[]>>(new Map());
   const [matieresDuFormateur, setMatieresDuFormateur] = useState<Set<number>>(new Set());
@@ -55,15 +42,7 @@ export default function FeuillesDeRoutePage() {
   // Formulaire de création
   const [etudiantId, setEtudiantId] = useState("");
   const [matiereId, setMatiereId] = useState("");
-  const [seanceId, setSeanceId] = useState("");
-  const [dateSeance, setDateSeance] = useState("");
-  const [heureDebut, setHeureDebut] = useState("");
-  const [heureFin, setHeureFin] = useState("");
-  const [theorieDonnee, setTheorieDonnee] = useState("");
-  const [pratiques, setPratiques] = useState("");
-  const [evaluations, setEvaluations] = useState("");
-  const [notes, setNotes] = useState("");
-  const [enregistrement, setEnregistrement] = useState(false);
+  const [creation, setCreation] = useState(false);
   const [message, setMessage] = useState<{ texte: string; type: "succes" | "erreur" } | null>(null);
 
   // Filtre de la liste
@@ -110,43 +89,40 @@ export default function FeuillesDeRoutePage() {
       requeteEtudiants = requeteEtudiants.in("formation_id", formationIds);
     }
 
-    let requeteSeances = supabase
-      .from("sessions")
-      .select("id, numero, titre, formation_id, matiere_id")
-      .order("numero", { ascending: true });
-    if (formationIds !== null) {
-      requeteSeances = requeteSeances.in("formation_id", formationIds);
-    }
-
     const [
       { data: etudiantsData },
       { data: formationsData },
-      { data: seancesData },
       { data: feuillesData },
       { data: matieresData },
       { data: formationMatieresData },
       { data: profilFormateur },
+      { data: entreesData },
     ] = await Promise.all([
       requeteEtudiants,
       supabase.from("formations").select("id, nom"),
-      requeteSeances,
       supabase
         .from("road_maps")
-        .select(
-          "id, student_id, session_id, formation_id, matiere_id, date_seance, heure_debut, heure_fin, theorie_donnee, pratiques_exercices, evaluations_notees, notes, created_at"
-        )
+        .select("id, student_id, matiere_id, formation_id, instructor_id, updated_at")
         .eq("instructor_id", user.id)
-        .is("supprime_le", null)
-        .order("date_seance", { ascending: false }),
+        .order("updated_at", { ascending: false }),
       supabase.from("matieres").select("id, nom").order("nom", { ascending: true }),
       supabase.from("formation_matieres").select("formation_id, matiere_id"),
       supabase.from("profiles").select("matieres, role").eq("id", user.id).single(),
+      supabase.from("road_map_entries").select("road_map_id"),
     ]);
 
     setEtudiants((etudiantsData as Etudiant[]) ?? []);
     setFormations(new Map((formationsData ?? []).map((f) => [f.id, f.nom])));
-    setSeances((seancesData as Seance[]) ?? []);
-    setFeuilles((feuillesData as FeuilleRoute[]) ?? []);
+
+    const comptes = new Map<number, number>();
+    (entreesData ?? []).forEach((e) => {
+      comptes.set(e.road_map_id, (comptes.get(e.road_map_id) ?? 0) + 1);
+    });
+    const feuillesAvecComptes = ((feuillesData as FeuilleRoute[]) ?? []).map((f) => ({
+      ...f,
+      nb_seances: comptes.get(f.id) ?? 0,
+    }));
+    setFeuilles(feuillesAvecComptes);
 
     const toutesMatieres = (matieresData as Matiere[]) ?? [];
     setMatieres(toutesMatieres);
@@ -187,71 +163,48 @@ export default function FeuillesDeRoutePage() {
     );
   }, [etudiantChoisi, matieresParFormation, matieres, matieresDuFormateur]);
 
-  const seancesDeLaMatiere = useMemo(() => {
-    if (!etudiantChoisi?.formation_id || !matiereId) return [];
-    return seances.filter(
-      (s) =>
-        s.formation_id === etudiantChoisi.formation_id &&
-        s.matiere_id === Number(matiereId)
-    );
-  }, [seances, etudiantChoisi, matiereId]);
-
-  async function enregistrer() {
+  async function ouvrirOuCreer() {
     setMessage(null);
 
     if (!etudiantId) {
       setMessage({ type: "erreur", texte: "Sélectionne un étudiant." });
       return;
     }
-    if (!dateSeance) {
-      setMessage({ type: "erreur", texte: "La date de la séance est obligatoire." });
-      return;
-    }
-    if (!theorieDonnee.trim()) {
-      setMessage({
-        type: "erreur",
-        texte: "Précise la théorie donnée durant cette séance.",
-      });
+    if (!matiereId) {
+      setMessage({ type: "erreur", texte: "Sélectionne un cours / matière." });
       return;
     }
 
-    setEnregistrement(true);
+    // Si la feuille existe déjà pour cet étudiant + cette matière, on l'ouvre directement.
+    const existante = feuilles.find(
+      (f) => f.student_id === etudiantId && f.matiere_id === Number(matiereId)
+    );
+    if (existante) {
+      router.push(`/instructor/feuilles-route/${existante.id}`);
+      return;
+    }
 
-    const seanceChoisie = seances.find((s) => s.id === Number(seanceId));
+    setCreation(true);
 
-    const { error } = await supabase.from("road_maps").insert({
-      instructor_id: instructorId,
-      student_id: etudiantId,
-      session_id: seanceChoisie?.id ?? null,
-      formation_id: etudiantChoisi?.formation_id ?? seanceChoisie?.formation_id ?? null,
-      matiere_id: matiereId ? Number(matiereId) : seanceChoisie?.matiere_id ?? null,
-      date_seance: dateSeance,
-      heure_debut: heureDebut || null,
-      heure_fin: heureFin || null,
-      theorie_donnee: theorieDonnee,
-      pratiques_exercices: pratiques || null,
-      evaluations_notees: evaluations || null,
-      notes: notes || null,
-    });
+    const { data, error } = await supabase
+      .from("road_maps")
+      .insert({
+        instructor_id: instructorId,
+        student_id: etudiantId,
+        matiere_id: Number(matiereId),
+        formation_id: etudiantChoisi?.formation_id ?? null,
+      })
+      .select("id")
+      .single();
 
-    setEnregistrement(false);
+    setCreation(false);
 
     if (error) {
       setMessage({ type: "erreur", texte: error.message });
       return;
     }
 
-    setMessage({ type: "succes", texte: "Feuille de route enregistrée." });
-    setMatiereId("");
-    setSeanceId("");
-    setDateSeance("");
-    setHeureDebut("");
-    setHeureFin("");
-    setTheorieDonnee("");
-    setPratiques("");
-    setEvaluations("");
-    setNotes("");
-    charger();
+    router.push(`/instructor/feuilles-route/${data.id}`);
   }
 
   const feuillesFiltrees = feuilles.filter((f) =>
@@ -260,6 +213,10 @@ export default function FeuillesDeRoutePage() {
 
   function nomEtudiant(id: string) {
     return etudiants.find((e) => e.id === id)?.nom_complet ?? "Étudiant";
+  }
+
+  function nomMatiere(id: number) {
+    return matieres.find((m) => m.id === id)?.nom ?? "Matière";
   }
 
   if (chargement) {
@@ -280,166 +237,55 @@ export default function FeuillesDeRoutePage() {
 
         <Card className="mb-8">
           <h2 className="text-lg font-semibold text-green-800 mb-1">
-            Nouvelle feuille de route
+            Ouvrir ou créer une feuille de route
           </h2>
           <p className="text-sm text-gray-500 mb-5">
-            À remplir pour chaque séance, avec l&apos;étudiant. Ces feuilles ne
-            sont jamais visibles par l&apos;étudiant — seulement par vous et
+            Une feuille de route par étudiant et par matière. Une fois ouverte,
+            tu pourras y ajouter une entrée par séance complétée. Ces feuilles
+            ne sont jamais visibles par l&apos;étudiant — seulement par vous et
             par l&apos;administration (en lecture seule).
           </p>
 
-          <div className="space-y-5">
-            <div className="grid sm:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Étudiant(e) <span className="text-red-600">*</span>
-                </label>
-                <select
-                  value={etudiantId}
-                  onChange={(e) => {
-                    setEtudiantId(e.target.value);
-                    setMatiereId("");
-                    setSeanceId("");
-                  }}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white"
-                >
-                  <option value="">Sélectionnez un étudiant</option>
-                  {etudiants.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.nom_complet ?? e.email}
-                      {e.formation_id ? ` — ${formations.get(e.formation_id) ?? ""}` : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Cours / matière
-                </label>
-                <select
-                  value={matiereId}
-                  onChange={(e) => {
-                    setMatiereId(e.target.value);
-                    setSeanceId("");
-                  }}
-                  disabled={!etudiantChoisi}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
-                >
-                  <option value="">Sélectionnez un cours</option>
-                  {matieresDisponibles.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.nom}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Séance (facultatif)
-                </label>
-                <select
-                  value={seanceId}
-                  onChange={(e) => setSeanceId(e.target.value)}
-                  disabled={!matiereId}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
-                >
-                  <option value="">— aucune séance liée —</option>
-                  {seancesDeLaMatiere.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      Séance {s.numero} — {s.titre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-3 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Date <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={dateSeance}
-                  onChange={(e) => setDateSeance(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Heure de début
-                </label>
-                <input
-                  type="time"
-                  value={heureDebut}
-                  onChange={(e) => setHeureDebut(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-green-800 mb-1">
-                  Heure de fin
-                </label>
-                <input
-                  type="time"
-                  value={heureFin}
-                  onChange={(e) => setHeureFin(e.target.value)}
-                  className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-                />
-              </div>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-semibold text-green-800 mb-1">
+                Étudiant(e) <span className="text-red-600">*</span>
+              </label>
+              <select
+                value={etudiantId}
+                onChange={(e) => {
+                  setEtudiantId(e.target.value);
+                  setMatiereId("");
+                }}
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white"
+              >
+                <option value="">Sélectionnez un étudiant</option>
+                {etudiants.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.nom_complet ?? e.email}
+                    {e.formation_id ? ` — ${formations.get(e.formation_id) ?? ""}` : ""}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-green-800 mb-1">
-                Théorie donnée <span className="text-red-600">*</span>
+                Cours / matière <span className="text-red-600">*</span>
               </label>
-              <textarea
-                value={theorieDonnee}
-                onChange={(e) => setTheorieDonnee(e.target.value)}
-                rows={3}
-                placeholder="Ex. : Chapitre 2 — création de dossier, enregistrement, notions de base"
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
-                Pratiques / exercices (non notés)
-              </label>
-              <textarea
-                value={pratiques}
-                onChange={(e) => setPratiques(e.target.value)}
-                rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
-                Évaluations notées
-              </label>
-              <textarea
-                value={evaluations}
-                onChange={(e) => setEvaluations(e.target.value)}
-                rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-green-800 mb-1">
-                Remarques (facultatif)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={2}
-                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5"
-              />
+              <select
+                value={matiereId}
+                onChange={(e) => setMatiereId(e.target.value)}
+                disabled={!etudiantChoisi}
+                className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 bg-white disabled:bg-gray-100"
+              >
+                <option value="">Sélectionnez un cours</option>
+                {matieresDisponibles.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nom}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -456,8 +302,8 @@ export default function FeuillesDeRoutePage() {
           )}
 
           <div className="mt-6">
-            <Button onClick={enregistrer} disabled={enregistrement}>
-              {enregistrement ? "Enregistrement..." : "Enregistrer la feuille de route"}
+            <Button onClick={ouvrirOuCreer} disabled={creation}>
+              {creation ? "Ouverture..." : "Ouvrir la feuille de route"}
             </Button>
           </div>
         </Card>
@@ -492,9 +338,12 @@ export default function FeuillesDeRoutePage() {
                   className="flex items-center justify-between py-3 hover:bg-gray-50 -mx-2 px-2 rounded-lg transition-colors"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{nomEtudiant(f.student_id)}</p>
+                    <p className="font-medium text-gray-900">
+                      {nomEtudiant(f.student_id)} — {nomMatiere(f.matiere_id)}
+                    </p>
                     <p className="text-sm text-gray-500">
-                      {f.date_seance}
+                      {f.nb_seances ?? 0} séance{(f.nb_seances ?? 0) > 1 ? "s" : ""} enregistrée
+                      {(f.nb_seances ?? 0) > 1 ? "s" : ""}
                       {f.formation_id ? ` — ${formations.get(f.formation_id) ?? ""}` : ""}
                     </p>
                   </div>
