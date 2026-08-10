@@ -235,25 +235,6 @@ export default function FeuillesDeRoutePage() {
 
         <DossierTabs />
 
-        <Card className="mb-6 border-2 border-red-200 bg-red-50">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <h3 className="text-sm font-bold text-red-700">
-                Formulaire d&apos;évaluation hebdomadaire de l&apos;étudiant
-              </h3>
-              <p className="text-xs text-red-600 mt-0.5">
-                À compléter tous les vendredis, un formulaire distinct par étudiant.
-              </p>
-            </div>
-            <Link
-              href="/instructor/weekly-evaluation"
-              className="shrink-0 inline-block bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg"
-            >
-              Ouvrir le formulaire →
-            </Link>
-          </div>
-        </Card>
-
         <Card className="mb-8">
           <h2 className="text-lg font-semibold text-green-800 mb-1">
             Ouvrir ou créer une feuille de route
