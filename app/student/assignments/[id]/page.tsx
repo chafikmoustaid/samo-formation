@@ -8,7 +8,13 @@ import Button from "@/components/ui/Button";
 import SeanceNav from "@/components/student/SeanceNav";
 import { ACCEPT_TP_INPUT, extensionAutorisee } from "@/lib/fichiersTp";
 
-type Question = { id: number; ordre: number; enonce: string; groupe: string | null };
+type Question = {
+  id: number;
+  ordre: number;
+  enonce: string;
+  groupe: string | null;
+  images: string[] | null;
+};
 type ReponseExistante = {
   question_id: number;
   reponse_texte: string | null;
@@ -574,6 +580,18 @@ export default function StudentAssignmentDetailPage() {
                                   {index + 1}
                                 </span>
                                 <span className="whitespace-pre-wrap">{q.enonce}</span>
+                                {(q.images ?? []).length > 0 && (
+                                  <span className="block mt-2">
+                                    {(q.images ?? []).map((img) => (
+                                      <img
+                                        key={img}
+                                        src={img}
+                                        alt=""
+                                        className="max-w-full rounded border my-2"
+                                      />
+                                    ))}
+                                  </span>
+                                )}
                               </p>
                               {zoneReponse(q)}
                             </div>

@@ -22,6 +22,7 @@ type Question = {
   enonce: string;
   groupe: string | null;
   reponse_attendue: string | null;
+  images: string[] | null;
 };
 
 type Reponse = {
@@ -103,7 +104,7 @@ export default function AssignmentCorrectionPage() {
         await Promise.all([
           supabase
             .from("assignment_questions")
-            .select("id, ordre, enonce, groupe, reponse_attendue")
+            .select("id, ordre, enonce, groupe, reponse_attendue, images")
             .eq("assignment_id", tp.id)
             .order("ordre"),
           supabase
@@ -252,6 +253,18 @@ export default function AssignmentCorrectionPage() {
                       return (
                         <div key={q.id} className="border-b border-gray-100 pb-5 last:border-0">
                           <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">{q.enonce}</p>
+                          {(q.images ?? []).length > 0 && (
+                            <div className="mb-2">
+                              {(q.images ?? []).map((img) => (
+                                <img
+                                  key={img}
+                                  src={img}
+                                  alt=""
+                                  className="max-w-full rounded border my-2"
+                                />
+                              ))}
+                            </div>
+                          )}
 
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>
