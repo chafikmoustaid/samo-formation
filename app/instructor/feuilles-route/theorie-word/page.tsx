@@ -10,7 +10,7 @@ export default function TheorieWordPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Théorie Word — référence des chapitres, à utiliser pour remplir « Théorie donnée »."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"

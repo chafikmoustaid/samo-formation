@@ -301,7 +301,7 @@ export default function PageDeNotePage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Feuille de calcul des notes — travaux pratiques et examen final."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"

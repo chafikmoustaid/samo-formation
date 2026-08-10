@@ -277,7 +277,7 @@ export default function ReleveDeNotesPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Relevé de notes — à remettre à la fin du cours."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"

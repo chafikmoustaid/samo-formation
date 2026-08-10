@@ -194,7 +194,7 @@ export default function CompteRenduPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Compte rendu — à remettre avec le relevé de notes à la fin du cours."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"

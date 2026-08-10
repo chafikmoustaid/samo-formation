@@ -16,7 +16,7 @@ export default function RemiseDossierPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-3xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Remise du dossier dans Teams — rappel de la procédure."
           backHref="/instructor"
           backLabel="← Retour au portail formateur"

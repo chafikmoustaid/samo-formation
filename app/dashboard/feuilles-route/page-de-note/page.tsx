@@ -69,7 +69,7 @@ export default function AdminPageDeNotePage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Pages de note — lecture seule."
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"

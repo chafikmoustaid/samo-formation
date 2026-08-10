@@ -203,7 +203,7 @@ export default function InstructorPage() {
             </ColorLinkButton>
 
             <ColorLinkButton href="/instructor/feuilles-route" color={couleurPalette(2)}>
-              Dossier de formation
+              Feuilles de route
             </ColorLinkButton>
           </div>
         </Card>

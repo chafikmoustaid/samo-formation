@@ -77,7 +77,7 @@ export default function AdminFeuillesDeRoutePage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-5xl mx-auto">
         <PageHeader
-          title="Dossier de formation"
+          title="Feuilles de route"
           subtitle="Consultation en lecture seule — la création et la modification se font par le formateur."
           backHref="/dashboard"
           backLabel="← Retour au tableau de bord"
