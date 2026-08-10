@@ -34,6 +34,7 @@ type Entree = {
   pratiques_exercices: string;
   evaluations_notees: string;
   notes: string;
+  ouverte: boolean;
 };
 
 let compteurTemp = 0;
@@ -52,6 +53,7 @@ export default function FeuilleDeRouteDetailPage() {
   const [chargement, setChargement] = useState(true);
   const [enregistrement, setEnregistrement] = useState(false);
   const [suppression, setSuppression] = useState<string | null>(null);
+  const [telechargement, setTelechargement] = useState(false);
   const [message, setMessage] = useState<{ texte: string; type: "succes" | "erreur" } | null>(
     null
   );
@@ -104,7 +106,7 @@ export default function FeuilleDeRouteDetailPage() {
       const seancesTriees = (seancesData as Seance[]) ?? [];
       setSeancesDeLaMatiere(seancesTriees);
 
-      const entreesTriees = ((entreesData as Omit<Entree, "cle">[]) ?? [])
+      const entreesTriees = ((entreesData as Omit<Entree, "cle" | "ouverte">[]) ?? [])
         .map((e) => ({
           ...e,
           cle: `db-${e.id}`,
@@ -114,6 +116,9 @@ export default function FeuilleDeRouteDetailPage() {
           pratiques_exercices: e.pratiques_exercices ?? "",
           evaluations_notees: e.evaluations_notees ?? "",
           notes: e.notes ?? "",
+          // Réduites par défaut pour avoir une vue d'ensemble de toutes les
+          // séances déjà enregistrées ; on les déplie une à une au besoin.
+          ouverte: false,
         }))
         .sort((a, b) => {
           const numA = seancesTriees.find((s) => s.id === a.session_id)?.numero ?? 0;
@@ -153,6 +158,8 @@ export default function FeuilleDeRouteDetailPage() {
         pratiques_exercices: "",
         evaluations_notees: "",
         notes: "",
+        // Un nouveau bloc s'ouvre directement pour être rempli tout de suite.
+        ouverte: true,
       },
     ]);
   }
@@ -161,6 +168,16 @@ export default function FeuilleDeRouteDetailPage() {
     setEntrees((prev) =>
       prev.map((e) => (e.cle === cle ? { ...e, [champKey]: valeur } : e))
     );
+  }
+
+  function basculerOuverture(cle: string) {
+    setEntrees((prev) =>
+      prev.map((e) => (e.cle === cle ? { ...e, ouverte: !e.ouverte } : e))
+    );
+  }
+
+  function toutDeplierOuReplier(ouvrir: boolean) {
+    setEntrees((prev) => prev.map((e) => ({ ...e, ouverte: ouvrir })));
   }
 
   async function retirerEntree(entree: Entree) {
@@ -255,6 +272,52 @@ export default function FeuilleDeRouteDetailPage() {
     setMessage({ type: "succes", texte: "Feuille de route enregistrée." });
   }
 
+  async function telechargerPdf() {
+    if (!feuille) return;
+    setTelechargement(true);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const response = await fetch(`/api/pdf-road-map/${feuille.id}`, {
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : {},
+    });
+
+    setTelechargement(false);
+
+    if (!response.ok) {
+      alert("Impossible de générer le PDF.");
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nomFichierDepuisReponse(response, `feuille-de-route-${feuille.id}.pdf`);
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function nomFichierDepuisReponse(reponse: Response, repli: string): string {
+    const entete = reponse.headers.get("Content-Disposition") ?? "";
+
+    const utf8 = entete.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8) {
+      try {
+        return decodeURIComponent(utf8[1]);
+      } catch {
+        // ignore, on tente le repli ASCII ci-dessous
+      }
+    }
+
+    const ascii = entete.match(/filename="([^"]+)"/i);
+    if (ascii) return ascii[1];
+
+    return repli;
+  }
+
   if (chargement) {
     return <div className="min-h-screen bg-gray-50 p-8">Chargement...</div>;
   }
@@ -281,6 +344,11 @@ export default function FeuilleDeRouteDetailPage() {
           subtitle={nomMatiere}
           backHref="/instructor/feuilles-route"
           backLabel="← Retour aux feuilles de route"
+          action={
+            <Button variant="outline" size="sm" onClick={telechargerPdf} disabled={telechargement}>
+              {telechargement ? "Génération..." : "📄 Télécharger le PDF"}
+            </Button>
+          }
         />
 
         {!proprietaire && (
@@ -325,123 +393,181 @@ export default function FeuilleDeRouteDetailPage() {
             </p>
           </Card>
         ) : (
-          <div className="space-y-6">
-            {entrees.map((e) => {
-              const seance = infoSeance(e.session_id);
-              return (
-                <Card key={e.cle} className="border-t-4 border-t-green-600">
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-base font-bold text-green-800">
-                      Séance {seance?.numero ?? "?"} — {seance?.titre ?? ""}
-                    </h3>
-                    {proprietaire && (
-                      <button
-                        onClick={() => retirerEntree(e)}
-                        disabled={suppression === e.cle}
-                        className="text-sm text-red-600 hover:text-red-800 font-medium"
-                      >
-                        {suppression === e.cle ? "Suppression..." : "Retirer cette séance"}
-                      </button>
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm text-gray-500">
+                {entrees.length} séance{entrees.length > 1 ? "s" : ""}
+              </p>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => toutDeplierOuReplier(true)}
+                  className="text-sm text-green-700 hover:text-green-900 font-medium"
+                >
+                  Tout déplier
+                </button>
+                <button
+                  onClick={() => toutDeplierOuReplier(false)}
+                  className="text-sm text-green-700 hover:text-green-900 font-medium"
+                >
+                  Tout replier
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {entrees.map((e) => {
+                const seance = infoSeance(e.session_id);
+                const dateAffichee = e.date_seance
+                  ? new Date(`${e.date_seance}T00:00:00`).toLocaleDateString("fr-CA")
+                  : null;
+
+                return (
+                  <Card key={e.cle} className="border-t-4 border-t-green-600 !p-0 overflow-hidden">
+                    <button
+                      onClick={() => basculerOuverture(e.cle)}
+                      className="w-full flex items-center justify-between gap-3 px-6 py-4 text-left hover:bg-green-50/40 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span
+                          className={`shrink-0 text-green-700 transition-transform ${
+                            e.ouverte ? "rotate-90" : ""
+                          }`}
+                        >
+                          ▶
+                        </span>
+                        <div className="min-w-0">
+                          <h3 className="text-base font-bold text-green-800 truncate">
+                            Séance {seance?.numero ?? "?"} — {seance?.titre ?? ""}
+                          </h3>
+                          {!e.ouverte && (
+                            <p className="text-xs text-gray-500 truncate">
+                              {dateAffichee ?? "Date non renseignée"}
+                              {e.theorie_donnee ? ` — ${e.theorie_donnee}` : ""}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      {proprietaire && (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            retirerEntree(e);
+                          }}
+                          onKeyDown={(ev) => {
+                            if (ev.key === "Enter" || ev.key === " ") {
+                              ev.stopPropagation();
+                              retirerEntree(e);
+                            }
+                          }}
+                          className="shrink-0 text-sm text-red-600 hover:text-red-800 font-medium"
+                        >
+                          {suppression === e.cle ? "Suppression..." : "Retirer"}
+                        </span>
+                      )}
+                    </button>
+
+                    {e.ouverte && (
+                      <div className="px-6 pb-6 space-y-5 border-t border-gray-100 pt-5">
+                        <div className="grid sm:grid-cols-3 gap-5">
+                          <div>
+                            <label className="block text-sm font-semibold text-green-800 mb-1">
+                              Date <span className="text-red-600">*</span>
+                            </label>
+                            <input
+                              type="date"
+                              value={e.date_seance}
+                              disabled={!proprietaire}
+                              onChange={(ev) => champ(e.cle, "date_seance", ev.target.value)}
+                              className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold text-green-800 mb-1">
+                              Heure de début
+                            </label>
+                            <input
+                              type="time"
+                              value={e.heure_debut}
+                              disabled={!proprietaire}
+                              onChange={(ev) => champ(e.cle, "heure_debut", ev.target.value)}
+                              className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold text-green-800 mb-1">
+                              Heure de fin
+                            </label>
+                            <input
+                              type="time"
+                              value={e.heure_fin}
+                              disabled={!proprietaire}
+                              onChange={(ev) => champ(e.cle, "heure_fin", ev.target.value)}
+                              className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-green-800 mb-1">
+                            Théorie donnée
+                          </label>
+                          <textarea
+                            value={e.theorie_donnee}
+                            disabled={!proprietaire}
+                            onChange={(ev) => champ(e.cle, "theorie_donnee", ev.target.value)}
+                            rows={3}
+                            placeholder="Ex. : Chapitre 2 — création de dossier, enregistrement, notions de base"
+                            className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-green-800 mb-1">
+                            Pratiques / exercices (non notés)
+                          </label>
+                          <textarea
+                            value={e.pratiques_exercices}
+                            disabled={!proprietaire}
+                            onChange={(ev) => champ(e.cle, "pratiques_exercices", ev.target.value)}
+                            rows={2}
+                            className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-green-800 mb-1">
+                            Évaluations notées
+                          </label>
+                          <textarea
+                            value={e.evaluations_notees}
+                            disabled={!proprietaire}
+                            onChange={(ev) => champ(e.cle, "evaluations_notees", ev.target.value)}
+                            rows={2}
+                            className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-semibold text-green-800 mb-1">
+                            Remarques (facultatif)
+                          </label>
+                          <textarea
+                            value={e.notes}
+                            disabled={!proprietaire}
+                            onChange={(ev) => champ(e.cle, "notes", ev.target.value)}
+                            rows={2}
+                            className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
+                          />
+                        </div>
+                      </div>
                     )}
-                  </div>
-
-                  <div className="space-y-5">
-                    <div className="grid sm:grid-cols-3 gap-5">
-                      <div>
-                        <label className="block text-sm font-semibold text-green-800 mb-1">
-                          Date <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          type="date"
-                          value={e.date_seance}
-                          disabled={!proprietaire}
-                          onChange={(ev) => champ(e.cle, "date_seance", ev.target.value)}
-                          className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-green-800 mb-1">
-                          Heure de début
-                        </label>
-                        <input
-                          type="time"
-                          value={e.heure_debut}
-                          disabled={!proprietaire}
-                          onChange={(ev) => champ(e.cle, "heure_debut", ev.target.value)}
-                          className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-green-800 mb-1">
-                          Heure de fin
-                        </label>
-                        <input
-                          type="time"
-                          value={e.heure_fin}
-                          disabled={!proprietaire}
-                          onChange={(ev) => champ(e.cle, "heure_fin", ev.target.value)}
-                          className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-green-800 mb-1">
-                        Théorie donnée
-                      </label>
-                      <textarea
-                        value={e.theorie_donnee}
-                        disabled={!proprietaire}
-                        onChange={(ev) => champ(e.cle, "theorie_donnee", ev.target.value)}
-                        rows={3}
-                        placeholder="Ex. : Chapitre 2 — création de dossier, enregistrement, notions de base"
-                        className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-green-800 mb-1">
-                        Pratiques / exercices (non notés)
-                      </label>
-                      <textarea
-                        value={e.pratiques_exercices}
-                        disabled={!proprietaire}
-                        onChange={(ev) => champ(e.cle, "pratiques_exercices", ev.target.value)}
-                        rows={2}
-                        className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-green-800 mb-1">
-                        Évaluations notées
-                      </label>
-                      <textarea
-                        value={e.evaluations_notees}
-                        disabled={!proprietaire}
-                        onChange={(ev) => champ(e.cle, "evaluations_notees", ev.target.value)}
-                        rows={2}
-                        className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-green-800 mb-1">
-                        Remarques (facultatif)
-                      </label>
-                      <textarea
-                        value={e.notes}
-                        disabled={!proprietaire}
-                        onChange={(ev) => champ(e.cle, "notes", ev.target.value)}
-                        rows={2}
-                        className="w-full border-2 border-green-200 focus:border-green-500 rounded-lg px-3 py-2.5 disabled:bg-gray-100"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {message && (
