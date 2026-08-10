@@ -254,13 +254,13 @@ export default function AssignmentCorrectionPage() {
                         <div key={q.id} className="border-b border-gray-100 pb-5 last:border-0">
                           <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">{q.enonce}</p>
                           {(q.images ?? []).length > 0 && (
-                            <div className="mb-2">
+                            <div className="flex flex-wrap gap-3 mb-3">
                               {(q.images ?? []).map((img) => (
                                 <img
                                   key={img}
                                   src={img}
-                                  alt=""
-                                  className="max-w-full rounded border my-2"
+                                  alt="Illustration de l'exercice"
+                                  className="h-40 w-auto max-w-xs rounded-lg border border-gray-200 bg-white object-contain shadow-sm"
                                 />
                               ))}
                             </div>

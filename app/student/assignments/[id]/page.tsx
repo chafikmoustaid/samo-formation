@@ -575,24 +575,24 @@ export default function StudentAssignmentDetailPage() {
                               key={q.id}
                               className="rounded-lg border-2 border-green-100 bg-green-50/40 p-4"
                             >
-                              <p className="flex gap-2 text-sm font-bold text-gray-900 mb-3">
+                              <div className="flex gap-2 text-sm font-bold text-gray-900 mb-3">
                                 <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-700 text-white text-xs font-bold">
                                   {index + 1}
                                 </span>
                                 <span className="whitespace-pre-wrap">{q.enonce}</span>
-                                {(q.images ?? []).length > 0 && (
-                                  <span className="block mt-2">
-                                    {(q.images ?? []).map((img) => (
-                                      <img
-                                        key={img}
-                                        src={img}
-                                        alt=""
-                                        className="max-w-full rounded border my-2"
-                                      />
-                                    ))}
-                                  </span>
-                                )}
-                              </p>
+                              </div>
+                              {(q.images ?? []).length > 0 && (
+                                <div className="flex flex-wrap gap-3 mb-3 ml-7">
+                                  {(q.images ?? []).map((img) => (
+                                    <img
+                                      key={img}
+                                      src={img}
+                                      alt="Illustration de l'exercice"
+                                      className="h-40 w-auto max-w-xs rounded-lg border border-gray-200 bg-white object-contain shadow-sm"
+                                    />
+                                  ))}
+                                </div>
+                              )}
                               {zoneReponse(q)}
                             </div>
                           ))}
