@@ -198,8 +198,10 @@ export default function FeuilleDeRouteDetailPage() {
 
     setEnregistrement(true);
 
-    const lignes = entrees.map((e) => ({
-      ...(e.id ? { id: e.id } : {}),
+    // Supabase-js remplit les clés manquantes par null sur un lot hétérogène :
+    // on sépare donc les nouveaux blocs (sans id, à insérer) des blocs déjà
+    // enregistrés (avec id, à mettre à jour) pour éviter d'envoyer id=null.
+    const champsCommuns = (e: Entree) => ({
       road_map_id: feuille.id,
       session_id: e.session_id,
       date_seance: e.date_seance,
@@ -209,12 +211,15 @@ export default function FeuilleDeRouteDetailPage() {
       pratiques_exercices: e.pratiques_exercices || null,
       evaluations_notees: e.evaluations_notees || null,
       notes: e.notes || null,
-    }));
+    });
 
-    if (lignes.length > 0) {
+    const nouvellesLignes = entrees.filter((e) => !e.id).map(champsCommuns);
+    const lignesExistantes = entrees.filter((e) => e.id);
+
+    if (nouvellesLignes.length > 0) {
       const { data, error } = await supabase
         .from("road_map_entries")
-        .upsert(lignes, { onConflict: "road_map_id,session_id" })
+        .insert(nouvellesLignes)
         .select("id, session_id");
 
       if (error) {
@@ -223,13 +228,25 @@ export default function FeuilleDeRouteDetailPage() {
         return;
       }
 
-      // On récupère les ids définitifs pour les nouveaux blocs.
       setEntrees((prev) =>
         prev.map((e) => {
           const trouve = (data ?? []).find((d) => d.session_id === e.session_id);
           return trouve ? { ...e, id: trouve.id, cle: `db-${trouve.id}` } : e;
         })
       );
+    }
+
+    for (const e of lignesExistantes) {
+      const { error } = await supabase
+        .from("road_map_entries")
+        .update(champsCommuns(e))
+        .eq("id", e.id);
+
+      if (error) {
+        setEnregistrement(false);
+        setMessage({ type: "erreur", texte: error.message });
+        return;
+      }
     }
 
     await supabase.from("road_maps").update({ updated_at: new Date().toISOString() }).eq("id", feuille.id);
