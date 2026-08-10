@@ -354,14 +354,12 @@ export default function FeuilleDeRouteDetailPage() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <a
-                href="https://forms.office.com/pages/responsepage.aspx?id=0UteQ8dpuUmMrs27f-QrrXvQAueRk5dAkIvQj_F3_OtUMzY4UkkxUkREWFlWNlBFSFZUWThITUpUVS4u&route=shorturl"
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                href="/instructor/weekly-evaluation"
                 className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-3 py-2 rounded-lg"
               >
                 Formulaire hebdomadaire →
-              </a>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"

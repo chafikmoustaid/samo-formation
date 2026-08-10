@@ -245,14 +245,12 @@ export default function FeuillesDeRoutePage() {
                 À compléter tous les vendredis, un formulaire distinct par étudiant.
               </p>
             </div>
-            <a
-              href="https://forms.office.com/pages/responsepage.aspx?id=0UteQ8dpuUmMrs27f-QrrXvQAueRk5dAkIvQj_F3_OtUMzY4UkkxUkREWFlWNlBFSFZUWThITUpUVS4u&route=shorturl"
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              href="/instructor/weekly-evaluation"
               className="shrink-0 inline-block bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg"
             >
               Ouvrir le formulaire →
-            </a>
+            </Link>
           </div>
         </Card>
 

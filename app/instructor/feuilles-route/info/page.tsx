@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import DossierTabs from "@/components/instructor/DossierTabs";
@@ -37,16 +38,14 @@ export default function InfoDossierPage() {
           <ul className="text-sm text-gray-700 list-disc list-inside space-y-1 mb-3">
             <li>À compléter une fois par semaine, tous les vendredis.</li>
             <li>Décrit la progression de l&apos;étudiant au fur et à mesure que la formation avance.</li>
-            <li>Une fois complété et soumis, le formulaire est envoyé directement par courriel à la direction.</li>
+            <li>Une fois soumis, l&apos;évaluation est envoyée par courriel à la direction et reste consultable dans l&apos;application.</li>
           </ul>
-          <a
-            href="https://forms.office.com/pages/responsepage.aspx?id=0UteQ8dpuUmMrs27f-QrrXvQAueRk5dAkIvQj_F3_OtUMzY4UkkxUkREWFlWNlBFSFZUWThITUpUVS4u&route=shorturl"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href="/instructor/weekly-evaluation"
             className="inline-block bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg"
           >
             Ouvrir le formulaire d&apos;évaluation hebdomadaire →
-          </a>
+          </Link>
           <p className="text-xs text-gray-500 mt-2">
             Un formulaire distinct par étudiant.
           </p>
