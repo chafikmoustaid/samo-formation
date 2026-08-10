@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
+import Link from "next/link";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
@@ -341,17 +342,35 @@ export default function FeuilleDeRouteDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-3xl mx-auto">
-        <PageHeader
-          title={`Feuille de route — ${nomEtudiant}`}
-          subtitle={nomMatiere}
-          backHref="/instructor/feuilles-route"
-          backLabel="← Retour aux feuilles de route"
-          action={
-            <Button variant="outline" size="sm" onClick={telechargerPdf} disabled={telechargement}>
+        <div className="mb-8">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Feuille de route — {nomEtudiant}
+              </h1>
+              <span className="inline-flex items-center rounded-full bg-green-700 text-white px-3 py-1 text-sm font-bold shadow-sm">
+                {nomMatiere}
+              </span>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={telechargerPdf}
+              disabled={telechargement}
+              className="shrink-0"
+            >
               {telechargement ? "Génération..." : "📄 Télécharger le PDF"}
             </Button>
-          }
-        />
+          </div>
+
+          <Link
+            href="/instructor/feuilles-route"
+            className="inline-block mt-3 text-sm text-gray-500 hover:text-gray-700"
+          >
+            ← Retour aux feuilles de route
+          </Link>
+        </div>
 
         {!proprietaire && (
           <div className="mb-5 text-sm rounded-lg px-4 py-3 border-2 bg-amber-50 border-amber-200 text-amber-800">
