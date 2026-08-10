@@ -400,16 +400,16 @@ export default function FeuilleDeRouteDetailPage() {
               <p className="text-sm text-gray-500">
                 {entrees.length} séance{entrees.length > 1 ? "s" : ""}
               </p>
-              <div className="relative inline-flex w-56 items-center rounded-full bg-gray-100 p-1 text-sm font-medium select-none">
+              <div className="relative inline-flex w-56 items-center rounded-full bg-gray-800 p-1 text-sm font-bold select-none shadow-inner">
                 <span
-                  className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-full bg-green-700 shadow-sm transition-transform duration-300 ease-out ${
+                  className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-full bg-green-600 shadow-[0_2px_6px_rgba(0,0,0,0.45)] ring-1 ring-green-400/50 transition-transform duration-300 ease-out ${
                     pliageGlobal === "ferme" ? "translate-x-full" : "translate-x-0"
                   }`}
                 />
                 <button
                   onClick={() => toutDeplierOuReplier(true)}
                   className={`relative z-10 flex-1 rounded-full py-1.5 text-center transition-colors ${
-                    pliageGlobal === "ferme" ? "text-gray-600" : "text-white"
+                    pliageGlobal === "ferme" ? "text-gray-400" : "text-white"
                   }`}
                 >
                   Tout déplier
@@ -417,7 +417,7 @@ export default function FeuilleDeRouteDetailPage() {
                 <button
                   onClick={() => toutDeplierOuReplier(false)}
                   className={`relative z-10 flex-1 rounded-full py-1.5 text-center transition-colors ${
-                    pliageGlobal === "ferme" ? "text-white" : "text-gray-600"
+                    pliageGlobal === "ferme" ? "text-white" : "text-gray-400"
                   }`}
                 >
                   Tout replier
