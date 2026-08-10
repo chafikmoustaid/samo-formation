@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import DossierTabs from "@/components/instructor/DossierTabs";
+import SelectRecherche from "@/components/ui/SelectRecherche";
 
 type FeuilleRoute = {
   id: number;
@@ -33,7 +34,6 @@ export default function AdminFeuillesDeRoutePage() {
   const [filtreFormateur, setFiltreFormateur] = useState("");
   const [filtreFormation, setFiltreFormation] = useState("");
   const [filtreMatiere, setFiltreMatiere] = useState("");
-  const [filtreSeances, setFiltreSeances] = useState<"" | "avec" | "sans">("");
   const [tri, setTri] = useState<"recent" | "ancien" | "nom">("recent");
   const [page, setPage] = useState(1);
 
@@ -109,8 +109,6 @@ export default function AdminFeuillesDeRoutePage() {
       if (filtreFormateur && f.instructor_id !== filtreFormateur) return false;
       if (filtreFormation && String(f.formation_id) !== filtreFormation) return false;
       if (filtreMatiere && String(f.matiere_id) !== filtreMatiere) return false;
-      if (filtreSeances === "avec" && !(f.nb_seances ?? 0) ) return false;
-      if (filtreSeances === "sans" && (f.nb_seances ?? 0) > 0) return false;
       if (rechercheNormalisee) {
         const nomEtudiant = (profils.get(f.student_id) ?? "").toLowerCase();
         const nomFormateur = (profils.get(f.instructor_id) ?? "").toLowerCase();
@@ -143,7 +141,6 @@ export default function AdminFeuillesDeRoutePage() {
     filtreFormateur,
     filtreFormation,
     filtreMatiere,
-    filtreSeances,
     rechercheNormalisee,
     profils,
     matieres,
@@ -158,7 +155,7 @@ export default function AdminFeuillesDeRoutePage() {
   );
 
   const filtresActifs =
-    !!recherche || !!filtreEtudiant || !!filtreFormateur || !!filtreFormation || !!filtreMatiere || !!filtreSeances;
+    !!recherche || !!filtreEtudiant || !!filtreFormateur || !!filtreFormation || !!filtreMatiere;
 
   function reinitialiserFiltres() {
     setRecherche("");
@@ -166,7 +163,6 @@ export default function AdminFeuillesDeRoutePage() {
     setFiltreFormateur("");
     setFiltreFormation("");
     setFiltreMatiere("");
-    setFiltreSeances("");
     setTri("recent");
     setPage(1);
   }
@@ -198,67 +194,47 @@ export default function AdminFeuillesDeRoutePage() {
             />
 
             <div className="flex flex-wrap gap-3">
-              <select
+              <SelectRecherche
                 value={filtreEtudiant}
-                onChange={(e) => { setFiltreEtudiant(e.target.value); setPage(1); }}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-              >
-                <option value="">Tous les étudiants</option>
-                {etudiants.map((id) => (
-                  <option key={id} value={id}>
-                    {profils.get(id) ?? id}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => { setFiltreEtudiant(v); setPage(1); }}
+                options={etudiants.map((id) => ({ value: id, label: profils.get(id) ?? id }))}
+                optionTous="Tous les étudiants"
+                placeholderRecherche="Rechercher un étudiant…"
+                className="w-56"
+              />
 
-              <select
+              <SelectRecherche
                 value={filtreFormateur}
-                onChange={(e) => { setFiltreFormateur(e.target.value); setPage(1); }}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-              >
-                <option value="">Tous les formateurs</option>
-                {formateurs.map((id) => (
-                  <option key={id} value={id}>
-                    {profils.get(id) ?? id}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => { setFiltreFormateur(v); setPage(1); }}
+                options={formateurs.map((id) => ({ value: id, label: profils.get(id) ?? id }))}
+                optionTous="Tous les formateurs"
+                placeholderRecherche="Rechercher un formateur…"
+                className="w-56"
+              />
 
-              <select
+              <SelectRecherche
                 value={filtreFormation}
-                onChange={(e) => { setFiltreFormation(e.target.value); setPage(1); }}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-              >
-                <option value="">Toutes les formations</option>
-                {Array.from(formations.entries()).map(([id, nom]) => (
-                  <option key={id} value={id}>
-                    {nom}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => { setFiltreFormation(v); setPage(1); }}
+                options={Array.from(formations.entries()).map(([id, nom]) => ({
+                  value: String(id),
+                  label: nom,
+                }))}
+                optionTous="Toutes les formations"
+                placeholderRecherche="Rechercher une formation…"
+                className="w-56"
+              />
 
-              <select
+              <SelectRecherche
                 value={filtreMatiere}
-                onChange={(e) => { setFiltreMatiere(e.target.value); setPage(1); }}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-              >
-                <option value="">Toutes les matières</option>
-                {matieresUtilisees.map((id) => (
-                  <option key={id} value={id}>
-                    {matieres.get(id) ?? id}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={filtreSeances}
-                onChange={(e) => { setFiltreSeances(e.target.value as "" | "avec" | "sans"); setPage(1); }}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-              >
-                <option value="">Avec ou sans séance</option>
-                <option value="avec">Avec au moins une séance</option>
-                <option value="sans">Sans séance</option>
-              </select>
+                onChange={(v) => { setFiltreMatiere(v); setPage(1); }}
+                options={matieresUtilisees.map((id) => ({
+                  value: String(id),
+                  label: matieres.get(id) ?? String(id),
+                }))}
+                optionTous="Toutes les matières"
+                placeholderRecherche="Rechercher une matière…"
+                className="w-56"
+              />
 
               <select
                 value={tri}
