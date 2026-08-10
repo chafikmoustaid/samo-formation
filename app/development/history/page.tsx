@@ -12,12 +12,14 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 
 const STATUT_LABELS: Record<string, string> = {
+  brouillon: "Brouillon",
   en_attente: "En attente",
   validee: "Validée",
   refusee: "Refusée",
 };
 
-const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
+const STATUT_TONE: Record<string, "warning" | "success" | "danger" | "neutral"> = {
+  brouillon: "neutral",
   en_attente: "warning",
   validee: "success",
   refusee: "danger",
@@ -91,6 +93,16 @@ export default function DevelopmentHistoryPage() {
     chargerFiches();
   }, []);
 
+  // NOTE : cette liste est partagée entre formateurs et admins (RLS :
+  // un formateur ne voit que ses propres fiches, un admin les voit
+  // toutes). Ça veut dire qu'un admin voit ici aussi les brouillons
+  // ("brouillon") des formateurs, pas seulement les fiches envoyées — même
+  // comportement, non filtré, que app/attendance/history/page.tsx pour les
+  // fiches de présence. Ce n'est pas corrigé ici volontairement : une vraie
+  // solution demanderait soit un filtre explicite `statut != 'brouillon'`
+  // pour les admins (au prix de compliquer les filtres existants), soit une
+  // page dédiée comme séparent déjà student/attendance vs attendance/history
+  // — à trancher en produit, pas à deviner ici.
   async function chargerFiches() {
     const { data, error } = await supabase
       .from("development_sheets")
@@ -228,6 +240,7 @@ export default function DevelopmentHistoryPage() {
                 className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
               >
                 <option value="">Tous les statuts</option>
+                <option value="brouillon">Brouillon</option>
                 <option value="en_attente">En attente</option>
                 <option value="validee">Validée</option>
                 <option value="refusee">Refusée</option>

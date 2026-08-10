@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { LigneDeveloppement, calculHeuresLigne } from "@/lib/ficheDeveloppement";
@@ -10,13 +11,15 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 
-const STATUT_TONE: Record<string, "warning" | "success" | "danger"> = {
+const STATUT_TONE: Record<string, "warning" | "success" | "danger" | "neutral"> = {
+  brouillon: "neutral",
   en_attente: "warning",
   validee: "success",
   refusee: "danger",
 };
 
 const STATUT_LABELS: Record<string, string> = {
+  brouillon: "Brouillon",
   en_attente: "En attente de validation",
   validee: "Validée",
   refusee: "Refusée",
@@ -29,6 +32,7 @@ export default function DevelopmentDetail() {
   const [fiche, setFiche] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [enregistrement, setEnregistrement] = useState(false);
   const [modeRefus, setModeRefus] = useState(false);
@@ -56,6 +60,8 @@ export default function DevelopmentDetail() {
     } = await supabase.auth.getUser();
 
     if (user) {
+      setUserId(user.id);
+
       const { data: profil } = await supabase
         .from("profiles")
         .select("role")
@@ -177,15 +183,31 @@ export default function DevelopmentDetail() {
 
   const lignes: LigneDeveloppement[] = Array.isArray(fiche.lignes) ? fiche.lignes : [];
 
+  // Le formateur propriétaire peut rouvrir et corriger sa fiche tant
+  // qu'elle n'a pas encore été validée par l'administration — une fois
+  // "validee", elle reste consultable mais devient définitivement verrouillée.
+  const peutModifier =
+    fiche.user_id === userId &&
+    (fiche.statut === "brouillon" || fiche.statut === "en_attente");
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-3xl mx-auto">
         <PageHeader
           title="Fiche de développement"
           action={
-            <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
-              {STATUT_LABELS[fiche.statut] ?? fiche.statut}
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Badge tone={STATUT_TONE[fiche.statut] ?? "neutral"}>
+                {STATUT_LABELS[fiche.statut] ?? fiche.statut}
+              </Badge>
+              {peutModifier && (
+                <Link href={`/development?id=${fiche.id}`}>
+                  <Button variant="outline" size="sm">
+                    Modifier
+                  </Button>
+                </Link>
+              )}
+            </div>
           }
         />
 
