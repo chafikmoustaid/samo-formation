@@ -45,7 +45,6 @@ export default function MatiereSeancesPage() {
   const matiereId = params.id;
 
   const [nomMatiere, setNomMatiere] = useState("");
-  const [nomFormation, setNomFormation] = useState("");
   const [seances, setSeances] = useState<Seance[]>([]);
   const [seancesCompletees, setSeancesCompletees] = useState<Set<number>>(
     new Set()
@@ -85,11 +84,9 @@ export default function MatiereSeancesPage() {
 
     const { data: profil } = await supabase
       .from("profiles")
-      .select("formation_id, formations!profiles_formation_id_fkey(nom)")
+      .select("formation_id")
       .eq("id", user.id)
       .single();
-
-    setNomFormation((profil as any)?.formations?.nom ?? "");
 
     if (!profil?.formation_id) {
       setErreur("Aucune formation n'est assignée à ton compte.");
@@ -174,8 +171,8 @@ export default function MatiereSeancesPage() {
             <h1 className="text-2xl font-bold text-white">{nomMatiere}</h1>
             {seances.length > 0 && (
               <p className="text-emerald-50 text-sm mt-1">
-                Les {seances.length} séances{nomFormation ? ` de ${nomFormation}` : ""}{" "}
-                — {nbCompletees} / {seances.length} complétée
+                {seances.length} séance{seances.length > 1 ? "s" : ""} —{" "}
+                {nbCompletees} / {seances.length} complétée
                 {nbCompletees > 1 ? "s" : ""}
               </p>
             )}
