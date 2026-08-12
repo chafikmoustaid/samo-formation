@@ -72,6 +72,27 @@ function IconShield({ className = "w-5 h-5" }: { className?: string }) {
     </svg>
   );
 }
+function IconPencil({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <path d="M4 20.5 4.7 17 16 5.7a1.7 1.7 0 0 1 2.4 0l1 1a1.7 1.7 0 0 1 0 2.4L8 20.5l-4 0Z" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconCheck({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className={className}>
+      <path d="m5 12.5 4.5 4.5L19 7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconX({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className={className}>
+      <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
+    </svg>
+  );
+}
 function IconBook({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
@@ -195,18 +216,24 @@ export default function ComptesPage() {
   const [nouvelleFormation, setNouvelleFormation] = useState("");
   const [ajoutFormationEnCours, setAjoutFormationEnCours] = useState(false);
 
-  const [formationsARenommer, setFormationsARenommer] = useState<Set<number>>(
-    new Set()
-  );
   const [formationsASupprimer, setFormationsASupprimer] = useState<
     Set<number>
   >(new Set());
-  const [matieresARenommer, setMatieresARenommer] = useState<Set<string>>(
-    new Set()
-  );
   const [matieresASupprimer, setMatieresASupprimer] = useState<Set<string>>(
     new Set()
   );
+
+  // Renommage inline directement sur la ligne (icône crayon -> champ +
+  // valider/annuler) — remplace l'ancien window.prompt et la case à cocher
+  // séparée, qui faisaient double emploi avec le clic "filtrer" sur la ligne.
+  const [formationEnEdition, setFormationEnEdition] = useState<number | null>(
+    null
+  );
+  const [formationEditValue, setFormationEditValue] = useState("");
+  const [matiereEnEdition, setMatiereEnEdition] = useState<string | null>(
+    null
+  );
+  const [matiereEditValue, setMatiereEditValue] = useState("");
 
   async function loadProfiles() {
     setLoading(true);
@@ -320,7 +347,7 @@ export default function ComptesPage() {
     if (formationChoisieId !== null) {
       loadMatieresFormation(formationChoisieId);
     }
-    setMatieresARenommer(new Set());
+    setMatiereEnEdition(null);
     setMatieresASupprimer(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formationChoisieId, filtrerMatieresParFormation]);
@@ -787,22 +814,15 @@ export default function ComptesPage() {
     setter(next);
   }
 
-  async function renommerFormationsCochees() {
-    if (formationsARenommer.size !== 1) {
-      setMessage({
-        type: "erreur",
-        texte: "Coche exactement une formation à renommer.",
-      });
-      return;
-    }
+  function demarrerRenommageFormation(f: Formation) {
+    setFormationEnEdition(f.id);
+    setFormationEditValue(f.nom);
+  }
 
-    const id = Array.from(formationsARenommer)[0];
-    const actuelle = formations.find((f) => f.id === id);
-    const nouveauNom = window.prompt("Nouveau nom de la formation :", actuelle?.nom ?? "");
-    if (nouveauNom === null) return;
-
-    await renommerFormationCatalogue(id, nouveauNom);
-    setFormationsARenommer(new Set());
+  async function enregistrerRenommageFormation(id: number) {
+    await renommerFormationCatalogue(id, formationEditValue);
+    setFormationEnEdition(null);
+    setFormationEditValue("");
   }
 
   async function supprimerFormationsCochees() {
@@ -835,27 +855,21 @@ export default function ComptesPage() {
     }
 
     setFormationsASupprimer(new Set());
-    setFormationsARenommer(new Set());
+    setFormationEnEdition(null);
     setMessage((prev) => prev ?? { type: "succes", texte: "Formation(s) supprimée(s)." });
     loadFormations();
     loadProfiles();
   }
 
-  async function renommerMatieresCochees() {
-    if (matieresARenommer.size !== 1) {
-      setMessage({
-        type: "erreur",
-        texte: "Coche exactement une matière à renommer.",
-      });
-      return;
-    }
+  function demarrerRenommageMatiere(nom: string) {
+    setMatiereEnEdition(nom);
+    setMatiereEditValue(nom);
+  }
 
-    const ancienNom = Array.from(matieresARenommer)[0];
-    const nouveauNom = window.prompt("Nouveau nom de la matière :", ancienNom);
-    if (nouveauNom === null) return;
-
-    await renommerMatiereCatalogue(ancienNom, nouveauNom);
-    setMatieresARenommer(new Set());
+  async function enregistrerRenommageMatiere(ancienNom: string) {
+    await renommerMatiereCatalogue(ancienNom, matiereEditValue);
+    setMatiereEnEdition(null);
+    setMatiereEditValue("");
   }
 
   async function supprimerMatieresCochees() {
@@ -884,7 +898,7 @@ export default function ComptesPage() {
     }
 
     setMatieresASupprimer(new Set());
-    setMatieresARenommer(new Set());
+    setMatiereEnEdition(null);
     setMessage((prev) => prev ?? { type: "succes", texte: "Matière(s) supprimée(s)." });
     loadMatieres();
     loadProfiles();
@@ -897,7 +911,7 @@ export default function ComptesPage() {
       matieresFormation.filter((m) => !matieresASupprimer.has(m))
     );
     setMatieresASupprimer(new Set());
-    setMatieresARenommer(new Set());
+    setMatiereEnEdition(null);
   }
 
   const nbArchives = profiles.filter((p) => p.desactive_le).length;
@@ -1565,64 +1579,89 @@ export default function ComptesPage() {
 
             <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
               <span>Formation</span>
-              <div className="flex items-center gap-4">
-                <span className="w-16 text-center">Choisir</span>
-                <span className="w-16 text-center">Retirer</span>
-              </div>
+              <span className="w-16 text-center">Supprimer</span>
             </div>
 
             {formations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>
             ) : (
               <ul className="space-y-1 max-h-72 overflow-y-auto">
-                {formations.map((f) => (
-                  <li
-                    key={f.id}
-                    className={`flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors ${
-                      formationChoisieId === f.id
-                        ? "bg-blue-50 ring-1 ring-blue-200"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <button
-                      onClick={() => setFormationChoisieId(f.id)}
-                      disabled={busyFormationCatalogue === f.id}
-                      className="flex-1 text-left text-sm text-gray-900"
+                {formations.map((f) =>
+                  formationEnEdition === f.id ? (
+                    <li
+                      key={f.id}
+                      className="flex items-center gap-2 rounded-lg px-2 py-1.5 bg-blue-50 ring-1 ring-blue-200"
                     >
-                      {f.nom}
-                    </button>
-                    <div className="w-16 flex justify-center">
                       <input
-                        type="radio"
-                        name="renommer-formation"
-                        checked={formationsARenommer.has(f.id)}
-                        onChange={() => setFormationsARenommer(new Set([f.id]))}
-                        className="shrink-0 accent-blue-600"
+                        type="text"
+                        autoFocus
+                        value={formationEditValue}
+                        onChange={(e) => setFormationEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") enregistrerRenommageFormation(f.id);
+                          if (e.key === "Escape") setFormationEnEdition(null);
+                        }}
+                        className="flex-1 border border-blue-200 rounded-md px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
-                    </div>
-                    <div className="w-16 flex justify-center">
-                      <input
-                        type="checkbox"
-                        checked={formationsASupprimer.has(f.id)}
-                        onChange={() =>
-                          basculerCase(formationsASupprimer, setFormationsASupprimer, f.id)
+                      <button
+                        onClick={() => enregistrerRenommageFormation(f.id)}
+                        disabled={
+                          !formationEditValue.trim() || busyFormationCatalogue === f.id
                         }
-                        className="shrink-0 accent-red-600"
-                      />
-                    </div>
-                  </li>
-                ))}
+                        title="Enregistrer"
+                        className="w-7 h-7 flex items-center justify-center rounded-md bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-40 shrink-0"
+                      >
+                        <IconCheck />
+                      </button>
+                      <button
+                        onClick={() => setFormationEnEdition(null)}
+                        title="Annuler"
+                        className="w-7 h-7 flex items-center justify-center rounded-md bg-gray-100 text-gray-500 hover:bg-gray-200 shrink-0"
+                      >
+                        <IconX />
+                      </button>
+                    </li>
+                  ) : (
+                    <li
+                      key={f.id}
+                      className={`group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors ${
+                        formationChoisieId === f.id
+                          ? "bg-blue-50 ring-1 ring-blue-200"
+                          : "hover:bg-gray-50"
+                      }`}
+                    >
+                      <button
+                        onClick={() => setFormationChoisieId(f.id)}
+                        disabled={busyFormationCatalogue === f.id}
+                        title="Filtrer les matières sur cette formation"
+                        className="flex-1 text-left text-sm text-gray-900 truncate"
+                      >
+                        {f.nom}
+                      </button>
+                      <button
+                        onClick={() => demarrerRenommageFormation(f)}
+                        title="Renommer cette formation"
+                        className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-blue-700 hover:bg-blue-50 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity shrink-0"
+                      >
+                        <IconPencil />
+                      </button>
+                      <div className="w-16 flex justify-center">
+                        <input
+                          type="checkbox"
+                          checked={formationsASupprimer.has(f.id)}
+                          onChange={() =>
+                            basculerCase(formationsASupprimer, setFormationsASupprimer, f.id)
+                          }
+                          className="shrink-0 accent-red-600"
+                        />
+                      </div>
+                    </li>
+                  )
+                )}
               </ul>
             )}
 
             <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-              <button
-                onClick={renommerFormationsCochees}
-                disabled={formationsARenommer.size !== 1}
-                className="px-3 py-1.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Renommer la sélection
-              </button>
               <button
                 onClick={supprimerFormationsCochees}
                 disabled={formationsASupprimer.size === 0}
@@ -1735,10 +1774,9 @@ export default function ComptesPage() {
                 <>
                   <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
                     <span>Matière</span>
-                    <div className="flex items-center gap-4">
-                      <span className="w-16 text-center">Choisir</span>
-                      <span className="w-16 text-center">Retirer</span>
-                    </div>
+                    <span className="w-16 text-center">
+                      {modeFormation ? "Retirer" : "Supprimer"}
+                    </span>
                   </div>
 
                   {matieresAffichees.length === 0 ? (
@@ -1749,46 +1787,73 @@ export default function ComptesPage() {
                     </p>
                   ) : (
                     <ul className="space-y-1 max-h-72 overflow-y-auto">
-                      {matieresAffichees.map((matiere) => (
-                        <li
-                          key={matiere}
-                          className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-gray-50 transition-colors"
-                        >
-                          <span className="flex-1 text-sm text-gray-900">
-                            {matiere}
-                          </span>
-                          <div className="w-16 flex justify-center">
+                      {matieresAffichees.map((matiere) =>
+                        matiereEnEdition === matiere ? (
+                          <li
+                            key={matiere}
+                            className="flex items-center gap-2 rounded-lg px-2 py-1.5 bg-blue-50 ring-1 ring-blue-200"
+                          >
                             <input
-                              type="radio"
-                              name="renommer-matiere"
-                              checked={matieresARenommer.has(matiere)}
-                              onChange={() => setMatieresARenommer(new Set([matiere]))}
-                              className="shrink-0 accent-blue-600"
+                              type="text"
+                              autoFocus
+                              value={matiereEditValue}
+                              onChange={(e) => setMatiereEditValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") enregistrerRenommageMatiere(matiere);
+                                if (e.key === "Escape") setMatiereEnEdition(null);
+                              }}
+                              className="flex-1 border border-blue-200 rounded-md px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
-                          </div>
-                          <div className="w-16 flex justify-center">
-                            <input
-                              type="checkbox"
-                              checked={matieresASupprimer.has(matiere)}
-                              onChange={() =>
-                                basculerCase(matieresASupprimer, setMatieresASupprimer, matiere)
+                            <button
+                              onClick={() => enregistrerRenommageMatiere(matiere)}
+                              disabled={
+                                !matiereEditValue.trim() || busyMatiereCatalogue === matiere
                               }
-                              className="shrink-0 accent-red-600"
-                            />
-                          </div>
-                        </li>
-                      ))}
+                              title="Enregistrer"
+                              className="w-7 h-7 flex items-center justify-center rounded-md bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-40 shrink-0"
+                            >
+                              <IconCheck />
+                            </button>
+                            <button
+                              onClick={() => setMatiereEnEdition(null)}
+                              title="Annuler"
+                              className="w-7 h-7 flex items-center justify-center rounded-md bg-gray-100 text-gray-500 hover:bg-gray-200 shrink-0"
+                            >
+                              <IconX />
+                            </button>
+                          </li>
+                        ) : (
+                          <li
+                            key={matiere}
+                            className="group flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-gray-50 transition-colors"
+                          >
+                            <span className="flex-1 text-sm text-gray-900 truncate">
+                              {matiere}
+                            </span>
+                            <button
+                              onClick={() => demarrerRenommageMatiere(matiere)}
+                              title="Renommer cette matière"
+                              className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-blue-700 hover:bg-blue-50 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity shrink-0"
+                            >
+                              <IconPencil />
+                            </button>
+                            <div className="w-16 flex justify-center">
+                              <input
+                                type="checkbox"
+                                checked={matieresASupprimer.has(matiere)}
+                                onChange={() =>
+                                  basculerCase(matieresASupprimer, setMatieresASupprimer, matiere)
+                                }
+                                className="shrink-0 accent-red-600"
+                              />
+                            </div>
+                          </li>
+                        )
+                      )}
                     </ul>
                   )}
 
                   <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-                    <button
-                      onClick={renommerMatieresCochees}
-                      disabled={matieresARenommer.size !== 1}
-                      className="px-3 py-1.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      Renommer la sélection
-                    </button>
                     {modeFormation ? (
                       <button
                         onClick={retirerMatieresCocheesDeFormation}
