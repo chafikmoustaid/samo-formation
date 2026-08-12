@@ -136,6 +136,14 @@ export default function Navbar() {
                   Feuilles de route
                 </Link>
               )}
+              {!pathname.startsWith("/dashboard/comptes") && (
+                <Link
+                  href="/dashboard/comptes"
+                  className="text-base font-bold hover:text-white/80 transition-colors"
+                >
+                  Gestion des comptes
+                </Link>
+              )}
             </>
           )}
 

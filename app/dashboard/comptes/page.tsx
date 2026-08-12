@@ -1184,6 +1184,13 @@ export default function ComptesPage() {
                 <IconHistory className="w-4 h-4 text-blue-600" />
                 Historique des changements
               </Link>
+              <Link
+                href="/dashboard/securite"
+                className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium border border-gray-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm"
+              >
+                <IconShield className="w-4 h-4 text-green-700" />
+                Sécurité
+              </Link>
             </div>
           }
         />

@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import DashboardChart from "@/components/DashboardChart";
 import { supabase } from "@/lib/supabase";
-import ColorLinkButton from "@/components/ui/ColorLinkButton";
 import LinkButton from "@/components/ui/LinkButton";
 import PageHeader from "@/components/ui/PageHeader";
 import StatCard from "@/components/ui/StatCard";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import { couleurPalette } from "@/lib/paletteCouleurs";
 
 const STATUT_TONE = {
   en_attente: "warning",
@@ -112,19 +110,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
-        <PageHeader
-          title="Tableau de bord SAMO"
-          action={
-            <div className="flex gap-3">
-              <ColorLinkButton href="/dashboard/comptes" color={couleurPalette(0)}>
-                Gestion des comptes
-              </ColorLinkButton>
-              <ColorLinkButton href="/dashboard/securite" color={couleurPalette(5)}>
-                Sécurité
-              </ColorLinkButton>
-            </div>
-          }
-        />
+        <PageHeader title="Tableau de bord SAMO" />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard label="Total fiches" value={totalFiches} href="/attendance/history" />
