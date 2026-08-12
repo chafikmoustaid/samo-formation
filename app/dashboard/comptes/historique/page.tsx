@@ -128,30 +128,40 @@ export default function HistoriqueComptesPage() {
           ) : entrees.length === 0 ? (
             <p className="text-sm text-gray-400">Aucun changement enregistré pour l&apos;instant.</p>
           ) : (
-            <table className="w-full text-sm">
+            <table className="w-full text-sm table-fixed border-collapse">
+              <colgroup>
+                <col className="w-[13%]" />
+                <col className="w-[16%]" />
+                <col className="w-[19%]" />
+                <col className="w-[17%]" />
+                <col className="w-[35%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b text-left text-gray-500">
-                  <th className="p-3 font-medium whitespace-nowrap">Date</th>
-                  <th className="p-3 font-medium whitespace-nowrap">Effectué par</th>
-                  <th className="p-3 font-medium whitespace-nowrap">Compte concerné</th>
-                  <th className="p-3 font-medium">Changement</th>
-                  <th className="p-3 font-medium">Détails</th>
+                  <th className="p-2.5 font-medium">Date</th>
+                  <th className="p-2.5 font-medium">Effectué par</th>
+                  <th className="p-2.5 font-medium">Compte concerné</th>
+                  <th className="p-2.5 font-medium">Changement</th>
+                  <th className="p-2.5 font-medium">Détails</th>
                 </tr>
               </thead>
               <tbody>
                 {entrees.map((e) => (
                   <tr key={e.id} className="border-b last:border-0 align-top">
-                    <td className="p-3 text-gray-500 whitespace-nowrap">
-                      {new Date(e.created_at).toLocaleString("fr-CA")}
+                    <td className="p-2.5 text-gray-500 break-words">
+                      {new Date(e.created_at).toLocaleString("fr-CA", {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      })}
                     </td>
-                    <td className="p-3 whitespace-nowrap">{e.actor_email ?? "—"}</td>
-                    <td className="p-3 whitespace-nowrap">{e.target_email ?? "—"}</td>
-                    <td className="p-3">
+                    <td className="p-2.5 break-words">{e.actor_email ?? "—"}</td>
+                    <td className="p-2.5 break-words">{e.target_email ?? "—"}</td>
+                    <td className="p-2.5">
                       <Badge tone={ACTION_TONE[e.action] ?? "neutral"}>
                         {ACTION_LABELS[e.action] ?? e.action}
                       </Badge>
                     </td>
-                    <td className="p-3 text-gray-600">{decrireDetails(e)}</td>
+                    <td className="p-2.5 text-gray-600 break-words">{decrireDetails(e)}</td>
                   </tr>
                 ))}
               </tbody>
