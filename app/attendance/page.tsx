@@ -122,6 +122,16 @@ export default function Attendance() {
 
     if (!user) return;
 
+    // Si c'est un étudiant qui ouvre sa fiche, on préremplit automatiquement
+    // son nom depuis son profil — le formateur ou l'administration, eux,
+    // repartent toujours d'une fiche vierge (ils peuvent la remplir pour
+    // n'importe qui, sur place).
+    const { data: profil } = await supabase
+      .from("profiles")
+      .select("role, nom_complet")
+      .eq("id", user.id)
+      .single();
+
     const { data } = await supabase
       .from("attendance")
       .select(
@@ -134,10 +144,18 @@ export default function Attendance() {
       .limit(1)
       .maybeSingle();
 
-    if (!data) return;
+    if (!data) {
+      if (profil?.role === "student" && profil.nom_complet) {
+        setNomEtudiant(profil.nom_complet);
+      }
+      return;
+    }
 
     setFicheId(data.id);
-    setNomEtudiant(data.nom_etudiant ?? "");
+    setNomEtudiant(
+      data.nom_etudiant ||
+        (profil?.role === "student" ? profil.nom_complet ?? "" : "")
+    );
     setFormateurId(data.formateur_id ?? "");
     setLignes(
       Array.isArray(data.lignes) && data.lignes.length > 0
