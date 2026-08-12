@@ -1498,7 +1498,7 @@ export default function ComptesPage() {
                             <button
                               onClick={() => restaurerCompte(p.id)}
                               disabled={busyArchiveId === p.id}
-                              className="w-20 py-0.5 rounded-md text-[11px] font-medium bg-green-50 text-green-700 border border-green-100 hover:bg-green-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="w-14 py-0.5 rounded-md text-[11px] font-medium bg-white text-green-700 border border-green-200 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {busyArchiveId === p.id
                                 ? "Restauration…"
@@ -1508,7 +1508,7 @@ export default function ComptesPage() {
                             <button
                               onClick={() => archiverCompte(p.id, p.email)}
                               disabled={busyArchiveId === p.id}
-                              className="w-20 py-0.5 rounded-md text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="w-14 py-0.5 rounded-md text-[11px] font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {busyArchiveId === p.id
                                 ? "Archivage…"
@@ -1520,7 +1520,7 @@ export default function ComptesPage() {
                               supprimerCompteDefinitivement(p.id, p.email)
                             }
                             disabled={busySuppressionId === p.id}
-                            className="w-20 py-0.5 rounded-md text-[11px] font-medium bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-14 py-0.5 rounded-md text-[11px] font-medium bg-white text-red-600 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {busySuppressionId === p.id
                               ? "Suppression…"
