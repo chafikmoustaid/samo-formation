@@ -120,28 +120,37 @@ function CarteStat({
   actif?: boolean;
   onClick?: () => void;
 }) {
-  const styles: Record<string, string> = {
-    green: "bg-green-50 text-green-700",
-    blue: "bg-blue-50 text-blue-700",
-    amber: "bg-amber-50 text-amber-700",
-    slate: "bg-slate-100 text-slate-700",
+  const badge: Record<string, string> = {
+    green: "bg-green-100 text-green-700",
+    blue: "bg-blue-100 text-blue-700",
+    amber: "bg-amber-100 text-amber-700",
+    slate: "bg-slate-200 text-slate-700",
+  };
+  // Fond teinté + bordure de la même couleur en permanence (pas seulement à
+  // l'état actif) pour que ces cartes se lisent clairement comme des
+  // boutons cliquables plutôt que de simples pastilles d'information.
+  const fond: Record<string, string> = {
+    green: "bg-green-50/70 border-green-200 hover:bg-green-50",
+    blue: "bg-blue-50/70 border-blue-200 hover:bg-blue-50",
+    amber: "bg-amber-50/70 border-amber-200 hover:bg-amber-50",
+    slate: "bg-slate-50 border-slate-200 hover:bg-slate-100",
   };
   const bagues: Record<string, string> = {
-    green: "ring-green-300",
-    blue: "ring-blue-300",
-    amber: "ring-amber-300",
-    slate: "ring-slate-300",
+    green: "ring-green-400",
+    blue: "ring-blue-400",
+    amber: "ring-amber-400",
+    slate: "ring-slate-400",
   };
   return (
     <button
       type="button"
       onClick={onClick}
       title="Filtrer la liste des comptes ci-dessous"
-      className={`flex items-center gap-3 bg-white rounded-xl border px-4 py-3.5 shadow-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
-        actif ? `border-transparent ring-2 ${bagues[couleur]}` : "border-gray-200"
-      }`}
+      className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 shadow-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer ${
+        fond[couleur]
+      } ${actif ? `ring-2 ${bagues[couleur]}` : ""}`}
     >
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${styles[couleur]}`}>
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${badge[couleur]}`}>
         {icone}
       </div>
       <div className="min-w-0">
