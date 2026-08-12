@@ -63,9 +63,22 @@ export default function MultiFormationSelect({
         disabled={disabled}
         onClick={() => setOuvert((v) => !v)}
         title={nomsSelectionnes.join(", ") || undefined}
-        className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm text-left truncate bg-white disabled:bg-gray-50 disabled:text-gray-400"
+        className="w-full flex items-center justify-between gap-1.5 border border-gray-200 rounded-lg px-2 py-1 text-sm text-left bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:border-gray-200"
       >
-        {saving ? "Enregistrement…" : libelle}
+        <span className="truncate">{saving ? "Enregistrement…" : libelle}</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`w-3.5 h-3.5 shrink-0 text-gray-400 transition-transform ${
+            ouvert ? "rotate-180" : ""
+          }`}
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </button>
 
       {ouvert && (
