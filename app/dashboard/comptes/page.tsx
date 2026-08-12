@@ -1577,11 +1577,6 @@ export default function ComptesPage() {
               </Button>
             </form>
 
-            <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
-              <span>Formation</span>
-              <span className="w-16 text-center">Supprimer</span>
-            </div>
-
             {formations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>
             ) : (
@@ -1772,13 +1767,6 @@ export default function ComptesPage() {
 
               return (
                 <>
-                  <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
-                    <span>Matière</span>
-                    <span className="w-16 text-center">
-                      {modeFormation ? "Retirer" : "Supprimer"}
-                    </span>
-                  </div>
-
                   {matieresAffichees.length === 0 ? (
                     <p className="text-sm text-gray-400">
                       {modeFormation
