@@ -1563,11 +1563,11 @@ export default function ComptesPage() {
               </Button>
             </form>
 
-            <div className="flex items-center justify-between gap-2 mb-2 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+            <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
               <span>Formation</span>
               <div className="flex items-center gap-4">
-                <span className="w-16 text-center">Renommer</span>
-                <span className="w-16 text-center">Supprimer</span>
+                <span className="w-16 text-center">Choisir</span>
+                <span className="w-16 text-center">Retirer</span>
               </div>
             </div>
 
@@ -1733,13 +1733,11 @@ export default function ComptesPage() {
 
               return (
                 <>
-                  <div className="flex items-center justify-between gap-2 mb-2 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                  <div className="flex items-center justify-between gap-2 mb-1 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
                     <span>Matière</span>
                     <div className="flex items-center gap-4">
-                      <span className="w-16 text-center">Renommer</span>
-                      <span className="w-16 text-center">
-                        {modeFormation ? "Retirer" : "Supprimer"}
-                      </span>
+                      <span className="w-16 text-center">Choisir</span>
+                      <span className="w-16 text-center">Retirer</span>
                     </div>
                   </div>
 
