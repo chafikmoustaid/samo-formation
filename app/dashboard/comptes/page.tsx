@@ -110,11 +110,15 @@ function CarteStat({
   valeur,
   libelle,
   couleur,
+  actif,
+  onClick,
 }: {
   icone: React.ReactNode;
   valeur: number;
   libelle: string;
   couleur: "green" | "blue" | "amber" | "slate";
+  actif?: boolean;
+  onClick?: () => void;
 }) {
   const styles: Record<string, string> = {
     green: "bg-green-50 text-green-700",
@@ -122,8 +126,21 @@ function CarteStat({
     amber: "bg-amber-50 text-amber-700",
     slate: "bg-slate-100 text-slate-700",
   };
+  const bagues: Record<string, string> = {
+    green: "ring-green-300",
+    blue: "ring-blue-300",
+    amber: "ring-amber-300",
+    slate: "ring-slate-300",
+  };
   return (
-    <div className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3.5 shadow-sm">
+    <button
+      type="button"
+      onClick={onClick}
+      title="Filtrer la liste des comptes ci-dessous"
+      className={`flex items-center gap-3 bg-white rounded-xl border px-4 py-3.5 shadow-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 ${
+        actif ? `border-transparent ring-2 ${bagues[couleur]}` : "border-gray-200"
+      }`}
+    >
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${styles[couleur]}`}>
         {icone}
       </div>
@@ -131,7 +148,7 @@ function CarteStat({
         <p className="text-xl font-semibold text-gray-900 leading-none">{valeur}</p>
         <p className="text-xs text-gray-500 mt-1 truncate">{libelle}</p>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -1135,10 +1152,50 @@ export default function ComptesPage() {
 
         {!voirCorbeille && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-            <CarteStat icone={<IconUsers className="w-5 h-5" />} valeur={comptesActifs.length} libelle="Comptes actifs" couleur="slate" />
-            <CarteStat icone={<IconGraduate className="w-5 h-5" />} valeur={nbEtudiants} libelle="Étudiants" couleur="green" />
-            <CarteStat icone={<IconBriefcase className="w-5 h-5" />} valeur={nbFormateurs} libelle="Formateurs" couleur="blue" />
-            <CarteStat icone={<IconShield className="w-5 h-5" />} valeur={nbAdmins} libelle="Administration" couleur="amber" />
+            <CarteStat
+              icone={<IconUsers className="w-5 h-5" />}
+              valeur={comptesActifs.length}
+              libelle="Comptes actifs"
+              couleur="slate"
+              actif={filtreRole === ""}
+              onClick={() => {
+                setVoirCorbeille(false);
+                setFiltreRole("");
+              }}
+            />
+            <CarteStat
+              icone={<IconGraduate className="w-5 h-5" />}
+              valeur={nbEtudiants}
+              libelle="Étudiants"
+              couleur="green"
+              actif={filtreRole === "student"}
+              onClick={() => {
+                setVoirCorbeille(false);
+                setFiltreRole("student");
+              }}
+            />
+            <CarteStat
+              icone={<IconBriefcase className="w-5 h-5" />}
+              valeur={nbFormateurs}
+              libelle="Formateurs"
+              couleur="blue"
+              actif={filtreRole === "instructor"}
+              onClick={() => {
+                setVoirCorbeille(false);
+                setFiltreRole("instructor");
+              }}
+            />
+            <CarteStat
+              icone={<IconShield className="w-5 h-5" />}
+              valeur={nbAdmins}
+              libelle="Administration"
+              couleur="amber"
+              actif={filtreRole === "admin"}
+              onClick={() => {
+                setVoirCorbeille(false);
+                setFiltreRole("admin");
+              }}
+            />
           </div>
         )}
 
