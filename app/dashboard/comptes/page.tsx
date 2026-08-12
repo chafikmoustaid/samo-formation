@@ -1168,20 +1168,20 @@ export default function ComptesPage() {
                 onClick={() => setVoirCorbeille((v) => !v)}
                 className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium border transition-colors shadow-sm ${
                   voirCorbeille
-                    ? "bg-gray-800 text-white border-gray-800 hover:bg-gray-900"
-                    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                    ? "bg-slate-700 text-white border-slate-700 hover:bg-slate-800"
+                    : "bg-white text-slate-700 border-gray-200 hover:bg-slate-50 hover:border-slate-300"
                 }`}
               >
-                <IconTrash className="w-4 h-4" />
+                <IconTrash className={`w-4 h-4 ${voirCorbeille ? "text-white" : "text-amber-600"}`} />
                 {voirCorbeille
                   ? "Retour aux comptes"
                   : `Voir la corbeille${nbArchives > 0 ? ` (${nbArchives})` : ""}`}
               </button>
               <Link
                 href="/dashboard/comptes/historique"
-                className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium border border-gray-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm"
               >
-                <IconHistory className="w-4 h-4" />
+                <IconHistory className="w-4 h-4 text-blue-600" />
                 Historique des changements
               </Link>
             </div>
