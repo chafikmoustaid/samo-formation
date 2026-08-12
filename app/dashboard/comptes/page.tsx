@@ -34,6 +34,86 @@ type Formation = {
   heures_attendues: number | null;
 };
 
+// Petites icônes en ligne (traits fins, style cohérent) — évite toute
+// dépendance externe et les problèmes de police/emoji dans les exports.
+function IconUsers({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 5 18.5V20" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="9.5" cy="8" r="3" />
+      <path d="M16 8.5a2.5 2.5 0 1 0 0-5" strokeLinecap="round" />
+      <path d="M19.5 20v-1.5a3 3 0 0 0-2-2.83" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconGraduate({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <path d="M2 9.5 12 5l10 4.5-10 4.5-10-4.5Z" strokeLinejoin="round" />
+      <path d="M6 11.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 10v5.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconBriefcase({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <rect x="3" y="7.5" width="18" height="12" rx="2" />
+      <path d="M8 7.5V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5" strokeLinecap="round" />
+      <path d="M3 12.5h18" />
+    </svg>
+  );
+}
+function IconShield({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <path d="M12 3.5 19 6v5.5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-2.5Z" strokeLinejoin="round" />
+      <path d="m9 12 2 2 4-4.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconBook({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className}>
+      <path d="M4 5.5C4 4.7 4.7 4 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" strokeLinejoin="round" />
+      <path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H12v16h6.5a1.5 1.5 0 0 0 1.5-1.5v-13Z" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Carte de statistique compacte pour la bande "vue d'ensemble" en haut de
+// page — donne un aperçu exécutif immédiat (comptes actifs par rôle,
+// formations, matières) avant le détail opérationnel plus bas.
+function CarteStat({
+  icone,
+  valeur,
+  libelle,
+  couleur,
+}: {
+  icone: React.ReactNode;
+  valeur: number;
+  libelle: string;
+  couleur: "green" | "blue" | "amber" | "slate";
+}) {
+  const styles: Record<string, string> = {
+    green: "bg-green-50 text-green-700",
+    blue: "bg-blue-50 text-blue-700",
+    amber: "bg-amber-50 text-amber-700",
+    slate: "bg-slate-100 text-slate-700",
+  };
+  return (
+    <div className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 px-4 py-3.5 shadow-sm">
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${styles[couleur]}`}>
+        {icone}
+      </div>
+      <div className="min-w-0">
+        <p className="text-xl font-semibold text-gray-900 leading-none">{valeur}</p>
+        <p className="text-xs text-gray-500 mt-1 truncate">{libelle}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ComptesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -821,6 +901,10 @@ export default function ComptesPage() {
   }
 
   const nbArchives = profiles.filter((p) => p.desactive_le).length;
+  const comptesActifs = profiles.filter((p) => !p.desactive_le);
+  const nbEtudiants = comptesActifs.filter((p) => p.role === "student").length;
+  const nbFormateurs = comptesActifs.filter((p) => p.role === "instructor").length;
+  const nbAdmins = comptesActifs.filter((p) => p.role === "admin").length;
 
   const profilesFiltres = profiles.filter((p) => {
     if (voirCorbeille) {
@@ -1035,6 +1119,15 @@ export default function ComptesPage() {
           }
         />
 
+        {!voirCorbeille && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+            <CarteStat icone={<IconUsers className="w-5 h-5" />} valeur={comptesActifs.length} libelle="Comptes actifs" couleur="slate" />
+            <CarteStat icone={<IconGraduate className="w-5 h-5" />} valeur={nbEtudiants} libelle="Étudiants" couleur="green" />
+            <CarteStat icone={<IconBriefcase className="w-5 h-5" />} valeur={nbFormateurs} libelle="Formateurs" couleur="blue" />
+            <CarteStat icone={<IconShield className="w-5 h-5" />} valeur={nbAdmins} libelle="Administration" couleur="amber" />
+          </div>
+        )}
+
         {generatedPassword && (
           <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg px-5 py-4">
             <p className="text-sm text-amber-900 mb-2">
@@ -1172,9 +1265,20 @@ export default function ComptesPage() {
         </div>
 
         <Card className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            {voirCorbeille ? "Comptes archivés" : "Comptes existants"}
-          </h2>
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <IconUsers className="w-4.5 h-4.5" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {voirCorbeille ? "Comptes archivés" : "Comptes existants"}
+              </h2>
+            </div>
+            <span className="text-xs text-gray-400">
+              {profilesFiltres.length} compte{profilesFiltres.length > 1 ? "s" : ""} affiché
+              {profilesFiltres.length > 1 ? "s" : ""}
+            </span>
+          </div>
 
           <div className="flex flex-wrap gap-3 mb-4">
             <input
@@ -1182,12 +1286,12 @@ export default function ComptesPage() {
               value={recherche}
               onChange={(e) => setRecherche(e.target.value)}
               placeholder="Rechercher par email ou nom…"
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[220px]"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
             />
             <select
               value={filtreRole}
               onChange={(e) => setFiltreRole(e.target.value as Role | "")}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
             >
               <option value="">Tous les rôles</option>
               <option value="student">Étudiant</option>
@@ -1225,50 +1329,50 @@ export default function ComptesPage() {
                 ))}
               </colgroup>
               <thead>
-                <tr className="border-b text-left text-gray-500">
-                  <th className="p-2 pr-3 truncate relative select-none">
+                <tr className="border-b border-gray-200 text-left text-gray-500 bg-gray-50/80 text-xs uppercase tracking-wide">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Email
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(0, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pr-3 truncate relative select-none">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Nom complet
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(1, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pr-3 truncate relative select-none">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Formation
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(2, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pr-3 truncate relative select-none">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Créé le
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(3, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pr-3 truncate relative select-none">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Mot de passe
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(4, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pl-3 pr-3 border-l border-gray-200 text-red-600 truncate relative select-none">
+                  <th className="p-2.5 pl-3 pr-3 border-l border-gray-200 truncate relative select-none">
                     Rôle
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(5, e)}
                       className="absolute top-0 right-0 h-full w-2 cursor-col-resize hover:bg-blue-300/60 active:bg-blue-400/80"
                     />
                   </th>
-                  <th className="p-2 pr-3 truncate relative select-none">
+                  <th className="p-2.5 pr-3 truncate relative select-none">
                     Actions
                     <span
                       onMouseDown={(e) => demarrerRedimensionnement(6, e)}
@@ -1279,7 +1383,7 @@ export default function ComptesPage() {
               </thead>
               <tbody>
                 {profilesFiltres.map((p) => (
-                  <tr key={p.id} className="border-b last:border-0 align-top">
+                  <tr key={p.id} className="border-b border-gray-100 last:border-0 align-top hover:bg-gray-50/60 transition-colors">
                     <td className="p-2 truncate" title={p.email}>{p.email}</td>
                     <td className="p-2">
                       <input
@@ -1350,9 +1454,9 @@ export default function ComptesPage() {
                       <button
                         onClick={() => definirMotDePasse(p.id, p.email)}
                         disabled={settingPasswordId === p.id || Boolean(p.desactive_le)}
-                        className="text-blue-600 hover:underline disabled:opacity-50"
+                        className="px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {settingPasswordId === p.id ? "Génération…" : "Regénérer"}
+                        {settingPasswordId === p.id ? "Génération…" : "Régénérer"}
                       </button>
                     </td>
                     <td className="p-2 pl-3 border-l border-gray-200">
@@ -1375,12 +1479,12 @@ export default function ComptesPage() {
                           Ton propre compte
                         </span>
                       ) : (
-                        <div className="flex flex-col gap-1 items-start">
+                        <div className="flex flex-col gap-1.5 items-start">
                           {p.desactive_le ? (
                             <button
                               onClick={() => restaurerCompte(p.id)}
                               disabled={busyArchiveId === p.id}
-                              className="text-green-700 hover:underline disabled:opacity-50"
+                              className="px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700 border border-green-100 hover:bg-green-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {busyArchiveId === p.id
                                 ? "Restauration…"
@@ -1390,7 +1494,7 @@ export default function ComptesPage() {
                             <button
                               onClick={() => archiverCompte(p.id, p.email)}
                               disabled={busyArchiveId === p.id}
-                              className="text-amber-700 hover:underline disabled:opacity-50"
+                              className="px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {busyArchiveId === p.id
                                 ? "Archivage…"
@@ -1402,7 +1506,7 @@ export default function ComptesPage() {
                               supprimerCompteDefinitivement(p.id, p.email)
                             }
                             disabled={busySuppressionId === p.id}
-                            className="text-red-600 hover:underline disabled:opacity-50"
+                            className="px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {busySuppressionId === p.id
                               ? "Suppression…"
@@ -1421,13 +1525,18 @@ export default function ComptesPage() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Catalogue des formations
-            </h2>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <IconBriefcase className="w-4.5 h-4.5" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Catalogue des formations
+              </h2>
+            </div>
             <p className="text-sm text-gray-500 mb-4">
               Clique sur une formation pour filtrer le catalogue des matières
-              à droite. Coche une ou plusieurs formations pour les renommer ou
-              les supprimer.
+              à droite. Sélectionne une formation pour la renommer, ou coche-en
+              une ou plusieurs pour les supprimer.
             </p>
 
             <form
@@ -1443,7 +1552,7 @@ export default function ComptesPage() {
                 onChange={(e) => setNouvelleFormation(e.target.value)}
                 placeholder="Nouvelle formation"
                 disabled={ajoutFormationEnCours}
-                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
               />
               <Button
                 type="submit"
@@ -1454,34 +1563,25 @@ export default function ComptesPage() {
               </Button>
             </form>
 
-            <div className="flex items-center justify-end gap-4 mb-2 text-sm">
-              <button
-                onClick={renommerFormationsCochees}
-                disabled={formationsARenommer.size !== 1}
-                className="w-20 text-center text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
-              >
-                Renommer
-              </button>
-              <button
-                onClick={supprimerFormationsCochees}
-                disabled={formationsASupprimer.size === 0}
-                className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
-              >
-                Supprimer{formationsASupprimer.size > 1 ? ` (${formationsASupprimer.size})` : ""}
-              </button>
+            <div className="flex items-center justify-between gap-2 mb-2 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+              <span>Formation</span>
+              <div className="flex items-center gap-4">
+                <span className="w-16 text-center">Renommer</span>
+                <span className="w-16 text-center">Supprimer</span>
+              </div>
             </div>
 
             {formations.length === 0 ? (
               <p className="text-sm text-gray-400">Aucune formation pour l&apos;instant.</p>
             ) : (
-              <ul className="space-y-2 max-h-72 overflow-y-auto">
+              <ul className="space-y-1 max-h-72 overflow-y-auto">
                 {formations.map((f) => (
                   <li
                     key={f.id}
-                    className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${
+                    className={`flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors ${
                       formationChoisieId === f.id
                         ? "bg-blue-50 ring-1 ring-blue-200"
-                        : ""
+                        : "hover:bg-gray-50"
                     }`}
                   >
                     <button
@@ -1491,39 +1591,60 @@ export default function ComptesPage() {
                     >
                       {f.nom}
                     </button>
-                    <div className="w-20 flex justify-center">
+                    <div className="w-16 flex justify-center">
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="renommer-formation"
                         checked={formationsARenommer.has(f.id)}
-                        onChange={() =>
-                          basculerCase(formationsARenommer, setFormationsARenommer, f.id)
-                        }
-                        className="shrink-0"
+                        onChange={() => setFormationsARenommer(new Set([f.id]))}
+                        className="shrink-0 accent-blue-600"
                       />
                     </div>
-                    <div className="w-20 flex justify-center">
+                    <div className="w-16 flex justify-center">
                       <input
                         type="checkbox"
                         checked={formationsASupprimer.has(f.id)}
                         onChange={() =>
                           basculerCase(formationsASupprimer, setFormationsASupprimer, f.id)
                         }
-                        className="shrink-0"
+                        className="shrink-0 accent-red-600"
                       />
                     </div>
                   </li>
                 ))}
               </ul>
             )}
+
+            <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+              <button
+                onClick={renommerFormationsCochees}
+                disabled={formationsARenommer.size !== 1}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Renommer la sélection
+              </button>
+              <button
+                onClick={supprimerFormationsCochees}
+                disabled={formationsASupprimer.size === 0}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Supprimer{formationsASupprimer.size > 1 ? ` (${formationsASupprimer.size})` : ""}
+              </button>
+            </div>
           </Card>
 
           <Card>
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Catalogue des matières
-            </h2>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <IconBook className="w-4.5 h-4.5" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Catalogue des matières
+              </h2>
+            </div>
             <p className="text-sm text-gray-500 mb-2">
-              Coche une matière pour la renommer (partout où elle est
-              utilisée) ou la retirer/supprimer.
+              Sélectionne une matière pour la renommer (partout où elle est
+              utilisée), ou coche-en une ou plusieurs pour la retirer/supprimer.
             </p>
 
             {formationChoisieId !== null && (
@@ -1557,7 +1678,7 @@ export default function ComptesPage() {
                     }
                   }}
                   defaultValue=""
-                  className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                  className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
                 >
                   <option value="" disabled>
                     Assigner une matière existante…
@@ -1591,7 +1712,7 @@ export default function ComptesPage() {
                 onChange={(e) => setNouvelleMatiere(e.target.value)}
                 placeholder="Nouvelle matière"
                 disabled={ajoutMatiereEnCours}
-                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm"
+                className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
               />
               <Button
                 type="submit"
@@ -1612,31 +1733,14 @@ export default function ComptesPage() {
 
               return (
                 <>
-                  <div className="flex items-center justify-end gap-4 mb-2 text-sm">
-                    <button
-                      onClick={renommerMatieresCochees}
-                      disabled={matieresARenommer.size !== 1}
-                      className="w-20 text-center text-blue-600 hover:underline disabled:opacity-40 disabled:no-underline"
-                    >
-                      Renommer
-                    </button>
-                    {modeFormation ? (
-                      <button
-                        onClick={retirerMatieresCocheesDeFormation}
-                        disabled={matieresASupprimer.size === 0 || savingFormationMatieres}
-                        className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
-                      >
-                        Retirer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={supprimerMatieresCochees}
-                        disabled={matieresASupprimer.size === 0}
-                        className="w-20 text-center text-red-600 hover:underline disabled:opacity-40 disabled:no-underline"
-                      >
-                        Supprimer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
-                      </button>
-                    )}
+                  <div className="flex items-center justify-between gap-2 mb-2 px-2 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                    <span>Matière</span>
+                    <div className="flex items-center gap-4">
+                      <span className="w-16 text-center">Renommer</span>
+                      <span className="w-16 text-center">
+                        {modeFormation ? "Retirer" : "Supprimer"}
+                      </span>
+                    </div>
                   </div>
 
                   {matieresAffichees.length === 0 ? (
@@ -1646,36 +1750,65 @@ export default function ComptesPage() {
                         : "Aucune matière pour l'instant."}
                     </p>
                   ) : (
-                    <ul className="space-y-2 max-h-72 overflow-y-auto">
+                    <ul className="space-y-1 max-h-72 overflow-y-auto">
                       {matieresAffichees.map((matiere) => (
-                        <li key={matiere} className="flex items-center gap-3">
-                          <span className="flex-1 text-sm text-gray-900 px-2 py-1.5">
+                        <li
+                          key={matiere}
+                          className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-gray-50 transition-colors"
+                        >
+                          <span className="flex-1 text-sm text-gray-900">
                             {matiere}
                           </span>
-                          <div className="w-20 flex justify-center">
+                          <div className="w-16 flex justify-center">
                             <input
-                              type="checkbox"
+                              type="radio"
+                              name="renommer-matiere"
                               checked={matieresARenommer.has(matiere)}
-                              onChange={() =>
-                                basculerCase(matieresARenommer, setMatieresARenommer, matiere)
-                              }
-                              className="shrink-0"
+                              onChange={() => setMatieresARenommer(new Set([matiere]))}
+                              className="shrink-0 accent-blue-600"
                             />
                           </div>
-                          <div className="w-20 flex justify-center">
+                          <div className="w-16 flex justify-center">
                             <input
                               type="checkbox"
                               checked={matieresASupprimer.has(matiere)}
                               onChange={() =>
                                 basculerCase(matieresASupprimer, setMatieresASupprimer, matiere)
                               }
-                              className="shrink-0"
+                              className="shrink-0 accent-red-600"
                             />
                           </div>
                         </li>
                       ))}
                     </ul>
                   )}
+
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={renommerMatieresCochees}
+                      disabled={matieresARenommer.size !== 1}
+                      className="px-3 py-1.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Renommer la sélection
+                    </button>
+                    {modeFormation ? (
+                      <button
+                        onClick={retirerMatieresCocheesDeFormation}
+                        disabled={matieresASupprimer.size === 0 || savingFormationMatieres}
+                        className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Retirer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={supprimerMatieresCochees}
+                        disabled={matieresASupprimer.size === 0}
+                        className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Supprimer{matieresASupprimer.size > 1 ? ` (${matieresASupprimer.size})` : ""}
+                      </button>
+                    )}
+                  </div>
                 </>
               );
             })()}
