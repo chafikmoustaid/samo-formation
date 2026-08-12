@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import DashboardChart from "@/components/DashboardChart";
 import { supabase } from "@/lib/supabase";
 import LinkButton from "@/components/ui/LinkButton";
@@ -19,6 +20,7 @@ const STATUT_TONE = {
 const SEUIL_RETARD_JOURS = 7;
 
 export default function Dashboard() {
+  const router = useRouter();
   const [fiches, setFiches] = useState<any[]>([]);
   const [profils, setProfils] = useState<any[]>([]);
   const [formations, setFormations] = useState<any[]>([]);
@@ -200,7 +202,11 @@ export default function Dashboard() {
 
             <tbody>
               {fiches.slice(0, 5).map((fiche) => (
-                <tr key={fiche.id} className="border-b last:border-0">
+                <tr
+                  key={fiche.id}
+                  onClick={() => router.push(`/attendance/${fiche.id}`)}
+                  className="border-b last:border-0 cursor-pointer hover:bg-gray-50 transition-colors"
+                >
                   <td className="p-3">{fiche.nom_etudiant}</td>
                   <td className="p-3">{fiche.nom_formateur}</td>
                   <td className="p-3">{fiche.total_heures} h</td>
