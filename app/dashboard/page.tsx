@@ -118,28 +118,28 @@ export default function Dashboard() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
           <StatCard label="Total fiches" value={totalFiches} href="/attendance/history" />
           <StatCard
-            label="En attente"
-            value={enAttente}
-            accent="orange"
-            href="/attendance/history?statut=en_attente"
-          />
-          <StatCard
             label="Validées"
             value={validees}
             accent="green"
             href="/attendance/history?statut=validee"
           />
           <StatCard
-            label="Refusées"
-            value={refusees}
-            accent="red"
-            href="/attendance/history?statut=refusee"
+            label="En attente"
+            value={enAttente}
+            accent="orange"
+            href="/attendance/history?statut=en_attente"
           />
           <StatCard
             label="Brouillons"
             value={brouillons}
             color="#6b7280"
             href="/attendance/history?statut=brouillon"
+          />
+          <StatCard
+            label="Refusées"
+            value={refusees}
+            accent="red"
+            href="/attendance/history?statut=refusee"
           />
         </div>
 
