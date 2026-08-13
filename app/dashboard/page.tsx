@@ -115,7 +115,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         <PageHeader title="Tableau de bord SAMO" />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
           <StatCard label="Total fiches" value={totalFiches} href="/attendance/history" />
           <StatCard
             label="En attente"
@@ -134,6 +134,12 @@ export default function Dashboard() {
             value={refusees}
             accent="red"
             href="/attendance/history?statut=refusee"
+          />
+          <StatCard
+            label="Brouillons"
+            value={brouillons}
+            color="#6b7280"
+            href="/attendance/history?statut=brouillon"
           />
         </div>
 
