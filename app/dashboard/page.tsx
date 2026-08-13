@@ -52,6 +52,7 @@ export default function Dashboard() {
   const enAttente = fiches.filter((f) => f.statut === "en_attente").length;
   const validees = fiches.filter((f) => f.statut === "validee").length;
   const refusees = fiches.filter((f) => f.statut === "refusee").length;
+  const brouillons = fiches.filter((f) => f.statut === "brouillon").length;
 
   const profilsParId = new Map(profils.map((p) => [p.id, p]));
   const formationsParId = new Map(formations.map((f) => [f.id, f.nom]));
@@ -182,6 +183,7 @@ export default function Dashboard() {
             enAttente={enAttente}
             validees={validees}
             refusees={refusees}
+            brouillons={brouillons}
           />
         </Card>
 

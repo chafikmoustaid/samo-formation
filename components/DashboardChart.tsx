@@ -9,6 +9,7 @@ const SERIES = [
   { key: "enAttente", name: "En attente", color: "#a05a2c" },
   { key: "validees", name: "Validées", color: "#2d6a4f" },
   { key: "refusees", name: "Refusées", color: "#9d3b3b" },
+  { key: "brouillons", name: "Brouillons", color: "#6b7280" },
 ] as const;
 
 function CustomTooltip({
@@ -45,13 +46,15 @@ export default function DashboardChart({
   enAttente,
   validees,
   refusees,
+  brouillons,
 }: {
   enAttente: number;
   validees: number;
   refusees: number;
+  brouillons: number;
 }) {
-  const values = { enAttente, validees, refusees };
-  const total = enAttente + validees + refusees;
+  const values = { enAttente, validees, refusees, brouillons };
+  const total = enAttente + validees + refusees + brouillons;
 
   const data = SERIES.map((s) => ({
     name: s.name,
