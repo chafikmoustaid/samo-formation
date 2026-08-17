@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Role = "admin" | "instructor" | "student";
@@ -13,6 +13,19 @@ export default function Navbar() {
   const router = useRouter();
   const [role, setRole] = useState<Role | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+
+  // Identifiant du compte connu de cet onglet. Le jeton de session Supabase
+  // est stocké dans le localStorage du navigateur, commun à tous les onglets
+  // du même site — si un autre compte se connecte dans un autre onglet (ex.
+  // test d'un compte admin en parallèle d'un compte formateur), la session
+  // de CET onglet peut être remplacée silencieusement par celle de l'autre
+  // compte. Sans ce garde-fou, l'interface bascule alors discrètement vers
+  // le nouveau rôle (voir incident du 17/08/2026 : un formateur s'est
+  // retrouvé avec les droits admin après validation d'une fiche, simplement
+  // parce qu'une session admin était ouverte dans un autre onglet). On
+  // détecte donc tout changement de compte en cours de route et on force
+  // une reconnexion explicite plutôt que de continuer silencieusement.
+  const compteConnuRef = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
     let active = true;
@@ -27,8 +40,21 @@ export default function Navbar() {
           setRole(null);
           setEmail(null);
         }
+        compteConnuRef.current = null;
         return;
       }
+
+      if (
+        compteConnuRef.current !== undefined &&
+        compteConnuRef.current !== null &&
+        compteConnuRef.current !== user.id
+      ) {
+        await supabase.auth.signOut();
+        window.location.href = "/login?session=changee";
+        return;
+      }
+
+      compteConnuRef.current = user.id;
 
       const { data: profil } = await supabase
         .from("profiles")

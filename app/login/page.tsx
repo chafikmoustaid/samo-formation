@@ -33,6 +33,7 @@ function LoginForm() {
 
   const { titre, sousTitre } = CATEGORIES[categorie];
   const sessionExpiree = searchParams.get("session") === "expiree";
+  const sessionChangee = searchParams.get("session") === "changee";
   const compteDesactive = searchParams.get("compte") === "desactive";
 
   const [email, setEmail] = useState("");
@@ -213,6 +214,16 @@ function LoginForm() {
           {sessionExpiree && !error && (
             <div className="mb-4 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
               Ta session a expiré après une période d&apos;inactivité. Reconnecte-toi.
+            </div>
+          )}
+
+          {sessionChangee && !error && (
+            <div className="mb-4 text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+              Un autre compte s&apos;est connecté dans ce navigateur (un autre
+              onglet ou une autre fenêtre), ce qui a interrompu ta session par
+              sécurité. Reconnecte-toi. Évite de garder deux comptes ouverts
+              en même temps dans le même navigateur — utilise une fenêtre de
+              navigation privée pour le second compte.
             </div>
           )}
 

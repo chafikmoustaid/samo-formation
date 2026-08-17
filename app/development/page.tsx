@@ -10,7 +10,6 @@ import {
   ligneDeveloppementVide,
   calculHeuresLigne,
   totalHeuresDeveloppement,
-  lignesDansLaMemeSemaine,
   OPTIONS_HEURES_DEV,
   APPROBATEURS_DEVELOPPEMENT,
 } from "@/lib/ficheDeveloppement";
@@ -340,15 +339,6 @@ function NouvelleFicheDeveloppementContent() {
       }
     }
 
-    if (!lignesDansLaMemeSemaine(lignesRemplies)) {
-      setMessage({
-        type: "erreur",
-        texte:
-          "Toutes les journées d'une même fiche doivent appartenir à la même semaine (du lundi au dimanche). Fais une fiche distincte pour une autre semaine.",
-      });
-      return;
-    }
-
     if (!signature) {
       setMessage({ type: "erreur", texte: "Enregistre ta signature." });
       return;
@@ -550,7 +540,7 @@ function NouvelleFicheDeveloppementContent() {
                       Journée(s) travaillée(s) <span className="text-red-600">*</span>
                     </h3>
                     <p className="text-sm text-green-700">
-                      Ajoute une ligne par journée — toutes de la même semaine.
+                      Ajoute une ligne par journée.
                     </p>
                   </div>
 
