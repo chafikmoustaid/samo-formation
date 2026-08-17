@@ -192,12 +192,12 @@ export default function Navbar() {
                   Fiches de présence
                 </Link>
               )}
-              {pathname !== "/development" && (
+              {pathname !== "/development/history" && (
                 <Link
-                  href="/development"
+                  href="/development/history"
                   className="text-sm font-bold hover:text-white/80 transition-colors whitespace-nowrap"
                 >
-                  Fiche de développement
+                  Fiches de développement
                 </Link>
               )}
               {pathname !== "/instructor/feuilles-route" && (
