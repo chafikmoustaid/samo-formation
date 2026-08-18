@@ -15,7 +15,12 @@ import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
-type Formateur = { id: string; nom: string; matieres: string[] | null };
+type Formateur = {
+  id: string;
+  nom: string;
+  email: string | null;
+  matieres: string[] | null;
+};
 
 export default function Attendance() {
   const [nomEtudiant, setNomEtudiant] = useState("");
@@ -173,6 +178,22 @@ export default function Attendance() {
     setSignatureEnregistree(signature);
   }
 
+  // Deux comptes différents (ex. un compte admin et un compte formateur
+  // appartenant à la même personne) peuvent porter le même nom complet —
+  // sans distinction, l'étudiant risque de choisir le mauvais compte dans
+  // la liste (la fiche devient alors invisible pour le vrai formateur).
+  // On affiche l'email à côté du nom uniquement quand un doublon existe.
+  const nomsFormateursEnDouble = new Set(
+    Object.entries(
+      formateurs.reduce<Record<string, number>>((compteur, f) => {
+        compteur[f.nom] = (compteur[f.nom] ?? 0) + 1;
+        return compteur;
+      }, {})
+    )
+      .filter(([, count]) => count > 1)
+      .map(([nom]) => nom)
+  );
+
   const totalF = totalFormation(lignes);
   const totalP = totalPratique(lignes);
 
@@ -260,6 +281,36 @@ export default function Attendance() {
 
     if (!nomEtudiant.trim()) {
       setMessage({ type: "erreur", texte: "Veuillez saisir le nom de l'étudiant." });
+      return;
+    }
+
+    if (!formateurId) {
+      setMessage({
+        type: "erreur",
+        texte: "Veuillez choisir le nom du formateur(trice).",
+      });
+      return;
+    }
+
+    // Une ligne avec des heures inscrites (formation ou pratique) mais sans
+    // date ne peut plus être corrigée une fois la fiche envoyée — on bloque
+    // donc l'envoi tant que ce genre d'incohérence traîne dans le tableau.
+    const ligneIncoherente = lignes.find((l) => {
+      const desHeures =
+        (l.formationDe && l.formationDe !== "") ||
+        (l.formationA && l.formationA !== "") ||
+        (l.pratiqueDe && l.pratiqueDe !== "") ||
+        (l.pratiqueA && l.pratiqueA !== "");
+      return desHeures && !l.date;
+    });
+
+    if (ligneIncoherente) {
+      setMessage({
+        type: "erreur",
+        texte: `Il manque la date pour la ligne "${ligneIncoherente.jour} (${
+          ligneIncoherente.type === "P" ? "Pratique" : "Formation"
+        })" — des heures y sont inscrites mais aucune date n'est sélectionnée.`,
+      });
       return;
     }
 
@@ -445,7 +496,7 @@ export default function Attendance() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-3">
                 <label className="font-semibold text-gray-900 w-44 shrink-0 text-right">
-                  Nom de l&apos;étudiant(e) :
+                  Nom de l&apos;étudiant(e) : <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -457,7 +508,7 @@ export default function Attendance() {
 
               <div className="flex items-center gap-3">
                 <label className="font-semibold text-gray-900 w-44 shrink-0 text-right">
-                  Nom du formateur(trice) :
+                  Nom du formateur(trice) : <span className="text-red-600">*</span>
                 </label>
                 <select
                   value={formateurId}
@@ -467,7 +518,9 @@ export default function Attendance() {
                   <option value="">Choisir un formateur</option>
                   {formateurs.map((f) => (
                     <option key={f.id} value={f.id}>
-                      {f.nom}
+                      {nomsFormateursEnDouble.has(f.nom) && f.email
+                        ? `${f.nom} — ${f.email}`
+                        : f.nom}
                     </option>
                   ))}
                 </select>
