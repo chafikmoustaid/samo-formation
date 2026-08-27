@@ -30,7 +30,7 @@ export default function ConditionsUtilisationPage() {
               1. Acceptation
             </h2>
             <p>
-              En utilisant la plateforme formationsamo.ca (« la
+              En utilisant la plateforme e-formation.net (« la
               plateforme »), tu acceptes les présentes conditions. Si tu
               n&apos;es pas d&apos;accord, tu ne dois pas utiliser la
               plateforme. Pour tout ce qui concerne tes renseignements
@@ -137,8 +137,8 @@ export default function ConditionsUtilisationPage() {
             </h2>
             <p>
               Pour toute question sur ces conditions, écris-nous à{" "}
-              <a href="mailto:info@formationsamo.ca" className="text-green-700 hover:underline">
-                info@formationsamo.ca
+              <a href="mailto:info@e-formation.net" className="text-green-700 hover:underline">
+                info@e-formation.net
               </a>
               .
             </p>

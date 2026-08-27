@@ -31,7 +31,7 @@ export default function ConfidentialitePage() {
             </h2>
             <p>
               Formation SAMO (« nous ») exploite la plateforme
-              formationsamo.ca destinée à ses étudiants et formateurs. La
+              e-formation.net destinée à ses étudiants et formateurs. La
               présente politique explique quels renseignements personnels
               nous recueillons, pourquoi, et comment ils sont protégés,
               conformément à la Loi sur la protection des renseignements
@@ -161,8 +161,8 @@ export default function ConfidentialitePage() {
             <p>
               Pour toute question sur cette politique ou pour exercer tes
               droits, écris-nous à{" "}
-              <a href="mailto:info@formationsamo.ca" className="text-green-700 hover:underline">
-                info@formationsamo.ca
+              <a href="mailto:info@e-formation.net" className="text-green-700 hover:underline">
+                info@e-formation.net
               </a>
               .
             </p>

@@ -6,7 +6,7 @@ const apiKey = process.env.RESEND_API_KEY;
  * Adresse d'expédition des courriels de notification. Par défaut, utilise
  * le domaine de test de Resend (onboarding@resend.dev), qui ne peut envoyer
  * qu'à l'adresse du compte Resend. Pour notifier tous les formateurs et
- * étudiants en production, il faut vérifier un domaine (ex. e-formationsamo.ca)
+ * étudiants en production, il faut vérifier un domaine (ex. e-formation.net)
  * dans Resend et définir RESEND_FROM_EMAIL avec une adresse de ce domaine.
  */
 export const RESEND_FROM_EMAIL =

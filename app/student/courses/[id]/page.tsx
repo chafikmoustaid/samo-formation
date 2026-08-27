@@ -84,7 +84,7 @@ export default function CoursePage() {
       <div className="print-only p-12 text-center text-lg text-gray-700">
         Ce support de cours est la propriété de Formation SAMO et ne peut
         pas être imprimé ni exporté en PDF. Merci de le consulter en ligne
-        sur formationsamo.ca.
+        sur e-formation.net.
       </div>
     </div>
   );
