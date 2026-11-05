@@ -11,11 +11,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Page autonome « Atelier Maths SN4 » (public/math/index.html), accessible
-  // à l'adresse /math sans avoir à écrire index.html.
-  async rewrites() {
-    return [{ source: "/math", destination: "/math/index.html" }];
-  },
   async headers() {
     return [
       {

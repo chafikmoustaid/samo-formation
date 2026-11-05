@@ -171,7 +171,7 @@ function LoginForm() {
       nextParam &&
       nextParam.startsWith("/") &&
       !nextParam.startsWith("//") &&
-      nextParam.startsWith(destination)
+      (nextParam.startsWith(destination) || nextParam === "/math")
         ? nextParam
         : destination;
 
