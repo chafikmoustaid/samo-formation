@@ -136,7 +136,9 @@ function LoginForm() {
     // connexion, même si l'email/mot de passe sont valides pour un autre
     // rôle. Sans ce contrôle, n'importe quel compte pouvait se connecter
     // depuis n'importe lequel des 3 boutons.
-    if (profil.role !== categorie) {
+    // Exception : un compte admin peut se connecter depuis n'importe lequel
+    // des trois boutons (il a accès à tous les espaces).
+    if (profil.role !== categorie && profil.role !== "admin") {
       await supabase.auth.signOut();
       setError(
         "Ce compte ne correspond pas à cet espace de connexion. Utilise le bouton correspondant à ton rôle sur la page d'accueil."
@@ -145,12 +147,15 @@ function LoginForm() {
       return;
     }
 
+    // Un admin arrive dans l'espace correspondant au bouton utilisé ;
+    // les autres rôles vont dans leur propre espace.
+    const espace = profil.role === "admin" ? categorie : profil.role;
     const destination =
-      profil.role === "admin"
+      espace === "admin"
         ? "/dashboard"
-        : profil.role === "instructor"
+        : espace === "instructor"
         ? "/instructor"
-        : profil.role === "student"
+        : espace === "student"
         ? "/student"
         : null;
 
