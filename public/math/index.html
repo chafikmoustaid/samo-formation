@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier Maths SN4 | e-formation.net</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Concept : cahier quadrillé. Papier à carreaux, encre indigo, surligneur jaune pour l'essentiel. */
+:root{
+  --bg:#f2f3fa; --paper:#fcfcff; --grid:rgba(75,50,195,.08);
+  --ink:#1c1a35; --muted:#5b5877; --line:#d9d7ea;
+  --accent:#4b32c3; --accent-ink:#ffffff; --accent-soft:#ebe8fb;
+  --hi:#ffe27a; --ok:#0b7a55; --ok-soft:#dcf5ea; --bad:#b42318; --bad-soft:#fde8e6;
+  --f-display:'Bricolage Grotesque',system-ui,sans-serif;
+  --f-body:'Instrument Sans',system-ui,-apple-system,sans-serif;
+  --f-math:'STIX Two Text','Cambria Math',Georgia,serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13122a; --paper:#1b1a38; --grid:rgba(150,135,255,.08);
+  --ink:#ecebfa; --muted:#a8a5c9; --line:#33315e;
+  --accent:#a496ff; --accent-ink:#17142e; --accent-soft:#2a2756;
+  --hi:#5b4b00; --ok:#56d6a6; --ok-soft:#133a30; --bad:#ff9087; --bad-soft:#41201f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13122a; --paper:#1b1a38; --grid:rgba(150,135,255,.08);
+  --ink:#ecebfa; --muted:#a8a5c9; --line:#33315e;
+  --accent:#a496ff; --accent-ink:#17142e; --accent-soft:#2a2756;
+  --hi:#5b4b00; --ok:#56d6a6; --ok-soft:#133a30; --bad:#ff9087; --bad-soft:#41201f; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--paper)}
+.wrap{max-width:960px;margin:0 auto}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.35rem;font-weight:800}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0 0 .8em}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 .6rem}
+.muted{color:var(--muted)}
+sup,sub{font-size:.7em;line-height:0}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.15;margin:0 .15em;font-family:var(--f-math)}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 .25em}
+.fr>span:last-child{padding:0 .25em}
+.rad{font-family:var(--f-math)}
+.rc{border-top:1.5px solid currentColor;padding:0 .12em;margin-left:1px}
+.m{font-family:var(--f-math);font-size:1.08em}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px))) calc(-1*max(16px,env(safe-area-inset-right,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+.top .wrap{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-block:.6rem}
+.brand{font-family:var(--f-display);font-weight:800;text-decoration:none;color:var(--ink);font-size:1.1rem;margin-right:auto}
+.brand b{background:var(--hi);padding:0 .3em;border-radius:3px}
+nav{display:flex;gap:.25rem;flex-wrap:wrap}
+nav a{padding:.4rem .8rem;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem}
+nav a:hover{color:var(--ink)}
+nav a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+main{padding-top:2rem}
+.intro{display:grid;gap:.9rem;margin-bottom:2rem}
+.intro p.lead{font-size:1.12rem;max-width:60ch;color:var(--muted)}
+.intro h1 mark{background:var(--hi);color:inherit;padding:0 .12em;border-radius:4px}
+.summary{display:flex;gap:1.5rem;flex-wrap:wrap;font-weight:600}
+.summary span b{font-family:var(--f-display);font-size:1.5rem;margin-right:.3rem}
+
+.list{display:grid;gap:.75rem;margin:0 0 2.2rem;padding:0;list-style:none}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:1rem;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+.num{font-family:var(--f-display);font-weight:800;font-size:1.7rem;color:var(--accent);min-width:2ch;text-align:center}
+.row p{margin:.15rem 0 .5rem;color:var(--muted);font-size:.92rem}
+.bar{height:6px;background:var(--accent-soft);border-radius:99px;overflow:hidden;max-width:320px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.best{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+.acts{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn,.btn-s{font:600 .95rem var(--f-body);padding:.6rem 1.1rem;border-radius:10px;text-decoration:none;cursor:pointer;border:1.5px solid var(--accent);display:inline-block}
+.btn{background:var(--accent);color:var(--accent-ink)}
+.btn:hover{filter:brightness(1.08)}
+.btn-s{background:transparent;color:var(--accent)}
+.btn-s:hover{background:var(--accent-soft)}
+button:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:620px){.row{grid-template-columns:auto minmax(0,1fr)}.acts{grid-column:1/-1}}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:2.2rem}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.3rem;min-width:0}
+.panel h2{margin-bottom:.4rem}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:.4rem;font-size:.93rem}
+.hist li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
+
+/* chapter */
+.crumb{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.9rem;margin-bottom:1rem}
+.tabs{display:flex;gap:.4rem;margin:1rem 0 1.5rem}
+.tabs a{padding:.5rem 1rem;border-radius:10px;text-decoration:none;font-weight:600;border:1.5px solid var(--line);color:var(--muted);background:var(--paper)}
+.tabs a[aria-current="page"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.sec{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1rem}
+.sec h2{margin-bottom:.7rem}
+.sec ul{margin:0 0 .8em;padding-left:1.2em}
+.sec li{margin:.25em 0}
+.formula{font-family:var(--f-math);font-size:1.12rem;background:var(--accent-soft);border-left:4px solid var(--accent);padding:.7rem 1rem;border-radius:0 8px 8px 0;margin:.7rem 0;display:grid;gap:.3rem}
+.ex{border:1.5px dashed var(--line);border-radius:10px;padding:.7rem 1rem;margin:.8rem 0}
+.ex>b:first-child{background:var(--hi);padding:0 .35em;border-radius:3px;margin-right:.4rem;color:inherit}
+.tip{font-size:.95rem;color:var(--muted)}
+.cta{margin:1.5rem 0;display:flex;gap:.6rem;flex-wrap:wrap}
+
+/* explorer */
+.xp{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:1.2rem;align-items:start}
+@media (max-width:640px){.xp{grid-template-columns:1fr}}
+.xp label{display:grid;grid-template-columns:2.2ch 1fr 5ch;gap:.6rem;align-items:center;margin:.4rem 0;font-family:var(--f-math);font-size:1.05rem}
+.xp input[type=range]{width:100%;accent-color:var(--accent)}
+.xp svg{width:100%;max-width:384px;height:auto;display:block;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.readout{font-family:var(--f-math);display:grid;gap:.2rem;margin-top:.6rem;font-size:1.02rem}
+.gridl{stroke:var(--line);stroke-width:1}
+.axis{stroke:var(--muted);stroke-width:1.5}
+.curve{fill:none;stroke:var(--accent);stroke-width:2.5}
+.pt{fill:var(--bad)}
+.pz{fill:var(--ok)}
+.svgt{fill:var(--muted);font:10px var(--f-body)}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
+.timer{font-family:var(--f-display);font-weight:800;font-size:1.3rem;font-variant-numeric:tabular-nums;padding:.2rem .7rem;border-radius:8px;background:var(--accent-soft)}
+.timer.low{background:var(--bad-soft);color:var(--bad)}
+.qbar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden;margin-bottom:1.2rem}
+.qbar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qlayout{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:1.2rem;align-items:start}
+@media (max-width:760px){.qlayout{grid-template-columns:1fr}}
+.qlayout.solo{grid-template-columns:minmax(0,1fr)}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.3rem}
+.qtag{font-size:.8rem;color:var(--muted);margin-bottom:.5rem}
+.qtext{font-size:1.18rem;font-weight:500;margin-bottom:1rem}
+.opts{display:grid;gap:.55rem}
+.opt{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.7rem;align-items:center;text-align:left;font:500 1.05rem var(--f-math);color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:.65rem .8rem;cursor:pointer;width:100%}
+.opt .l{font:700 .9rem var(--f-body);width:1.8rem;height:1.8rem;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.good{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default;opacity:1}
+.expl{margin-top:1rem;padding:.8rem 1rem;border-radius:10px;background:var(--accent-soft);font-size:.98rem}
+.expl b.g{color:var(--ok)}.expl b.r{color:var(--bad)}
+.qnav{display:flex;justify-content:space-between;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.navg{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:.35rem}
+.navg button{font:600 .85rem var(--f-body);padding:.4rem 0;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--muted);cursor:pointer}
+.navg button.done{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-soft)}
+.navg button.cur{border-color:var(--accent);color:var(--ink)}
+.warn{background:var(--bad-soft);color:var(--ink);border-radius:10px;padding:.8rem 1rem;margin-top:1rem}
+
+/* results */
+.score{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin:.4rem 0 1rem}
+.score .big{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,9vw,4rem);line-height:1}
+.mention{font-weight:700;background:var(--hi);padding:.1rem .6rem;border-radius:6px;color:inherit}
+.bars{display:grid;gap:.5rem;margin:1rem 0}
+.bars div{display:grid;grid-template-columns:minmax(0,13rem) 1fr 4ch;gap:.7rem;align-items:center;font-size:.92rem}
+.bars .bar{max-width:none}
+.bars .bar i.lo{background:var(--bad)}
+.rev{display:grid;gap:.8rem;margin-top:1rem}
+.rev .qcard{padding:1rem 1.1rem}
+.rev .res-ok{color:var(--ok);font-weight:700}.rev .res-no{color:var(--bad);font-weight:700}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.2rem}
+
+/* builder */
+.form{display:grid;gap:1rem}
+.chk{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.4rem}
+.chk label,.inl label{display:flex;gap:.55rem;align-items:center;cursor:pointer}
+.inl{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center}
+select,input[type=number]{font:500 1rem var(--f-body);padding:.4rem .6rem;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:1.1rem;height:1.1rem}
+.presets{display:grid;gap:.75rem}
+.preset{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+:root{color-scheme:light}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#accueil"><b>Maths</b> SN4</a>
+  <nav id="nav" aria-label="Navigation principale">
+    <a href="#accueil" data-k="accueil">Accueil</a>
+    <a href="#tests" data-k="tests">Tests</a>
+    <a href="#examens" data-k="examens">Examens</a>
+  </nav>
+</div></div>
+<main class="wrap" id="app"></main>
+
+<script>
+window.CH = window.CH || [];
+CH.push({
+id:1, titre:"La manipulation d'expressions algébriques",
+resume:"Multiplication et division de polynômes, fractions algébriques (expressions rationnelles).",
+cours:[
+{h:"La multiplication de polynômes", html:`
+<p>On distribue chaque terme du premier facteur à chaque terme du second, puis on regroupe les termes semblables. Le degré du produit est la somme des degrés des facteurs.</p>
+<div class="formula">
+<div>(a + b)(c + d) = ac + ad + bc + bd</div>
+<div>(a + b)^{2} = a^{2} + 2ab + b^{2} &nbsp;&nbsp; (a + b)(a − b) = a^{2} − b^{2}</div>
+</div>
+<div class="ex"><b>Exemple</b> (2x − 3)(x^{2} + 4x − 1) = 2x^{3} + 8x^{2} − 2x − 3x^{2} − 12x + 3 = 2x^{3} + 5x^{2} − 14x + 3</div>
+<p class="tip">Pour éviter les oublis, multipliez toujours terme par terme dans le même ordre et cochez chaque produit.</p>`},
+{h:"La division de polynômes", html:`
+<p>Diviser P(x) par D(x), c'est trouver un quotient Q(x) et un reste R(x) tels que :</p>
+<div class="formula">
+<div>P(x) = D(x) · Q(x) + R(x) &nbsp;&nbsp; avec degré de R &lt; degré de D</div>
+</div>
+<p>Si le diviseur est x − a, le <b>théorème du reste</b> dit que le reste vaut P(a).</p>
+<div class="ex"><b>Exemple</b> (x^{3} + 2x^{2} − 5x + 6) ÷ (x − 2) : quotient x^{2} + 4x + 3 et reste 12. On le vérifie avec P(2) = 8 + 8 − 10 + 6 = 12.</div>
+<p>Quand le reste est nul, le diviseur est un facteur : x^{2} − 5x + 6 = (x − 2)(x − 3).</p>`},
+{h:"Les fractions algébriques", html:`
+<p>Une fraction algébrique est un quotient de polynômes. Les valeurs qui annulent le dénominateur sont <b>interdites</b>.</p>
+<ul>
+<li><b>Simplifier :</b> factoriser le numérateur et le dénominateur, puis éliminer les facteurs communs.</li>
+<li><b>Multiplier :</b> multiplier les numérateurs entre eux et les dénominateurs entre eux (après simplification).</li>
+<li><b>Diviser :</b> multiplier par l'inverse de la deuxième fraction.</li>
+<li><b>Additionner :</b> mettre au même dénominateur, puis additionner les numérateurs.</li>
+</ul>
+<div class="ex"><b>Exemple</b> [[x^{2} − 4|x^{2} − 2x]] = [[(x − 2)(x + 2)|x(x − 2)]] = [[x + 2|x]] &nbsp; (x ≠ 0 et x ≠ 2)</div>
+<div class="ex"><b>Exemple</b> [[1|x]] + [[2|x + 1]] = [[(x + 1) + 2x|x(x + 1)]] = [[3x + 1|x(x + 1)]]</div>`}
+],
+q:[
+{p:"Développer (x + 3)(x − 5).", o:["x^{2} − 2x − 15","x^{2} + 2x − 15","x^{2} − 8x − 15","x^{2} − 15"], a:0, e:"x · x + x · (−5) + 3 · x + 3 · (−5) = x^{2} − 5x + 3x − 15 = x^{2} − 2x − 15."},
+{p:"Développer (2x − 1)(x^{2} + 3x + 2).", o:["2x^{3} + 5x^{2} + x − 2","2x^{3} + 7x^{2} + x − 2","2x^{3} + 5x^{2} + 7x − 2","2x^{3} + 6x^{2} + 4x − 2"], a:0, e:"2x^{3} + 6x^{2} + 4x − x^{2} − 3x − 2 = 2x^{3} + 5x^{2} + x − 2."},
+{p:"Quel est le degré du produit (x^{3} − 2x)(4x^{2} + 1) ?", o:["5","6","3","2"], a:0, e:"Le degré d'un produit est la somme des degrés : 3 + 2 = 5."},
+{p:"Quel est le reste de la division de x^{3} + 2x^{2} − 5x + 6 par x − 2 ?", o:["12","0","16","6"], a:0, e:"Théorème du reste : P(2) = 8 + 8 − 10 + 6 = 12."},
+{p:"Quel est le quotient de (x^{2} − 5x + 6) ÷ (x − 2) ?", o:["x − 3","x + 3","x − 2","x − 6"], a:0, e:"x^{2} − 5x + 6 = (x − 2)(x − 3), donc le quotient est x − 3 et le reste est nul."},
+{p:"Quel est le quotient de (2x^{2} + x − 6) ÷ (x + 2) ?", o:["2x − 3","2x + 3","x − 3","2x − 4"], a:0, e:"(x + 2)(2x − 3) = 2x^{2} − 3x + 4x − 6 = 2x^{2} + x − 6. Le reste est nul."},
+{p:"Quelles sont les valeurs interdites de [[3|x^{2} − 9]] ?", o:["x = 3 et x = −3","x = 3","x = 9","x = 0"], a:0, e:"On résout x^{2} − 9 = 0, soit (x − 3)(x + 3) = 0 : x = 3 ou x = −3."},
+{p:"Simplifier [[x^{2} − 4|x^{2} − 2x]].", o:["[[x + 2|x]]","[[x − 2|x]]","[[x + 2|x − 2]]","[[−4|−2x]]"], a:0, e:"Numérateur : (x − 2)(x + 2). Dénominateur : x(x − 2). On simplifie le facteur x − 2."},
+{p:"Effectuer [[1|x]] + [[2|x + 1]].", o:["[[3x + 1|x(x + 1)]]","[[3|2x + 1]]","[[3x + 2|x(x + 1)]]","[[x + 3|x(x + 1)]]"], a:0, e:"Dénominateur commun x(x + 1) : [[(x + 1) + 2x|x(x + 1)]] = [[3x + 1|x(x + 1)]]. On n'additionne jamais les dénominateurs."},
+{p:"Effectuer [[x^{2} − 1|x]] ÷ [[x + 1|x^{2}]].", o:["x(x − 1)","[[x − 1|x]]","x − 1","[[(x + 1)^{2}|x^{3}]]"], a:0, e:"On multiplie par l'inverse : [[(x − 1)(x + 1)|x]] · [[x^{2}|x + 1]] = x(x − 1)."}
+]});
+
+CH.push({
+id:2, titre:"La factorisation",
+resume:"Mise en évidence double, trinômes, différence de carrés, complétion du carré, équations du 2e degré.",
+cours:[
+{h:"Mise en évidence et factorisation d'un trinôme", html:`
+<p>Toujours commencer par la mise en évidence d'un facteur commun : 3x^{2} − 12x = 3x(x − 4).</p>
+<p><b>Mise en évidence double :</b> grouper les termes deux par deux. Pour factoriser ax^{2} + bx + c, on cherche deux nombres dont le produit est a · c et la somme est b, puis on décompose le terme du milieu.</p>
+<div class="ex"><b>Exemple</b> 2x^{2} + 7x + 3 : a · c = 6, somme 7, donc 1 et 6.<br>
+2x^{2} + 6x + x + 3 = 2x(x + 3) + (x + 3) = (x + 3)(2x + 1)</div>`},
+{h:"Trinôme carré parfait et différence de carrés", html:`
+<div class="formula">
+<div>a^{2} + 2ab + b^{2} = (a + b)^{2} &nbsp;&nbsp; a^{2} − 2ab + b^{2} = (a − b)^{2}</div>
+<div>a^{2} − b^{2} = (a − b)(a + b)</div>
+</div>
+<div class="ex"><b>Exemples</b> 4x^{2} − 12x + 9 = (2x − 3)^{2} &nbsp; et &nbsp; 9x^{2} − 16 = (3x − 4)(3x + 4)</div>
+<p class="tip">Un trinôme est un carré parfait quand le double produit des racines des deux carrés est égal au terme du milieu.</p>`},
+{h:"La complétion du carré", html:`
+<p>Ajouter et retrancher le carré de la moitié du coefficient de x pour obtenir une forme (x + h)^{2} + k.</p>
+<div class="ex"><b>Exemple</b> x^{2} + 8x + 3 = (x^{2} + 8x + 16) − 16 + 3 = (x + 4)^{2} − 13</div>
+<div class="ex"><b>Si a ≠ 1</b> 2x^{2} + 12x + 5 = 2(x^{2} + 6x) + 5 = 2(x + 3)^{2} − 18 + 5 = 2(x + 3)^{2} − 13</div>`},
+{h:"Factoriser pour manipuler les fractions algébriques", html:`
+<p>La factorisation permet de simplifier et de trouver un dénominateur commun.</p>
+<div class="ex"><b>Exemple</b> [[x^{2} − 9|x^{2} + 6x + 9]] = [[(x − 3)(x + 3)|(x + 3)^{2}]] = [[x − 3|x + 3]] &nbsp; (x ≠ −3)</div>`},
+{h:"La résolution d'une équation du second degré", html:`
+<p>Trois outils : factorisation, racine carrée (si b = 0) et formule quadratique.</p>
+<div class="formula">
+<div>x = [[−b ± √{b^{2} − 4ac}|2a]] &nbsp;&nbsp; Δ = b^{2} − 4ac</div>
+</div>
+<ul>
+<li>Δ &gt; 0 : deux solutions. Δ = 0 : une solution. Δ &lt; 0 : aucune solution réelle.</li>
+<li>Somme des solutions : −[[b|a]]. Produit : [[c|a]].</li>
+</ul>
+<div class="ex"><b>Exemple</b> 2x^{2} − x − 6 = 0 : (2x + 3)(x − 2) = 0, donc x = 2 ou x = −[[3|2]].</div>`}
+],
+q:[
+{p:"Factoriser x^{2} − 49.", o:["(x − 7)(x + 7)","(x − 7)^{2}","(x + 7)^{2}","(x − 49)(x + 1)"], a:0, e:"Différence de carrés : a^{2} − b^{2} = (a − b)(a + b) avec a = x et b = 7."},
+{p:"Factoriser x^{2} + 5x + 6.", o:["(x + 2)(x + 3)","(x + 1)(x + 6)","(x − 2)(x − 3)","(x + 5)(x + 1)"], a:0, e:"On cherche deux nombres de produit 6 et de somme 5 : 2 et 3."},
+{p:"Factoriser complètement 3x^{2} − 12x.", o:["3x(x − 4)","3x(x − 12)","x(3x − 4)","3(x − 4)"], a:0, e:"Le facteur commun est 3x : 3x^{2} ÷ 3x = x et 12x ÷ 3x = 4."},
+{p:"Factoriser 2x^{2} + 7x + 3.", o:["(2x + 1)(x + 3)","(2x + 3)(x + 1)","(2x − 1)(x − 3)","(x + 7)(2x + 3)"], a:0, e:"a · c = 6 et somme 7 : 1 et 6. 2x^{2} + 6x + x + 3 = 2x(x + 3) + (x + 3) = (2x + 1)(x + 3)."},
+{p:"Factoriser 4x^{2} − 12x + 9.", o:["(2x − 3)^{2}","(2x + 3)^{2}","(4x − 3)(x − 3)","(2x − 3)(2x + 3)"], a:0, e:"4x^{2} = (2x)^{2}, 9 = 3^{2} et le double produit vaut 2 · 2x · 3 = 12x. C'est (2x − 3)^{2}."},
+{p:"Écrire x^{2} + 8x + 3 sous la forme (x + h)^{2} + k.", o:["(x + 4)^{2} − 13","(x + 4)^{2} + 3","(x + 8)^{2} − 61","(x − 4)^{2} − 13"], a:0, e:"(x + 4)^{2} = x^{2} + 8x + 16. Pour retrouver +3, on retranche 13."},
+{p:"Simplifier [[x^{2} − 9|x^{2} + 6x + 9]].", o:["[[x − 3|x + 3]]","[[x + 3|x − 3]]","[[−3|3]]","[[x − 3|6]]"], a:0, e:"Numérateur : (x − 3)(x + 3). Dénominateur : (x + 3)^{2}. On simplifie un facteur (x + 3)."},
+{p:"Résoudre 2x^{2} − x − 6 = 0.", o:["x = 2 ou x = −[[3|2]]","x = −2 ou x = [[3|2]]","x = 3 ou x = −2","x = 6 ou x = −1"], a:0, e:"2x^{2} − x − 6 = (2x + 3)(x − 2) = 0. On vérifie : Δ = 1 + 48 = 49, x = [[1 ± 7|4]]."},
+{p:"Pour quelle valeur de k l'équation x^{2} + 4x + k = 0 a-t-elle exactement une solution ?", o:["k = 4","k = 2","k = 8","k = 16"], a:0, e:"Il faut Δ = 0 : 16 − 4k = 0, donc k = 4."},
+{p:"L'aire d'un rectangle est de 48 cm². Sa longueur dépasse sa largeur de 2 cm. Quelle est sa largeur ?", o:["6 cm","8 cm","4 cm","12 cm"], a:0, e:"w(w + 2) = 48 donne w^{2} + 2w − 48 = 0, soit (w + 8)(w − 6) = 0. La largeur est 6 cm (la solution négative est rejetée)."}
+]});
+
+CH.push({
+id:3, titre:"L'étude des fonctions",
+resume:"Propriétés d'une fonction, paramètres de transformation, fonction partie entière.",
+cours:[
+{h:"Les fonctions et leurs propriétés", html:`
+<ul>
+<li><b>Domaine :</b> valeurs permises de x. Il exclut les valeurs qui annulent un dénominateur ou rendent un radicand négatif.</li>
+<li><b>Image :</b> valeurs prises par y.</li>
+<li><b>Zéros :</b> valeurs de x pour lesquelles f(x) = 0. <b>Ordonnée à l'origine :</b> f(0).</li>
+<li><b>Croissance, décroissance, extremums, signe</b> : se lisent sur le graphique.</li>
+</ul>
+<div class="ex"><b>Exemple</b> f(x) = √{x − 4} + 1 : il faut x − 4 ≥ 0, donc dom f = [4, +∞[. Pour f(x) = [[5|x + 2]], dom f = ℝ \\ {−2}.</div>`},
+{h:"Les paramètres d'une fonction", html:`
+<div class="formula">
+<div>g(x) = a · f(b(x − h)) + k</div>
+</div>
+<ul>
+<li><b>a :</b> étirement vertical ; réflexion par rapport à l'axe des x si a &lt; 0</li>
+<li><b>b :</b> étirement horizontal de facteur [[1||b|]] ; réflexion par rapport à l'axe des y si b &lt; 0</li>
+<li><b>h :</b> translation horizontale (vers la droite si h &gt; 0)</li>
+<li><b>k :</b> translation verticale (vers le haut si k &gt; 0)</li>
+</ul>
+<p>Fonctions de base : x^{2}, |x|, √x, [[1|x]]. Pour f(x) = a|x − h| + k, le sommet est (h, k). Pour f(x) = [[a|x − h]] + k, les asymptotes sont x = h et y = k.</p>
+<p>Valeur absolue : |x − a| = b donne x = a + b ou x = a − b ; |x − a| &lt; b équivaut à a − b &lt; x &lt; a + b.</p>`},
+{h:"La fonction partie entière : une fonction en escalier", html:`
+<p>[x] est le plus grand entier inférieur ou égal à x. Le graphique de f(x) = [x] est un escalier : sur chaque intervalle [n, n + 1[, la fonction est constante et vaut n.</p>
+<div class="formula">
+<div>[3,7] = 3 &nbsp;&nbsp; [5] = 5 &nbsp;&nbsp; [−2,3] = −3</div>
+</div>
+<p class="tip">Pour un nombre négatif, on recule vers l'entier plus petit : [−2,3] vaut −3, pas −2.</p>
+<p>Avec des paramètres : f(x) = a[b(x − h)] + k, utile pour modéliser des tarifs par tranche (stationnement, livraison).</p>`}
+],
+q:[
+{p:"Quel est le domaine de f(x) = √{x − 4} + 1 ?", o:["[4, +∞[","]4, +∞[","[−4, +∞[","[1, +∞["], a:0, e:"Il faut x − 4 ≥ 0, donc x ≥ 4. La valeur 4 est permise (le radicand vaut 0)."},
+{p:"Quel est le domaine de f(x) = [[5|x + 2]] ?", o:["ℝ \\ {−2}","ℝ \\ {2}","ℝ","]−2, +∞["], a:0, e:"Le dénominateur s'annule pour x = −2. Cette valeur est interdite."},
+{p:"Quel est le sommet de f(x) = |x + 3| − 2 ?", o:["(−3, −2)","(3, −2)","(−3, 2)","(3, 2)"], a:0, e:"|x + 3| = |x − (−3)| : h = −3. Le sommet est (−3, −2)."},
+{p:"Quelle est l'image de f(x) = −|x| + 4 ?", o:["]−∞, 4]","[4, +∞[","ℝ","[0, 4]"], a:0, e:"|x| ≥ 0, donc −|x| ≤ 0 et f(x) ≤ 4. Le maximum 4 est atteint en x = 0."},
+{p:"Par rapport à f(x) = √x, la courbe de g(x) = −√{x + 2} est obtenue par :", o:["une réflexion par rapport à l'axe des x et une translation de 2 vers la gauche","une réflexion par rapport à l'axe des y et une translation de 2 vers la droite","une translation de 2 vers le haut seulement","une réflexion par rapport à l'axe des x et une translation de 2 vers le bas"], a:0, e:"Le signe − devant la racine réfléchit sur l'axe des x. Le x + 2 = x − (−2) déplace de 2 unités vers la gauche."},
+{p:"Que vaut [−2,3] ?", o:["−3","−2","2","−2,3"], a:0, e:"La partie entière est le plus grand entier inférieur ou égal au nombre. Pour −2,3, c'est −3."},
+{p:"Si f(x) = [x] + 2, que vaut f(3,9) ?", o:["5","6","4","3"], a:0, e:"[3,9] = 3, donc f(3,9) = 3 + 2 = 5."},
+{p:"Pour quelles valeurs de x a-t-on [x] = 4 ?", o:["4 ≤ x &lt; 5","3 &lt; x ≤ 4","3,5 ≤ x &lt; 4,5","x = 4 seulement"], a:0, e:"La partie entière vaut 4 sur l'intervalle [4, 5[ (4 inclus, 5 exclu)."},
+{p:"Si f(x) = [[6|x]], que vaut f(−3) ?", o:["−2","2","−18","18"], a:0, e:"f(−3) = [[6|−3]] = −2."},
+{p:"Résoudre |2x − 1| &lt; 5.", o:["]−2, 3[","]−3, 2[","]−∞, −2[ ∪ ]3, +∞[","[−2, 3]"], a:0, e:"−5 &lt; 2x − 1 &lt; 5, donc −4 &lt; 2x &lt; 6, soit −2 &lt; x &lt; 3. L'inégalité est stricte : crochets ouverts."}
+]});
+
+CH.push({
+id:4, titre:"La fonction polynomiale du second degré",
+resume:"Règle et propriétés, différentes notations, recherche de la règle, inéquations du 2e degré. Explorateur interactif inclus.",
+explorer:true,
+cours:[
+{h:"Règle et propriétés", html:`
+<div class="formula">
+<div>Générale : f(x) = ax^{2} + bx + c</div>
+<div>Canonique : f(x) = a(x − h)^{2} + k &nbsp; sommet (h, k)</div>
+<div>Factorisée : f(x) = a(x − x_{1})(x − x_{2}) &nbsp; zéros x_{1} et x_{2}</div>
+</div>
+<ul>
+<li><b>Ouverture :</b> vers le haut si a &gt; 0 (minimum k), vers le bas si a &lt; 0 (maximum k).</li>
+<li><b>Axe de symétrie :</b> x = h = −[[b|2a]]</li>
+<li><b>Ordonnée à l'origine :</b> f(0) = c</li>
+<li><b>Image :</b> [k, +∞[ si a &gt; 0, ]−∞, k] si a &lt; 0</li>
+</ul>
+<div class="ex"><b>Exemple</b> f(x) = x^{2} − 6x + 4 : h = [[6|2]] = 3 et k = f(3) = −5. Sommet (3, −5), minimum −5.</div>`},
+{h:"Les différentes notations : passer d'une forme à l'autre", html:`
+<p>Chaque forme répond rapidement à une question : la canonique donne le sommet, la factorisée donne les zéros, la générale donne l'ordonnée à l'origine.</p>
+<div class="ex"><b>Générale → canonique</b> (complétion du carré) x^{2} + 8x + 3 = (x + 4)^{2} − 13</div>
+<div class="ex"><b>Canonique → générale</b> (développer) 2(x − 1)^{2} + 3 = 2x^{2} − 4x + 5</div>
+<div class="ex"><b>Générale → factorisée</b> x^{2} − 2x − 8 = (x − 4)(x + 2)</div>`},
+{h:"La recherche de la règle", html:`
+<p>Choisir la forme selon les données : sommet et un point (forme canonique), deux zéros et un point (forme factorisée), trois points (système d'équations sur a, b et c).</p>
+<div class="ex"><b>Exemple</b> Sommet (1, 2), passe par (0, 3) : 3 = a(0 − 1)^{2} + 2, donc a = 1 et f(x) = (x − 1)^{2} + 2.</div>`},
+{h:"La résolution d'une inéquation du second degré à une variable", html:`
+<ol>
+<li>Ramener l'inéquation à la forme f(x) ≥ 0 (ou ≤, &gt;, &lt;).</li>
+<li>Trouver les zéros de f.</li>
+<li>Imaginer la parabole : si a &gt; 0, elle est positive à l'extérieur des zéros et négative entre eux.</li>
+</ol>
+<div class="ex"><b>Exemple</b> x^{2} − x − 12 ≤ 0 : zéros −3 et 4, parabole ouverte vers le haut. Solution : [−3, 4]</div>`}
+],
+q:[
+{p:"Quel est le sommet de f(x) = (x − 3)^{2} + 5 ?", o:["(3, 5)","(−3, 5)","(3, −5)","(5, 3)"], a:0, e:"Dans a(x − h)^{2} + k, le sommet est (h, k). Ici h = 3 (attention au signe) et k = 5."},
+{p:"Quelle est l'équation de l'axe de symétrie de f(x) = −2x^{2} + 4x + 1 ?", o:["x = 1","x = −1","x = 2","x = [[1|2]]"], a:0, e:"h = −[[b|2a]] = −[[4|−4]] = 1."},
+{p:"Quelle est la valeur minimale de f(x) = x^{2} − 6x + 4 ?", o:["−5","3","4","−9"], a:0, e:"h = 3 et f(3) = 9 − 18 + 4 = −5. Le minimum est la deuxième coordonnée du sommet."},
+{p:"Quels sont les zéros de f(x) = x^{2} − 2x − 8 ?", o:["−2 et 4","2 et −4","−2 et −4","8 et −1"], a:0, e:"x^{2} − 2x − 8 = (x − 4)(x + 2). Les zéros sont 4 et −2."},
+{p:"Quelle est l'ordonnée à l'origine de f(x) = −(x + 1)^{2} + 9 ?", o:["8","9","10","−1"], a:0, e:"f(0) = −(1)^{2} + 9 = 8."},
+{p:"Une parabole a pour sommet (1, 2) et passe par (0, 3). Quelle est sa règle ?", o:["f(x) = (x − 1)^{2} + 2","f(x) = 3(x − 1)^{2} + 2","f(x) = (x + 1)^{2} + 2","f(x) = −(x − 1)^{2} + 2"], a:0, e:"3 = a(0 − 1)^{2} + 2 donne a = 1. Seule la première option a le sommet (1, 2) et passe par (0, 3)."},
+{p:"Écrire f(x) = 2(x − 1)^{2} + 3 sous la forme générale.", o:["2x^{2} − 4x + 5","2x^{2} − 2x + 4","2x^{2} + 4x + 5","2x^{2} − 4x + 3"], a:0, e:"2(x^{2} − 2x + 1) + 3 = 2x^{2} − 4x + 2 + 3 = 2x^{2} − 4x + 5."},
+{p:"La hauteur d'un ballon est h(t) = −5t^{2} + 20t + 1 (en mètres, t en secondes). Quelle est sa hauteur maximale ?", o:["21 m","20 m","41 m","1 m"], a:0, e:"t = −[[20|−10]] = 2 s, puis h(2) = −20 + 40 + 1 = 21 m."},
+{p:"Résoudre x^{2} − x − 12 ≤ 0.", o:["[−3, 4]","]−∞, −3] ∪ [4, +∞[","[−4, 3]","]−3, 4["], a:0, e:"Les zéros sont −3 et 4. La parabole est négative entre les zéros, et l'inégalité large inclut les zéros."},
+{p:"Résoudre x^{2} &gt; 9.", o:["x &lt; −3 ou x &gt; 3","−3 &lt; x &lt; 3","x &gt; 3","x &lt; −9 ou x &gt; 9"], a:0, e:"x^{2} − 9 &gt; 0 : la parabole est positive à l'extérieur des zéros −3 et 3."}
+]});
+
+CH.push({
+id:5, titre:"Les triangles et les figures équivalentes",
+resume:"Triangles isométriques, triangles semblables, relations métriques dans le triangle rectangle, figures équivalentes.",
+cours:[
+{h:"Les triangles isométriques", html:`
+<p>Deux triangles sont <b>isométriques</b> (≅) quand leurs côtés et leurs angles homologues sont égaux. Pour le prouver, il suffit de vérifier l'un de ces cas :</p>
+<ul>
+<li><b>CCC :</b> trois côtés homologues égaux</li>
+<li><b>CAC :</b> deux côtés égaux et l'angle compris entre eux égal</li>
+<li><b>ACA :</b> deux angles égaux et le côté compris entre eux égal</li>
+</ul>
+<p class="tip">Deux triangles dont trois angles sont égaux ne sont pas forcément isométriques : ils sont seulement semblables.</p>`},
+{h:"Les triangles semblables", html:`
+<p>Deux triangles sont <b>semblables</b> (∼) quand leurs angles homologues sont égaux et leurs côtés homologues sont proportionnels. Cas suffisants : <b>AA</b> (deux angles égaux), <b>CAC</b> proportionnel, <b>CCC</b> proportionnel.</p>
+<div class="formula">
+<div>Rapport de similitude k = [[longueur dans la figure image|longueur homologue dans la figure initiale]]</div>
+<div>longueurs × k &nbsp;&nbsp; aires × k^{2} &nbsp;&nbsp; volumes × k^{3}</div>
+</div>
+<div class="ex"><b>Exemple</b> ABC ∼ DEF avec AB = 6, DE = 9 et BC = 8 : k = [[9|6]] = 1,5, donc EF = 8 × 1,5 = 12.</div>`},
+{h:"Les relations métriques dans un triangle rectangle", html:`
+<p>Soit un triangle rectangle d'hypoténuse a, de cathètes b et c, et de hauteur h issue de l'angle droit. Cette hauteur partage l'hypoténuse en deux segments m (adjacent à c) et n (adjacent à b).</p>
+<div class="formula">
+<div>c^{2} = a · m &nbsp;&nbsp; b^{2} = a · n</div>
+<div>h^{2} = m · n</div>
+<div>b · c = a · h</div>
+<div>a^{2} = b^{2} + c^{2} (Pythagore)</div>
+</div>
+<div class="ex"><b>Exemple</b> Cathètes 6 et 8 : a = 10 et h = [[6 × 8|10]] = 4,8.</div>
+<p class="tip">Triplets pythagoriciens courants : (3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25).</p>`},
+{h:"Les figures équivalentes", html:`
+<p>Deux figures sont <b>équivalentes</b> si elles ont la même aire (ou le même volume), même si leur forme est différente.</p>
+<div class="formula">
+<div>Triangle : [[b × h|2]] &nbsp;&nbsp; Trapèze : [[(B + b) × h|2]] &nbsp;&nbsp; Cercle : πr^{2}</div>
+</div>
+<div class="ex"><b>Exemple</b> Un carré de côté 6 (aire 36) est équivalent à un rectangle de largeur 4 et de longueur 9.</div>`}
+],
+q:[
+{p:"Deux triangles ont deux côtés égaux, ainsi que l'angle compris entre ces côtés. Quel cas d'isométrie s'applique ?", o:["CAC","ACA","CCC","AA"], a:0, e:"Deux côtés et l'angle compris : côté-angle-côté (CAC). AA n'est pas un cas d'isométrie, seulement de similitude."},
+{p:"ABC ∼ DEF avec AB = 6, DE = 9 et BC = 8. Quelle est la longueur EF ?", o:["12","10","5,3","14"], a:0, e:"Le rapport de similitude est [[9|6]] = 1,5. EF = 8 × 1,5 = 12."},
+{p:"Deux triangles semblables ont un rapport de similitude de 3. Le plus petit a une aire de 20 cm². Quelle est l'aire du plus grand ?", o:["180 cm²","60 cm²","540 cm²","120 cm²"], a:0, e:"Les aires sont multipliées par k^{2} = 9 : 20 × 9 = 180 cm²."},
+{p:"Dans un triangle rectangle, la hauteur issue de l'angle droit divise l'hypoténuse en segments de 4 et de 9. Quelle est la mesure de cette hauteur ?", o:["6","36","6,5","13"], a:0, e:"h^{2} = m · n = 4 × 9 = 36, donc h = 6."},
+{p:"Un triangle rectangle a une hypoténuse de 25. La projection d'une cathète sur l'hypoténuse mesure 9. Quelle est la longueur de cette cathète ?", o:["15","20","16","9"], a:0, e:"c^{2} = a · m = 25 × 9 = 225, donc c = 15."},
+{p:"Les cathètes d'un triangle rectangle mesurent 6 et 8. Quelle est la hauteur issue de l'angle droit ?", o:["4,8","5","3,6","7"], a:0, e:"L'hypoténuse est 10. Avec b · c = a · h : 48 = 10h, donc h = 4,8."},
+{p:"Lequel de ces triplets est pythagoricien ?", o:["(5, 12, 13)","(6, 8, 11)","(4, 5, 6)","(7, 9, 12)"], a:0, e:"5^{2} + 12^{2} = 25 + 144 = 169 = 13^{2}. Les autres ne vérifient pas a^{2} + b^{2} = c^{2}."},
+{p:"Un carré de côté 6 est équivalent à un rectangle de largeur 4. Quelle est la longueur du rectangle ?", o:["9","6","8","12"], a:0, e:"Aire du carré : 36. Longueur du rectangle : 36 ÷ 4 = 9."},
+{p:"Quelle est l'aire d'un trapèze dont les bases mesurent 10 et 6 et dont la hauteur est 5 ?", o:["40","80","30","50"], a:0, e:"Aire = [[(10 + 6) × 5|2]] = [[80|2]] = 40."},
+{p:"Un cercle de rayon 5 est équivalent à un carré. Quelle est environ la longueur du côté du carré ?", o:["8,86","7,85","5","9,87"], a:0, e:"Aire du cercle : 25π ≈ 78,54. Côté du carré : √78,54 ≈ 8,86."}
+]});
+
+CH.push({
+id:6, titre:"Les relations trigonométriques",
+resume:"Rapports trigonométriques, résolution de problèmes, loi des sinus, loi des cosinus et aire d'un triangle.",
+cours:[
+{h:"Les relations trigonométriques dans un triangle rectangle", html:`
+<div class="formula">
+<div>sin θ = [[côté opposé|hypoténuse]]</div>
+<div>cos θ = [[côté adjacent|hypoténuse]]</div>
+<div>tan θ = [[côté opposé|côté adjacent]]</div>
+</div>
+<p>Pour trouver un angle, on utilise la fonction réciproque : θ = tan^{−1}([[3|4]]) ≈ 36,9°. Pour deux angles aigus complémentaires : sin θ = cos(90° − θ).</p>
+<p class="tip">Calculatrice en mode degrés ! C'est l'erreur la plus fréquente aux examens.</p>`},
+{h:"La résolution de problèmes à l'aide des relations trigonométriques", html:`
+<p>Faire un schéma, repérer le triangle rectangle, choisir le rapport qui relie ce qu'on connaît à ce qu'on cherche.</p>
+<div class="ex"><b>Exemple</b> À 20 m de la base d'un arbre, l'angle d'élévation du sommet est de 35° : tan 35° = [[h|20]], donc h = 20 tan 35° ≈ 14,0 m.</div>`},
+{h:"La loi des sinus et la loi des cosinus dans un triangle quelconque", html:`
+<p>Dans un triangle ABC (côté a opposé à l'angle A, etc.) :</p>
+<div class="formula">
+<div>Loi des sinus : [[a|sin A]] = [[b|sin B]] = [[c|sin C]]</div>
+<div>Loi des cosinus : a^{2} = b^{2} + c^{2} − 2bc · cos A</div>
+</div>
+<ul>
+<li><b>Sinus :</b> on connaît un angle et son côté opposé, plus une autre donnée.</li>
+<li><b>Cosinus :</b> on connaît deux côtés et l'angle compris, ou les trois côtés.</li>
+</ul>
+<div class="ex"><b>Exemple</b> A = 40°, B = 60°, a = 10 : b = [[10 · sin 60°|sin 40°]] ≈ 13,5</div>
+<div class="ex"><b>Exemple</b> b = 7, c = 8, A = 60° : a^{2} = 49 + 64 − 2(7)(8)(0,5) = 57, donc a ≈ 7,55.</div>`},
+{h:"L'aire d'un triangle", html:`
+<div class="formula">
+<div>Aire = [[1|2]] · a · b · sin C</div>
+</div>
+<div class="ex"><b>Exemple</b> a = 8, b = 10, C = 30° : aire = [[1|2]] · 8 · 10 · 0,5 = 20.</div>`}
+],
+q:[
+{p:"Dans un triangle rectangle, l'hypoténuse mesure 10 et un angle aigu vaut 30°. Quelle est la longueur du côté opposé à cet angle ?", o:["5","5√3","10√3","[[10|√3]]"], a:0, e:"sin 30° = [[opposé|10]] = 0,5, donc le côté opposé mesure 5."},
+{p:"Si tan θ = [[3|4]], quelle est la mesure de θ ?", o:["36,9°","53,1°","41,4°","48,6°"], a:0, e:"θ = tan^{−1}(0,75) ≈ 36,9°. L'angle de 53,1° est son complément."},
+{p:"Un triangle a des côtés de 3, 4 et 5. Que vaut le cosinus du plus petit angle ?", o:["[[4|5]]","[[3|5]]","[[3|4]]","[[5|4]]"], a:0, e:"Le plus petit angle est opposé au côté 3. Son côté adjacent est 4 : cos θ = [[4|5]]."},
+{p:"À 20 m de la base d'un arbre, l'angle d'élévation du sommet est de 35°. Quelle est la hauteur de l'arbre ?", o:["14,0 m","28,6 m","11,5 m","16,4 m"], a:0, e:"tan 35° = [[h|20]], donc h = 20 tan 35° ≈ 14,0 m."},
+{p:"Laquelle de ces valeurs est égale à sin 35° ?", o:["cos 55°","cos 35°","tan 55°","sin 55°"], a:0, e:"Pour des angles complémentaires (35° + 55° = 90°), sin 35° = cos 55°."},
+{p:"Dans un triangle ABC, A = 40°, B = 60° et a = 10. Quelle est la longueur b ?", o:["13,5","7,4","11,5","15,6"], a:0, e:"Loi des sinus : b = [[10 · sin 60°|sin 40°]] ≈ [[8,66|0,643]] ≈ 13,5."},
+{p:"Dans un triangle, b = 7, c = 8 et A = 60°. Quelle est la longueur a ?", o:["7,55","10,63","8,12","5,29"], a:0, e:"a^{2} = 49 + 64 − 2(7)(8)cos 60° = 113 − 56 = 57, donc a ≈ 7,55. Oublier le terme en cosinus donnerait 10,63."},
+{p:"Un triangle a des côtés de 5, 6 et 7. Quel est l'angle opposé au côté de 7 ?", o:["78,5°","101,5°","57,1°","44,4°"], a:0, e:"Loi des cosinus : cos C = [[25 + 36 − 49|2(5)(6)]] = 0,2, donc C ≈ 78,5°."},
+{p:"Quelle est l'aire d'un triangle dont deux côtés mesurent 8 et 10 avec un angle compris de 30° ?", o:["20","40","34,6","80"], a:0, e:"Aire = [[1|2]] · 8 · 10 · sin 30° = 40 × 0,5 = 20."},
+{p:"Quelle loi faut-il utiliser pour trouver le troisième côté d'un triangle quelconque quand on connaît deux côtés et l'angle compris ?", o:["La loi des cosinus","La loi des sinus","Le théorème de Pythagore","Le rapport tangente"], a:0, e:"La loi des sinus exige un angle et son côté opposé connus. Ici, l'angle est entre les deux côtés : loi des cosinus."}
+]});
+
+CH.push({
+id:7, titre:"Les droites et les inéquations à deux variables",
+resume:"Pente, droites parallèles et perpendiculaires, distance, formes d'équation d'une droite, inéquations à deux variables.",
+cours:[
+{h:"Géométrie analytique : pente, droites parallèles et perpendiculaires, distance", html:`
+<div class="formula">
+<div>d(A, B) = √{(x_{2} − x_{1})^{2} + (y_{2} − y_{1})^{2}}</div>
+<div>m = [[y_{2} − y_{1}|x_{2} − x_{1}]]</div>
+</div>
+<ul>
+<li>Droites <b>parallèles</b> : même pente.</li>
+<li>Droites <b>perpendiculaires</b> : m_{1} · m_{2} = −1 (pentes opposées et inverses).</li>
+</ul>
+<div class="ex"><b>Exemple</b> A(1, 2) et B(7, 10) : d = √{36 + 64} = 10. Pente de la droite par (1, 3) et (5, 11) : [[8|4]] = 2.</div>`},
+{h:"Les différentes formes d'équation d'une droite", html:`
+<div class="formula">
+<div>Fonctionnelle : y = mx + b</div>
+<div>Générale : Ax + By + C = 0 &nbsp; (pente −[[A|B]])</div>
+<div>Symétrique : [[x|a]] + [[y|b]] = 1 &nbsp; (coupe les axes en a et en b)</div>
+</div>
+<div class="ex"><b>Exemple</b> Parallèle à y = 2x + 5 passant par (1, 4) : y − 4 = 2(x − 1), donc y = 2x + 2.</div>
+<div class="ex"><b>Exemple</b> Droite par (2, 1) et (6, 9) : m = 2 et 1 = 2(2) + b, donc y = 2x − 3.</div>`},
+{h:"Les inéquations du premier degré à deux variables", html:`
+<p>Tracer la droite frontière (trait plein si ≤ ou ≥, pointillé si &lt; ou &gt;), puis tester un point (souvent l'origine) pour savoir quel côté colorier.</p>
+<div class="ex"><b>Exemple</b> y &gt; 2x − 1 : région au-dessus de la droite, frontière exclue. Le point (0, 0) convient car 0 &gt; −1.</div>`},
+{h:"Les inéquations du second degré à deux variables", html:`
+<p>Même méthode, avec une parabole comme frontière : y ≥ ax^{2} + bx + c colorie l'intérieur de la parabole (au-dessus), y ≤ … colorie l'extérieur (au-dessous), si a &gt; 0.</p>
+<div class="ex"><b>Exemple</b> y ≤ x^{2} − 4 : le point (0, −5) convient car −5 ≤ −4, mais (0, 0) ne convient pas car 0 &gt; −4.</div>`}
+],
+q:[
+{p:"Quelle est la distance entre A(1, 2) et B(7, 10) ?", o:["10","14","8","100"], a:0, e:"d = √{6^{2} + 8^{2}} = √{36 + 64} = √100 = 10."},
+{p:"Quelle est la pente de la droite passant par (1, 3) et (5, 11) ?", o:["2","[[1|2]]","−2","4"], a:0, e:"m = [[11 − 3|5 − 1]] = [[8|4]] = 2."},
+{p:"Quelle est la pente d'une droite perpendiculaire à y = −[[2|3]]x + 1 ?", o:["[[3|2]]","−[[3|2]]","[[2|3]]","−[[2|3]]"], a:0, e:"Le produit des pentes doit valoir −1 : −[[2|3]] × [[3|2]] = −1."},
+{p:"Quelle est l'équation de la droite parallèle à y = 2x + 5 qui passe par (1, 4) ?", o:["y = 2x + 2","y = 2x + 4","y = −[[1|2]]x + 4,5","y = [[1|2]]x + 3,5"], a:0, e:"La pente reste 2. De 4 = 2(1) + b, on tire b = 2."},
+{p:"Quelle est l'équation de la droite passant par (2, 1) et (6, 9) ?", o:["y = 2x − 3","y = 2x + 3","y = [[1|2]]x","y = 4x − 7"], a:0, e:"m = [[9 − 1|6 − 2]] = 2. De 1 = 2(2) + b, on tire b = −3."},
+{p:"Quelle est la pente de la droite d'équation 2x − 3y + 6 = 0 ?", o:["[[2|3]]","−[[2|3]]","[[3|2]]","2"], a:0, e:"On isole y : 3y = 2x + 6, donc y = [[2|3]]x + 2. La pente est [[2|3]]."},
+{p:"En quel point la droite d'équation [[x|4]] + [[y|3]] = 1 coupe-t-elle l'axe des y ?", o:["(0, 3)","(0, 4)","(0, [[3|4]])","(0, 12)"], a:0, e:"Dans la forme symétrique [[x|a]] + [[y|b]] = 1, b est l'ordonnée à l'origine. Ici b = 3."},
+{p:"Lequel de ces points est dans la région y &gt; 2x − 1 (frontière exclue) ?", o:["(0, 0)","(1, 1)","(2, 3)","(0, −1)"], a:0, e:"Pour (0, 0) : 0 &gt; −1, vrai. Les autres points sont sur la droite : 1 = 1, 3 = 3 et −1 = −1, donc ils sont exclus."},
+{p:"Lequel de ces points vérifie y ≤ x^{2} − 4 ?", o:["(0, −5)","(0, 0)","(3, 6)","(1, −2)"], a:0, e:"Pour (0, −5) : −5 ≤ −4, vrai. Pour (0, 0) : 0 ≤ −4 faux. Pour (3, 6) : 6 ≤ 5 faux. Pour (1, −2) : −2 ≤ −3 faux."},
+{p:"Quelle région représente l'inéquation y ≥ 2x − 1 ?", o:["Au-dessus de la droite, frontière incluse","Au-dessous de la droite, frontière incluse","Au-dessus de la droite, frontière exclue","Au-dessous de la droite, frontière exclue"], a:0, e:"y ≥ signifie « au-dessus ». Le symbole ≥ inclut la frontière (trait plein)."}
+]});
+
+CH.push({
+id:8, titre:"Les systèmes d'équations",
+resume:"Comparaison, substitution, réduction, nombre de solutions, systèmes formés d'une droite et d'une parabole.",
+cours:[
+{h:"Comparaison et nombre de solutions d'un système du premier degré", html:`
+<p><b>Comparaison :</b> isoler la même variable dans les deux équations, puis égaler les expressions.</p>
+<div class="ex"><b>Exemple</b> y = 2x + 1 et y = −x + 7 : 2x + 1 = −x + 7, donc x = 2 et y = 5.</div>
+<ul>
+<li>Pentes différentes : une solution (droites sécantes).</li>
+<li>Même pente, ordonnées différentes : aucune solution (droites parallèles).</li>
+<li>Droites confondues : une infinité de solutions.</li>
+</ul>`},
+{h:"La résolution par substitution", html:`
+<p>Isoler une variable dans une équation et la remplacer dans l'autre.</p>
+<div class="ex"><b>Exemple</b> y = 2x − 1 et 3x + y = 9 : 3x + 2x − 1 = 9, donc x = 2 et y = 3. Solution (2, 3).</div>`},
+{h:"La résolution par réduction", html:`
+<p>Additionner ou soustraire les équations (après avoir multiplié au besoin) pour éliminer une variable.</p>
+<div class="ex"><b>Exemple</b> 2x + 3y = 12 et 4x − 3y = 6 : on additionne, 6x = 18, donc x = 3, puis y = 2.</div>`},
+{h:"Les systèmes formés d'une équation du premier degré et d'une équation du second degré", html:`
+<p>On égale les deux règles pour obtenir une équation du second degré en x, puis on calcule les y correspondants. Il y a 0, 1 ou 2 solutions.</p>
+<div class="ex"><b>Exemple</b> y = x + 1 et y = x^{2} − 1 : x^{2} − x − 2 = 0, donc x = 2 ou x = −1. Points d'intersection : (2, 3) et (−1, 0).</div>`}
+],
+q:[
+{p:"Résoudre le système x + y = 7 et x − y = 1.", o:["(4, 3)","(3, 4)","(5, 2)","(6, 1)"], a:0, e:"On additionne : 2x = 8, donc x = 4, puis y = 3."},
+{p:"Résoudre y = 2x − 1 et 3x + y = 9.", o:["(2, 3)","(3, 2)","(1, 1)","(2, −3)"], a:0, e:"Par substitution : 3x + 2x − 1 = 9, donc x = 2 et y = 3."},
+{p:"Résoudre 2x + 3y = 12 et 4x − 3y = 6.", o:["(3, 2)","(2, 3)","(4, 1)","(1, 4)"], a:0, e:"On additionne : 6x = 18, donc x = 3. Puis 2(3) + 3y = 12 donne y = 2."},
+{p:"Combien de solutions possède le système 2x + 4y = 6 et x + 2y = 3 ?", o:["Une infinité","Aucune","Une seule","Deux"], a:0, e:"La première équation est le double de la seconde : les droites sont confondues."},
+{p:"Combien de solutions possède 2x + y = 5 et 4x + 2y = 7 ?", o:["Aucune","Une","Deux","Une infinité"], a:0, e:"En divisant la seconde par 2 : 2x + y = 3,5. Même pente que la première, ordonnées différentes : droites parallèles."},
+{p:"Quels sont les points d'intersection de y = x + 1 et y = x^{2} − 1 ?", o:["(2, 3) et (−1, 0)","(2, 3) seulement","(−2, −1) et (1, 2)","(−1, 0) et (1, 2)"], a:0, e:"x^{2} − 1 = x + 1 donne x^{2} − x − 2 = 0, soit x = 2 ou x = −1. Les ordonnées : y = 3 et y = 0."},
+{p:"Deux cahiers et trois crayons coûtent 11 $. Un cahier et deux crayons coûtent 6 $. Quel est le prix d'un cahier ?", o:["4 $","3 $","2 $","5 $"], a:0, e:"c = 6 − 2k dans la seconde, puis 2(6 − 2k) + 3k = 11 donne k = 1 $ et c = 4 $."},
+{p:"Deux nombres ont pour somme 10 et pour produit 21. Quels sont-ils ?", o:["3 et 7","2 et 8","5 et 5","1 et 9"], a:0, e:"Ce sont les solutions de t^{2} − 10t + 21 = 0, soit (t − 3)(t − 7) = 0."},
+{p:"Un système formé d'une droite et d'une parabole a au plus combien de solutions ?", o:["2","1","3","4"], a:0, e:"L'équation obtenue est de degré 2 : elle a au plus 2 solutions."},
+{p:"Deux nombres ont pour somme 15 et pour différence 3. Quel est le plus grand ?", o:["9","6","12","10"], a:0, e:"x + y = 15 et x − y = 3 donnent 2x = 18, donc x = 9."}
+]});
+
+CH.push({
+id:9, titre:"La statistique",
+resume:"Distribution à deux caractères, corrélation linéaire, coefficient de corrélation, droite de régression.",
+cours:[
+{h:"La distribution à deux caractères et la corrélation linéaire", html:`
+<p>On étudie deux variables mesurées sur les mêmes individus. Le <b>nuage de points</b> montre le lien entre elles.</p>
+<ul>
+<li><b>Corrélation positive :</b> le nuage monte de gauche à droite (y augmente avec x).</li>
+<li><b>Corrélation négative :</b> le nuage descend (y diminue quand x augmente).</li>
+<li><b>Corrélation nulle :</b> aucun alignement visible.</li>
+<li>Plus les points sont proches d'une droite, plus la corrélation est <b>forte</b>.</li>
+</ul>`},
+{h:"Le coefficient de corrélation linéaire", html:`
+<div class="formula">
+<div>−1 ≤ r ≤ 1</div>
+</div>
+<ul>
+<li>Le signe de r donne le sens ; |r| donne la force.</li>
+<li>|r| proche de 1 : corrélation forte. |r| proche de 0 : corrélation faible ou nulle.</li>
+<li>r = 1 ou r = −1 : tous les points sont exactement alignés.</li>
+</ul>
+<p class="tip">Corrélation n'est pas causalité : deux variables peuvent évoluer ensemble à cause d'un troisième facteur (variable cachée).</p>`},
+{h:"La droite de régression", html:`
+<p>La droite de régression y = ax + b résume la tendance du nuage. Sa pente a indique la variation moyenne de y quand x augmente de 1.</p>
+<ul>
+<li><b>Interpolation :</b> prédire à l'intérieur de l'étendue des données (assez fiable).</li>
+<li><b>Extrapolation :</b> prédire en dehors de cette étendue (risquée).</li>
+</ul>
+<div class="ex"><b>Exemple</b> y = 2x + 3 : pour x = 5, y prévu = 2(5) + 3 = 13.</div>`}
+],
+q:[
+{p:"Un nuage de points monte nettement de la gauche vers la droite. Quel type de corrélation observe-t-on ?", o:["Positive","Négative","Nulle","Impossible à dire"], a:0, e:"Quand y augmente avec x, la corrélation est positive."},
+{p:"Un coefficient de corrélation vaut r = −0,92. Que peut-on conclure ?", o:["La corrélation est forte et négative","La corrélation est faible et négative","La corrélation est forte et positive","Il n'y a pas de corrélation"], a:0, e:"|r| est proche de 1 (corrélation forte) et le signe − indique que y diminue quand x augmente."},
+{p:"Un coefficient de corrélation vaut r = 0,15. Que peut-on conclure ?", o:["La corrélation linéaire est très faible","La corrélation est forte et positive","La corrélation est forte et négative","Les points sont parfaitement alignés"], a:0, e:"|r| est proche de 0 : il n'y a presque pas de lien linéaire."},
+{p:"Laquelle de ces valeurs ne peut pas être un coefficient de corrélation ?", o:["1,2","−0,8","0","−1"], a:0, e:"Un coefficient de corrélation est toujours compris entre −1 et 1."},
+{p:"Les points (1, 2), (2, 4), (3, 6) et (4, 8) sont alignés sur y = 2x. Que vaut r ?", o:["1","2","0","−1"], a:0, e:"Points parfaitement alignés sur une droite croissante : r = 1."},
+{p:"La droite de régression est y = 2x + 3. Quelle valeur de y prévoit-on pour x = 5 ?", o:["13","10","15","8"], a:0, e:"y = 2(5) + 3 = 13."},
+{p:"La droite de régression passe par (0, 10) et (5, 35). Quelle est son équation ?", o:["y = 5x + 10","y = 7x + 10","y = 5x + 35","y = 10x + 5"], a:0, e:"Pente : [[35 − 10|5 − 0]] = 5. Ordonnée à l'origine : 10."},
+{p:"Une droite de régression est y = −1,5x + 40. Que signifie la pente ?", o:["Quand x augmente de 1, y diminue en moyenne de 1,5","Quand x augmente de 1, y augmente en moyenne de 1,5","Quand x vaut 0, y vaut −1,5","Quand y augmente de 1, x diminue de 1,5"], a:0, e:"La pente est la variation moyenne de y pour une augmentation de 1 de x. Elle est négative : y diminue."},
+{p:"Les données de x vont de 10 à 50. Prédire y pour x = 80 avec la droite de régression est :", o:["Une extrapolation, moins fiable","Une interpolation, très fiable","Une interpolation, moins fiable","Une extrapolation, très fiable"], a:0, e:"x = 80 est en dehors de l'étendue des données : c'est une extrapolation, donc risquée."},
+{p:"Les ventes de crème glacée et les coups de soleil sont fortement corrélés. Quelle conclusion est la plus appropriée ?", o:["Une variable cachée, la chaleur, peut expliquer les deux","La crème glacée cause les coups de soleil","Les coups de soleil causent les ventes de crème glacée","Les données sont forcément fausses"], a:0, e:"Une corrélation n'implique pas une causalité. Il fait chaud : on achète plus de crème glacée et on attrape plus de coups de soleil."}
+]});
+
+(function(){
+var CH = window.CH;
+CH.forEach(function(c){ c.q.forEach(function(q){ q.ch = c.id; }); });
+var app = document.getElementById('app');
+
+/* ---------- utilitaires ---------- */
+function fmt(s){
+  return String(s)
+    .replace(/\^\{([^{}]*)\}/g,'<sup>$1</sup>')
+    .replace(/_\{([^{}]*)\}/g,'<sub>$1</sub>')
+    .replace(/√\{([^{}]*)\}/g,'<span class="rad">√<span class="rc">$1</span></span>')
+    .replace(/\[\[(.+?)\|(.+?)\]\]/g,'<span class="fr"><span>$1</span><span>$2</span></span>');
+}
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+function nf(n){ return String(+n.toFixed(2)).replace('.',','); }
+function chap(id){ return CH.filter(function(c){return c.id===id;})[0]; }
+function mention(p){ return p>=90?'Excellent':p>=80?'Très bien':p>=70?'Bien':p>=60?'Passable':'À retravailler'; }
+function mmss(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2); }
+var LET=['A','B','C','D','E'];
+
+var KEY='sn4-v1', S={quiz:{},hist:[]};
+try{ var raw=localStorage.getItem(KEY); if(raw){ var o=JSON.parse(raw); S.quiz=o.quiz||{}; S.hist=o.hist||[]; } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+
+/* ---------- routeur ---------- */
+var cur=null, tick=null;
+function stopTimer(){ if(tick){ clearInterval(tick); tick=null; } }
+function setNav(k){
+  var links=document.querySelectorAll('#nav a');
+  for(var i=0;i<links.length;i++){ if(links[i].getAttribute('data-k')===k) links[i].setAttribute('aria-current','page'); else links[i].removeAttribute('aria-current'); }
+}
+function route(){
+  var h=(location.hash||'#accueil').slice(1);
+  var m=h.match(/^(cours|quiz)-(\d+)$/);
+  stopTimer(); cur=null;
+  window.scrollTo(0,0);
+  if(m && chap(+m[2])){ setNav('accueil'); return chapter(+m[2],m[1]); }
+  if(h==='tests'){ setNav('tests'); return builder('test'); }
+  if(h==='examens'){ setNav('examens'); return builder('exam'); }
+  setNav('accueil'); home();
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- accueil ---------- */
+function home(){
+  var done=0, sum=0;
+  CH.forEach(function(c){ var b=S.quiz[c.id]; if(b!=null){ done++; sum+=b; } });
+  var nq=CH.reduce(function(n,c){return n+c.q.length;},0);
+  var html='<section class="intro"><p class="eyebrow">Mathématique · Sciences naturelles · 4e secondaire</p>'+
+   '<h1>Atelier <mark>Maths</mark> SN4</h1>'+
+   '<p class="lead">Un cours résumé par chapitre, des quiz corrigés pas à pas, puis des tests et des examens chronométrés pour mesurer ce qui est acquis.</p>'+
+   '<div class="summary"><span><b>'+CH.length+'</b>chapitres</span><span><b>'+nq+'</b>questions</span><span><b>'+done+'/'+CH.length+'</b>quiz faits</span>'+
+   (done?'<span><b>'+Math.round(sum/done)+' %</b>moyenne des meilleurs quiz</span>':'')+'</div></section>';
+  html+='<h2 style="margin-bottom:.8rem">Les chapitres</h2><ul class="list">';
+  CH.forEach(function(c){
+    var b=S.quiz[c.id];
+    html+='<li class="row"><span class="num">'+c.id+'</span><div><h3>'+fmt(c.titre)+'</h3><p>'+fmt(c.resume)+'</p>'+
+      '<div class="bar" aria-hidden="true"><i style="width:'+(b||0)+'%"></i></div>'+
+      '<div class="best">'+(b!=null?'Meilleur quiz : '+b+' %':'Quiz pas encore tenté')+'</div></div>'+
+      '<div class="acts"><a class="btn-s" href="#cours-'+c.id+'">Cours</a><a class="btn" href="#quiz-'+c.id+'">Quiz</a></div></li>';
+  });
+  html+='</ul><div class="two"><div class="panel"><h2>Tests</h2><p class="muted">Choisissez les chapitres à réviser et le nombre de questions. Corrigé détaillé à la fin.</p><a class="btn" href="#tests">Composer un test</a></div>'+
+   '<div class="panel"><h2>Examens</h2><p class="muted">Conditions réelles : chronomètre, pas de correction avant la fin, bilan par chapitre.</p><a class="btn" href="#examens">Passer un examen</a></div></div>';
+  html+='<div class="panel"><h2>Derniers résultats</h2>';
+  if(S.hist.length){
+    html+='<ul class="hist">'+S.hist.slice(0,8).map(function(r){
+      return '<li><span>'+r.titre+'</span><span><b>'+r.pct+' %</b> · '+r.date+'</span></li>';}).join('')+'</ul>';
+  } else html+='<p class="muted" style="margin:0">Aucun résultat pour l\'instant. Les scores sont gardés dans ce navigateur.</p>';
+  html+='</div>';
+  app.innerHTML=html;
+}
+
+/* ---------- chapitre ---------- */
+function chapter(id,tab){
+  var c=chap(id);
+  var prev=chap(id-1), next=chap(id+1);
+  var html='<div class="crumb"><a href="#accueil">← Tous les chapitres</a><span>'+
+    (prev?'<a href="#'+tab+'-'+prev.id+'">Chapitre '+prev.id+'</a>':'')+(prev&&next?' · ':'')+(next?'<a href="#'+tab+'-'+next.id+'">Chapitre '+next.id+' →</a>':'')+'</span></div>'+
+    '<p class="eyebrow">Chapitre '+id+'</p><h1 style="font-size:clamp(1.7rem,5vw,2.5rem)">'+fmt(c.titre)+'</h1>'+
+    '<div class="tabs"><a href="#cours-'+id+'"'+(tab==='cours'?' aria-current="page"':'')+'>Cours</a><a href="#quiz-'+id+'"'+(tab==='quiz'?' aria-current="page"':'')+'>Quiz (10 questions)</a></div><div id="pane"></div>';
+  app.innerHTML=html;
+  var pane=document.getElementById('pane');
+  if(tab==='cours'){
+    var h='';
+    c.cours.forEach(function(s){ h+='<article class="sec"><h2>'+fmt(s.h)+'</h2>'+fmt(s.html)+'</article>'; });
+    if(c.explorer) h+='<article class="sec"><h2>Explorateur de parabole</h2><div id="xp"></div></article>';
+    h+='<div class="cta"><a class="btn" href="#quiz-'+id+'">Passer au quiz</a><a class="btn-s" href="#accueil">Retour</a></div>';
+    pane.innerHTML=h;
+    if(c.explorer) explorer(document.getElementById('xp'));
+  } else {
+    var b=S.quiz[id];
+    pane.innerHTML='<div class="panel"><h2>Quiz du chapitre</h2><p class="muted">10 questions, correction immédiate après chaque réponse. L\'ordre des choix change à chaque essai.'+(b!=null?' Votre meilleur résultat : <b>'+b+' %</b>.':'')+'</p><button class="btn" id="go">Commencer</button></div>';
+    document.getElementById('go').onclick=function(){
+      start({kind:'quiz',titre:'Quiz — chapitre '+id,mode:'now',qs:shuffle(c.q),chap:id,seconds:0});
+    };
+  }
+}
+
+/* ---------- explorateur de parabole ---------- */
+function explorer(el){
+  el.innerHTML='<div class="xp"><div>'+
+   '<p class="tip" style="margin-top:0">Déplacez les curseurs pour voir comment a, h et k changent la parabole f(x) = a(x − h)<sup>2</sup> + k.</p>'+
+   '<label>a<input id="pa" type="range" min="-3" max="3" step="0.5" value="1"><output id="oa">1</output></label>'+
+   '<label>h<input id="ph" type="range" min="-6" max="6" step="1" value="2"><output id="oh">2</output></label>'+
+   '<label>k<input id="pk" type="range" min="-6" max="6" step="1" value="-3"><output id="ok">−3</output></label>'+
+   '<div class="readout" id="ro"></div></div><svg id="sv" viewBox="0 0 384 384" role="img" aria-label="Graphique de la parabole"></svg></div>';
+  var U=24, C=192;
+  function px(x){return C+x*U;} function py(y){return C-y*U;}
+  function draw(){
+    var a=+document.getElementById('pa').value, h=+document.getElementById('ph').value, k=+document.getElementById('pk').value;
+    if(a===0){ a=0.5; document.getElementById('pa').value=0.5; }
+    document.getElementById('oa').textContent=nf(a); document.getElementById('oh').textContent=String(h).replace('-','−'); document.getElementById('ok').textContent=String(k).replace('-','−');
+    var s='<defs><clipPath id="cp"><rect x="0" y="0" width="384" height="384"/></clipPath></defs>';
+    for(var i=-8;i<=8;i++){ s+='<line class="gridl" x1="'+px(i)+'" y1="0" x2="'+px(i)+'" y2="384"/><line class="gridl" x1="0" y1="'+py(i)+'" x2="384" y2="'+py(i)+'"/>'; }
+    s+='<line class="axis" x1="0" y1="'+C+'" x2="384" y2="'+C+'"/><line class="axis" x1="'+C+'" y1="0" x2="'+C+'" y2="384"/>';
+    s+='<text class="svgt" x="372" y="'+(C-5)+'">x</text><text class="svgt" x="'+(C+5)+'" y="12">y</text>';
+    var d='';
+    for(var xx=-8;xx<=8.001;xx+=0.1){ var yy=a*(xx-h)*(xx-h)+k; d+=(d?'L':'M')+px(xx).toFixed(1)+' '+py(yy).toFixed(1); }
+    s+='<g clip-path="url(#cp)"><path class="curve" d="'+d+'"/></g>';
+    s+='<line x1="'+px(h)+'" y1="0" x2="'+px(h)+'" y2="384" stroke="var(--accent)" stroke-dasharray="4 4" stroke-width="1" opacity=".6"/>';
+    var disc=-k/a, zs=[];
+    if(disc>0){ zs=[h-Math.sqrt(disc),h+Math.sqrt(disc)]; } else if(Math.abs(disc)<1e-9){ zs=[h]; }
+    zs.forEach(function(z){ s+='<circle class="pz" cx="'+px(z)+'" cy="'+C+'" r="4.5"/>'; });
+    s+='<circle class="pt" cx="'+px(h)+'" cy="'+py(k)+'" r="5"/>';
+    document.getElementById('sv').innerHTML=s;
+    var A=a, B=-2*a*h, Cc=a*h*h+k;
+    function t(n){ return nf(n).replace('-','−'); }
+    document.getElementById('ro').innerHTML=
+      '<div>Sommet : (<b>'+t(h)+'</b>, <b>'+t(k)+'</b>) &nbsp;·&nbsp; axe : x = '+t(h)+'</div>'+
+      '<div>Forme générale : '+(A===1?'':A===-1?'−':t(A))+'x<sup>2</sup> '+(B<0?'−':'+')+' '+nf(Math.abs(B))+'x '+(Cc<0?'−':'+')+' '+nf(Math.abs(Cc))+'</div>'+
+      '<div>Ordonnée à l\'origine : '+t(Cc)+'</div>'+
+      '<div>Zéros : '+(zs.length===0?'aucun':zs.map(t).join(' et '))+'</div>'+
+      '<div>'+(a>0?'Minimum':'Maximum')+' : '+t(k)+'</div>';
+  }
+  ['pa','ph','pk'].forEach(function(id){ document.getElementById(id).addEventListener('input',draw); });
+  draw();
+}
+
+/* ---------- composition des tests et examens ---------- */
+function draw(chapters,n){
+  var per={}, base=Math.floor(n/chapters.length), extra=n-base*chapters.length, order=shuffle(chapters);
+  order.forEach(function(id,i){ per[id]=base+(i<extra?1:0); });
+  var out=[];
+  chapters.forEach(function(id){ out=out.concat(shuffle(chap(id).q).slice(0,Math.min(per[id],10))); });
+  return shuffle(out);
+}
+function builder(kind){
+  if(kind==='test'){
+    var h='<p class="eyebrow">Tests</p><h1 style="font-size:clamp(1.7rem,5vw,2.5rem)">Composer un test</h1><p class="muted">Les questions sont tirées au hasard dans les chapitres choisis.</p>'+
+     '<div class="panel form"><div><b>Chapitres</b><div class="chk" style="margin-top:.5rem">'+
+     CH.map(function(c){ return '<label><input type="checkbox" class="cc" value="'+c.id+'" checked> '+c.id+'. '+fmt(c.titre)+'</label>'; }).join('')+'</div></div>'+
+     '<div class="inl"><label for="nq">Questions&nbsp;<select id="nq"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label>'+
+     '<label><input type="checkbox" id="tm"> Chronomètre&nbsp;<input type="number" id="mn" value="30" min="5" max="180" style="width:5.5em">&nbsp;min</label></div>'+
+     '<div id="err" class="warn" hidden>Choisissez au moins un chapitre.</div>'+
+     '<div><button class="btn" id="go">Lancer le test</button></div></div>';
+    app.innerHTML=h;
+    document.getElementById('go').onclick=function(){
+      var ids=[].slice.call(document.querySelectorAll('.cc')).filter(function(x){return x.checked;}).map(function(x){return +x.value;});
+      if(!ids.length){ document.getElementById('err').hidden=false; return; }
+      var n=Math.min(+document.getElementById('nq').value, ids.length*10);
+      var secs=document.getElementById('tm').checked?Math.max(5,+document.getElementById('mn').value||30)*60:0;
+      start({kind:'test',titre:'Test — '+(ids.length===CH.length?'tous les chapitres':'chap. '+ids.join(', ')),mode:'end',qs:draw(ids,n),seconds:secs});
+    };
+    return;
+  }
+  var P=[
+   {t:'Examen 1 — chapitres 1 à 3',d:'Manipulation d\'expressions algébriques, factorisation, étude des fonctions.',ids:[1,2,3],n:18,m:60},
+   {t:'Examen 2 — chapitres 4 à 6',d:'Fonction du second degré, triangles et figures équivalentes, relations trigonométriques.',ids:[4,5,6],n:18,m:60},
+   {t:'Examen 3 — chapitres 7 à 9',d:'Droites et inéquations à deux variables, systèmes d\'équations, statistique.',ids:[7,8,9],n:18,m:60},
+   {t:'Examen final — tous les chapitres',d:'Toute la matière de l\'année, 36 questions réparties également.',ids:[1,2,3,4,5,6,7,8,9],n:36,m:120}];
+  var h2='<p class="eyebrow">Examens</p><h1 style="font-size:clamp(1.7rem,5vw,2.5rem)">Passer un examen</h1><p class="muted">Le chronomètre démarre dès le début. La correction n\'apparaît qu\'à la fin, ou quand le temps est écoulé.</p><div class="presets" style="margin-top:1.2rem">'+
+   P.map(function(p,i){ return '<div class="panel preset"><div><h2>'+p.t+'</h2><p class="muted" style="margin:0">'+p.d+'</p><p style="margin:.4rem 0 0"><b>'+p.n+' questions · '+p.m+' minutes</b></p></div><button class="btn" data-i="'+i+'">Commencer</button></div>'; }).join('')+'</div>';
+  app.innerHTML=h2;
+  [].forEach.call(document.querySelectorAll('.preset button'),function(b){
+    b.onclick=function(){ var p=P[+b.getAttribute('data-i')]; start({kind:'exam',titre:p.t,mode:'end',qs:draw(p.ids,p.n),seconds:p.m*60}); };
+  });
+}
+
+/* ---------- moteur de session ---------- */
+function start(cfg){
+  stopTimer();
+  cur={cfg:cfg,i:0,t0:Date.now(),over:false,confirm:false,
+    items:cfg.qs.map(function(q){
+      return {q:q,sel:null,opts:shuffle(q.o.map(function(t,i){return {t:t,ok:i===q.a};}))};
+    })};
+  if(cfg.seconds){
+    cur.end=Date.now()+cfg.seconds*1000;
+    tick=setInterval(function(){
+      var left=(cur.end-Date.now())/1000, el=document.getElementById('tm');
+      if(el){ el.textContent=mmss(left); el.className='timer'+(left<300?' low':''); }
+      if(left<=0){ finish(true); }
+    },500);
+  }
+  window.scrollTo(0,0);
+  render();
+}
+function answered(){ return cur.items.filter(function(x){return x.sel!=null;}).length; }
+function render(){
+  var s=cur, cfg=s.cfg, it=s.items[s.i], n=s.items.length, now=cfg.mode==='now';
+  var h='<div class="qhead"><div><p class="eyebrow" style="margin:0">'+cfg.titre+'</p><b>Question '+(s.i+1)+' / '+n+'</b></div>'+
+    (cfg.seconds?'<div class="timer" id="tm">'+mmss((s.end-Date.now())/1000)+'</div>':'')+'</div>'+
+    '<div class="qbar"><i style="width:'+Math.round((now?answered():s.i+1)/n*100)+'%"></i></div><div class="qlayout'+(now?' solo':'')+'"><div>'+
+    '<div class="qcard"><div class="qtag">'+chap(it.q.ch).id+'. '+fmt(chap(it.q.ch).titre)+'</div><div class="qtext">'+fmt(it.q.p)+'</div><div class="opts">';
+  it.opts.forEach(function(o,i){
+    var c='opt';
+    if(now && it.sel!=null){ if(o.ok) c+=' good'; else if(it.sel===i) c+=' bad'; }
+    else if(it.sel===i) c+=' sel';
+    h+='<button class="'+c+'" data-i="'+i+'"'+(now&&it.sel!=null?' disabled':'')+'><span class="l">'+LET[i]+'</span><span>'+fmt(o.t)+'</span></button>';
+  });
+  h+='</div>';
+  if(now && it.sel!=null){
+    var good=it.opts[it.sel].ok;
+    h+='<div class="expl"><b class="'+(good?'g':'r')+'">'+(good?'Bonne réponse.':'Pas tout à fait.')+'</b> '+fmt(it.q.e)+'</div>';
+  }
+  h+='</div><div class="qnav"><button class="btn-s" id="pv"'+(s.i===0?' disabled':'')+'>← Précédente</button>';
+  var last=s.i===n-1;
+  if(now) h+='<button class="btn" id="nx"'+(it.sel==null?' disabled':'')+'>'+(last?'Voir le résultat':'Suivante →')+'</button>';
+  else h+=last?'<button class="btn" id="fin">Terminer</button>':'<button class="btn" id="nx">Suivante →</button>';
+  h+='</div>';
+  if(!now && s.confirm){
+    var miss=n-answered();
+    h+='<div class="warn">'+(miss?'Il reste '+miss+' question'+(miss>1?'s':'')+' sans réponse. ':'Toutes les questions ont une réponse. ')+'Terminer maintenant ?<div class="qnav" style="margin-top:.6rem"><button class="btn" id="yes">Oui, voir la correction</button><button class="btn-s" id="no">Continuer</button></div></div>';
+  }
+  h+='</div>';
+  if(!now){
+    h+='<aside><b style="font-size:.9rem">Navigation</b><div class="navg" style="margin-top:.5rem">'+
+      s.items.map(function(x,i){ return '<button data-n="'+i+'" class="'+(x.sel!=null?'done':'')+(i===s.i?' cur':'')+'" aria-label="Question '+(i+1)+'">'+(i+1)+'</button>'; }).join('')+'</div>'+
+      '<p class="tip" style="margin-top:.8rem">Vous pouvez revenir à n\'importe quelle question avant de terminer.</p><button class="btn-s" id="fin2" style="margin-top:.4rem">Terminer</button></aside>';
+  }
+  h+='</div>';
+  app.innerHTML=h;
+  [].forEach.call(app.querySelectorAll('.opt'),function(b){
+    b.onclick=function(){ it.sel=+b.getAttribute('data-i'); s.confirm=false; render(); };
+  });
+  var $=function(id){return document.getElementById(id);};
+  if($('pv')) $('pv').onclick=function(){ s.i--; s.confirm=false; render(); window.scrollTo(0,0); };
+  if($('nx')) $('nx').onclick=function(){ if(last&&now){ finish(false); } else { s.i++; s.confirm=false; render(); window.scrollTo(0,0); } };
+  var ask=function(){ s.confirm=true; render(); };
+  if($('fin')) $('fin').onclick=ask; if($('fin2')) $('fin2').onclick=ask;
+  if($('yes')) $('yes').onclick=function(){ finish(false); };
+  if($('no')) $('no').onclick=function(){ s.confirm=false; render(); };
+  [].forEach.call(app.querySelectorAll('.navg button'),function(b){ b.onclick=function(){ s.i=+b.getAttribute('data-n'); s.confirm=false; render(); }; });
+}
+
+/* ---------- résultats ---------- */
+function finish(timeUp){
+  if(!cur||cur.over) return;
+  var s=cur; s.over=true; stopTimer();
+  var cfg=s.cfg, n=s.items.length;
+  var good=s.items.filter(function(x){return x.sel!=null&&x.opts[x.sel].ok;}).length;
+  var pct=Math.round(good/n*100), used=(Date.now()-s.t0)/1000;
+  if(cfg.kind==='quiz'){ if(S.quiz[cfg.chap]==null||pct>S.quiz[cfg.chap]) S.quiz[cfg.chap]=pct; }
+  var d=new Date(), pad=function(x){return ('0'+x).slice(-2);};
+  S.hist.unshift({titre:cfg.titre,pct:pct,date:pad(d.getDate())+'/'+pad(d.getMonth()+1)}); S.hist=S.hist.slice(0,20);
+  save();
+  var by={};
+  s.items.forEach(function(x){ var c=x.q.ch; by[c]=by[c]||{g:0,n:0}; by[c].n++; if(x.sel!=null&&x.opts[x.sel].ok) by[c].g++; });
+  var h='<p class="eyebrow">'+cfg.titre+'</p>'+(timeUp?'<div class="warn" style="margin:0 0 1rem">Le temps est écoulé. Les questions sans réponse comptent comme fausses.</div>':'')+
+   '<div class="score"><span class="big">'+good+' / '+n+'</span><span class="big" style="font-size:2rem;color:var(--muted)">'+pct+' %</span><span class="mention">'+mention(pct)+'</span></div>'+
+   '<p class="muted">Durée : '+mmss(used)+(cfg.seconds?' sur '+mmss(cfg.seconds):'')+'</p>';
+  var ids=Object.keys(by).map(Number).sort(function(a,b){return a-b;});
+  if(ids.length>1){
+    h+='<div class="panel"><h2>Bilan par chapitre</h2><div class="bars">'+ids.map(function(id){
+      var p=Math.round(by[id].g/by[id].n*100);
+      return '<div><span>'+id+'. '+fmt(chap(id).titre)+'</span><span class="bar"><i class="'+(p<60?'lo':'')+'" style="width:'+p+'%"></i></span><span>'+by[id].g+'/'+by[id].n+'</span></div>';}).join('')+'</div>'+
+      (function(){ var weak=ids.filter(function(id){return by[id].g/by[id].n<0.7;}); return weak.length?'<p class="tip" style="margin:0">À retravailler : '+weak.map(function(id){return '<a href="#cours-'+id+'">chapitre '+id+'</a>';}).join(', ')+'.</p>':'<p class="tip" style="margin:0">Tous les chapitres sont au-dessus de 70 %. Excellent travail.</p>'; })()+'</div>';
+  }
+  var wrong=s.items.filter(function(x){return !(x.sel!=null&&x.opts[x.sel].ok);});
+  h+='<div class="filters"><button class="btn" id="all">Voir toute la correction</button>'+(wrong.length?'<button class="btn-s" id="wr">Erreurs seulement ('+wrong.length+')</button><button class="btn-s" id="redo">Refaire les erreurs</button>':'')+'<a class="btn-s" href="#accueil">Accueil</a></div><div id="rev"></div>';
+  app.innerHTML=h; window.scrollTo(0,0);
+  function review(list){
+    document.getElementById('rev').innerHTML='<div class="rev">'+list.map(function(x){
+      var ok=x.sel!=null&&x.opts[x.sel].ok, rightIdx=x.opts.findIndex(function(o){return o.ok;});
+      return '<div class="qcard"><div class="qtag">'+x.q.ch+'. '+fmt(chap(x.q.ch).titre)+' · <span class="'+(ok?'res-ok':'res-no')+'">'+(ok?'Réussie':(x.sel==null?'Sans réponse':'Incorrecte'))+'</span></div>'+
+        '<div class="qtext" style="font-size:1.05rem">'+fmt(x.q.p)+'</div>'+
+        (ok?'':'<p style="margin:0 0 .3rem"><b>Votre réponse :</b> '+(x.sel==null?'—':fmt(x.opts[x.sel].t))+'</p>')+
+        '<p style="margin:0 0 .5rem"><b>Bonne réponse :</b> <span class="m">'+LET[rightIdx]+'. '+fmt(x.opts[rightIdx].t)+'</span></p>'+
+        '<div class="expl" style="margin-top:.4rem">'+fmt(x.q.e)+'</div></div>';}).join('')+'</div>';
+    document.getElementById('rev').scrollIntoView({behavior:'smooth'});
+  }
+  document.getElementById('all').onclick=function(){ review(s.items); };
+  if(document.getElementById('wr')) document.getElementById('wr').onclick=function(){ review(wrong); };
+  if(document.getElementById('redo')) document.getElementById('redo').onclick=function(){
+    start({kind:'redo',titre:'Reprise des erreurs',mode:'now',qs:shuffle(wrong.map(function(x){return x.q;})),seconds:0});
+  };
+}
+
+route();
+})();
+
+</script>
+</body>
+</html>
