@@ -57,7 +57,12 @@ function Atelier() {
     return (
       <iframe
         title="Atelier Maths SN4"
-        srcDoc={etat.html}
+        srcDoc={etat.html.replace(
+          "<head>",
+          // Sans <base>, un lien « #quiz-1 » dans un srcdoc recharge /math
+          // dans le cadre, ce que X-Frame-Options: DENY refuse.
+          '<head><base href="about:srcdoc">',
+        )}
         sandbox="allow-scripts allow-same-origin"
         className="fixed inset-0 h-full w-full border-0 bg-white"
       />
