@@ -24,7 +24,42 @@ type Donnees = {
   miss?: Record<string, { ch?: number; n?: number }>;
   hist?: { titre: string; pct: number; date: string }[];
   plan?: { date?: string; done?: Record<string, unknown> };
+  act?: Record<string, { q: number; ok: number }>;
+  days?: Record<string, number>;
+  epr?: { date: string; a: number | null; b: number; total: number }[];
 };
+
+function iso(d: Date) {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+function semaine(d: Donnees) {
+  const jours = [];
+  for (let i = 6; i >= 0; i--) {
+    const dt = new Date();
+    dt.setDate(dt.getDate() - i);
+    const k = iso(dt);
+    jours.push({
+      k,
+      label: dt.toLocaleDateString("fr-CA", { weekday: "short", day: "numeric" }),
+      q: d.act?.[k]?.q ?? 0,
+      ok: d.act?.[k]?.ok ?? 0,
+      jour: d.days?.[k],
+    });
+  }
+  const total = jours.reduce((a, j) => a + j.q, 0);
+  const bons = jours.reduce((a, j) => a + j.ok, 0);
+  const actifs = jours.filter((j) => j.q > 0).length;
+  let serie = 0;
+  const dt = new Date();
+  if (d.days?.[iso(dt)] === undefined) dt.setDate(dt.getDate() - 1);
+  while (d.days?.[iso(dt)] !== undefined) {
+    serie++;
+    dt.setDate(dt.getDate() - 1);
+  }
+  return { jours, total, bons, actifs, serie };
+}
 
 type Compte = {
   userId: string;
@@ -99,6 +134,7 @@ function Suivi() {
           .sort((a, b) => (a.moy ?? 0) - (b.moy ?? 0))
           .slice(0, 3);
         const nonTentes = faibles.filter((f) => f.moy === null).length;
+        const sem = semaine(d);
 
         return (
           <section key={c.userId} className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -123,7 +159,7 @@ function Suivi() {
                 {nbErreurs} question{nbErreurs > 1 ? "s" : ""} à revoir
               </span>
               <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900">
-                {nbProb}/22 problèmes faits
+                {nbProb}/30 problèmes faits
               </span>
               {d.plan?.date && (
                 <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-900">
@@ -131,6 +167,44 @@ function Suivi() {
                 </span>
               )}
             </div>
+
+            <div className="mt-4 rounded-lg bg-gray-50 p-3">
+              <p className="text-sm font-medium text-gray-700">Cette semaine</p>
+              <p className="mt-1 text-sm text-gray-800">
+                {sem.actifs} jour{sem.actifs > 1 ? "s" : ""} actif{sem.actifs > 1 ? "s" : ""} sur 7 ·{" "}
+                {sem.total} question{sem.total > 1 ? "s" : ""} répondue{sem.total > 1 ? "s" : ""}
+                {sem.total > 0 ? ` · ${Math.round((sem.bons / sem.total) * 100)} % de réussite` : ""} · révision du jour : {sem.serie} jour
+                {sem.serie > 1 ? "s" : ""} de suite
+              </p>
+              <div className="mt-2 flex items-end gap-1" aria-label="Questions par jour">
+                {sem.jours.map((j) => (
+                  <div key={j.k} className="flex flex-1 flex-col items-center text-xs text-gray-500">
+                    <div className="flex h-12 w-full items-end">
+                      <div
+                        className={`w-full rounded-t ${j.q ? "bg-indigo-500" : "bg-gray-200"}`}
+                        style={{ height: `${Math.max(4, Math.min(100, j.q * 2))}%` }}
+                        title={`${j.q} question(s)`}
+                      />
+                    </div>
+                    <span className="mt-1">{j.q}</span>
+                    <span>{j.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {d.epr && d.epr.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-medium text-gray-700">Épreuves blanches de 3 h</p>
+                <ul className="mt-1 text-sm text-gray-600">
+                  {d.epr.slice(0, 3).map((e, i) => (
+                    <li key={i}>
+                      {e.date} : A {e.a === null ? "—" : `${e.a} %`} · B {e.b} % · <b>total {e.total} %</b>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <p className="mt-4 text-sm text-gray-800">
               {aTravailler.length > 0 ? (
