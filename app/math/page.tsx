@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import AuthGuard from "@/components/AuthGuard";
 import { supabase } from "@/lib/supabase";
@@ -11,25 +11,32 @@ type Etat =
   | { type: "refus" }
   | { type: "erreur" };
 
+async function jeton(): Promise<string | null> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session?.access_token ?? null;
+}
+
 function Atelier() {
   const [etat, setEtat] = useState<Etat>({ type: "chargement" });
+  const [admin, setAdmin] = useState(false);
+  const cadre = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     let actif = true;
 
     async function charger() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const t = await jeton();
 
-      if (!session) {
+      if (!t) {
         if (actif) setEtat({ type: "erreur" });
         return;
       }
 
       try {
         const reponse = await fetch("/api/math", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
+          headers: { Authorization: `Bearer ${t}` },
         });
 
         if (!actif) return;
@@ -53,19 +60,78 @@ function Atelier() {
     };
   }, []);
 
+  // Synchronisation de la progression avec le serveur : l'atelier (dans le
+  // cadre) envoie « sn4:ready » puis « sn4:save » ; on lui répond « sn4:state ».
+  useEffect(() => {
+    if (etat.type !== "ok") return;
+
+    async function surMessage(e: MessageEvent) {
+      if (e.source !== cadre.current?.contentWindow) return;
+      const msg = e.data as { type?: string; state?: unknown } | null;
+      if (!msg || typeof msg.type !== "string") return;
+
+      const t = await jeton();
+      if (!t) return;
+
+      if (msg.type === "sn4:ready") {
+        try {
+          const r = await fetch("/api/math/progress", {
+            headers: { Authorization: `Bearer ${t}` },
+          });
+          if (!r.ok) return;
+          const j = (await r.json()) as { role?: string; data?: unknown };
+          setAdmin(j.role === "admin");
+          cadre.current?.contentWindow?.postMessage(
+            { type: "sn4:state", state: j.data ?? null },
+            "*"
+          );
+        } catch {
+          /* la progression locale continue de fonctionner */
+        }
+      } else if (msg.type === "sn4:save" && msg.state) {
+        try {
+          await fetch("/api/math/progress", {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${t}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: msg.state }),
+          });
+        } catch {
+          /* réessai à la prochaine sauvegarde */
+        }
+      }
+    }
+
+    window.addEventListener("message", surMessage);
+    return () => window.removeEventListener("message", surMessage);
+  }, [etat.type]);
+
   if (etat.type === "ok") {
     return (
-      <iframe
-        title="Atelier Maths SN4"
-        srcDoc={etat.html.replace(
-          "<head>",
-          // Sans <base>, un lien « #quiz-1 » dans un srcdoc recharge /math
-          // dans le cadre, ce que X-Frame-Options: DENY refuse.
-          '<head><base href="about:srcdoc">',
+      <>
+        <iframe
+          ref={cadre}
+          title="Atelier Maths SN4"
+          srcDoc={etat.html.replace(
+            "<head>",
+            // Sans <base>, un lien « #quiz-1 » dans un srcdoc recharge /math
+            // dans le cadre, ce que X-Frame-Options: DENY refuse.
+            '<head><base href="about:srcdoc">',
+          )}
+          sandbox="allow-scripts allow-same-origin allow-modals"
+          className="fixed inset-0 h-full w-full border-0 bg-white"
+        />
+        {admin && (
+          <Link
+            href="/math/suivi"
+            className="fixed bottom-4 right-4 z-50 rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-indigo-800"
+          >
+            Suivi
+          </Link>
         )}
-        sandbox="allow-scripts allow-same-origin allow-modals"
-        className="fixed inset-0 h-full w-full border-0 bg-white"
-      />
+      </>
     );
   }
 
