@@ -63,7 +63,7 @@ function Atelier() {
           // dans le cadre, ce que X-Frame-Options: DENY refuse.
           '<head><base href="about:srcdoc">',
         )}
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-same-origin allow-modals"
         className="fixed inset-0 h-full w-full border-0 bg-white"
       />
     );
